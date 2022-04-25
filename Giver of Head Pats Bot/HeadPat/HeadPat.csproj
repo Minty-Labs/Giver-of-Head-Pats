@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>GoHP</AssemblyName>
+    <RootNamespace>HeadPats</RootNamespace>
+    <Company>Mintly Labs</Company>
+    <Product>Giver of Head Pats Discord Bot</Product>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <ApplicationIcon>..\Media\HeadPatSharp.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01123" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.3.0-nightly-01123" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.3.0-nightly-01123" />
+    <PackageReference Include="DSharpPlus.Rest" Version="4.3.0-nightly-01123" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01123" />
+    <PackageReference Include="Lib.Harmony" Version="2.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
+    <PackageReference Include="Nekos-Sharp" Version="3.5.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
+    <PackageReference Include="Pastel" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands" />
+    <Folder Include="Handlers\Events" />
+    <Folder Include="Managers" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Media\HeadPatSharp.ico">
+      <Link>HeadPatSharp.ico</Link>
+    </None>
+  </ItemGroup>
+
+</Project>
