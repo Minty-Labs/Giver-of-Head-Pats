@@ -18,6 +18,7 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
     <li>Lib.Harmony <b>v2.2.1</b></li>
     <li>Microsoft.EntityFrameworkCore <b>v6.0.4</b></li>
     <li>Nekos-Sharp <b>v3.5.0</b></li>
+    <li>Newtonsoft.Json <b>v13.0.1</b></li>
     <li>Npgsql.EntityFrameworkCore.PostgreSQL <b>v6.0.4</b></li>
     <li>Pastel <b>v3.0.0</b></li>
 </ul>
@@ -43,4 +44,25 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
 ```
 
 <h2>Features</h2>
-Section TBA / WIP
+<p>Prefix: <code>-</code> (dash / hyphen)<br> Global Command: <code>help</code> is available.</p>
+<h3>Basic Commands</h3>
+<ul>
+    <li>Ping - Shows bot's latency from you <-> discord <-> you.</li>
+    <li>Stats - Shows the bot status including server status and bot stats</li>
+    <li>FlipCoin - Flip a coin</li>
+    <li>InspiroBot - Generates a random inspirational quote created by an AI.</li>
+    <li>Memes - Grabs a random meme image from one of 5 meme subreddits</li>
+    <li>Fox - Summon a random fox picture</li><br>
+    <li>Slash Commands
+        <ul>
+            <li>Ping</li>
+            <li>Stats</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Developers</h2>
+<img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/7/avatar.png" height="35px" align=center /> &nbsp;
+    <a href="https://git.ellyvr.dev/Lily">Lily</a><br>
+<img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/2/avatar.png" height="35px" align=center /> &nbsp;
+    <a href="https://git.ellyvr.dev/Elly">Elly</a>
