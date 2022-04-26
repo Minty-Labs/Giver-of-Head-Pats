@@ -21,7 +21,7 @@ public static class Configuration {
     public static Config _conf { get; internal set; } = Load();
     public static readonly string ConfigFile = $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json";
 
-    public static void CreateFile() {
+    private static void CreateFile() {
         if (File.Exists($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json")) return;
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json", JsonConvert.SerializeObject(new Config {
             Token = "",
@@ -30,11 +30,6 @@ public static class Configuration {
             Game = "the rain",
             StreamingUrl = ""
         }));
-            
-        var jObject = JObject.Parse($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json");
-        if (jObject["Token"] != null) return;
-        var input = Logger.DoInput("Enter your Bot\'s Token: ");
-        jObject["Token"] = input;
         Save();
     }
 

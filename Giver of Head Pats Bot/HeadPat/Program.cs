@@ -5,18 +5,23 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using DSharpPlus.SlashCommands;
 using HeadPats.Managers;
+using HeadPats.Utils;
 using NekosSharp;
 using Pastel;
 
 namespace HeadPats;
 
-public class BuildInfo {
-    public const string Version = "4.0.0-001";
+public static class BuildInfo {
+    public const string Version = "4.0.0-002";
     public const string DSharpVer = "4.3.0-nightly-01123";
     public const string MintAPIVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientID = 821768206871167016;
-    private static readonly DateTime ShortBuildDate = new(2022, 4, 11, 14, 15, 00); // (year, month, day, hour, min, sec)
+#if DEBUG
+    private static readonly DateTime ShortBuildDate = DateTime.Now;
+#elif !DEBUG
+    private static readonly DateTime ShortBuildDate = new(2022, 4, 25, 0, 0, 00); // (year, month, day, hour, min, sec)
+#endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
     public static string BuildDate = $"Last Updated: {BuildDateShort}";
     public static DateTime StartTime = new();
@@ -55,14 +60,14 @@ public class BuildInfo {
         };
     }
         
-    public static Managers.Config Config = Managers.Configuration._conf;
+    public static Config Config = Configuration._conf;
     public static Process? ThisProcess { get; set; }
 }
 
-public class Program {
+public sealed class Program {
     public static DiscordClient? Client { get; set; }
-    private CommandsNextExtension? _Commands { get; set; }
-    public static SlashCommandsExtension? _Slash { get; set; }
+    private CommandsNextExtension? Commands { get; set; }
+    public static SlashCommandsExtension? Slash { get; set; }
     
     public static NekoClient? NekoClient { get; set; }
     
@@ -97,16 +102,16 @@ public class Program {
             EnableDefaultHelp = true
         };
 
-        _Commands = Client.UseCommandsNext(commandsNextConfiguration);
-        _Slash = Client.UseSlashCommands();
+        Commands = Client.UseCommandsNext(commandsNextConfiguration);
+        Slash = Client.UseSlashCommands();
 
 
-        Commands.Register(_Commands);
-        _Commands.CommandExecuted += Commands_CommandExecuted;
-        _Commands.CommandErrored += Commands_CommandErrored;
+        Managers.Commands.Register(Commands);
+        Commands.CommandExecuted += Commands_CommandExecuted;
+        Commands.CommandErrored += Commands_CommandErrored;
 
-        Commands.Register(_Slash);
-        _Slash.SlashCommandErrored += Slash_SlashCommandErrored;
+        Managers.Commands.Register(Slash);
+        Slash.SlashCommandErrored += Slash_SlashCommandErrored;
 
         Client.Ready += Client_Ready;
         var meh = new Handlers.EventHandler(Client); // Setup Command Handler
@@ -129,7 +134,7 @@ public class Program {
         Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
         Logger.Log("Game                          = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
         Logger.Log("Streaming URL                 = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
-        Logger.Log("Number of Commands            = " + $"{_Commands?.RegisteredCommands.Count + _Slash?.RegisteredCommands.Count}".Pastel("FBADBC"));
+        Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}".Pastel("FBADBC"));
         //Logger.Log("Active Events                 = " + $"16".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
@@ -137,12 +142,12 @@ public class Program {
         }, UserStatus.Online);
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
     }
-    
+
     private Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
         Logger.CommandExecuted(e.Command.Name, e.Context.Message.Author.Username, e.Context.Guild.Name);
         return Task.CompletedTask;
     }
-        
+
     private Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e) {
         if (e.Command == null)
             Logger.CommandNull(e.Context.Member!.Username, e.Context.Message.Content);
@@ -150,7 +155,7 @@ public class Program {
             Logger.CommandErrored(e.Command.Name, e.Context.Message.Author.Username, e.Context.Guild.Name, e.Exception);
         return Task.CompletedTask;
     }
-        
+
     private Task Slash_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e) {
         Logger.CommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Guild.Name, e.Exception, true);
         return Task.CompletedTask;

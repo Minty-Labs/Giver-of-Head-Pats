@@ -13,7 +13,7 @@ using System.IO;
 namespace HeadPats.Utils; 
 
 public class Colors {
-    public static DiscordColor RANDOM {
+    public static DiscordColor Random {
         get {
             Random rnd = new();
             return ConvertColor(Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256)));
