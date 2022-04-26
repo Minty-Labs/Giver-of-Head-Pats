@@ -79,7 +79,7 @@ public class Basic : BaseCommandModule {
     [RequirePermissions(Permissions.Administrator)]
     public async Task SaveJson(cc c) => Configuration.Save();
 
-    [Command("meme"), Description("Grabs a random meme image from r/memes")]
+    [Command("meme"), Description("Grabs a random meme image from one of 5 meme subreddits")]
     public async Task Meme(cc c) {
         start:
 
