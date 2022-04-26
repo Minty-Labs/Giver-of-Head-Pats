@@ -12,7 +12,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-002";
+    public const string Version = "4.0.0-004";
     public const string DSharpVer = "4.3.0-nightly-01123";
     public const string MintAPIVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
