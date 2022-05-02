@@ -12,8 +12,8 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-004";
-    public const string DSharpVer = "4.3.0-nightly-01123";
+    public const string Version = "4.0.0-014";
+    public const string DSharpVer = "4.3.0-nightly-01127";
     public const string MintAPIVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientID = 821768206871167016;
@@ -66,9 +66,8 @@ public static class BuildInfo {
 
 public sealed class Program {
     public static DiscordClient? Client { get; set; }
-    private CommandsNextExtension? Commands { get; set; }
+    public static CommandsNextExtension? Commands { get; set; }
     public static SlashCommandsExtension? Slash { get; set; }
-    
     public static NekoClient? NekoClient { get; set; }
     
     private static void Main(string[] args) {
@@ -105,7 +104,6 @@ public sealed class Program {
         Commands = Client.UseCommandsNext(commandsNextConfiguration);
         Slash = Client.UseSlashCommands();
 
-
         Managers.Commands.Register(Commands);
         Commands.CommandExecuted += Commands_CommandExecuted;
         Commands.CommandErrored += Commands_CommandErrored;
@@ -115,6 +113,8 @@ public sealed class Program {
 
         Client.Ready += Client_Ready;
         var meh = new Handlers.EventHandler(Client); // Setup Command Handler
+
+        NekoClient = new NekoClient(BuildInfo.Name);
             
         await Client.ConnectAsync();
 
@@ -134,7 +134,7 @@ public sealed class Program {
         Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
         Logger.Log("Game                          = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
         Logger.Log("Streaming URL                 = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
-        Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}".Pastel("FBADBC"));
+        Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count + 1}".Pastel("FBADBC"));
         //Logger.Log("Active Events                 = " + $"16".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
