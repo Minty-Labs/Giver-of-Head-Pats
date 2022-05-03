@@ -1,5 +1,7 @@
-﻿namespace HeadPats.Utils; 
+﻿using DSharpPlus.Entities;
 
-public class ServerChecks {
-    
+namespace HeadPats.Utils; 
+
+public static class ServerChecks {
+    public static bool IsChannelNsfw(this DiscordChannel channel) => channel.IsNSFW;
 }

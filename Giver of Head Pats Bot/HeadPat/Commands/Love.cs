@@ -12,8 +12,8 @@ using cc = DSharpPlus.CommandsNext.CommandContext;
 
 namespace HeadPats.Commands; 
 
-public class LoveCmds : BaseCommandModule {
-    public LoveCmds() => Logger.Loadodule("LoveCmds");
+public class Love : BaseCommandModule {
+    public Love() => Logger.Loadodule("LoveCommands");
     
     private string FooterText(string extra = "")
         => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
@@ -39,7 +39,7 @@ public class LoveCmds : BaseCommandModule {
         }
 
         var gaveToBot = false;
-        if (user?.Id == BuildInfo.ClientID) {
+        if (user?.Id == BuildInfo.ClientId) {
             await c.RespondAsync($"How dare you give me {action}! No, have some of your own~");
             gaveToBot = true;
             await Task.Delay(300);
@@ -74,9 +74,14 @@ public class LoveCmds : BaseCommandModule {
         var rnd = new Random();
         var num = rnd.Next(0, 3);
         var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
+
+        var yes = !string.IsNullOrWhiteSpace(extraText) && extraText.Contains('%');
+        var special = num == 3 ? 2 : 1;
+        var patAmount = yes ? int.Parse(extraText!.Split('%')[1]) : special;
         
-        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num], 
-            $"{c.Message.Author.Mention} gave headpats to <@{getUserIdFromMention}>", "headpats", num == 3 ? 2 : 1);
+        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
+            $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{getUserIdFromMention}>", "headpats", patAmount);
+        Logger.Log($"Total Pat amount Given: {patAmount}");
     }
     
     [Command("cuddle"), Aliases("c"), Description("Give cuddles to a specified user.")]
@@ -188,7 +193,7 @@ public class LoveCmds : BaseCommandModule {
     [Command("poke"), Aliases("boop", "pokes"), Description("Poke a specified user.")]
     public async Task Poke(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
-            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}slap [@user]`");
+            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}poke [@user]`");
             return;
         }
         

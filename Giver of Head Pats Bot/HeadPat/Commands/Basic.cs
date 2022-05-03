@@ -5,14 +5,17 @@ using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Managers;
 using HeadPats.Utils;
+using NekosSharp;
 using cc = DSharpPlus.CommandsNext.CommandContext;
+using ic = DSharpPlus.SlashCommands.InteractionContext;
 
 namespace HeadPats.Commands; 
 
 public class Basic : BaseCommandModule {
     public Basic() => Logger.Loadodule("BasicCommands");
     
-    private readonly string _footerText = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}";
+    private string FooterText(string extra = "")
+        => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
     
     [Command("ping"), Description("Shows bot's latency from you <-> discord <-> you.")]
     public async Task Ping(cc c) => await c.RespondAsync($":ping_pong: Pong > {c.Client.Ping}ms");
@@ -21,9 +24,9 @@ public class Basic : BaseCommandModule {
     public async Task Stats(cc c) {
         var ram = GC.GetTotalMemory(false) / 1024 / 1024;
         //var cpu = "x";
-        var platform = "Windows";
-        var discordNetVer = BuildInfo.DSharpVer;
-        var mintApiVer = BuildInfo.MintAPIVer;
+        const string platform = "Windows";
+        const string discordNetVer = BuildInfo.DSharpVer;
+        const string mintApiVer = BuildInfo.MintApiVer;
         var tempNow = DateTime.Now;
         var days = tempNow.Subtract(BuildInfo.StartTime).Days;
         var hours = tempNow.Subtract(BuildInfo.StartTime).Hours;
@@ -34,7 +37,7 @@ public class Basic : BaseCommandModule {
         e.WithTitle($"{BuildInfo.Name} Stats");
         e.WithColor(DiscordColor.Teal);
 
-        e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count}", true);
+        e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count + 1}", true);
         e.AddField("Ping", $"{c.Client.Ping}ms", true);
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{platform}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
@@ -43,7 +46,7 @@ public class Basic : BaseCommandModule {
         e.AddField("Server Info", $"Location: **South Carolina, USA** \nServer: **[Sypher](https://mintlily.lgbt/pc)** \nMax RAM: **32 GB** \nOS: **{platform} 10 (21H1)**");
         
         e.WithTimestamp(DateTime.Now);
-        e.WithFooter(_footerText);
+        e.WithFooter(FooterText());
         await c.RespondAsync(e.Build());
     }
 
@@ -74,10 +77,6 @@ public class Basic : BaseCommandModule {
         httpClient.Dispose();
         await c.RespondAsync(e.Build());
     }
-
-    [Command("jsonsave"), Description("DEBUG: Saves the JSON Configuration file.")]
-    [RequirePermissions(Permissions.Administrator)]
-    public async Task SaveJson(cc c) => Configuration.Save();
 
     [Command("meme"), Description("Grabs a random meme image from one of 5 meme subreddits")]
     public async Task Meme(cc c) {
@@ -139,9 +138,64 @@ public class Basic : BaseCommandModule {
         e.WithTitle($"{RandomFoxJson.GetImageNumber()} / {foxCount}");
         e.WithColor(Colors.HexToColor("AC5F25"));
         e.WithImageUrl(RandomFoxJson.GetImage());
-        e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • Powered by randomfox.ca");
+        e.WithFooter(FooterText("Powered by randomfox.ca"));
         httpClient.Dispose();
         await c.RespondAsync(e.Build());
+    }
+
+    private async Task OutputBaseCommand(cc c, string embedTitle, string? imageUrl, string colorHex) {
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle(embedTitle);
+        e.WithImageUrl(imageUrl);
+        e.WithColor(Colors.HexToColor(colorHex));
+        e.WithFooter(FooterText("Powered by nekos.life"));
+        await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
+    }
+
+    [Command("Neko"), Description("Summon a picture or GIF of a SFW neko")]
+    public async Task Neko(cc c) {
+        var rnd1 = new Random();
+        var num1 = rnd1.Next(0, 1);
+        var neko = num1 == 1 ? Program.NekoClient?.Image.Neko() : Program.NekoClient?.Image.NekoGif();
+
+        await OutputBaseCommand(c, "Random Neko", neko?.Result.ImageUrl, "42F4A1");
+    }
+    
+    [Command("Smug"), Description("Summon a picture or GIF of a smug face")]
+    public async Task Smug(cc c) {
+        var rnd1 = new Random();
+        var num1 = rnd1.Next(0, 1);
+        var neko = num1 == 1 ? Program.NekoClient?.Image.Smug() : Program.NekoClient?.Image_v3.SmugGif();
+
+        await OutputBaseCommand(c, "", neko?.Result.ImageUrl, "804A13");
+    }
+    
+    [Command("Cat"), Description("Summon a picture or GIF of a cat")]
+    public async Task Cat(cc c) {
+        var rnd1 = new Random();
+        var num1 = rnd1.Next(0, 1);
+        var neko = num1 == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
+
+        await OutputBaseCommand(c, "", neko?.Result.ImageUrl, "FFFF00");
+    }
+    
+    [Command("Cry"), Aliases("crying"), Description("Summon a picture or GIF of a crying post")]
+    public async Task Cry(cc c) {
+        NekoLoveJson.NekoData = null;
+        var httpClient = new HttpClient();
+        var content = await httpClient.GetStringAsync("https://neko-love.xyz/api/v1/cry");
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        NekoLoveJson.GetData(content);
+
+        if (NekoLoveJson.ImageHasValidExtension()) {
+            var e = new DiscordEmbedBuilder();
+            e.WithTitle("`*`_cry_`*`");
+            e.WithColor(Colors.HexToColor("58CBCF"));
+            e.WithImageUrl(NekoLoveJson.GetImage());
+            e.WithFooter(FooterText("Powered by neko-love.xyz"));
+            httpClient.Dispose();
+            await c.RespondAsync(e.Build());
+        }
     }
 }
 
@@ -151,15 +205,15 @@ public class BasicSlashCommands : ApplicationCommandModule {
     private readonly string _footerText = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}";
     
     [SlashCommand("ping", "Outputs the bot's latency to discord.")]
-    public async Task Ping(InteractionContext  c) => await c.CreateResponseAsync($":ping_pong: Pong > {c.Client.Ping}ms");
+    public async Task Ping(ic c) => await c.CreateResponseAsync($":ping_pong: Pong > {c.Client.Ping}ms");
 
     [SlashCommand("stats", "Shows the bot status including server status and bot stats")]
-    public async Task Stats(InteractionContext c) {
+    public async Task Stats(ic c) {
         var ram = GC.GetTotalMemory(false) / 1024 / 1024;
         //var cpu = "x";
-        var platform = "Windows";
-        var discordNetVer = BuildInfo.DSharpVer;
-        var mintApiVer = BuildInfo.MintAPIVer;
+        const string platform = "Windows";
+        const string discordNetVer = BuildInfo.DSharpVer;
+        const string mintApiVer = BuildInfo.MintApiVer;
         var tempNow = DateTime.Now;
         var days = tempNow.Subtract(BuildInfo.StartTime).Days;
         var hours = tempNow.Subtract(BuildInfo.StartTime).Hours;

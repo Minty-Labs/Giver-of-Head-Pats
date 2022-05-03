@@ -12,11 +12,11 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-014";
+    public const string Version = "4.0.0-019";
     public const string DSharpVer = "4.3.0-nightly-01127";
-    public const string MintAPIVer = "1.4.0";
+    public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
-    public const ulong ClientID = 821768206871167016;
+    public const ulong ClientId = 821768206871167016;
 #if DEBUG
     private static readonly DateTime ShortBuildDate = DateTime.Now;
 #elif !DEBUG

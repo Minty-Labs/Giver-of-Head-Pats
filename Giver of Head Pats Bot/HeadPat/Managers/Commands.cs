@@ -6,7 +6,7 @@ namespace HeadPats.Managers;
 internal static class Commands {
     public static void Register(CommandsNextExtension? c) {
         c?.RegisterCommands<Basic>();
-        c?.RegisterCommands<LoveCmds>();
+        c?.RegisterCommands<Love>();
     }
 
     public static void Register(SlashCommandsExtension? s) {
