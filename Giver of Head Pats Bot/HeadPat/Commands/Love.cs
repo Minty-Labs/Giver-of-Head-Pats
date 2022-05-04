@@ -8,6 +8,7 @@ using HeadPats.Managers;
 using HeadPats.Utils;
 using NekosSharp;
 using System.Xml.Linq;
+using HeadPats.Data.Models;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 
 namespace HeadPats.Commands; 
@@ -37,16 +38,20 @@ public class Love : BaseCommandModule {
             await c.RespondAsync($"You cannot give yourself {action}.");
             return;
         }
+        
+        if (user!.IsBot) {
+            await c.RespondAsync($"You cannot give bots {action}.");
+            return;
+        }
 
         var gaveToBot = false;
-        if (user?.Id == BuildInfo.ClientId) {
+        if (user.Id == BuildInfo.ClientId) {
             await c.RespondAsync($"How dare you give me {action}! No, have some of your own~");
             gaveToBot = true;
             await Task.Delay(300);
         }
 
-        //var user = discordUser;
-        //var guild = c.Guild;
+        var guild = c.Guild;
         
         var e = new DiscordEmbedBuilder();
         e.WithTitle(embedTitle);
@@ -54,7 +59,7 @@ public class Love : BaseCommandModule {
         e.WithColor(Colors.HexToColor(embedColorHex));
         e.WithFooter(FooterText("Powered by nekos.life"));
         e.WithDescription(gaveToBot ? $"Gave {action} to <@{c.Message.Author.Id}>" : embedDesc);
-        // TODO: Add pats to user and guild - ClassNameTBD.AddPatToUser(userId: user.Id, addToGuild: true, guildToAddPatTo: guild, numberOfPats: pats);
+        UserControl.AddPatToUser(user.Id, pats, true, guild.Id);
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
     }
 
