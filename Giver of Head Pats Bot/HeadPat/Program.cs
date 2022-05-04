@@ -4,6 +4,8 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using DSharpPlus.SlashCommands;
+using HeadPats.Data;
+using HeadPats.Data.Models;
 using HeadPats.Managers;
 using HeadPats.Utils;
 using NekosSharp;
@@ -12,7 +14,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-019";
+    public const string Version = "4.0.0-035";
     public const string DSharpVer = "4.3.0-nightly-01127";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
@@ -115,6 +117,19 @@ public sealed class Program {
         var meh = new Handlers.EventHandler(Client); // Setup Command Handler
 
         NekoClient = new NekoClient(BuildInfo.Name);
+
+        await using var db = new Context();
+        var check = db.Overall.AsQueryable()
+            .Where(u => u.ApplicationId.Equals(BuildInfo.ClientId)).ToList().FirstOrDefault();
+        
+        if (check == null) {
+            var overall = new Overlord {
+                ApplicationId = BuildInfo.ClientId,
+                PatCount = 0
+            };
+            db.Overall.Add(overall);
+            await db.SaveChangesAsync();
+        }
             
         await Client.ConnectAsync();
 
@@ -128,7 +143,6 @@ public sealed class Program {
         Logger.Log("Bot Version                   = " + BuildInfo.Version);
         Logger.Log("Process ID                    = " + BuildInfo.ThisProcess.Id);
         Logger.Log("Build Date                    = " + BuildInfo.BuildDateShort);
-        Logger.WriteSeperator("C75450");
         Logger.Log("Token                         = " + OutputStringAsHidden(BuildInfo.Config.Token).Pastel("FBADBC"));
         Logger.Log("Prefix                        = " + $"{BuildInfo.Config.Prefix}".Pastel("FBADBC"));
         Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
@@ -141,6 +155,7 @@ public sealed class Program {
             ActivityType = _ActivityType(BuildInfo.Config.ActivityType)
         }, UserStatus.Online);
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
+        Logger.WriteSeperator("C75450");
     }
 
     private Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {

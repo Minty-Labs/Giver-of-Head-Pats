@@ -1,10 +1,13 @@
-﻿using DSharpPlus;
+﻿using System.Text;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using HeadPats.Data;
 using HeadPats.Managers;
 using HeadPats.Utils;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using NekosSharp;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
@@ -196,6 +199,40 @@ public class Basic : BaseCommandModule {
             httpClient.Dispose();
             await c.RespondAsync(e.Build());
         }
+    }
+
+    [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderbord for most headpats")]
+    public async Task TopPat(cc c) {
+        await using var db = new Context();
+        var usersList = db.Users.AsQueryable().ToList();
+        var guildList = db.Guilds.AsQueryable().ToList();
+        var serverList = db.Overall.AsQueryable().ToList();
+        
+        var guildPats = 0;
+        try { guildPats = guildList.FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; } catch { Logger.Error("Guilds DataSet is Empty"); }
+        
+        var serverPats = 0;
+        try { serverPats = serverList.First().PatCount; } catch { Logger.Error("Server DataSet is Empty"); }
+        
+        var max = 1;
+        var sb = new StringBuilder();
+        var newUserList = usersList.OrderBy(p => -p.PatCount);
+        foreach (var u in newUserList) {
+            if (max >= 10) continue;
+            if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
+            sb.AppendLine($"`{max}.` {u.UsernameWithNumber} - Total Pats: **{u.PatCount}**");
+            max++;
+        }
+        
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle("Head Pat Leaderboard");
+        e.WithColor(Colors.HexToColor("DFFFDD"));
+        e.WithFooter($"Synced across all servers • {BuildInfo.Name} (v{BuildInfo.Version})");
+        e.AddField("Current Server Stats", 
+            $"{(string.IsNullOrWhiteSpace(sb.ToString()) ? "Data is Empty" : $"{sb}")}\n\nTotal Server Pats **{guildPats}**");
+        e.AddField("Global Stats", $"Total Pats: **{serverPats}**");
+        e.WithTimestamp(DateTime.Now);
+        await c.RespondAsync(e.Build());
     }
 }
 
