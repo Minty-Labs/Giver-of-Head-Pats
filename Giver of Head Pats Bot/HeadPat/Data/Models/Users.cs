@@ -55,7 +55,8 @@ public static class UserControl {
         if (checkOverall == null) {
             var overall = new Overlord {
                 ApplicationId = BuildInfo.ClientId,
-                PatCount = 0
+                PatCount = 0,
+                NsfwCommandsUsed = 0
             };
             db.Overall.Add(overall);
             db.SaveChanges();
