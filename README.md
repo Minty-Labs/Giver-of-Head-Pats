@@ -6,7 +6,7 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
 </p>
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01127</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01129</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -75,6 +75,10 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
     <li>Slap - Slap a specified user</li>
     <li>Lick - Lick a specified user</li>
     <li>Poke - Poke a specified user</li>
+</ul>
+<h3>Reply Commands</h3>
+<ul>
+    <li></li>
 </ul>
 
 <h2>Developers</h2>

@@ -7,9 +7,13 @@ internal static class Commands {
     public static void Register(CommandsNextExtension? c) {
         c?.RegisterCommands<Basic>();
         c?.RegisterCommands<Love>();
+        //c?.RegisterCommands<Nsfw>();
+        c?.RegisterCommands<Owner>();
+        c?.RegisterCommands<Replys>();
     }
 
     public static void Register(SlashCommandsExtension? s) {
         s?.RegisterCommands<BasicSlashCommands>();
+        s?.RegisterCommands<SlashOwner>();
     }
 }
