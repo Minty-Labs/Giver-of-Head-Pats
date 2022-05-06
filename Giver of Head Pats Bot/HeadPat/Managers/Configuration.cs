@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 
 namespace HeadPats.Managers;
 
@@ -33,12 +26,10 @@ public static class Configuration {
         Save();
     }
 
-    public static Config Load() {
+    private static Config Load() {
         CreateFile();
         var d = JsonConvert.DeserializeObject<Config>(File.ReadAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json"));
-        if (d == null)
-            throw new Exception();
-        return d;
+        return d ?? throw new Exception();
     }
     
     public static void Save() => File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json",

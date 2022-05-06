@@ -1,14 +1,10 @@
 ﻿using System.Text;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
-using HeadPats.Managers;
 using HeadPats.Utils;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using NekosSharp;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 

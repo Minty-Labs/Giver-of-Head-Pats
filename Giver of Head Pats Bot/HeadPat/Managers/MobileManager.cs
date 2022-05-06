@@ -15,10 +15,10 @@ public class MobileManager { // Thanks Dubya
                 ?.GetGetMethod();
             var mPostfix = new HarmonyMethod(AccessTools.Method(typeof(MobileManager), nameof(MobilePatch)));
             harmony.Patch(mOriginal, postfix: mPostfix);
-            Logger.Log("MobilePatch Success: You are on " + "\"Discord iOS\"".Pastel("00ff00"));
+            Logger.Log("MobilePatch Success: You are on \"" + "Discord iOS".Pastel("00ff00") + "\"");
         }
         catch (Exception e) {
-            Logger.Error("Failed Mobile Patch" + e);
+            Logger.Error($"Failed Mobile Patch{e}");
         }
     }
         

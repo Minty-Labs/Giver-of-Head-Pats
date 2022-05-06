@@ -1,13 +1,7 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
-using HeadPats.Managers;
 using HeadPats.Utils;
-using NekosSharp;
-using System.Xml.Linq;
 using HeadPats.Data.Models;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 

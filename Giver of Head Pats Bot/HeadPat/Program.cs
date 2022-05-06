@@ -14,8 +14,8 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-035";
-    public const string DSharpVer = "4.3.0-nightly-01127";
+    public const string Version = "4.0.0-049";
+    public const string DSharpVer = "4.3.0-nightly-01129";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 821768206871167016;
@@ -125,7 +125,8 @@ public sealed class Program {
         if (check == null) {
             var overall = new Overlord {
                 ApplicationId = BuildInfo.ClientId,
-                PatCount = 0
+                PatCount = 0,
+                NsfwCommandsUsed = 0
             };
             db.Overall.Add(overall);
             await db.SaveChangesAsync();
@@ -152,7 +153,7 @@ public sealed class Program {
         //Logger.Log("Active Events                 = " + $"16".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
-            ActivityType = _ActivityType(BuildInfo.Config.ActivityType)
+            ActivityType = GetActivityType(BuildInfo.Config.ActivityType)
         }, UserStatus.Online);
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
         Logger.WriteSeperator("C75450");
@@ -183,17 +184,32 @@ public sealed class Program {
         return temp ?? "***************";
     }
     
-    public static ActivityType _ActivityType(string type) {
+    public static ActivityType GetActivityType(string type) {
         return type.ToLower() switch {
             "playing" => ActivityType.Playing,
             "listening" => ActivityType.ListeningTo,
             "watching" => ActivityType.Watching,
             "streaming" => ActivityType.Streaming,
+            "competing" => ActivityType.Competing,
             "play" => ActivityType.Playing,
             "listen" => ActivityType.ListeningTo,
             "watch" => ActivityType.Watching,
             "stream" => ActivityType.Streaming,
-            _ => ActivityType.Custom,
+            "other" => ActivityType.Custom,
+            "compete" => ActivityType.Competing,
+            _ => ActivityType.Custom
+        };
+    }
+    
+    public static string GetActivityAsString(ActivityType type) {
+        return type switch {
+            ActivityType.Playing => "playing",
+             ActivityType.ListeningTo => "listening",
+             ActivityType.Watching => "watching",
+             ActivityType.Streaming => "streaming",
+             ActivityType.Competing => "competing",
+             ActivityType.Custom => "other",
+            _ => ""
         };
     }
 }

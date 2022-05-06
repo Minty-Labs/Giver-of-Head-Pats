@@ -11,7 +11,7 @@ public class Context : DbContext {
     public DbSet<Overlord> Overall { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        var path = "Data/data.db";
+        const string path = "Data/data.db";
         optionsBuilder.UseSqlite($"Data Source={path}");
         optionsBuilder.EnableSensitiveDataLogging();
 
