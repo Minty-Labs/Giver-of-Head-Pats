@@ -1,6 +1,9 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using System.Reflection;
+using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
 using HeadPats.Utils;
 using HeadPats.Data.Models;
 using cc = DSharpPlus.CommandsNext.CommandContext;
@@ -237,5 +240,67 @@ public class Love : BaseCommandModule {
 
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
             $"{c.Message.Author.Mention} poked <@{getUserIdFromMention}>", "poked", 0, "0E4730");
+    }
+}
+
+public class LoveSlash : ApplicationCommandModule {
+    public LoveSlash() => Logger.Loadodule("LoveSlash");
+
+    [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
+    public async Task Hug(ContextMenuContext ctx) {
+        if (ctx.TargetMember.Id == BuildInfo.ClientId)
+            await ctx.CreateResponseAsync($"I got hugs from {ctx.User.Username}?! Thankies~");
+        else if (ctx.TargetMember.Id == ctx.User.Id)
+            await ctx.CreateResponseAsync("You cant give yourself hugs, but I'll gladly give you some!");
+        else 
+            await ctx.CreateResponseAsync($"{ctx.User.Username} hugs <@{ctx.TargetMember.Id}>!");
+    }
+
+    async Task OutputBaseCommand(ContextMenuContext c, string targetUser, string? imageUrlFromApi, string embedTitle, string embedDesc, string action, int pats, string embedColorHex = "ffff00") {
+        if (c.TargetUser.Id == c.User.Id) {
+            await c.CreateResponseAsync($"You cannot give yourself {action}.");
+            return;
+        }
+        
+        if (c.TargetUser.IsBot) {
+            await c.CreateResponseAsync($"You cannot give bots {action}.");
+            return;
+        }
+
+        var gaveToBot = false;
+        if (c.TargetUser.Id == BuildInfo.ClientId) {
+            await c.CreateResponseAsync($"How dare you give me {action}! No, have some of your own~");
+            gaveToBot = true;
+            await Task.Delay(300);
+        }
+
+        var guild = c.Guild;
+        
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle(embedTitle);
+        e.WithImageUrl(imageUrlFromApi);
+        e.WithColor(Colors.HexToColor(embedColorHex));
+        e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate} • Powered by nekos.life");
+        e.WithDescription(gaveToBot ? $"Gave {action} to <@{c.TargetUser.Id}>" : embedDesc);
+        UserControl.AddPatToUser(c.TargetUser.Id, pats, true, guild.Id);
+        await c.Client.SendMessageAsync(c.Channel, e.Build());
+    }
+    
+    [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
+    public async Task Pat(ContextMenuContext ctx) {
+        var rnd1 = new Random();
+        var num1 = rnd1.Next(0, 1);
+
+        var neko = num1 == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
+        
+        var rnd = new Random();
+        var num = rnd.Next(0, 3);
+        var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
+        
+        var special = num == 3 ? 2 : 1;
+        
+        await OutputBaseCommand(ctx, ctx.TargetUser.Id.ToString(), neko?.Result.ImageUrl, outputs[num],
+            $"{ctx.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to <@{ctx.TargetUser.Id}>", "headpats", special);
+        Logger.Log($"Total Pat amount Given: {special}");
     }
 }

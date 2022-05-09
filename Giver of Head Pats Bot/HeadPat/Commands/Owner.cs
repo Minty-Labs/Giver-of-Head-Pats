@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using System.Text;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -58,17 +59,17 @@ public class Owner : BaseCommandModule {
         var arg = args.Split('%');
         var url = !args.Contains("%http") ? "" : arg[1];
         var name = string.IsNullOrWhiteSpace(args) ? BuildInfo.Config.Game : arg[0];
-        
-        await c.Client!.UpdateStatusAsync(new DiscordActivity {
-            Name = name,
-            ActivityType = getActivity,
-            StreamUrl = url
-        }, getStatus);
 
         BuildInfo.Config.Game = name;
         BuildInfo.Config.ActivityType = Program.GetActivityAsString(getActivity);
-        BuildInfo.Config.StreamingUrl = url;
+        BuildInfo.Config.StreamingUrl = string.IsNullOrWhiteSpace(url) ? "" : url;
         Configuration.Save();
+        
+        await c.Client.UpdateStatusAsync(new DiscordActivity {
+            Name = name,
+            ActivityType = getActivity,
+            StreamUrl = string.IsNullOrWhiteSpace(url) ? "" : url
+        }, getStatus);
 
         var color = status switch {
             "offline"   => "747F8D",
@@ -91,8 +92,39 @@ public class Owner : BaseCommandModule {
         e.WithFooter(FooterText());
         await c.RespondAsync(e.Build());
     }
-    
-    
+
+    [Command("Guilds"), Aliases("listguilds", "lg"), Description("Lists all guilds the bot is in. [Owner]")]
+    [RequireOwner]
+    public async Task ListGuilds(cc c) {
+        var sb = new StringBuilder();
+        foreach (var g in c.Client.Guilds) {
+            sb.AppendLine(g.Value.Name);
+            sb.AppendLine(g.Key.ToString());
+            sb.AppendLine();
+        }
+
+        var overLimit = sb.ToString().Length > 2000;
+        var f = sb.ToString();
+
+        await c.RespondAsync(overLimit ? f[..1999] : f);
+        if (overLimit)
+            await c.Client.SendMessageAsync(c.Message.Channel, f[1999..3999]);
+    }
+
+    [Command("LeaveGuild"), Aliases("leave"), Description("Forces the bot to leave a guild")]
+    [RequireOwner]
+    public async Task LeaveGuild(cc c, string guildId = "") {
+        if (string.IsNullOrWhiteSpace(guildId)) {
+            await c.RespondAsync("Please provide a guild ID.");
+            return;
+        }
+
+        var id = ulong.Parse(guildId);
+        var guild = await c.Client.GetGuildAsync(id);
+
+        await guild.LeaveAsync();
+        await c.RespondAsync($"Left the server: {guild.Name}");
+    }
 }
 
 // public class RequireUserIdAttribute : SlashCheckBaseAttribute {
