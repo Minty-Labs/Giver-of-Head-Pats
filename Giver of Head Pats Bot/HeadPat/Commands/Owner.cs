@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -19,15 +18,81 @@ public class Owner : BaseCommandModule {
     private string FooterText(string extra = "")
         => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
 
-    [Command("ForceRegisterSlashCommands")]
+    // [Command("ForceRegisterSlashCommands")]
+    // [RequireOwner]
+    // public async Task RegOwner(cc c) {
+    //     var s = Program.Slash;
+    //     if (s == null) Logger.Log("SlashCommandsExtension is null");
+    //     s?.RegisterCommands<BasicSlashCommands>();
+    //     s?.RegisterCommands<SlashOwner>();
+    //     await c.RespondAsync("Done");
+    // }
+
+    [Command("ChangeActivity"), Aliases("ca"), Description("Change the bot\'s Activity")]
     [RequireOwner]
-    public async Task RegOwner(cc c) {
-        var s = Program.Slash;
-        if (s == null) Logger.Log("SlashCommandsExtension is null");
-        s?.RegisterCommands<BasicSlashCommands>();
-        s?.RegisterCommands<SlashOwner>();
-        await c.RespondAsync("Done");
+    public async Task ChangeActivity(cc c, string status, string activityType, [RemainingText]string args = "") {
+        if (activityType.ToLower().Contains("stream") && !args.Contains("%http")) {
+            await c.RespondAsync("Streaming needs a URL: Something like `%http...`");
+            return;
+        }
+        
+        var getStatus = status switch {
+            "offline"   => UserStatus.Offline,
+            "invisible" => UserStatus.Invisible,
+            "dnd"       => UserStatus.DoNotDisturb,
+            "idle"      => UserStatus.Idle,
+            "online"    => UserStatus.Online,
+            _           => UserStatus.Offline
+        };
+
+        var getActivity = activityType switch {
+            "play"    => ActivityType.Playing,
+            "listen"  => ActivityType.ListeningTo,
+            "watch"   => ActivityType.Watching,
+            "stream"  => ActivityType.Streaming,
+            "compete" => ActivityType.Competing,
+            "other"   => ActivityType.Custom,
+            _         => ActivityType.Playing
+        };
+        
+        var arg = args.Split('%');
+        var url = !args.Contains("%http") ? "" : arg[1];
+        var name = string.IsNullOrWhiteSpace(args) ? BuildInfo.Config.Game : arg[0];
+        
+        await c.Client!.UpdateStatusAsync(new DiscordActivity {
+            Name = name,
+            ActivityType = getActivity,
+            StreamUrl = url
+        }, getStatus);
+
+        BuildInfo.Config.Game = name;
+        BuildInfo.Config.ActivityType = Program.GetActivityAsString(getActivity);
+        BuildInfo.Config.StreamingUrl = url;
+        Configuration.Save();
+
+        var color = status switch {
+            "offline"   => "747F8D",
+            "invisible" => "747F8D",
+            "dnd"       => "ED4245",
+            "idle"      => "FAA81A",
+            "online"    => "3BA55D",
+            _           => "FFFFFF"
+        };
+
+        var changeToStreamColor = activityType == "stream" && status is not ("offline" or "invisible");
+        var changeToCompeteColor = activityType == "compete" && status is not ("offline" or "invisible");
+        if (changeToStreamColor) color = "593695";
+        if (changeToCompeteColor) color = "C69164";
+        
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle("Changed Status");
+        e.WithColor(Colors.HexToColor(color));
+        e.WithDescription($"Game: {name}\nActivityType: {Program.GetActivityAsString(getActivity)}\n{(string.IsNullOrWhiteSpace(url) ? "" : $"Stream URL: {url}")}");
+        e.WithFooter(FooterText());
+        await c.RespondAsync(e.Build());
     }
+    
+    
 }
 
 // public class RequireUserIdAttribute : SlashCheckBaseAttribute {
@@ -115,7 +180,7 @@ public class SlashOwner : ApplicationCommandModule {
             _ => "FFFFFF"
         };
 
-        var changeToStreamColor = activityType == "stream" && userStatus is not ("off" and "in");
+        var changeToStreamColor = activityType == "stream" && userStatus is not ("off" or "in");
         
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Changed Status");

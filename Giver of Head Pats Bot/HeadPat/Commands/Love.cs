@@ -64,6 +64,8 @@ public class Love : BaseCommandModule {
             return;
         }
         
+        var isOwner = c.Message.Author.Id == BuildInfo.Config.OwnerUserId;
+        
         var rnd1 = new Random();
         var num1 = rnd1.Next(0, 1);
 
@@ -76,10 +78,37 @@ public class Love : BaseCommandModule {
 
         var yes = !string.IsNullOrWhiteSpace(extraText) && extraText.Contains('%');
         var special = num == 3 ? 2 : 1;
-        var patAmount = yes ? int.Parse(extraText!.Split('%')[1]) : special;
+        var patAmount = yes && isOwner ? int.Parse(extraText!.Split('%')[1]) : special;
         
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
             $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{getUserIdFromMention}>", "headpats", patAmount);
+        Logger.Log($"Total Pat amount Given: {patAmount}");
+    }
+    
+    [Command("pat"), Description("Give headpats to a specified user via user ID.")]
+    public async Task GivePat(cc c, ulong mentionedUser = 0, [RemainingText]string? extraText = null) {
+        if (mentionedUser == 0) {
+            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}pat [UserID]`");
+            return;
+        }
+
+        var isOwner = c.Message.Author.Id == BuildInfo.Config.OwnerUserId;
+        
+        var rnd1 = new Random();
+        var num1 = rnd1.Next(0, 1);
+
+        var neko = num1 == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
+        
+        var rnd = new Random();
+        var num = rnd.Next(0, 3);
+        var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
+
+        var yes = !string.IsNullOrWhiteSpace(extraText) && extraText.Contains('%');
+        var special = num == 3 ? 2 : 1;
+        var patAmount = yes && isOwner ? int.Parse(extraText!.Split('%')[1]) : special;
+        
+        await OutputBaseCommand(c, mentionedUser.ToString(), neko?.Result.ImageUrl, outputs[num],
+            $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{mentionedUser}>", "headpats", patAmount);
         Logger.Log($"Total Pat amount Given: {patAmount}");
     }
     

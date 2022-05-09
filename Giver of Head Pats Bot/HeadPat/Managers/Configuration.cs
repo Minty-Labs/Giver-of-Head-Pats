@@ -4,6 +4,7 @@ namespace HeadPats.Managers;
 
 public class Config {
     public string Token { get; set; } = "";
+    [JsonProperty("OwnerUserID")] public ulong OwnerUserId { get; set; } = 0;
     public string Prefix { get; set; } = "-";
     public string ActivityType { get; set; } = "Watching";
     public string Game { get; set; } = "the rain";
@@ -18,6 +19,7 @@ public static class Configuration {
         if (File.Exists($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json")) return;
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json", JsonConvert.SerializeObject(new Config {
             Token = "",
+            OwnerUserId = 0,
             Prefix = "-",
             ActivityType = "Watching",
             Game = "the rain",
