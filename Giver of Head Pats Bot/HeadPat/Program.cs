@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
@@ -14,15 +15,17 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-059";
-    public const string DSharpVer = "4.3.0-nightly-01129";
+    public const string Version = "4.0.73";
+    public const string DSharpVer = "4.3.0-nightly-01130";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 821768206871167016;
 #if DEBUG
     private static readonly DateTime ShortBuildDate = DateTime.Now;
+    public static bool IsDebug = true;
 #elif !DEBUG
     private static readonly DateTime ShortBuildDate = new(2022, 4, 25, 0, 0, 00); // (year, month, day, hour, min, sec)
+    public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
     public static string BuildDate = $"Last Updated: {BuildDateShort}";
@@ -131,6 +134,8 @@ public sealed class Program {
             db.Overall.Add(overall);
             await db.SaveChangesAsync();
         }
+        
+        Client.UseInteractivity();
         
         ReplyStructure.CreateFile();
             
