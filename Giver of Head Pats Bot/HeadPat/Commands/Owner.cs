@@ -23,6 +23,7 @@ public class Owner : BaseCommandModule {
     [RequireOwner]
     public async Task RegOwner(cc c) {
         var s = Program.Slash;
+        if (s == null) Logger.Log("SlashCommandsExtension is null");
         s?.RegisterCommands<BasicSlashCommands>();
         s?.RegisterCommands<SlashOwner>();
         await c.RespondAsync("Done");
