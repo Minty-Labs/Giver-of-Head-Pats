@@ -1,12 +1,25 @@
-<h1>Giver of Head Pats v4 Rewrite, <i>Discord.JS > DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4 Rewrite, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
-created by <a href="https://mintlily.lgbt/">Lily</a>.
+created by <a href="https://mintlily.lgbt/">Lily</a>. <br>
+Hi, I am the <b>Giver of Head Pats</b>. I am here to give other' head pats, hug, cuddles, and more. I am always expanding in what I can do.
+At the moment you can see what I can do by running the <code>hp!help</code> command. <br>
+I was recently rewritten from Javascript to C#. So if things seem broken or missing from the older version, don't worry, they'll be fixed
+or added in the near future.\nI hope I will be the perfect caregiver for your guild.
 </p>
+
+<h3>Bot Creator Information</h3>
+<p>
+Donate: <a href="https://ko-fi.com/MintLily" target="_blank">https://ko-fi.com/MintLily</a><br>
+<s>Open-Source</s>: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
+Add to Your Guild: <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot" target="_blank">Invite Link</a><br>
+Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link</a><br>
+</p>
+
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01129</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01130</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -44,10 +57,11 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
 ```
 
 <h2>Features</h2>
-<p>Prefix: <code>-</code> (dash / hyphen)<br> Global Command: <code>help</code> is available.</p>
+<p>Prefix: <code>hp!</code><br> Global Command: <code>help</code> is available.</p>
 <h3>Basic Commands</h3>
 <ul>
-    <li>Ping - Shows bot's latency from you <-> discord <-> you.</li>
+    <li>About - Shows a message that describes the bot</li>
+    <li>Ping - Shows bot's latency from you <-> discord <-> you</li>
     <li>Stats - Shows the bot status including server status and bot stats</li>
     <li>FlipCoin - Flip a coin</li>
     <li>InspiroBot - Generates a random inspirational quote created by an AI.</li>
@@ -66,6 +80,7 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
         </ul>
     </li>
 </ul>
+
 <h3>Love Commands</h3>
 <ul>
     <li>Pat - Give headpats to a specified user</li>
@@ -76,9 +91,16 @@ created by <a href="https://mintlily.lgbt/">Lily</a>.
     <li>Lick - Lick a specified user</li>
     <li>Poke - Poke a specified user</li>
 </ul>
+
 <h3>Reply Commands</h3>
+
+```
+* - Requires Permission: ManageMessages
+```
 <ul>
-    <li></li>
+    <li>AddReply - Adds an auto response for the server *</li>
+    <li>RemoveReply - Removes a trigger response by the provided trigger *</li>
+    <li>ListTriggers - Lists the triggers for auto responses</li>
 </ul>
 
 <h2>Developers</h2>
