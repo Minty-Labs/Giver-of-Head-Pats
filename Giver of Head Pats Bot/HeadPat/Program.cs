@@ -15,7 +15,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.73";
+    public const string Version = "4.0.74";
     public const string DSharpVer = "4.3.0-nightly-01130";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";

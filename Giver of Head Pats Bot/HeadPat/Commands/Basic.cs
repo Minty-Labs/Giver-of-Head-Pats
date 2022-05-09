@@ -20,7 +20,7 @@ public class Basic : BaseCommandModule {
     public async Task About(cc c) {
         var e = new DiscordEmbedBuilder();
         e.WithColor(Colors.HexToColor("00ffaa"));
-        e.WithDescription("Hi, I am the **Giver of Head Pats**. I am here to give other\' head pats, hug, cuddles, and more. I am always expanding in what I can do. " +
+        e.WithDescription("Hi, I am the **Giver of Head Pats**. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do. " +
                           $"At the moment you can see what I can do by running the `{BuildInfo.Config.Prefix}help` command.\n" +
                           "I was recently rewritten from Javascript to C#. So if things seem broken or missing from the older version, don't worry, they'll be fixed " +
                           "or added in the near future.\nI hope I will be the perfect caregiver for your guild.");

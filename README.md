@@ -1,9 +1,9 @@
-<h1>Giver of Head Pats v4 Rewrite, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.0.74, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
 created by <a href="https://mintlily.lgbt/">Lily</a>. <br>
-Hi, I am the <b>Giver of Head Pats</b>. I am here to give other' head pats, hug, cuddles, and more. I am always expanding in what I can do.
+Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do.
 At the moment you can see what I can do by running the <code>hp!help</code> command. <br>
 I was recently rewritten from Javascript to C#. So if things seem broken or missing from the older version, don't worry, they'll be fixed
 or added in the near future.\nI hope I will be the perfect caregiver for your guild.
