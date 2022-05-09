@@ -26,11 +26,11 @@ public class Replys : BaseCommandModule {
                            "_**Note:** Use \"Quotations\" to separate the trigger from the response._");
             return;
         }
-        ReplyStructure.AddValue(trigger, response);
+        ReplyStructure.AddValue(trigger, response, false, c.Guild.Id);
         await c.RespondAsync("Saved trigger!");
     }
     
-    [Command("AddReplyGlobal"), Aliases("arg"), Description("Adds an auto response for the server or as a global response")]
+    [Command("AddReply"), Description("Adds an auto response for the server")]
     [RequireOwner]
     public async Task AddReply(cc c, string trigger, string response, string isGlobal) {
         if (string.IsNullOrWhiteSpace(trigger) || string.IsNullOrWhiteSpace(response)) {
@@ -42,8 +42,6 @@ public class Replys : BaseCommandModule {
         var b = isGlobal.ToLower() switch {
             "true" => true,
             "t" => true,
-            "false" => false,
-            "f" => false,
             _ => false
         };
         

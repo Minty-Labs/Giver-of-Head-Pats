@@ -14,7 +14,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.0-049";
+    public const string Version = "4.0.0-059";
     public const string DSharpVer = "4.3.0-nightly-01129";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
@@ -131,6 +131,8 @@ public sealed class Program {
             db.Overall.Add(overall);
             await db.SaveChangesAsync();
         }
+        
+        ReplyStructure.CreateFile();
             
         await Client.ConnectAsync();
 
