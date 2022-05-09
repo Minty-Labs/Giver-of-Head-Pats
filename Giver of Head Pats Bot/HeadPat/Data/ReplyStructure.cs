@@ -1,48 +1,47 @@
 ﻿using HeadPats.Commands;
+using HeadPats.Utils;
 using NekosSharp;
 using Newtonsoft.Json;
 
 namespace HeadPats.Data;
 
 public class ReplyBase {
-    [JsonProperty("ResponsesEnabled")]
-    public bool Enabled { get; set; }
-    
-    [JsonProperty("Replys")]
-    public List<Reply> Replys { get; internal set; }
+    [JsonProperty("Replies")]
+    public List<Reply>? Replies { get; set; }
 }
 
 public class Reply {
+    [JsonProperty("GuildID")]
+    public ulong GuildId { get; set; }
+    
     [JsonProperty("Trigger")]
-    public string Trigger { get; set; }
+    public string? Trigger { get; set; }
     
     [JsonProperty("Response")]
-    public string Response { get; set; }
+    public string? Response { get; set; }
     
-    [JsonProperty("IsGlobal")]
-    public bool IsGlobal { get; set; }
-    
-    [JsonProperty("SendToGuild")]
-    public ulong GuildId { get; set; }
+    [JsonProperty("RequireOnlyTriggerText")]
+    public bool OnlyTrigger { get; set; }
 }
 
 public static class ReplyStructure {
-    public static ReplyBase _ReplyBase { get; private set; } = Load();
+    public static ReplyBase Base { get; set; } = Load();
 
     public static void CreateFile() {
         if (File.Exists($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json")) return;
-        var r = new List<Reply> {
-            new () {
-                Trigger = "creeper",
-                Response = "Awwwww man!",
-                IsGlobal = true,
-                GuildId = 0
+        Base = new ReplyBase {
+            Replies = new List<Reply> {
+                new () {
+                    GuildId = 0,
+                    Trigger = "creeper",
+                    Response = "Awwwww man!",
+                    OnlyTrigger = false
+                }
             }
         };
-        _ReplyBase = new ReplyBase();
-        _ReplyBase.Replys = r;
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
-            JsonConvert.SerializeObject(_ReplyBase, Formatting.Indented));
+            JsonConvert.SerializeObject(Base, Formatting.Indented));
+        Logger.Log("Created Responses JSON");
         Save();
     }
 
@@ -52,30 +51,63 @@ public static class ReplyStructure {
         return j ?? throw new Exception();
     }
 
-    private static void Save() => File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
-        JsonConvert.SerializeObject(_ReplyBase, Formatting.Indented));
+    private static void Save() {
+        File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
+            JsonConvert.SerializeObject(Base, Formatting.Indented));
+        Logger.Log("Saved Responses JSON");
+    }
 
-    public static string GetResponse(string trigger) => _ReplyBase.Replys.FirstOrDefault(x => x.Trigger == trigger)?.Response ?? "No Response";
-    private static bool DoesTriggerExist(string trigger) => _ReplyBase.Replys.FirstOrDefault(x => x.Trigger == trigger)?.Trigger == trigger;
+    public static string GetResponse(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Response ?? "{{NULL}}";
+
+    public static string GetInfo(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.OnlyTrigger.ToString() ?? "{{NULL}}";
     
-    public static string GetIsGlobal(string trigger) => _ReplyBase.Replys.FirstOrDefault(x => x.Trigger == trigger)?.IsGlobal.ToString() ?? "um";
+    private static bool DoesTriggerExist(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Trigger == trigger;
 
-    public static List<string> GetListOfTriggers() => _ReplyBase.Replys.Select(x => x.Trigger).ToList();
+    public static List<string?>? GetListOfTriggers() => Base.Replies?.Select(x => x.Trigger).ToList() ?? null;
 
-    public static void AddValue(string trigger, string response, bool isGlobal = false, ulong guildId = 0) {
-        if (DoesTriggerExist(trigger)) {
+    public static List<Reply>? GetListOfReplies() => Base.Replies ?? null;
+
+    public static List<string> ListOfReplies() {
+        var list = new List<string>();
+        Base.Replies?.ForEach(r => {
+            if (r.Response != null)
+                list.Add(r.Response);
+        });
+        return list;
+    }
+
+    public static void AddValue(ulong guildId, string trigger, string response, bool requireOnlyTriggerText = false) {
+        if (DoesTriggerExist(trigger, guildId)) {
             Logger.Log("Removing duplicate trigger");
-            var itemToRemove = _ReplyBase.Replys.Single(t => string.Equals(t.Trigger, trigger, StringComparison.CurrentCultureIgnoreCase));
-            _ReplyBase.Replys.Remove(itemToRemove);
+            var itemToRemove = Base.Replies?.Single(t => string.Equals(t.Trigger, trigger, StringComparison.CurrentCultureIgnoreCase));
+            if (itemToRemove != null) Base.Replies?.Remove(itemToRemove);
         }
 
         var item = new Reply {
+            GuildId = guildId,
             Trigger = trigger,
             Response = response,
-            IsGlobal = isGlobal,
-            GuildId = guildId
+            OnlyTrigger = requireOnlyTriggerText
         };
-        _ReplyBase.Replys.Add(item);
+        Base.Replies?.Add(item);
+        Save();
+    }
+
+    public static bool ErroredOnRemove;
+    public static Exception? ErroredException;
+
+    public static void RemoveValue(ulong guildId, string trigger) {
+        if (!DoesTriggerExist(trigger, guildId)) return;
+        try {
+            var reply = Base.Replies?.Single(x => x.Trigger == trigger && x.GuildId == guildId);
+
+            if (reply != null)
+                Base.Replies?.Remove(reply);
+        }
+        catch (Exception e) {
+            ErroredOnRemove = true;
+            ErroredException = e;
+        }
         Save();
     }
 }
