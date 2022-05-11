@@ -62,7 +62,7 @@ public class Basic : BaseCommandModule {
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{platform}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{discordNetVer}** \nBot: **v{BuildInfo.Version}** \nMintAPI: **v{mintApiVer}** \nBuild Date: **{BuildInfo.BuildDateShort}**");
-        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **{platform} 11 (Debian GNU)**");
+        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **Debian 11**");
         //e.AddField("Server Info", $"Location: **South Carolina, USA** \nServer: **[Sypher](https://mintlily.lgbt/pc)** \nMax RAM: **32 GB** \nOS: **{platform} 10 (21H1)**");
         
         e.WithTimestamp(DateTime.Now);
@@ -283,7 +283,7 @@ public class BasicSlashCommands : ApplicationCommandModule {
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{platform}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{discordNetVer}** \nBot: **v{BuildInfo.Version}** \nMintAPI: **v{mintApiVer}** \nBuild Date: **{BuildInfo.BuildDateShort}**");
-        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **{platform} 11 (Debian GNU)**");
+        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **Debian 11**");
         //e.AddField("Server Info", $"Location: **South Carolina, USA** \nServer: **[Sypher](https://mintlily.lgbt/pc)** \nMax RAM: **32 GB** \nOS: **{platform} 10 (21H1)**");
         
         e.WithTimestamp(DateTime.Now);
