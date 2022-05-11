@@ -1,0 +1,11 @@
+   Giver of Head Pats
+   not-Copyright 2020 - 2022 Minty Labs
+   
+   This product contains software (https://github.com/LavaGang/MelonLoader) developed
+   by Minty Labs, DSharpPlus, Nekos.life, Microsoft, Andreas Pardeike, Dwayne Richard Hipp, and silkfire
+   licensed under the Apache-2.0 license.
+
+This project is not meant to be forked and self-hosted.
+If you fork and or plan to self-host this project, you are required to do the following:
+i.    Leave Lily, Elly, and all other previous contributors as credit
+ii.   State ALL changes, when and where, of files to the project
