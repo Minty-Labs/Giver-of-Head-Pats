@@ -5,6 +5,9 @@ using DSharpPlus;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using System.Text.RegularExpressions;
+using DSharpPlus.Entities;
+using HeadPats.Utils;
+using EventHandler = HeadPats.Handlers.EventHandler;
 
 namespace HeadPats;
 internal class Logger {
@@ -23,9 +26,7 @@ internal class Logger {
                 else CleanOld(directoryInfo);
             }
 
-            FileStream stream;
-            if (!info.Exists) stream = info.Create();
-            else stream = new FileStream(file, FileMode.Open, FileAccess.Write, FileShare.Read);
+            var stream = !info.Exists ? info.Create() : new FileStream(file, FileMode.Open, FileAccess.Write, FileShare.Read);
 
             _log = new StreamWriter(stream);
             _log.AutoFlush = true;
@@ -36,13 +37,21 @@ internal class Logger {
     
     private static void CleanOld(DirectoryInfo logDirInfo) {
         var files = logDirInfo.GetFiles("*");
-        if (files.Length != 0) {
-            var list = (from x in files.ToList()
-                orderby x.LastWriteTime
-                select x).ToList();
-            for (var i = list.Count - 25; i > -1; i--)
-                list[i].Delete();
-        }
+        if (files.Length == 0) return;
+        var list = (from x in files.ToList()
+            orderby x.LastWriteTime
+            select x).ToList();
+        for (var i = list.Count - 25; i > -1; i--)
+            list[i].Delete();
+    }
+
+    private static void SendLog(object message) {
+        var e = new DiscordEmbedBuilder();
+        e.WithColor(Colors.HexToColor("FF2525"));
+        e.WithDescription(message.ToString());
+        e.WithTimestamp(DateTime.Now);
+
+        Program.Client?.SendMessageAsync(Program.Client?.GetChannelAsync(Program.ErrorLogChannel).GetAwaiter().GetResult(), e.Build()).GetAwaiter().GetResult();
     }
     
     private static void Stop() => _log?.Close();
@@ -59,11 +68,13 @@ internal class Logger {
     public static void Error(string message) {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > {message}".Pastel("ff0000"));
         _log?.WriteLine($"[{GetTimestamp()}] [ERROR] HeadPat > {message}");
+        SendLog(message);
     }
 
     public static void Error(object @object) {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > {@object}".Pastel("ff0000"));
         _log?.WriteLine($"[{GetTimestamp()}] [ERROR] HeadPat > {@object}");
+        SendLog(@object);
     }
     
     public static void CommandNull(string username, string result) {
@@ -147,11 +158,11 @@ internal class Logger {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + $" SOCKET   ".Pastel("#ff9f9f") + $" > {e.Exception}".Pastel("ff0000"));
         await _log?.WriteLineAsync($"[{GetTimestamp()}] SOCKET    > {e.Exception}")!;
         IsInErrorState = true;
-        if (e.Exception.ToString().Contains("Could not connect to Discord") || e.Exception.ToString().Contains("No such host is known.")) {
-            Stop();
-            Process.Start("HeadPatDS.exe");
-            Process.GetCurrentProcess().Kill();
-        }
+        // if (e.Exception.ToString().Contains("Could not connect to Discord") || e.Exception.ToString().Contains("No such host is known.")) {
+        //     Stop();
+        //     Process.Start("HeadPatDS.exe");
+        //     Process.GetCurrentProcess().Kill();
+        // }
     }
     
     private static async Task DiscordClientOnSocketErrored(DiscordClient sender, ClientErrorEventArgs e) {
@@ -162,35 +173,35 @@ internal class Logger {
 
     #endregion
 
-    public static async Task ReadConsoleOutput() {
-        var p = GetProcessAfterStarting("");
-        p!.OutputDataReceived += P_OutputDataReceived;
-        p.EnableRaisingEvents = true;
-        p.BeginOutputReadLine();
-        await p.WaitForExitAsync();
-        p.CancelOutputRead();
-    }
-    
-    private static string[]? patterns = new[] { "Could not connect to Discord", "No such host is known", "discord.com:443", "discord.gg:443" };
-
-    private static void P_OutputDataReceived(object sender, DataReceivedEventArgs e) {
-        if (e.Data == null || patterns == null) return;
-        if (e.Data.Contains(patterns[0]) || e.Data.Contains(patterns[1]) || e.Data.Contains(patterns[2]) || e.Data.Contains(patterns[3])) {
-            Stop();
-            Process.Start("HeadPat.exe");
-            try   { BuildInfo.ThisProcess?.Kill(); }
-            catch { Process.GetCurrentProcess().Kill(); }
-        }
-    }
-    
-    private static Process? GetProcessAfterStarting(string pathToExe) {
-        var process = Process.Start(new ProcessStartInfo {
-            FileName = pathToExe,
-            RedirectStandardInput = true,
-            RedirectStandardOutput = true,
-            CreateNoWindow = false,
-            UseShellExecute = false,
-        });
-        return process;
-    }
+    // public static async Task ReadConsoleOutput() {
+    //     var p = GetProcessAfterStarting("");
+    //     p!.OutputDataReceived += P_OutputDataReceived;
+    //     p.EnableRaisingEvents = true;
+    //     p.BeginOutputReadLine();
+    //     await p.WaitForExitAsync();
+    //     p.CancelOutputRead();
+    // }
+    //
+    // private static string[]? patterns = new[] { "Could not connect to Discord", "No such host is known", "discord.com:443", "discord.gg:443" };
+    //
+    // private static void P_OutputDataReceived(object sender, DataReceivedEventArgs e) {
+    //     if (e.Data == null || patterns == null) return;
+    //     if (e.Data.Contains(patterns[0]) || e.Data.Contains(patterns[1]) || e.Data.Contains(patterns[2]) || e.Data.Contains(patterns[3])) {
+    //         Stop();
+    //         Process.Start("HeadPat.exe");
+    //         try   { BuildInfo.ThisProcess?.Kill(); }
+    //         catch { Process.GetCurrentProcess().Kill(); }
+    //     }
+    // }
+    //
+    // private static Process? GetProcessAfterStarting(string pathToExe) {
+    //     var process = Process.Start(new ProcessStartInfo {
+    //         FileName = pathToExe,
+    //         RedirectStandardInput = true,
+    //         RedirectStandardOutput = true,
+    //         CreateNoWindow = false,
+    //         UseShellExecute = false,
+    //     });
+    //     return process;
+    // }
 }

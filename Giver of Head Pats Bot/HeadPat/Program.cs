@@ -15,7 +15,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.76";
+    public const string Version = "4.0.77";
     public const string DSharpVer = "4.3.0-nightly-01130";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
@@ -24,7 +24,7 @@ public static class BuildInfo {
     private static readonly DateTime ShortBuildDate = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    private static readonly DateTime ShortBuildDate = new(2022, 5, 9, 19, 21, 00); // (year, month, day, hour, min, sec)
+    private static readonly DateTime ShortBuildDate = new(2022, 5, 10, 21, 15, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
@@ -143,6 +143,8 @@ public sealed class Program {
 
         await Task.Delay(-1);
     }
+
+    public static ulong GeneralLogChannel = 973763811293147136, ErrorLogChannel = 973763636361314345;
 
     private async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e) {
         BuildInfo.StartTime = DateTime.Now;
