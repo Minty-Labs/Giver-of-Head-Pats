@@ -74,15 +74,22 @@ public class Replies : BaseCommandModule {
             sb.AppendLine(r.Value);
         }
 
-        var e = new DiscordEmbedBuilder();
-        e.WithTitle("Server's Auto Responses");
-        e.AddField("Legend", legend.ToString());
-        // e.AddField("Responses : Page #1 _(10 per page)_",sb.ToString());
-        e.AddField("Responses _(first 10)_",sb.ToString());
-        e.WithColor(Colors.HexToColor("58A1E0"));
-        e.WithFooter(FooterText());
-        e.WithTimestamp(DateTime.Now);
-        await c.RespondAsync(e.Build());
+        try {
+            var e = new DiscordEmbedBuilder();
+            e.WithTitle("Server's Auto Responses");
+            e.AddField("Legend", legend.ToString());
+            // e.AddField("Responses : Page #1 _(10 per page)_",sb.ToString());
+            e.AddField("Responses _(first 10)_", sb.ToString());
+            e.WithColor(Colors.HexToColor("58A1E0"));
+            e.WithFooter(FooterText());
+            e.WithTimestamp(DateTime.Now);
+            await c.RespondAsync(e.Build());
+        }
+        catch (Exception eeeee) {
+            await c.RespondAsync(
+                "An error has occured listing the server's aut responses, I bet the character limit of 2000 was exceeded.");
+            Logger.SendLog(eeeee);
+        }
 
         // var options = new List<DiscordSelectComponentOption>() {
         //     new DiscordSelectComponentOption("Page 2", "page_2"),
