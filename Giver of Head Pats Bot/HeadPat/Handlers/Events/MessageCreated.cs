@@ -13,6 +13,7 @@ public class MessageCreated {
 
     private async Task GetAndMaybeRespondToTrigger(DiscordClient sender, MessageCreateEventArgs e) {
         var contents = e.Message.Content;
+        if (e.Author.IsBot) return;
 
         if (ReplyStructure.Base.Replies != null) {
             foreach (var t in ReplyStructure.Base.Replies.Where(t => t.Trigger != null)) {
