@@ -45,13 +45,13 @@ internal class Logger {
             list[i].Delete();
     }
 
-    private static void SendLog(object message) {
+    public static void SendLog(object message) {
         var e = new DiscordEmbedBuilder();
         e.WithColor(Colors.HexToColor("FF2525"));
         e.WithDescription(message.ToString());
         e.WithTimestamp(DateTime.Now);
 
-        Program.Client?.SendMessageAsync(Program.Client?.GetChannelAsync(Program.ErrorLogChannel).GetAwaiter().GetResult(), e.Build()).GetAwaiter().GetResult();
+        Program.Client?.SendMessageAsync(Program.ErrorLogChannel, e.Build()).GetAwaiter().GetResult();
     }
     
     private static void Stop() => _log?.Close();

@@ -33,9 +33,7 @@ public class OnBotJoinOrLeave {
         em.AddField("Features", $"{sbf}");
         em.WithThumbnail(e.Guild.IconUrl);
 
-        var ch = await sender.GetChannelAsync(Program.GeneralLogChannel);
-
-        await sender.SendMessageAsync(ch, em.Build());
+        await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
     }
 
     private async Task OnJoinGuild(DiscordClient sender, GuildCreateEventArgs e) {
@@ -57,8 +55,6 @@ public class OnBotJoinOrLeave {
         em.AddField("Features", $"{sbf}");
         em.WithThumbnail(e.Guild.IconUrl);
 
-        var ch = await sender.GetChannelAsync(Program.GeneralLogChannel);
-
-        await sender.SendMessageAsync(ch, em.Build());
+        await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
     }
 }

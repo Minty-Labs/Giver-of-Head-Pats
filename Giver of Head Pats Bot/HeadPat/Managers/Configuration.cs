@@ -7,8 +7,12 @@ public class Config {
     [JsonProperty("OwnerUserID")] public ulong OwnerUserId { get; set; } = 0;
     public string Prefix { get; set; } = "-";
     public string ActivityType { get; set; } = "Watching";
-    public string Game { get; set; } = "the rain";
+    public string Game { get; set; } = "all the cuties";
     public string StreamingUrl { get; set; } = "";
+
+    [JsonProperty("GeneralLogChannelID")] public ulong GeneralLogChannelId { get; set; } = 0;
+
+    [JsonProperty("ErrorLogChannelID")] public ulong ErrorLogChannelId { get; set; } = 0;
 }
 
 public static class Configuration {
@@ -22,8 +26,10 @@ public static class Configuration {
             OwnerUserId = 0,
             Prefix = "-",
             ActivityType = "Watching",
-            Game = "the rain",
-            StreamingUrl = ""
+            Game = "all the cuties",
+            StreamingUrl = "",
+            GeneralLogChannelId = 0,
+            ErrorLogChannelId = 0
         }));
         Save();
     }
