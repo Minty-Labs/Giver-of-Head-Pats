@@ -1,7 +1,4 @@
-﻿using HeadPats.Commands;
-using HeadPats.Utils;
-using NekosSharp;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace HeadPats.Data;
 

@@ -14,7 +14,7 @@ public class Basic : BaseCommandModule {
     public Basic() => Logger.Loadodule("BasicCommands");
     
     private string FooterText(string extra = "")
-        => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
+        => $"{BuildInfo.Name} (v{BuildInfo.Version}){(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
 
     [Command("About"), Description("Shows a message that describes the bot")]
     public async Task About(cc c) {

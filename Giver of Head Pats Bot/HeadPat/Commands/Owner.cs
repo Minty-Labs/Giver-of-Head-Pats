@@ -96,8 +96,10 @@ public class Owner : BaseCommandModule {
     [Command("Guilds"), Aliases("listguilds", "lg"), Description("Lists all guilds the bot is in. [Owner]")]
     [RequireOwner]
     public async Task ListGuilds(cc c) {
+        var guilds = c.Client.Guilds;
         var sb = new StringBuilder();
-        foreach (var g in c.Client.Guilds) {
+        sb.AppendLine($"Guild Count: {guilds.Count}");
+        foreach (var g in guilds) {
             sb.AppendLine(g.Value.Name);
             sb.AppendLine(g.Key.ToString());
             sb.AppendLine();
