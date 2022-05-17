@@ -55,97 +55,41 @@ public class Replies : BaseCommandModule {
     }
 
     [Command("ListTriggers"), Aliases("lr", "listreplies", "listreplys"), Description("Lists the triggers for auto responses")]
-    public async Task ListTriggers(cc c, string start = "1", string end = "10") {
+    public async Task ListTriggers(cc c) {
         var legend = new StringBuilder();
-        legend.AppendLine("**Trigger**");
-        legend.AppendLine("Response");
-        legend.AppendLine("Respond only to the trigger alone");
-
-        ReplyDic = GetResponseListPerPage(c, int.Parse(start), int.Parse(end));
-
-        // var interactivity = c.Client.GetInteractivity();
-        // var buttonPrev = new DiscordButtonComponent(ButtonStyle.Primary, "response_previous_page", null, 
-        //     true, new DiscordComponentEmoji("⏪"));
-        // var buttonNext = new DiscordButtonComponent(ButtonStyle.Primary, "response_next_page", null, 
-        //     true, new DiscordComponentEmoji("⏩"));
-
-        var sb = new StringBuilder();
-        foreach (var r in ReplyDic) {
-            sb.AppendLine(r.Value);
-        }
-
-        try {
-            var e = new DiscordEmbedBuilder();
-            e.WithTitle("Server's Auto Responses");
-            e.AddField("Legend", legend.ToString());
-            // e.AddField("Responses : Page #1 _(10 per page)_",sb.ToString());
-            e.AddField("Responses _(first 10)_", sb.ToString());
-            e.WithColor(Colors.HexToColor("58A1E0"));
-            e.WithFooter(FooterText());
-            e.WithTimestamp(DateTime.Now);
-            await c.RespondAsync(e.Build());
-        }
-        catch (Exception eeeee) {
-            await c.RespondAsync(
-                "An error has occured listing the server's aut responses, I bet the character limit of 2000 was exceeded.");
-            Logger.SendLog(eeeee);
-        }
-
-        // var options = new List<DiscordSelectComponentOption>() {
-        //     new DiscordSelectComponentOption("Page 2", "page_2"),
-        //     new DiscordSelectComponentOption("Page 1", "page_1", null, true)
-        // };
-        //
-        // var drop = new DiscordSelectComponent("dropdown_page_select", null, options, false, 1, 2);
-        //
-        // var builder = new DiscordMessageBuilder();
-        // builder.WithEmbed(e.Build());
-        // builder.AddComponents(/*buttonPrev, buttonNext, */drop);
-        // await builder.SendAsync(c.Message.Channel);
-
-        // var m = await c.RespondAsync(builder);
-        //
-        // var result = await interactivity.WaitForButtonAsync(m, "response_next_page", CancellationToken.None);
-        //
-        // if (!result.TimedOut) await c.Client.SendMessageAsync(c.Message.Channel, "Yes");
-        //
-        // c.Client.ComponentInteractionCreated += async (s, args) => {
-        //     
-        //     //await m.ModifyAsync();
-        // };
-    }
-
-    #region List Reply Dictionary Stuff
-
-    private Dictionary<int, string> ReplyDic;
-
-    private static Dictionary<int, string> GetResponseListPerPage(cc c, int startIndex, int endIndex) {
         var list = ReplyStructure.GetListOfReplies();
         var triggers = new StringBuilder();
-        var dic = new Dictionary<int, string>();
-        var num = 0;
-        if (list == null) return new Dictionary<int, string>();
-        
-        foreach (var t in list) {
-            //if (num.IsInRange(1, 15)) break;
-            var r = ReplyStructure.GetResponse(t.Trigger, c.Guild.Id);
-            var i = ReplyStructure.GetInfo(t.Trigger, c.Guild.Id);
+        legend.AppendLine("Trigger");
+        legend.AppendLine("Response");
+        legend.AppendLine("Respond only to the trigger alone");
+        legend.AppendLine("==============================================================================");
 
-            triggers.AppendLine($"**{t.Trigger}**");
-            triggers.AppendLine(r);
-            triggers.AppendLine(i);
-            triggers.AppendLine();
+        if (list != null) {
+            foreach (var t in list) {
+                var r = ReplyStructure.GetResponse(t.Trigger, c.Guild.Id);
+                var i = ReplyStructure.GetInfo(t.Trigger, c.Guild.Id);
 
-            //num++;
-            dic.Add(num++, triggers.ToString());
+                triggers.AppendLine(t.Trigger);
+                triggers.AppendLine(r);
+                triggers.AppendLine(i);
+                triggers.AppendLine();
+            }
         }
 
-        dic = dic.OrderBy(d => d.Key).Skip(startIndex).Take(endIndex - startIndex + 1)
-            .ToDictionary(k => k.Key, v => v.Value);
+        using var ms = new MemoryStream();
+        await using var sw = new StreamWriter(ms);
+        await sw.WriteLineAsync($"Triggers for {c.Guild.Name} ({c.Guild.Id})");
+        await sw.WriteLineAsync();
+        await sw.WriteLineAsync("-=- Legend -=-");
+        await sw.WriteLineAsync(legend.ToString());
+        await sw.WriteLineAsync();
+        await sw.WriteLineAsync(triggers.ToString());
+        
+        await sw.FlushAsync();
+        ms.Seek(0, SeekOrigin.Begin);
 
-        return dic;
+        var builder = new DiscordMessageBuilder();
+        builder.WithFile("Responses.txt", ms);
+        await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
-
-    #endregion
-    
 }
