@@ -17,6 +17,7 @@ public class MessageCreated {
 
         if (ReplyStructure.Base.Replies != null) {
             foreach (var t in ReplyStructure.Base.Replies.Where(t => t.Trigger != null)) {
+                if (e.Channel.IsPrivate) return;
                 if (t.GuildId != e.Guild.Id) continue;
                 
                 if (contents.Equals(t.Trigger) && t.OnlyTrigger) 

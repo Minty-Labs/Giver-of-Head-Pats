@@ -16,7 +16,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.81";
+    public const string Version = "4.0.82";
     public const string DSharpVer = "4.3.0-nightly-01134";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
@@ -25,7 +25,7 @@ public static class BuildInfo {
     private static readonly DateTime ShortBuildDate = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    private static readonly DateTime ShortBuildDate = new(2022, 5, 16, 23, 05, 00); // (year, month, day, hour, min, sec)
+    private static readonly DateTime ShortBuildDate = new(2022, 5, 18, 17, 14, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
@@ -109,6 +109,8 @@ public sealed class Program {
 
         Commands = Client.UseCommandsNext(commandsNextConfiguration);
         Slash = Client.UseSlashCommands();
+        
+        Commands.SetHelpFormatter<HelpFormatter>();
 
         Managers.Commands.Register(Commands);
         Commands.CommandExecuted += Commands_CommandExecuted;
@@ -182,20 +184,20 @@ public sealed class Program {
     }
 
     private Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
-        Logger.CommandExecuted(e.Command.Name, e.Context.Message.Author.Username, e.Context.Guild.Name);
+        Logger.CommandExecuted(e.Command.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name);
         return Task.CompletedTask;
     }
 
     private Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e) {
-        if (e.Command == null)
-            Logger.CommandNull(e.Context.Member!.Username, e.Context.Message.Content);
+        if (e.Command == null && e.Context.Member != null)
+            Logger.CommandNull(e.Context.Member.Username, e.Context.Message.Content);
         else
-            Logger.CommandErrored(e.Command.Name, e.Context.Message.Author.Username, e.Context.Guild.Name, e.Exception);
+            Logger.CommandErrored(e.Command!.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception);
         return Task.CompletedTask;
     }
 
     private Task Slash_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e) {
-        Logger.CommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Guild.Name, e.Exception, true);
+        Logger.CommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception, true);
         return Task.CompletedTask;
     }
     
