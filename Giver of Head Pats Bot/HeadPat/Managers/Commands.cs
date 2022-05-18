@@ -10,6 +10,7 @@ internal static class Commands {
         //c?.RegisterCommands<Nsfw>();
         c?.RegisterCommands<Owner>();
         c?.RegisterCommands<Replies>();
+        c?.RegisterCommands<Contributors>();
     }
 
     public static void Register(SlashCommandsExtension? s) {
