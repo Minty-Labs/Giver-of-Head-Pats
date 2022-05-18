@@ -38,7 +38,7 @@ public static class ReplyStructure {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created Responses JSON");
+        Logger.Log("Created Responses JSON: Replies");
         Save();
     }
 
@@ -51,7 +51,7 @@ public static class ReplyStructure {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Saved Responses JSON");
+        Logger.Log("Saved Responses JSON: Replies");
     }
 
     public static string GetResponse(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Response ?? "{{NULL}}";
@@ -90,8 +90,8 @@ public static class ReplyStructure {
         Save();
     }
 
-    public static bool ErroredOnRemove;
-    public static Exception? ErroredException;
+    public static bool ErroredOnRemove { get; set; }
+    public static Exception? ErroredException { get; set; }
 
     public static void RemoveValue(ulong guildId, string trigger) {
         if (!DoesTriggerExist(trigger, guildId)) return;
@@ -104,6 +104,7 @@ public static class ReplyStructure {
         catch (Exception e) {
             ErroredOnRemove = true;
             ErroredException = e;
+            Logger.SendLog(e);
         }
         Save();
     }

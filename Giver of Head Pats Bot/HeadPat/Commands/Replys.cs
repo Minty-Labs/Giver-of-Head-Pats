@@ -1,15 +1,9 @@
-﻿using System.Globalization;
-using System.IO.Compression;
-using System.Text;
+﻿using System.Text;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using DSharpPlus.Interactivity.Extensions;
-using DSharpPlus.SlashCommands;
-using Emzi0767;
 using HeadPats.Data;
-using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 
@@ -54,7 +48,7 @@ public class Replies : BaseCommandModule {
         ReplyStructure.ErroredOnRemove = false;
     }
 
-    [Command("ListTriggers"), Aliases("lr", "listreplies", "listreplys"), Description("Lists the triggers for auto responses")]
+    [Command("ListTriggers"), Aliases("lr", "lt", "listreplies", "listreplys"), Description("Lists the triggers for auto responses")]
     public async Task ListTriggers(cc c) {
         var legend = new StringBuilder();
         var list = ReplyStructure.GetListOfReplies();
