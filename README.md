@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.0.81, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.0.82, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -61,6 +61,9 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
 <h3>Basic Commands</h3>
 <ul>
     <li>About - Shows a message that describes the bot</li>
+    <li>Support - Sends a DM to invite user to the Support Guild</li>
+    <li>Invite - Sends a DM to invite the bot to a server</li>
+    <li>ListContributors - Lists the Contributors of the bot</li>
     <li>Ping - Shows bot's latency from you <-> discord <-> you</li>
     <li>Stats - Shows the bot status including server status and bot stats</li>
     <li>FlipCoin - Flip a coin</li>
@@ -73,7 +76,7 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
     <li>Cry - Summon a picture of GIF of a crying post</li>
     <li>TopPat - Shows the leaderbord for most headpats</li>
     <br>
-    <li>Slash Commands
+    <li>Slash Commands (if they want to work)
         <ul>
             <li>Ping</li>
             <li>Stats</li>
