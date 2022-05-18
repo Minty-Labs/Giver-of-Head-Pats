@@ -16,7 +16,7 @@ public class Basic : BaseCommandModule {
     private string FooterText(string extra = "")
         => $"{BuildInfo.Name} (v{BuildInfo.Version}){(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
 
-    [Command("About"), Description("Shows a message that describes the bot")]
+    [Command("About"), Aliases("info"), Description("Shows a message that describes the bot")]
     public async Task About(cc c) {
         var e = new DiscordEmbedBuilder();
         e.WithColor(Colors.HexToColor("00ffaa"));
@@ -35,6 +35,40 @@ public class Basic : BaseCommandModule {
         e.WithThumbnail(u.AvatarUrl);
         e.WithAuthor("MintLily#0001", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily_Art_Headshot_pfp_x1024.png");
         await c.RespondAsync(e.Build());
+    }
+
+    [Command("Support"), Description("Sends a DM for a  server invite link to the bot support server")]
+    public async Task Support(cc c) {
+        await c.Message.DeleteAsync();
+        var message = new DiscordMessageBuilder();
+        message.WithContent("Need support or have questions? Join the **Giver of Head Pats** Discord support guild:\n  https://discord.gg/98JExhF");
+        var member = await c.Guild.GetMemberAsync(c.Message.Author.Id);
+        try {
+            var dm = await member.CreateDmChannelAsync();
+            await dm.SendMessageAsync(message);
+        }
+        catch (Exception ee) {
+            Logger.SendLog($"{c.Message.Author.Username}#{c.Message.Author.Discriminator} in guild: {c.Guild.Name} ({c.Guild.Id})," +
+                           $" ran the command {BuildInfo.Config.Prefix}support\nUser probably had DM disabled.\n" +
+                           $"```\n{ee}```");
+        }
+    }
+
+    [Command("Invite"), Aliases("i"), Description("Sends a DM to invite the bot to a server")]
+    public async Task Invite(cc c) {
+        await c.Message.DeleteAsync();
+        var message = new DiscordMessageBuilder();
+        message.WithContent("Want to invite me to your guild? Add me here:\n  https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot");
+        var member = await c.Guild.GetMemberAsync(c.Message.Author.Id);
+        try {
+            var dm = await member.CreateDmChannelAsync();
+            await dm.SendMessageAsync(message);
+        }
+        catch (Exception ee) {
+            Logger.SendLog($"{c.Message.Author.Username}#{c.Message.Author.Discriminator} in guild: {c.Guild.Name} ({c.Guild.Id})," +
+                           $" ran the command {BuildInfo.Config.Prefix}invite\nUser probably had DM disabled.\n" +
+                           $"```\n{ee}```");
+        }
     }
     
     [Command("ping"), Description("Shows bot's latency from you <-> discord <-> you.")]
