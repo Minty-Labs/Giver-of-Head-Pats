@@ -14,7 +14,7 @@ internal static class Commands {
     }
 
     public static void Register(SlashCommandsExtension? s) {
-        s?.RegisterCommands<BasicSlashCommands>();
+        //s?.RegisterCommands<BasicSlashCommands>();
         s?.RegisterCommands<SlashOwner>();
         s?.RegisterCommands<LoveSlash>();
     }

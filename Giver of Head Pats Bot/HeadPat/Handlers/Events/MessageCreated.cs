@@ -21,10 +21,10 @@ public class MessageCreated {
                 if (t.GuildId != e.Guild.Id) continue;
                 
                 if (contents.Equals(t.Trigger) && t.OnlyTrigger) 
-                    await sender.SendMessageAsync(e.Channel, t.Response);
+                    await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
                 
                 else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
-                    await sender.SendMessageAsync(e.Channel, t.Response);
+                    await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
             }
         }
     }
