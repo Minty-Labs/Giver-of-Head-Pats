@@ -16,16 +16,16 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.0.82";
-    public const string DSharpVer = "4.3.0-nightly-01134";
+    public const string Version = "4.1.0";
+    public const string DSharpVer = "4.3.0-nightly-01135";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
-    public const ulong ClientId = 821768206871167016;
+    public const ulong ClientId = 489144212911030304;
 #if DEBUG
     private static readonly DateTime ShortBuildDate = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    private static readonly DateTime ShortBuildDate = new(2022, 5, 18, 17, 14, 00); // (year, month, day, hour, min, sec)
+    private static readonly DateTime ShortBuildDate = new(2022, 5, 21, 16, 57, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
@@ -103,7 +103,7 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix },
+            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix, "-" },
             EnableDefaultHelp = true
         };
 
