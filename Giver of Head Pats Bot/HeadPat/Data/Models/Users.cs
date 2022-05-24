@@ -41,8 +41,7 @@ public static class UserControl {
             if (checkGuild == null) {
                 var newGuild = new Guilds {
                     GuildId = guildToAddPatTo,
-                    PatCount = numberOfPats,
-                    AutoResponses = false
+                    PatCount = numberOfPats
                 };
                 db.Guilds.Add(newGuild);
             }
