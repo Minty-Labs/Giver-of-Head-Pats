@@ -27,8 +27,9 @@ public class IsAdminOrMod : CheckBaseAttribute {
 
 public class IsOnList : CheckBaseAttribute {
     public override Task<bool> ExecuteCheckAsync(cc c, bool yes) {
-        var IsOnList = ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.None ||
-                             ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.None;
+        var IsOnList = ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.Admin ||
+                       ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.Mod ||
+                       ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.None;
         return Task.FromResult(IsOnList);
     }
 }
