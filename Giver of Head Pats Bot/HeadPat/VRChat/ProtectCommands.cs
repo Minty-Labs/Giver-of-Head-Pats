@@ -191,12 +191,8 @@ public class ProtectCommands : BaseCommandModule {
             return;
         }
         var uId = ulong.Parse(userId);
-        ProtectStructure.AddUser(userName, uId, GetRole(role.ToLower()));
-        if (!string.IsNullOrWhiteSpace(ProtectStructure.AddedUserResponseString))
-            await c.RespondAsync(ProtectStructure.AddedUserResponseString);
-        else
-            await c.RespondAsync($"Added {userName} as {role}.");
-        ProtectStructure.AddedUserResponseString = string.Empty;
+        
+        await ProtectStructure.AddUser(c, userName, uId, GetRole(role.ToLower()));
     }
     
     [Command("AddUser")]
@@ -206,12 +202,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Incorrect format. Usage: `{BuildInfo.Config.Prefix}adduser [@User] [role]`");
             return;
         }
-        ProtectStructure.AddUser(user.Username, user.Id, GetRole(role.ToLower()));
-        if (!string.IsNullOrWhiteSpace(ProtectStructure.AddedUserResponseString))
-            await c.RespondAsync(ProtectStructure.AddedUserResponseString);
-        else
-            await c.RespondAsync($"Added {user.Username} as {role}.");
-        ProtectStructure.AddedUserResponseString = string.Empty;
+        
+        await ProtectStructure.AddUser(c, user.Username, user.Id, GetRole(role.ToLower()));
     }
     
     [Command("AddUser")]
@@ -222,12 +214,8 @@ public class ProtectCommands : BaseCommandModule {
             return;
         }
         var user = await c.Guild.GetMemberAsync(ulong.Parse(userId.Replace("<@", "").Replace(">", "")));
-        ProtectStructure.AddUser(user.Username, user.Id, GetRole(role.ToLower()));
-        if (!string.IsNullOrWhiteSpace(ProtectStructure.AddedUserResponseString))
-            await c.RespondAsync(ProtectStructure.AddedUserResponseString);
-        else
-            await c.RespondAsync($"Added {user.Username} as {role}.");
-        ProtectStructure.AddedUserResponseString = string.Empty;
+        
+        await ProtectStructure.AddUser(c, user.Username, user.Id, GetRole(role.ToLower()));
     }
 
     [Command("RemoveUser"), Description("Remove a user from the be able to edit the protect list.")]
@@ -237,8 +225,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide a UserID. Usage: `{BuildInfo.Config.Prefix}removeuser [UserID]`");
             return;
         }
-        ProtectStructure.RemoveUser(ulong.Parse(userId));
-        await c.RespondAsync("Removed user.");
+        
+        await ProtectStructure.RemoveUser(c, ulong.Parse(userId));
     }
 
     [Command("AddMod"), Description("Add a mod name to the blacklist")]
@@ -248,8 +236,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide a mod name. Usage: `{BuildInfo.Config.Prefix}addmod [name]`");
             return;
         }
-        ProtectStructure.AddMod(name);
-        await c.RespondAsync($"Added {name} to the blacklist.");
+        
+        await ProtectStructure.AddMod(c, name);
     }
     
     [Command("RemoveMod"), Description("Remove a mod name from the blacklist")]
@@ -259,8 +247,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide a mod name. Usage: `{BuildInfo.Config.Prefix}removemod [name]`");
             return;
         }
-        ProtectStructure.RemoveMod(name);
-        await c.RespondAsync($"Removed {name} from the blacklist.");
+        
+        await ProtectStructure.RemoveMod(c, name);
     }
     
     [Command("AddAuthor"), Description("Add a author name to the blacklist")]
@@ -270,8 +258,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide an author name. Usage: `{BuildInfo.Config.Prefix}removeauthor [author]`");
             return;
         }
-        ProtectStructure.AddAuthor(author);
-        await c.RespondAsync($"Added {author} to the blacklist.");
+        
+        await ProtectStructure.AddAuthor(c, author);
     }
     
     [Command("RemoveAuthor"), Description("Remove a author name from the blacklist")]
@@ -281,8 +269,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide an author name. Usage: `{BuildInfo.Config.Prefix}removeauthor [author]`");
             return;
         }
-        ProtectStructure.RemoveAuthor(author);
-        await c.RespondAsync($"Removed {author} from the blacklist.");
+        
+        await ProtectStructure.RemoveAuthor(c, author);
     }
     
     [Command("AddPlugin"), Description("Add a plugin name to the blacklist")]
@@ -292,8 +280,8 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide a plugin name. Usage: `{BuildInfo.Config.Prefix}addplugin [plugin]`");
             return;
         }
-        ProtectStructure.AddPlugin(plugin);
-        await c.RespondAsync($"Added {plugin} to the blacklist.");
+        
+        await ProtectStructure.AddPlugin(c, plugin);
     }
     
     [Command("RemovePlugin"), Description("Remove a plugin name from the blacklist")]
@@ -303,7 +291,7 @@ public class ProtectCommands : BaseCommandModule {
             await c.RespondAsync($"Please provide a plugin name. Usage: `{BuildInfo.Config.Prefix}removeplugin [plugin]`");
             return;
         }
-        ProtectStructure.RemovePlugin(plugin);
-        await c.RespondAsync($"Removed {plugin} from the blacklist.");
+        
+        await ProtectStructure.RemovePlugin(c, plugin);
     }
 }

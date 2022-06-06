@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using cc = DSharpPlus.CommandsNext.CommandContext;
 
 namespace HeadPats.VRChat;
 public class BaseProtection {
@@ -102,12 +103,15 @@ internal static class ProtectStructure {
     
     private static bool DoesUserExist(ulong userId) => Base.Users?.FirstOrDefault(x => x.UserId == userId)?.UserId == userId;
     
-    public static string? AddedUserResponseString;
+    private static bool DoesModExist(string modName) => Base.ModNames?.FirstOrDefault(x => x == modName.ToLower())?.ToString() == modName.ToLower();
     
-    public static void AddUser(string userName, ulong userId, Roles role) {
+    private static bool DoesAuthorExist(string authorName) => Base.AuthorNames?.FirstOrDefault(x => x == authorName.ToLower())?.ToString() == authorName.ToLower();
+    
+    private static bool DoesPluginExist(string pluginName) => Base.PluginNames?.FirstOrDefault(x => x == pluginName.ToLower())?.ToString() == pluginName.ToLower();
+
+    public static async Task AddUser(cc c, string userName, ulong userId, Roles role) {
         if (DoesUserExist(userId)) {
-            Logger.Log("User already exists.");
-            AddedUserResponseString = "User already exists.";
+            await c.RespondAsync("User already exists.");
             return;
         }
 
@@ -117,14 +121,18 @@ internal static class ProtectStructure {
             Role = role
         };
         Base.Users?.Add(item);
+        await c.RespondAsync($"Added {userName} as {role}.");
         Save();
     }
     
     public static bool ErroredOnRemove { get; set; }
     public static Exception? ErroredException { get; set; }
     
-    public static void RemoveUser(ulong userId) {
-        if (!DoesUserExist(userId)) return;
+    public static async Task RemoveUser(cc c, ulong userId) {
+        if (!DoesUserExist(userId)) {
+            await c.RespondAsync("Cannot remove user that does not exists.");
+            return;
+        }
         try {
             var user = Base.Users?.Single(x => x.UserId == userId);
 
@@ -138,32 +146,56 @@ internal static class ProtectStructure {
         Save();
     }
     
-    public static void AddMod(string modName) {
+    public static async Task AddMod(cc c, string modName) {
+        if (DoesModExist(modName)) {
+            await c.RespondAsync("Mod already exists.");
+            return;
+        }
         Base.ModNames?.Add(modName);
         Save();
     }
     
-    public static void RemoveMod(string modName) {
+    public static async Task RemoveMod(cc c, string modName) {
+        if (!DoesModExist(modName)) {
+            await c.RespondAsync("Cannot remove mod that does not exists.");
+            return;
+        }
         Base.ModNames?.Remove(modName);
         Save();
     }
 
-    public static void AddAuthor(string authorName) {
+    public static async Task AddAuthor(cc c, string authorName) {
+        if (DoesAuthorExist(authorName)) {
+            await c.RespondAsync("Author already exists.");
+            return;
+        }
         Base.AuthorNames?.Add(authorName);
         Save();
     }
     
-    public static void RemoveAuthor(string authorName) {
+    public static async Task RemoveAuthor(cc c, string authorName) {
+        if (!DoesAuthorExist(authorName)) {
+            await c.RespondAsync("Cannot remove author that does not exists.");
+            return;
+        }
         Base.AuthorNames?.Remove(authorName);
         Save();
     }
 
-    public static void AddPlugin(string pluginName) {
+    public static async Task AddPlugin(cc c, string pluginName) {
+        if (DoesPluginExist(pluginName)) {
+            await c.RespondAsync("Plugin already exists.");
+            return;
+        }
         Base.PluginNames?.Add(pluginName);
         Save();
     }
     
-    public static void RemovePlugin(string pluginName) {
+    public static async Task RemovePlugin(cc c, string pluginName) {
+        if (!DoesPluginExist(pluginName)) {
+            await c.RespondAsync("Cannot remove plugin that does not exists.");
+            return;
+        }
         Base.PluginNames?.Remove(pluginName);
         Save();
     }
