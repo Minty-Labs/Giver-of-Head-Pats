@@ -11,9 +11,11 @@ namespace HeadPats.Commands;
 
 public class Replies : BaseCommandModule {
     public Replies() => Logger.Loadodule("Replies");
-    
-    private string FooterText(string extra = "")
-        => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
+
+    private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
+        em.WithTimestamp(DateTime.Now);
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+    }
 
     [Command("AddReply"), Aliases("ar"), Description("Adds an auto response for the server")]
     [RequirePermissions(Permissions.ManageMessages)]
@@ -28,6 +30,8 @@ public class Replies : BaseCommandModule {
         var b = requireOnlyTriggerText.ToLower() switch {
             "true" => true,
             "t" => true,
+            "yes" => true,
+            "y" => true,
             _ => false
         };
         

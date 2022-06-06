@@ -12,9 +12,11 @@ namespace HeadPats.Commands;
 
 public class Basic : BaseCommandModule {
     public Basic() => Logger.Loadodule("BasicCommands");
-    
-    private string FooterText(string extra = "")
-        => $"{BuildInfo.Name} (v{BuildInfo.Version}){(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
+
+    private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
+        em.WithTimestamp(DateTime.Now);
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+    }
 
     [Command("About"), Aliases("info"), Description("Shows a message that describes the bot")]
     public async Task About(cc c) {
@@ -29,7 +31,7 @@ public class Basic : BaseCommandModule {
                                               "~~Open-Source~~: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
                                               "Add to Your Guild: [Invite Link](https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot) \n" +
                                               "Support Guild: [Invite Link](https://discord.gg/98JExhF)");
-        e.WithFooter(FooterText());
+        FooterText(e);
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(BuildInfo.ClientId, true);
         e.WithThumbnail(u.AvatarUrl);
@@ -98,9 +100,8 @@ public class Basic : BaseCommandModule {
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{discordNetVer}** \nBot: **v{BuildInfo.Version}** \nMintAPI: **v{mintApiVer}** \nBuild Date: **{BuildInfo.BuildDateShort}**");
         e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **Debian 11**");
         //e.AddField("Server Info", $"Location: **South Carolina, USA** \nServer: **[Sypher](https://mintlily.lgbt/pc)** \nMax RAM: **32 GB** \nOS: **{platform} 10 (21H1)**");
-        
-        e.WithTimestamp(DateTime.Now);
-        e.WithFooter(FooterText());
+
+        FooterText(e);
         await c.RespondAsync(e.Build());
     }
 
@@ -192,7 +193,7 @@ public class Basic : BaseCommandModule {
         e.WithTitle($"{RandomFoxJson.GetImageNumber()} / {foxCount}");
         e.WithColor(Colors.HexToColor("AC5F25"));
         e.WithImageUrl(RandomFoxJson.GetImage());
-        e.WithFooter(FooterText("Powered by randomfox.ca"));
+        FooterText(e, "Powered by randomfox.ca");
         httpClient.Dispose();
         await c.RespondAsync(e.Build());
     }
@@ -202,7 +203,7 @@ public class Basic : BaseCommandModule {
         e.WithTitle(embedTitle);
         e.WithImageUrl(imageUrl);
         e.WithColor(Colors.HexToColor(colorHex));
-        e.WithFooter(FooterText("Powered by nekos.life"));
+        FooterText(e, "Powered by nekos.life");
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
     }
 
@@ -246,7 +247,7 @@ public class Basic : BaseCommandModule {
             e.WithTitle("`*`_cry_`*`");
             e.WithColor(Colors.HexToColor("58CBCF"));
             e.WithImageUrl(NekoLoveJson.GetImage());
-            e.WithFooter(FooterText("Powered by neko-love.xyz"));
+            FooterText(e, "Powered by neko-love.xyz");
             httpClient.Dispose();
             await c.RespondAsync(e.Build());
         }

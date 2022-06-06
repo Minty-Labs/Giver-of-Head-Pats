@@ -12,9 +12,11 @@ namespace HeadPats.Commands;
 
 public class Love : BaseCommandModule {
     public Love() => Logger.Loadodule("LoveCommands");
-    
-    private string FooterText(string extra = "")
-        => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
+
+    private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
+        em.WithTimestamp(DateTime.Now);
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+    }
 
     private async Task OutputBaseCommand(cc c, string? mentionedUser, string? imageUrlFromApi, string embedTitle, string embedDesc, string action, int pats, string embedColorHex = "ffff00") {
         await c.Message.DeleteAsync("Auto Delete from command");
@@ -54,7 +56,7 @@ public class Love : BaseCommandModule {
         e.WithTitle(embedTitle);
         e.WithImageUrl(imageUrlFromApi);
         e.WithColor(Colors.HexToColor(embedColorHex));
-        e.WithFooter(FooterText("Powered by nekos.life"));
+        FooterText(e, "Powered by nekos.life");
         e.WithDescription(gaveToBot ? $"Gave {action} to <@{c.Message.Author.Id}>" : embedDesc);
         UserControl.AddPatToUser(user.Id, pats, true, guild.Id);
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
@@ -216,7 +218,7 @@ public class Love : BaseCommandModule {
         var e = new DiscordEmbedBuilder();
         e.WithTitle(outputs[num]);
         e.WithColor(Colors.HexToColor("FF00FF"));
-        e.WithFooter(FooterText());
+        FooterText(e);
         e.WithDescription($"{c.Message.Author.Mention} licked <@{getUserIdFromMention}>");
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
     }

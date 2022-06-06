@@ -1,11 +1,8 @@
 ﻿using System.Text;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
-using Emzi0767.Utilities;
 using HeadPats.Managers;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
@@ -15,9 +12,11 @@ namespace HeadPats.Commands;
 
 public class Owner : BaseCommandModule {
     public Owner() => Logger.Loadodule("OwnerCommands");
-    
-    private string FooterText(string extra = "")
-        => $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}{(string.IsNullOrWhiteSpace(extra) ? "" : $" • {extra}")}";
+
+    private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
+        em.WithTimestamp(DateTime.Now);
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+    }
 
     // [Command("ForceRegisterSlashCommands")]
     // [RequireOwner]
@@ -89,7 +88,7 @@ public class Owner : BaseCommandModule {
         e.WithTitle("Changed Status");
         e.WithColor(Colors.HexToColor(color));
         e.WithDescription($"Game: {name}\nActivityType: {Program.GetActivityAsString(getActivity)}\n{(string.IsNullOrWhiteSpace(url) ? "" : $"Stream URL: {url}")}");
-        e.WithFooter(FooterText());
+        FooterText(e);
         await c.RespondAsync(e.Build());
     }
 
@@ -150,17 +149,17 @@ public class SlashOwner : ApplicationCommandModule {
         [Choice("Do not Disturb", "d")]
         [Choice("Idle", "id")]
         [Choice("Online", "on")]
-        [Option("User Status", "Change User Status")] string userStatus,
+        [Option("UserStatus", "Change User Status")] string userStatus,
         
         [Choice("Playing", "play")]
         [Choice("Listening", "listen")]
         [Choice("Watching", "watch")]
         [Choice("Streaming", "stream")]
         [Choice("Competing", "compete")]
-        [Choice("Other Text", "other")]
-        [Option("Activity Type", "Change Activity Type")] string activityType,
+        [Choice("OtherText", "other")]
+        [Option("ActivityType", "Change Activity Type")] string activityType,
         
-        string? args = "") {
+        [Option("ExtraText", "text")] string? args = "") {
         if (c.Member.Id != 167335587488071682) {
             await c.CreateResponseAsync("You cannot run this command.");
             return;
