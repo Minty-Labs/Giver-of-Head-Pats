@@ -13,6 +13,7 @@ public class ProtectCommands : BaseCommandModule {
     public ProtectCommands() => Logger.Loadodule("ProtectCommands");
 
     [Command("Blacklist"), Description("Lists the all the blacklist commands.")]
+    [IsOnList]
     public async Task ListCommands(cc c) {
         var e = new DiscordEmbedBuilder();
         var builder = new DiscordMessageBuilder();
@@ -34,6 +35,7 @@ public class ProtectCommands : BaseCommandModule {
     }
 
     [Command("ListUsers"), Description("Lists all users in the authorized to edit the blacklist.")]
+    [IsOnList]
     public async Task ListUsers(cc c) {
         var sb = new StringBuilder();
         var list = ProtectStructure.GetListOfUsers();
@@ -56,6 +58,7 @@ public class ProtectCommands : BaseCommandModule {
     }
 
     [Command("ListMods"), Description("Lists all mods that are on the blacklist.")]
+    [IsOnList]
     public async Task ListMods(cc c) {
         var sb = new StringBuilder();
         var list = ProtectStructure.GetAllModsAsList();
@@ -77,6 +80,7 @@ public class ProtectCommands : BaseCommandModule {
     }
     
     [Command("ListAuthors"), Description("Lists all authors that are on the blacklist.")]
+    [IsOnList]
     public async Task ListAuthors(cc c) {
         var sb = new StringBuilder();
         var list = ProtectStructure.GetAllAuthorsAsList();
@@ -98,6 +102,7 @@ public class ProtectCommands : BaseCommandModule {
     }
     
     [Command("ListPlugins"), Description("Lists all plugins that are on the blacklist.")]
+    [IsOnList]
     public async Task ListPlugins(cc c) {
         var sb = new StringBuilder();
         var list = ProtectStructure.GetAllPluginsAsList();
@@ -119,6 +124,7 @@ public class ProtectCommands : BaseCommandModule {
     }
     
     [Command("ListEverything"), Description("Lists all users, mods, authors, and plugins that are on the blacklist.")]
+    [IsOnList]
     public async Task ListAll(cc c) {
         var sb = new StringBuilder();
         var sb2 = new StringBuilder();

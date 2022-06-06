@@ -24,3 +24,11 @@ public class IsAdminOrMod : CheckBaseAttribute {
         return Task.FromResult(isAnAdminOrMod);
     }
 }
+
+public class IsOnList : CheckBaseAttribute {
+    public override Task<bool> ExecuteCheckAsync(cc c, bool yes) {
+        var IsOnList = ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.None ||
+                             ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.None;
+        return Task.FromResult(IsOnList);
+    }
+}
