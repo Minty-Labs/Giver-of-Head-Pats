@@ -15,21 +15,23 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string Version = "4.1.3";
-    public const string DSharpVer = "4.3.0-nightly-01139";
+    public const string DSharpVer = "4.3.0-nightly-01140";
     public const string MintApiVer = "1.4.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
 #if DEBUG
+    public const string Version = "4.1.4-dev";
     private static readonly DateTime ShortBuildDate = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    private static readonly DateTime ShortBuildDate = new(2022, 6, 2, 0, 50, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.1.4";
+    private static readonly DateTime ShortBuildDate = new(2022, 6, 5, 21, 21, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
     public static string BuildDate = $"Last Updated: {BuildDateShort}";
     public static DateTime StartTime = new();
+    public static bool IsWindows;
     
     private static string GetMonth(int month) {
         return month switch {
@@ -76,6 +78,7 @@ public sealed class Program {
     public static NekoClient? NekoClient { get; set; }
     
     private static void Main(string[] args) {
+        BuildInfo.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version}");
         new Program().MainAsync().GetAwaiter().GetResult();
     }
@@ -90,7 +93,12 @@ public sealed class Program {
         MobileManager.CreateMobilePatch();
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
+#if DEBUG
+            MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
+#endif
+#if !DEBUG
             MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.None,
+#endif
             Token = BuildInfo.Config.Token,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
@@ -102,7 +110,11 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix, "-" },
+            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix,
+#if !DEBUG
+                "-"
+#endif
+            },
             EnableDefaultHelp = true
         };
 
@@ -143,6 +155,7 @@ public sealed class Program {
         });
         
         ReplyStructure.CreateFile();
+        VRChat.ProtectStructure.CreateFile();
             
         await Client.ConnectAsync();
 
@@ -158,6 +171,7 @@ public sealed class Program {
         Logger.Log("Bot Version                   = " + BuildInfo.Version);
         Logger.Log("Process ID                    = " + BuildInfo.ThisProcess.Id);
         Logger.Log("Build Date                    = " + BuildInfo.BuildDateShort);
+        Logger.Log("Current OS                    = " + (BuildInfo.IsWindows ? "Windows" : "Linux"));
         Logger.Log("Token                         = " + OutputStringAsHidden(BuildInfo.Config.Token).Pastel("FBADBC"));
         Logger.Log("Prefix                        = " + $"{BuildInfo.Config.Prefix}".Pastel("FBADBC"));
         Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
@@ -173,8 +187,8 @@ public sealed class Program {
         Logger.WriteSeperator("C75450");
 
         var em = new DiscordEmbedBuilder();
-        em.WithColor(DiscordColor.SpringGreen);
-        em.WithDescription("Bot has started");
+        em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
+        em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}");
         em.WithFooter($"v{BuildInfo.Version}");
         em.WithTimestamp(DateTime.Now);
         GeneralLogChannel = await sender.GetChannelAsync(BuildInfo.Config.GeneralLogChannelId);

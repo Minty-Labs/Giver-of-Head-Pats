@@ -11,11 +11,19 @@ internal static class Commands {
         c?.RegisterCommands<Owner>();
         c?.RegisterCommands<Replies>();
         c?.RegisterCommands<Contributors>();
+        
+        c?.RegisterCommands<VRChat.ProtectCommands>();
     }
 
     public static void Register(SlashCommandsExtension? s) {
         //s?.RegisterCommands<BasicSlashCommands>();
+        if (s == null)
+            Logger.Error("Slash commands extension is null");
         s?.RegisterCommands<SlashOwner>();
+        Logger.Log("Owner Slash commands registered");
         s?.RegisterCommands<LoveSlash>();
+        Logger.Log("Love Slash commands registered");
+
+        //s?.RefreshCommands();
     }
 }
