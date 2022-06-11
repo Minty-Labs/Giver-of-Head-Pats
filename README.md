@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.1.9, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.1.10, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -20,7 +20,7 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01140</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01142</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>

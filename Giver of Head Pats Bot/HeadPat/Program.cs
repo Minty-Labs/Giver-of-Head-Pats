@@ -15,7 +15,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-nightly-01141";
+    public const string DSharpVer = "4.3.0-nightly-01142";
     public const string MintApiVer = "1.4.2";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
@@ -24,8 +24,8 @@ public static class BuildInfo {
     private static readonly DateTime ShortBuildDate = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.1.9";
-    private static readonly DateTime ShortBuildDate = new(2022, 6, 8, 12, 51, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.1.10";
+    private static readonly DateTime ShortBuildDate = new(2022, 6, 11, 15, 45, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
