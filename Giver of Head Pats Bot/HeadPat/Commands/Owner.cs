@@ -15,7 +15,7 @@ public class Owner : BaseCommandModule {
 
     private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
         em.WithTimestamp(DateTime.Now);
-        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
     }
 
     // [Command("ForceRegisterSlashCommands")]

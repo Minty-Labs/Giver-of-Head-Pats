@@ -15,7 +15,7 @@ public class Basic : BaseCommandModule {
 
     private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
         em.WithTimestamp(DateTime.Now);
-        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
     }
 
     [Command("About"), Aliases("info"), Description("Shows a message that describes the bot")]

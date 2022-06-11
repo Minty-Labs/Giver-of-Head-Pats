@@ -15,7 +15,7 @@ public class Love : BaseCommandModule {
 
     private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
         em.WithTimestamp(DateTime.Now);
-        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $" • {extraText}")}");
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
     }
 
     private async Task OutputBaseCommand(cc c, string? mentionedUser, string? imageUrlFromApi, string embedTitle, string embedDesc, string action, int pats, string embedColorHex = "ffff00") {
