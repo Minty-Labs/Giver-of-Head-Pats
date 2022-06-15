@@ -253,7 +253,7 @@ public class Basic : BaseCommandModule {
         }
     }
 
-    [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderbord for most headpats")]
+    [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderboard for most headpats")]
     public async Task TopPat(cc c) {
         await using var db = new Context();
         var usersList = db.Users.AsQueryable().ToList();

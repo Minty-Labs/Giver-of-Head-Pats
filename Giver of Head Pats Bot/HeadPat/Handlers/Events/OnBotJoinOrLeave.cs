@@ -1,5 +1,4 @@
-﻿using System.Text;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HeadPats.Utils;
@@ -14,17 +13,18 @@ public class OnBotJoinOrLeave {
         c.GuildDeleted += OnLeaveGuild;
     }
 
-    private async Task OnLeaveGuild(DiscordClient sender, GuildDeleteEventArgs e) {
+    private static async Task OnLeaveGuild(DiscordClient sender, GuildDeleteEventArgs e) {
         try {
             var em = new DiscordEmbedBuilder();
             em.WithColor(Colors.HexToColor("FF2525"));
             em.WithDescription($"Left server: `{e.Guild?.Name}` ({e.Guild?.Id})");
-            try { em.AddField("Created", $"{e.Guild?.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "uknown", true); }
-            try { em.AddField("Joined", $"{e.Guild?.JoinedAt:F}", true); } catch { em.AddField("Joined", "uknown", true); }
+            try { em.AddField("Created", $"{e.Guild?.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "unknown", true); }
+            try { em.AddField("Joined", $"{e.Guild?.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
             em.AddField("Members", e.Guild?.MemberCount.ToString(), true);
             em.AddField("Description", e.Guild?.Description ?? "None");
             em.AddField("Owner", $"{e.Guild?.Owner.Username}#{e.Guild?.Owner.Discriminator}");
             em.WithThumbnail(e.Guild?.IconUrl ?? "https://totallywholeso.me/assets/img/team/null.jpg");
+            em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
         } catch (Exception ex) {
@@ -32,17 +32,18 @@ public class OnBotJoinOrLeave {
         }
     }
 
-    private async Task OnJoinGuild(DiscordClient sender, GuildCreateEventArgs e) {
+    private static async Task OnJoinGuild(DiscordClient sender, GuildCreateEventArgs e) {
         try {
             var em = new DiscordEmbedBuilder();
             em.WithColor(Colors.HexToColor("42E66C"));
             em.WithDescription($"Joined server: `{e.Guild.Name}` ({e.Guild.Id})");
-            try { em.AddField("Created", $"{e.Guild.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "uknown", true); }
-            try { em.AddField("Joined", $"{e.Guild.JoinedAt:F}", true); } catch { em.AddField("Joined", "uknown", true); }
+            try { em.AddField("Created", $"{e.Guild.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "unknown", true); }
+            try { em.AddField("Joined", $"{e.Guild.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
             em.AddField("Members", e.Guild.MemberCount.ToString(), true);
             em.AddField("Description", e.Guild.Description ?? "None");
             em.AddField("Owner", $"{e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}");
             em.WithThumbnail(e.Guild.IconUrl ?? "https://totallywholeso.me/assets/img/team/null.jpg");
+            em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
         } catch (Exception ex) {
