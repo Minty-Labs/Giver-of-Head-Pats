@@ -80,7 +80,7 @@ internal static class ProtectStructure {
             $"{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json";
         
         File.WriteAllText(path, JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created VRChat Protection JSON: BaseProtection");
+        Logger.Log("Saved VRChat Protection JSON: BaseProtection");
     }
     
     public static List<string>? GetAllModsAsList() => Base.ModNames;
@@ -122,6 +122,7 @@ internal static class ProtectStructure {
         };
         Base.Users?.Add(item);
         await c.RespondAsync($"Added {userName} as {role}.");
+        Logger.LogEvent($"{c.User.Username} added user {{ {item.UserName} : {item?.UserId} : {item?.Role} }}");
         Save();
     }
     
@@ -138,10 +139,13 @@ internal static class ProtectStructure {
 
             if (user != null) 
                 Base.Users?.Remove(user);
+            await c.RespondAsync("Removed user.");
+            Logger.LogEvent($"{c.User.Username} removed user {{ {user?.UserName} : {user?.UserId} : {user?.Role} }}");
         } catch (Exception e) {
             ErroredOnRemove = true;
             ErroredException = e;
             Logger.SendLog(e);
+            await c.RespondAsync($"An error has occured:\n```\n{e.Message}\n```");
         }
         Save();
     }
@@ -153,6 +157,8 @@ internal static class ProtectStructure {
         }
         Base.ModNames?.Add(modName);
         Save();
+        await c.RespondAsync($"Added {modName}");
+        Logger.LogEvent($"{c.User.Username} added mod {{ {modName} }}");
     }
     
     public static async Task RemoveMod(cc c, string modName) {
@@ -162,6 +168,8 @@ internal static class ProtectStructure {
         }
         Base.ModNames?.Remove(modName);
         Save();
+        await c.RespondAsync($"Removed {modName}");
+        Logger.LogEvent($"{c.User.Username} removed mod {{ {modName} }}");
     }
 
     public static async Task AddAuthor(cc c, string authorName) {
@@ -171,6 +179,8 @@ internal static class ProtectStructure {
         }
         Base.AuthorNames?.Add(authorName);
         Save();
+        await c.RespondAsync($"Added {authorName}");
+        Logger.LogEvent($"{c.User.Username} added author {{ {authorName} }}");
     }
     
     public static async Task RemoveAuthor(cc c, string authorName) {
@@ -180,6 +190,8 @@ internal static class ProtectStructure {
         }
         Base.AuthorNames?.Remove(authorName);
         Save();
+        await c.RespondAsync($"Removed {authorName}");
+        Logger.LogEvent($"{c.User.Username} removed author {{ {authorName} }}");
     }
 
     public static async Task AddPlugin(cc c, string pluginName) {
@@ -189,6 +201,8 @@ internal static class ProtectStructure {
         }
         Base.PluginNames?.Add(pluginName);
         Save();
+        await c.RespondAsync($"Added {pluginName}");
+        Logger.LogEvent($"{c.User.Username} added plugin {{ {pluginName} }}");
     }
     
     public static async Task RemovePlugin(cc c, string pluginName) {
@@ -198,5 +212,7 @@ internal static class ProtectStructure {
         }
         Base.PluginNames?.Remove(pluginName);
         Save();
+        await c.RespondAsync($"Removed {pluginName}");
+        Logger.LogEvent($"{c.User.Username} removed plugin {{ {pluginName} }}");
     }
 }

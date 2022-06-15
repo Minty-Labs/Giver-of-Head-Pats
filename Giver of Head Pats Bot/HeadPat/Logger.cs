@@ -53,6 +53,15 @@ internal class Logger {
 
         Program.Client?.SendMessageAsync(Program.ErrorLogChannel, e.Build()).GetAwaiter().GetResult();
     }
+
+    public static void LogEvent(object message) {
+        var e = new DiscordEmbedBuilder();
+        e.WithColor(Colors.HexToColor("4F87F5"));
+        e.WithDescription(message.ToString());
+        e.WithTimestamp(DateTime.Now);
+        
+        Program.Client?.SendMessageAsync(Program.GeneralLogChannel, e.Build()).GetAwaiter().GetResult();
+    }
     
     private static void Stop() => _log?.Close();
 
