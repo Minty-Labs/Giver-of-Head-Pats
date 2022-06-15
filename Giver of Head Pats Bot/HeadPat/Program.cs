@@ -8,27 +8,29 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
+using HeadPats.Handlers.Events;
 using HeadPats.Managers;
+using HeadPats.Utils;
 using NekosSharp;
 using Pastel;
 
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-nightly-01142";
+    public const string DSharpVer = "4.3.0-nightly-01143";
     public const string MintApiVer = "1.4.2";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
 #if DEBUG
-    public const string Version = "4.1.4-dev";
-    private static readonly DateTime ShortBuildDate = DateTime.Now;
+    public const string Version = "4.2.0-dev";
+    public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.1.10";
-    private static readonly DateTime ShortBuildDate = new(2022, 6, 11, 15, 45, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.2.0";
+    public static readonly DateTime BuildTime = new(2022, 6, 14, 21, 37, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
-    public static string BuildDateShort = $"{ShortBuildDate.Day} {GetMonth(ShortBuildDate.Month)} @ {ShortBuildDate.Hour}:{ChangeSingleNumber(ShortBuildDate.Minute)}";
+    public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
     public static string BuildDate = $"Last Updated: {BuildDateShort}";
     public static DateTime StartTime = new();
     public static bool IsWindows;
@@ -67,7 +69,7 @@ public static class BuildInfo {
         };
     }
         
-    public static Config Config = Configuration._conf;
+    public static readonly Config Config = Configuration.TheConfig;
     public static Process? ThisProcess { get; set; }
 }
 
@@ -162,9 +164,9 @@ public sealed class Program {
         await Task.Delay(-1);
     }
     
-    public static DiscordChannel GeneralLogChannel, ErrorLogChannel;
+    internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 
-    private async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e) {
+    private static async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e) {
         BuildInfo.StartTime = DateTime.Now;
         BuildInfo.ThisProcess = Process.GetCurrentProcess();
         Logger.Log("Welcome, " + "Lily".Pastel("9fffe3"));
@@ -189,19 +191,22 @@ public sealed class Program {
         var em = new DiscordEmbedBuilder();
         em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
         em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}");
+        em.AddField("Build Time", $"{BuildInfo.BuildDateShort}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
+        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
         em.WithFooter($"v{BuildInfo.Version}");
         em.WithTimestamp(DateTime.Now);
         GeneralLogChannel = await sender.GetChannelAsync(BuildInfo.Config.GeneralLogChannelId);
         ErrorLogChannel = await sender.GetChannelAsync(BuildInfo.Config.ErrorLogChannelId);
+        MessageCreated.DmCategory = await sender.GetChannelAsync(BuildInfo.Config.DmResponseCategoryId);
         await sender.SendMessageAsync(GeneralLogChannel, em.Build());
     }
 
-    private Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
+    private static Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
         Logger.CommandExecuted(e.Command.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name);
         return Task.CompletedTask;
     }
 
-    private Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e) {
+    private static Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e) {
         if (e.Command == null && e.Context.Member != null)
             Logger.CommandNull(e.Context.Member.Username, e.Context.Message.Content);
         else
@@ -209,7 +214,7 @@ public sealed class Program {
         return Task.CompletedTask;
     }
 
-    private Task Slash_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e) {
+    private static Task Slash_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e) {
         Logger.CommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception, true);
         return Task.CompletedTask;
     }
@@ -221,7 +226,7 @@ public sealed class Program {
         return temp ?? "***************";
     }
     
-    public static ActivityType GetActivityType(string type) {
+    private static ActivityType GetActivityType(string type) {
         return type.ToLower() switch {
             "playing" => ActivityType.Playing,
             "listening" => ActivityType.ListeningTo,

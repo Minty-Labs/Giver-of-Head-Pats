@@ -1,11 +1,9 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
-using ic = DSharpPlus.SlashCommands.InteractionContext;
 
 namespace HeadPats.VRChat;
 
