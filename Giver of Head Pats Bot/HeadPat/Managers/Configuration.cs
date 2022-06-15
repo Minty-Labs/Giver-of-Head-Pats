@@ -4,20 +4,23 @@ namespace HeadPats.Managers;
 
 public class Config {
     public string Token { get; set; } = "";
-    [JsonProperty("OwnerUserID")] public ulong OwnerUserId { get; set; } = 0;
+    [JsonProperty("OwnerID")] public ulong OwnerUserId { get; set; } = 0;
     public string Prefix { get; set; } = "-";
     public string ActivityType { get; set; } = "Watching";
     public string Game { get; set; } = "all the cuties";
     public string StreamingUrl { get; set; } = "";
+    
+    [JsonProperty("SupportGuildID")] public ulong SupportGuildId { get; set; } = 0;
 
     [JsonProperty("GeneralLogChannelID")] public ulong GeneralLogChannelId { get; set; } = 0;
 
     [JsonProperty("ErrorLogChannelID")] public ulong ErrorLogChannelId { get; set; } = 0;
+    
+    [JsonProperty("DMResponseCategoryID")] public ulong DmResponseCategoryId { get; set; } = 0;
 }
 
 public static class Configuration {
-    public static Config _conf { get; internal set; } = Load();
-    public static readonly string ConfigFile = $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json";
+    public static Config TheConfig { get; internal set; } = Load();
 
     private static void CreateFile() {
         if (File.Exists($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json")) return;
@@ -28,8 +31,10 @@ public static class Configuration {
             ActivityType = "Watching",
             Game = "all the cuties",
             StreamingUrl = "",
+            SupportGuildId = 0,
             GeneralLogChannelId = 0,
-            ErrorLogChannelId = 0
+            ErrorLogChannelId = 0,
+            DmResponseCategoryId = 0
         }));
         Save();
     }
@@ -41,5 +46,5 @@ public static class Configuration {
     }
     
     public static void Save() => File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json",
-        JsonConvert.SerializeObject(_conf, Formatting.Indented));
+        JsonConvert.SerializeObject(TheConfig, Formatting.Indented));
 }
