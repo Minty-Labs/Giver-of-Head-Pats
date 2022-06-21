@@ -22,12 +22,12 @@ public static class BuildInfo {
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
 #if DEBUG
-    public const string Version = "4.2.0-dev";
+    public const string Version = "4.2.2-dev1";
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.2.0";
-    public static readonly DateTime BuildTime = new(2022, 6, 14, 21, 37, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.2.1";
+    public static readonly DateTime BuildTime = new(2022, 6, 21, 13, 32, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -92,7 +92,9 @@ public sealed class Program {
 
     private async Task MainAsync() {
         Logger.Log("Bot is starting . . .");
+#if !DEBUG
         MobileManager.CreateMobilePatch();
+#endif
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
 #if DEBUG
@@ -184,14 +186,22 @@ public sealed class Program {
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
             ActivityType = GetActivityType(BuildInfo.Config.ActivityType)
-        }, UserStatus.Online);
+        },
+#if !DEBUG
+            UserStatus.Online
+#endif
+#if DEBUG
+        UserStatus.Idle
+#endif
+            );
+
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
         Logger.WriteSeperator("C75450");
 
         var em = new DiscordEmbedBuilder();
         em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
         em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}");
-        em.AddField("Build Time", $"{BuildInfo.BuildDateShort}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
+        em.AddField("Build Time", $"{BuildInfo.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
         em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
         em.WithFooter($"v{BuildInfo.Version}");
         em.WithTimestamp(DateTime.Now);

@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.2.0, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.2.2, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -20,7 +20,7 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01143</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01146</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -30,11 +30,11 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
         </ul>
     </li>
     <li>Lib.Harmony <b>v2.2.1</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.0-preview.4.22229.2</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.0-preview.4.22229.2</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.0-preview.5.22302.2</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.0-preview.5.22302.2</b></li>
     <li>Nekos-Sharp <b>v3.5.0</b></li>
     <li>Newtonsoft.Json <b>v13.0.1</b></li>
-    <li>Pastel <b>v3.0.0</b></li>
+    <li>Pastel <b>v3.0.1</b></li>
 </ul>
 
 <h2>Programs Used</h2>
@@ -83,6 +83,17 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
             <li>Stats</li>
         </ul>
     </li>
+</ul>
+
+<h3>Contributor Commands</h3>
+
+```
+* - Requires Permission: Bot Owner
+```
+<ul>
+    <li>AddContributor - Adds a Contributor to the list *</li>
+    <li>RemoveContributor = Removes a Contributor from the list *</li>
+    <li>ListContributors - Lists the Contributors of the bot</li>
 </ul>
 
 <h3>Love Commands</h3>
