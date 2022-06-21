@@ -14,6 +14,7 @@ public class MessageCreated {
         c.MessageCreated += GetAndMaybeRespondToTrigger;
         c.MessageCreated += GetUserBotDm;
         c.MessageCreated += RespondToDmFromChannel;
+        c.MessageCreated += TotallyWholesomeSuggestionAutoResponse;
     }
 
     internal static DiscordChannel? DmCategory;
@@ -47,15 +48,7 @@ public class MessageCreated {
         }
         builder.WithContent($"From {author.Username}#{author.Discriminator} ({author.Id}):\n{(att ? $"Has `{count}` {attsb.ToString()}\n" : "")}\n" +
                             $"{e.Message.Content}");
-
-        /*if (att) {
-            if (e.Message.Content.Contains($"From {author.Username}#{author.Discriminator}")) return;
-            await supportGuild.GetChannel(serverChannelFromDm.Id).SendMessageAsync(builder);
-        }
-        else {
-            if (e.Message.Content.Contains($"From {author.Username}#{author.Discriminator}")) return;
-            await builder.SendAsync(serverChannelFromDm);
-        }*/
+        
         await builder.SendAsync(serverChannelFromDm);
     }
 
@@ -114,5 +107,22 @@ public class MessageCreated {
                     await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
             }
         }
+    }
+
+    private static async Task TotallyWholesomeSuggestionAutoResponse(DiscordClient sender, MessageCreateEventArgs e) {
+        if (e.Author.IsBot) return;
+        if (e.Guild.Id != 716536783621587004) return;
+        if (e.Channel.Id != 953481226734403615) return;
+        
+        var content = e.Message.Content.ToLower().Replace("\'", string.Empty).Replace(" ", string.Empty);
+        
+        string[] filter = { "color", "colour", "leash", "lead", "rope", "custim", "custom", "drop" };
+        var counter = filter.Count(word => content.Contains(word));
+
+        var builder = new DiscordMessageBuilder();
+        builder.WithContent("<#953526223764619284>");
+
+        if (counter >= 2)
+            await builder.WithReply(e.Message.Id, true).SendAsync(e.Channel);
     }
 }
