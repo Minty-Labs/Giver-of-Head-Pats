@@ -27,7 +27,7 @@ public class Contributors : BaseCommandModule {
 
     [Command("RemoveContributor"), Aliases("rc"), Description("Removes a Contributor from the list")]
     [RequireOwner]
-    public async Task RemoveaContributor(cc c, string userName) {
+    public async Task RemoveContributor(cc c, string userName) {
         if (string.IsNullOrWhiteSpace(userName)) {
             await c.RespondAsync("Incorrect format. Please use the following format: " +
                                  $"`{BuildInfo.Config.Prefix}RemoveContributor [\"UserName\"]`\n");

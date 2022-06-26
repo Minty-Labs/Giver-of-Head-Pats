@@ -60,7 +60,7 @@ public class Basic : BaseCommandModule {
     public async Task Invite(cc c) {
         await c.Message.DeleteAsync();
         var message = new DiscordMessageBuilder();
-        message.WithContent("Want to invite me to your guild? Add me here:\n  https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot");
+        message.WithContent("Want to invite me to your guild? Add me here:\n  https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands");
         var member = await c.Guild.GetMemberAsync(c.Message.Author.Id);
         try {
             var dm = await member.CreateDmChannelAsync();
