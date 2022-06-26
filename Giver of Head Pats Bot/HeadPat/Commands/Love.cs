@@ -27,7 +27,8 @@ public class Love : BaseCommandModule {
                 number = ulong.Parse(getUserIdFromMention);
             }
             catch (Exception ex) {
-                Logger.Error($"Failed to parse data \"{mentionedUser}\" into a ulong. Full Error:\n{ex}");
+                await c.RespondAsync("Incorrect format, please only mention a user; this command does not support mentioning a role or plain text.");
+                Logger.Error($"Failed to parse data \"{mentionedUser}\" into a ulong.\nGuild: {c.Guild.Name} ({c.Guild.Id}) -> #{c.Channel.Name}\nFull Error:\n{ex}");
                 return;
             }
         }
@@ -56,7 +57,7 @@ public class Love : BaseCommandModule {
         e.WithTitle(embedTitle);
         e.WithImageUrl(imageUrlFromApi);
         e.WithColor(Colors.HexToColor(embedColorHex));
-        FooterText(e, "Powered by nekos.life");
+        FooterText(e, $"{(string.IsNullOrEmpty(imageUrlFromApi) ? "" : "Powered by nekos.life")}");
         e.WithDescription(gaveToBot ? $"Gave {action} to <@{c.Message.Author.Id}>" : embedDesc);
         UserControl.AddPatToUser(user.Id, pats, true, guild.Id);
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
