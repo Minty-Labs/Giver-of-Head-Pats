@@ -1,52 +1,181 @@
-﻿// using System.Text;
-// using DSharpPlus;
-// using DSharpPlus.CommandsNext;
-// using DSharpPlus.CommandsNext.Attributes;
-// using DSharpPlus.Entities;
-// using DSharpPlus.SlashCommands;
-// using HeadPats.Data;
-// using HeadPats.Utils;
-// using cc = DSharpPlus.CommandsNext.CommandContext;
-// using ic = DSharpPlus.SlashCommands.InteractionContext;
-//
-// namespace HeadPats.Commands; 
-//
-// public class Admin : BaseCommandModule {
-//     public Admin() => Logger.Loadodule("AdminCommands");
-//
-//     [Command("GetPresences"), Aliases("gp"), Description("Get the presences of all users in the server containing a specific world or phrase.")]
-//     [RequirePermissions(Permissions.BanMembers)]
-//     public async Task GetPresences(cc c, [RemainingText] string input) {
-//         var guild = c.Guild;
-//         var users = await guild.GetAllMembersAsync();
-//         var sb = new StringBuilder();
-//         foreach (var user in users) {
-//             if (user == null) continue;
-//             var presence = user.Presence;
-//             if (presence == null) continue;
-//             var activity = presence.Activity;
-//             if (activity == null) continue;
-//             var richPresence = activity.RichPresence;
-//             if (richPresence == null) continue;
-//             if (!richPresence.Application.Name.ToLower().Contains(input.ToLower())) continue;
-//             
-//             sb.AppendLine($"{user.Id} - {user.Username}#{user.Discriminator} - {richPresence.Application.Name}");
-//         }
-//
-//         if (string.IsNullOrWhiteSpace(sb.ToString())) {
-//             await c.RespondAsync($"No user presences found with {input}.");
-//             return;
-//         }
-//         
-//         using var ms = new MemoryStream();
-//         await using var sw = new StreamWriter(ms);
-//         await sw.WriteLineAsync(sb.ToString());
-//         
-//         await sw.FlushAsync();
-//         ms.Seek(0, SeekOrigin.Begin);
-//
-//         var builder = new DiscordMessageBuilder();
-//         builder.WithFile($"Presences_containing_{input}.txt", ms);
-//         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
-//     }
-// }
+﻿using System.Text;
+using DSharpPlus;
+using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
+using HeadPats.Data;
+using HeadPats.Utils;
+using cc = DSharpPlus.CommandsNext.CommandContext;
+using ic = DSharpPlus.SlashCommands.InteractionContext;
+
+namespace HeadPats.Commands; 
+
+public class Admin : BaseCommandModule {
+    public Admin() => Logger.Loadodule("AdminCommands");
+
+    /*[Command("GetPresences"), Aliases("gp"), Description("Get the presences of all users in the server containing a specific world or phrase.")]
+    [RequirePermissions(Permissions.BanMembers)]
+    public async Task GetPresences(cc c, [RemainingText] string input) {
+        var guild = c.Guild;
+        var users = await guild.GetAllMembersAsync();
+        var sb = new StringBuilder();
+        foreach (var user in users) {
+            if (user == null) continue;
+            var presence = user.Presence;
+            if (presence == null) continue;
+            var activity = presence.Activity;
+            if (activity == null) continue;
+            var richPresence = activity.RichPresence;
+            if (richPresence == null) continue;
+            if (!richPresence.Application.Name.ToLower().Contains(input.ToLower())) continue;
+            
+            sb.AppendLine($"{user.Id} - {user.Username}#{user.Discriminator} - {richPresence.Application.Name}");
+        }
+
+        if (string.IsNullOrWhiteSpace(sb.ToString())) {
+            await c.RespondAsync($"No user presences found with {input}.");
+            return;
+        }
+        
+        using var ms = new MemoryStream();
+        await using var sw = new StreamWriter(ms);
+        await sw.WriteLineAsync(sb.ToString());
+        
+        await sw.FlushAsync();
+        ms.Seek(0, SeekOrigin.Begin);
+
+        var builder = new DiscordMessageBuilder();
+        builder.WithFile($"Presences_containing_{input}.txt", ms);
+        await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
+    }*/
+
+    [Command("InviteInfo"), Aliases("ii"), Description("Gets a basic description about an invite by code")]
+    [RequirePermissions(Permissions.ManageMessages)]
+    public async Task GetInviteInfo(cc c, string code) {
+        var hasLink = code.ToLower().Contains("discord.gg") || code.ToLower().Contains(".gg") || code.ToLower().Contains("https://");
+        var final = code
+            .Replace("https://", "")
+            .Replace("discord.gg", "");
+        if (string.IsNullOrWhiteSpace(hasLink ? final : code)) {
+            await c.RespondAsync("Please provide an invite link or code\nUsage: `-inviteinfo [code]`");
+            return;
+        }
+        var e = new DiscordEmbedBuilder();
+        var inv = c.Client.GetInviteByCodeAsync(hasLink ? final : code, true, true).Result;
+        e.WithTitle($"Invite for {inv.Guild.Name}");
+        string createdByName;
+        try { createdByName = inv.Inviter.Username; } catch { createdByName = "null"; }
+        string createdByDiscriminator;
+        try { createdByDiscriminator = inv.Inviter.Discriminator; } catch { createdByDiscriminator = "null"; }
+
+        var createdDateFinal = $"{inv.CreatedAt:F}";
+        var uses = $"{inv.Uses}/{inv.MaxUses}";
+
+        // TODO: Fix Inviter & ExpiresAt
+        e.WithDescription(string.Concat(new[] {
+                $"Guild: {inv.Guild.Name} (ID: {inv.Guild.Id})\n",
+                $"Created by: `{createdByName}#{createdByDiscriminator}`\n",
+                $"For Channel: #{inv.Channel.Name} (ID: {inv.Channel.Id})\n",
+                $"Uses: {(uses.Equals("0/0") ? "Unlimited" : uses)}\n",
+                $"Date Created: {(createdDateFinal.Equals("Monday, 01 January 0001 00:00:00") ? "Unknown Creation Date" : createdDateFinal)}\n",
+                $"Expires: {inv.ExpiresAt:F}\n",
+                $"[Click to Join Server](https://discord.gg/{inv.Code}) {(createdByDiscriminator == "null" ? "(Vanity URL Invite)" : "")}"
+            }));
+
+        e.WithThumbnail(inv.Guild.IconUrl);
+        e.WithColor(Colors.HexToColor("5C7F90"));
+        e.WithFooter("Invite Inspector Created by SourVodka", "https://cdn.discordapp.com/avatars/211681643235115008/e47f3414381c5cbd1fc305f45dc2ffc8.png?size=2048");
+        await c.RespondAsync(e.Build());
+    }
+
+    [Command("UserInfo"), Aliases("ui", "user-info", "uinfo"), Description("Displays information about a user")]
+    [RequirePermissions(Permissions.ManageMessages)]
+    public async Task UserInfo(cc c, string userId = "") {
+        if (string.IsNullOrWhiteSpace(userId)) {
+            await c.RespondAsync("Please provide a user to get info.");
+            return;
+        }
+
+        var ul = ulong.Parse(userId.Replace("<@", "").Replace(">", ""));
+        DiscordUser? u;
+        try {
+            u = await c.Client.GetUserAsync(ul, true);
+        } catch {
+            await c.RespondAsync("The provided member is invalid. Did you put a message ID there instead?");
+            return;
+        }
+        DiscordMember? m;
+        try {
+            m = await c.Guild.GetMemberAsync(ul);
+        } catch {
+            await c.RespondAsync("User is not in the server, I cannot provide any information about them.");
+            return;
+        }
+
+        var e = new DiscordEmbedBuilder();
+        e.WithTimestamp(DateTime.Now);
+        e.WithTitle("User Information");
+        e.WithDescription($"`{u.Username}#{u.Discriminator}` - {u.Id}");
+        e.AddField("Created", $"{m.CreationTimestamp:F}", true);
+        e.AddField("Join", $"{m.JoinedAt:F}", true);
+
+        var sb = new StringBuilder();
+        foreach (var r in m.Roles) {
+            sb.AppendLine($"{r.Emoji ?? ""}{r.Name}");
+        }
+
+        e.AddField($"Roles ({(m.Roles == null ? "null" : $"{m.Roles.Count()}")})", sb.ToString());
+        e.WithThumbnail(u.GetAvatarUrl(ImageFormat.Auto));
+        e.WithColor(Colors.HexToColor("F771A3"));
+
+        var builder = new DiscordMessageBuilder();
+        builder.WithEmbed(e.Build());
+        await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
+    }
+
+    [Command("UserInfo")]
+    [RequirePermissions(Permissions.ManageMessages)]
+    public async Task UserInfo(cc c, DiscordUser? user = null) {
+        if (user is null) {
+            await c.RespondAsync("Please provide a user to get info.");
+            return;
+        }
+
+        DiscordUser? u;
+        try {
+            u = await c.Client.GetUserAsync(user.Id, true);
+        } catch {
+            await c.RespondAsync("The provided member is invalid. Did you put a message ID there instead?");
+            return;
+        }
+        DiscordMember m;
+        try {
+            m = await c.Guild.GetMemberAsync(user.Id);
+        }
+        catch {
+            await c.RespondAsync("User is not in the server, I cannot provide any information about them.");
+            return;
+        }
+
+        var e = new DiscordEmbedBuilder();
+        e.WithTimestamp(DateTime.Now);
+        e.WithTitle("User Information");
+        e.WithDescription($"`{user.Username}#{user.Discriminator}` - {user.Id}");
+        e.AddField("Created", $"{m.CreationTimestamp:F}", true);
+        e.AddField("Join", $"{m.JoinedAt:F}", true);
+
+        var sb = new StringBuilder();
+        foreach (var r in m.Roles) {
+            sb.AppendLine($"{r.Emoji ?? ""}{r.Name}");
+        }
+
+        e.AddField($"Roles ({m.Roles.Count()})", sb.ToString());
+        e.WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto));
+        e.WithColor(Colors.HexToColor("F771A3"));
+
+        var builder = new DiscordMessageBuilder();
+        builder.WithEmbed(e.Build());
+        await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
+    }
+}

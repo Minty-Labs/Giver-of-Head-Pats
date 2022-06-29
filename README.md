@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.2.3, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.2.4, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -116,6 +116,12 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
     <li>AddReply - Adds an auto response for the server *</li>
     <li>RemoveReply - Removes a trigger response by the provided trigger *</li>
     <li>ListTriggers - Lists the triggers for auto responses</li>
+</ul>
+
+<h3>Admin Commands</h3>
+<ul>
+    <li>InviteInfo - Gets information about a Discord Invite code or URL</li>
+    <li>UserInfo - Gets information about a user</li>
 </ul>
 
 <h2>Developers</h2>

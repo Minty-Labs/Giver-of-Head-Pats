@@ -7,11 +7,11 @@ internal static class Commands {
     public static void Register(CommandsNextExtension? c) {
         c?.RegisterCommands<Basic>();
         c?.RegisterCommands<Love>();
-        //c?.RegisterCommands<Nsfw>();
+        // c?.RegisterCommands<Nsfw>();
         c?.RegisterCommands<Owner>();
         c?.RegisterCommands<Replies>();
         c?.RegisterCommands<Contributors>();
-        // c?.RegisterCommands<Admin>();
+        c?.RegisterCommands<Admin>();
         
         c?.RegisterCommands<VRChat.ProtectCommands>();
     }
