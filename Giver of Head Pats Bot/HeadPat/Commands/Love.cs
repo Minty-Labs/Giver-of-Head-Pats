@@ -283,7 +283,7 @@ public class LoveSlash : ApplicationCommandModule {
         e.WithTitle(embedTitle);
         e.WithImageUrl(imageUrlFromApi);
         e.WithColor(Colors.HexToColor(embedColorHex));
-        e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate} • Powered by nekos.life");
+        e.WithFooter("Powered by nekos.life");
         e.WithDescription(gaveToBot ? $"Gave {action} to <@{c.TargetUser.Id}>" : embedDesc);
         UserControl.AddPatToUser(c.TargetUser.Id, pats, true, guild.Id);
         await c.Client.SendMessageAsync(c.Channel, e.Build());
