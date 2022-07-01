@@ -254,35 +254,52 @@ public class Basic : BaseCommandModule {
     }
 
     [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderboard for most headpats")]
-    public async Task TopPat(cc c) {
+    public async Task TopPat(cc c, [RemainingText] string input) {
         await using var db = new Context();
-        var usersList = db.Users.AsQueryable().ToList();
         var guildList = db.Guilds.AsQueryable().ToList();
+        var usersList = db.Users.AsQueryable().ToList();
         var serverList = db.Overall.AsQueryable().ToList();
-        
+
         var guildPats = 0;
-        try { guildPats = guildList.FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; } catch { Logger.Error("Guilds DataSet is Empty"); }
-        
-        var serverPats = 0;
-        try { serverPats = serverList.First().PatCount; } catch { Logger.Error("Server DataSet is Empty"); }
+        try { guildPats = guildList.FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; } catch { Logger.Error("[TopPat] Guilds DataSet is Empty"); }
+
+        var globalPats = 0;
+        try { globalPats = serverList.First().PatCount; } catch { Logger.Error("[TopPat] Server DataSet is Empty"); }
+
+        var newUserList = usersList.OrderBy(p => -p.PatCount);
+
+        if (!string.IsNullOrWhiteSpace(input) &&  input.ToLower() == "server") {
+            var strings = new StringBuilder();
+            strings.AppendLine($"Top 50 that are in this server. - Server Pats: **{guildPats}** - Global Pats: **{globalPats}**");
+            var counter = 1;
+            foreach (var u in newUserList) {
+                if (counter >= 51) continue;
+                if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
+                strings.AppendLine($"`{counter}.` {u.UsernameWithNumber.Split('#')[0]} - Total Pats: **{u.PatCount}**");
+                counter++;
+            }
+
+            await c.RespondAsync(strings.ToString());
+            return;
+        }
         
         var max = 1;
         var sb = new StringBuilder();
-        var newUserList = usersList.OrderBy(p => -p.PatCount);
+
         foreach (var u in newUserList) {
-            if (max >= 10) continue;
+            if (max >= 11) continue;
             if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
             sb.AppendLine($"`{max}.` {u.UsernameWithNumber} - Total Pats: **{u.PatCount}**");
             max++;
         }
-        
+
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Head Pat Leaderboard");
         e.WithColor(Colors.HexToColor("DFFFDD"));
         e.WithFooter($"Synced across all servers • {BuildInfo.Name} (v{BuildInfo.Version})");
         e.AddField("Current Server Stats", 
-            $"{(string.IsNullOrWhiteSpace(sb.ToString()) ? "Data is Empty" : $"{sb}")}\n\nTotal Server Pats **{guildPats}**");
-        e.AddField("Global Stats", $"Total Pats: **{serverPats}**");
+            $"{(string.IsNullOrWhiteSpace(sb.ToString()) ? "Data is Empty" : $"{sb}")}\nTotal Server Pats **{guildPats}**");
+        e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
     }
