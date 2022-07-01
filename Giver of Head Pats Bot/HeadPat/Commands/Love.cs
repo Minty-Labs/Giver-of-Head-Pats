@@ -18,8 +18,9 @@ public class Love : BaseCommandModule {
         em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
     }
 
-    private async Task OutputBaseCommand(cc c, string? mentionedUser, string? imageUrlFromApi, string embedTitle, string embedDesc, string action, int pats, string embedColorHex = "ffff00") {
-        await c.Message.DeleteAsync("Auto Delete from command");
+    private async Task OutputBaseCommand(cc c, string? mentionedUser, string? imageUrlFromApi, string embedTitle, string embedDesc, string action, int pats, string embedColorHex = "ffff00", bool deleteMessage = true) {
+        if (deleteMessage)
+            await c.Message.DeleteAsync("Auto Delete from command");
         ulong number = 0;
         var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
         if (getUserIdFromMention != null) {
@@ -63,7 +64,7 @@ public class Love : BaseCommandModule {
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
     }
 
-    [Command("pat"), Aliases("pet", "p", "pets", "pats"), Description("Give headpats to a specified user.")]
+    [Command("pat"), Aliases("pet", "p", "pets", "pats", "headpat"), Description("Give headpats to a specified user.")]
     public async Task GivePat(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}pat [@user]`");
@@ -83,15 +84,16 @@ public class Love : BaseCommandModule {
         var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
 
         var yes = !string.IsNullOrWhiteSpace(extraText) && extraText.Contains('%');
+        var doNotDelete = !(yes && extraText!.Contains('>'));
         var special = num == 3 ? 2 : 1;
-        var patAmount = yes && isOwner ? int.Parse(extraText!.Split('%')[1]) : special;
+        var patAmount = yes && isOwner ? int.Parse(extraText!.Split('%')[1].Split('>')[0]) : special;
         
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
-            $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{getUserIdFromMention}>", "headpats", patAmount);
+            $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{getUserIdFromMention}>", "headpats", patAmount, "ffff00", doNotDelete);
         Logger.Log($"Total Pat amount Given: {patAmount}");
     }
     
-    [Command("pat"), Description("Give headpats to a specified user via user ID.")]
+    /*[Command("pat"), Description("Give headpats to a specified user via user ID.")]
     public async Task GivePat(cc c, ulong mentionedUser = 0, [RemainingText]string? extraText = null) {
         if (mentionedUser == 0) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}pat [UserID]`");
@@ -116,7 +118,7 @@ public class Love : BaseCommandModule {
         await OutputBaseCommand(c, mentionedUser.ToString(), neko?.Result.ImageUrl, outputs[num],
             $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{mentionedUser}>", "headpats", patAmount);
         Logger.Log($"Total Pat amount Given: {patAmount}");
-    }
+    }*/
     
     [Command("cuddle"), Aliases("c"), Description("Give cuddles to a specified user.")]
     public async Task GiveCuddles(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
