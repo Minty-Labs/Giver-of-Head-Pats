@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.2.5, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.3.0, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -71,6 +71,7 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
     <li>InspiroBot - Generates a random inspirational quote created by an AI.</li>
     <li>Meme - Grabs a random meme image from one of 5 meme subreddits</li>
     <li>Fox - Summon a random fox picture</li>
+    <li>Bunny - Summon a random bunny picture</li>
     <li>Neko - Summon a picture or GIF of a SFW neko</li>
     <li>Smug - Summon a picture or GIF of a smug face</li>
     <li>Cat - Summon a picture or GIF of a cat</li>
