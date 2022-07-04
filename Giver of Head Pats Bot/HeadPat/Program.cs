@@ -22,12 +22,12 @@ public static class BuildInfo {
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
 #if DEBUG
-    public const string Version = "4.2.5-dev1";
+    public const string Version = "4.3.0-dev2";
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.2.5";
-    public static readonly DateTime BuildTime = new(2022, 7, 1, 15, 00, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.3.0";
+    public static readonly DateTime BuildTime = new(2022, 7, 4, 9, 26, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
