@@ -153,6 +153,43 @@ public class Owner : BaseCommandModule {
 
         await c.RespondAsync($"Removed the application command: {command}");
     }
+
+    [Command("GetPresence"), Aliases("gp"), Description("Gets users with the given presence")]
+    [RequireOwner] // Made by Eric van Fandenfart
+    public async Task GetPresence(cc c, string activity = "") {
+        if (string.IsNullOrWhiteSpace(activity)) {
+            await c.RespondAsync("activity field was empty");
+            return;
+        }
+        try
+        {
+            await c.Guild.RequestMembersAsync(presences: true);
+            List<DiscordMember> users = new();
+            foreach (var member in c.Guild.Members) {
+                if (member.Value?.Presence?.Activities == null)
+                    continue;
+
+                foreach (var dcactivity in member.Value.Presence.Activities) {
+                    if (dcactivity?.Name == null)
+                        continue;
+                    if (dcactivity.Name.Contains(activity, StringComparison.CurrentCultureIgnoreCase)) 
+                        users.Add(member.Value);
+                }
+            }
+            var sb = new StringBuilder();
+            for (var i = 0; i < users.Count; i++) {
+                sb.Append($"<@{users[i].Id}>\r\n");
+                if (i == 0 || 1 % 20 != 0) continue;
+                await c.RespondAsync(sb.ToString());
+                sb.Clear();
+            }
+            if (sb.Length > 0)
+                await c.RespondAsync(sb.ToString());
+        }
+        catch (Exception ex) {
+            await c.RespondAsync($"```\n{ex.Message}\n```");
+        }
+    }
 }
 
 // public class RequireUserIdAttribute : SlashCheckBaseAttribute {
