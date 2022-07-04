@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Drawing;
+using System.Net.Http.Headers;
+using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -143,8 +145,8 @@ public class Basic : BaseCommandModule {
         
         TheData.RedditData = null;
         var httpClient = new HttpClient();
-        var content = await httpClient.GetStringAsync($"https://www.reddit.com/r/{subreddit}/random/.json");
         httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        var content = await httpClient.GetStringAsync($"https://www.reddit.com/r/{subreddit}/random/.json");
         //await c.RespondAsync(string.Concat(new [] {
         //    "```json\n",
         //    content[..1979],
@@ -177,14 +179,15 @@ public class Basic : BaseCommandModule {
         e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • Powered by Reddit from r/{subreddit}");
         httpClient.Dispose();
         await c.RespondAsync(e.Build());
+        TheData.RedditData = null;
     }
 
     [Command("fox"), Aliases("f", "floof"), Description("Summon a random fox picture")]
     public async Task Fox(cc c) {
         RandomFoxJson.FoxData = null;
         var httpClient = new HttpClient();
-        var content = await httpClient.GetStringAsync("https://randomfox.ca/floof/");
         httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        var content = await httpClient.GetStringAsync("https://randomfox.ca/floof/");
         RandomFoxJson.GetData(content);
 
         var foxCount = await RandomFoxHtml.GetFoxCount();
@@ -238,8 +241,8 @@ public class Basic : BaseCommandModule {
     public async Task Cry(cc c) {
         NekoLoveJson.NekoData = null;
         var httpClient = new HttpClient();
-        var content = await httpClient.GetStringAsync("https://neko-love.xyz/api/v1/cry");
         httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        var content = await httpClient.GetStringAsync("https://neko-love.xyz/api/v1/cry");
         NekoLoveJson.GetData(content);
 
         if (NekoLoveJson.ImageHasValidExtension()) {
