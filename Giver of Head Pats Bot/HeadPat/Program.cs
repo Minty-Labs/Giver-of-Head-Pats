@@ -26,8 +26,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.3.0";
-    public static readonly DateTime BuildTime = new(2022, 7, 4, 9, 26, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.3.1";
+    public static readonly DateTime BuildTime = new(2022, 7, 4, 23, 33, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -87,7 +87,7 @@ public sealed class Program {
     
     private Program() {
         Logger.ConsoleLogger();
-        Logger.Log("Elly is an adorable cute floof");
+        Logger.Log("Elly is an adorable cute floof, I love her very very very much!~");
     }
 
     private async Task MainAsync() {
@@ -202,7 +202,7 @@ public sealed class Program {
         em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
         em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}");
         em.AddField("Build Time", $"{BuildInfo.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
-        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
+        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R> {(BuildInfo.IsWindows ? "" : "(Broken)")}");
         em.WithFooter($"v{BuildInfo.Version}");
         em.WithTimestamp(DateTime.Now);
         GeneralLogChannel = await sender.GetChannelAsync(BuildInfo.Config.GeneralLogChannelId);
