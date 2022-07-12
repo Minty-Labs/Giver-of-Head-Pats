@@ -185,6 +185,8 @@ public class Owner : BaseCommandModule {
             }
             if (sb.Length > 0)
                 await c.RespondAsync(sb.ToString());
+            else
+                await c.RespondAsync($"No user had the presence of {activity}");
         }
         catch (Exception ex) {
             await c.RespondAsync($"```\n{ex.Message}\n```");
