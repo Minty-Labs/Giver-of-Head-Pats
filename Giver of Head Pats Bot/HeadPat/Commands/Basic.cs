@@ -172,7 +172,7 @@ public class Basic : BaseCommandModule {
         }
         
         var e = new DiscordEmbedBuilder();
-        e.WithTitle(TheData.GetTitle());
+        e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&ndash;", "\u2014"));
         e.WithColor(Colors.Random);
         //e.WithUrl(TheData.GetPostUrl()); // It no likey
         e.WithImageUrl(image);
@@ -204,7 +204,7 @@ public class Basic : BaseCommandModule {
 
     [Command("Bunny"), Aliases("b", "bunnies", "bun"), Description("Summon a random bunny gif")]
     public async Task Bunny(cc c) {
-        // BunnyJson.BunnyData = null;
+        start:
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
         httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -212,13 +212,18 @@ public class Basic : BaseCommandModule {
         // Logger.Log($"Data: {content}");
         var id = content.Split("\"id\":\"")[1].Split("\"")[0];
         var url = content.Split("\"gif\":\"")[1].Split("\"")[0];
-        var @source = content.Split("\"source\":\"")[1].Split("\"")[0];
+        var source = content.Split("\"source\":\"")[1].Split("\"")[0];
         // Logger.Log(id);
         // Logger.Log(url);
+
+        if (string.IsNullOrWhiteSpace(url)) {
+            httpClient.Dispose();
+            goto start;
+        }
         
         var e = new DiscordEmbedBuilder();
-        if (@source != "unknown") {
-            e.WithAuthor("Source", @source);
+        if (source != "unknown") {
+            e.WithAuthor("Source", source);
         }
         e.WithTitle($"Bunny #{id}");
         e.WithColor(Colors.HexToColor("#B88F64"));
