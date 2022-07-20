@@ -341,7 +341,7 @@ public class Basic : BaseCommandModule {
     }
 }
 
-public class BasicSlashCommands : ApplicationCommandModule {
+/*public class BasicSlashCommands : ApplicationCommandModule {
     public BasicSlashCommands() => Logger.Loadodule("BasicSlashCommands");
     
     private readonly string _footerText = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}";
@@ -378,4 +378,4 @@ public class BasicSlashCommands : ApplicationCommandModule {
         e.WithFooter(_footerText);
         await c.CreateResponseAsync(e.Build());
     }
-}
+}*/
