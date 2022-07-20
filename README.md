@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.3.3, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.3.4, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -13,7 +13,7 @@ I hope I will be the perfect caregiver for your guild.
 <h3>Bot Creator Information</h3>
 <p>
 Donate: <a href="https://ko-fi.com/MintLily" target="_blank">https://ko-fi.com/MintLily</a><br>
-<s>Open-Source</s>: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
+Open-Source: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
 Add to Your Guild: <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot" target="_blank">Invite Link</a><br>
 Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link</a><br>
 </p>
@@ -29,7 +29,7 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
             <li>SlashCommands</li>
         </ul>
     </li>
-    <li>Lib.Harmony <b>v2.2.1</b></li>
+    <li>Lib.Harmony <b>v2.2.2</b></li>
     <li>Microsoft.EntityFrameworkCore <b>v7.0.0-preview.6.22329.4</b></li>
     <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.0-preview.6.22329.4</b></li>
     <li>Nekos-Sharp <b>v3.5.0</b></li>

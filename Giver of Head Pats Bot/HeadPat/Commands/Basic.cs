@@ -30,7 +30,7 @@ public class Basic : BaseCommandModule {
                           "or added in the near future.\nI hope I will be the perfect caregiver for your guild.");
         e.AddField("Bot Creator Information", "Website: https://mintlily.lgbt/ \n" +
                                               "Donate: https://ko-fi.com/MintLily \n" +
-                                              "~~Open-Source~~: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
+                                              "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
                                               "Add to Your Guild: [Invite Link](https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands) \n" +
                                               "Support Guild: [Invite Link](https://discord.gg/98JExhF)");
         FooterText(e);
