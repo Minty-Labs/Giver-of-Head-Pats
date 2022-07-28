@@ -3,6 +3,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using HeadPats.Data;
+using HeadPats.Data.Models;
 using HeadPats.Managers;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
@@ -191,6 +193,58 @@ public class Owner : BaseCommandModule {
         catch (Exception ex) {
             await c.RespondAsync($"```\n{ex.Message}\n```");
         }
+    }
+
+    [Command("BlacklistUserFromPatCommand"), Aliases("blufpc"), Description("Blacklists a user from the pat command")]
+    [RequireOwner]
+    public async Task BlacklistUserFromPatCommand(cc c, string mentionedUser = "", string value = "") {
+        if (string.IsNullOrWhiteSpace(mentionedUser) || string.IsNullOrWhiteSpace(value)) {
+            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}BlacklistUserFromPatCommand [@user] [true/false]`");
+            return;
+        }
+        
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
+
+        await using var db = new Context();
+        var checkUser = db.Users.AsQueryable()
+            .Where(u => u.UserId.Equals(getUserIdFromMention)).ToList().FirstOrDefault();
+
+        var discordUser = await c.Client.GetUserAsync(ulong.Parse(getUserIdFromMention));
+
+        if (discordUser == null) {
+            await c.RespondAsync("Discord user not found! Getting user as guild member...");
+            discordUser = await c.Guild.GetMemberAsync(ulong.Parse(getUserIdFromMention), true);
+            
+            if (discordUser == null) {
+                await c.RespondAsync("Discord user as a guild member not found! Stopping command.");
+                return;
+            }
+        }
+
+        var valueIsTrue = value.ToLower().Contains('t');
+
+        if (checkUser == null) {
+            var newUser = new Users {
+                UserId = discordUser.Id,
+                UsernameWithNumber = $"{discordUser.Username}#{discordUser.Discriminator}",
+                PatCount = 0,
+                CookieCount = 0,
+                IsUserBlacklisted = valueIsTrue ? 1 : 0
+            };
+            db.Users.Add(newUser);
+            db.Users.Update(checkUser!);
+        }
+        else {
+            checkUser.IsUserBlacklisted = valueIsTrue ? 1 : 0;
+            db.Users.Update(checkUser);
+        }
+
+        if (valueIsTrue) {
+            await c.RespondAsync("User is now blacklisted from the pat command.");
+            return;
+        }
+        
+        await c.RespondAsync("User is no longer blacklisted from the pat command.");
     }
 }
 

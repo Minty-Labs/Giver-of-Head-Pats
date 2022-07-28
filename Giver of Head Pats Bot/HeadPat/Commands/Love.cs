@@ -71,6 +71,17 @@ public class Love : BaseCommandModule {
             return;
         }
         
+        await using var db = new Context();
+        
+        var checkUser = db.Users.AsQueryable()
+            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+        var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
+        
+        if (isUserBlackListed) {
+            await c.RespondAsync("You are not allowed to use this command. This was set by a bot developer.");
+            return;
+        }
+        
         var isOwner = c.Message.Author.Id == BuildInfo.Config.OwnerUserId;
         
         var rnd1 = new Random();

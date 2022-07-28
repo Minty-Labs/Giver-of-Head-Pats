@@ -7,6 +7,7 @@ public class Users {
     public string UsernameWithNumber { get; set; }
     public int PatCount { get; set; }
     public int CookieCount { get; set; }
+    public int IsUserBlacklisted { get; set; }
 }
 
 public static class UserControl {
@@ -28,7 +29,8 @@ public static class UserControl {
                 UserId = userId,
                 UsernameWithNumber = $"{user?.Username}#{user?.Discriminator}",
                 PatCount = numberOfPats,
-                CookieCount = 0
+                CookieCount = 0,
+                IsUserBlacklisted = 0
             };
             db.Users.Add(newUser);
         }
@@ -41,7 +43,8 @@ public static class UserControl {
             if (checkGuild == null) {
                 var newGuild = new Guilds {
                     GuildId = guildToAddPatTo,
-                    PatCount = numberOfPats
+                    PatCount = numberOfPats,
+                    HeadPatBlacklistedRoleId = 0
                 };
                 db.Guilds.Add(newGuild);
             }
