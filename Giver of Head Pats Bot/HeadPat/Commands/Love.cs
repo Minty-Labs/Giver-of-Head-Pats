@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using HeadPats.Data;
 using HeadPats.Utils;
 using HeadPats.Data.Models;
 using cc = DSharpPlus.CommandsNext.CommandContext;
@@ -72,9 +73,19 @@ public class Love : BaseCommandModule {
         }
         
         await using var db = new Context();
+        var checkGuild = db.Guilds.AsQueryable()
+            .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
         
         var checkUser = db.Users.AsQueryable()
             .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+
+        var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
+
+        if (isRoleBlackListed) {
+            await c.RespondAsync("This role is not allowed to use this command. This was set by a server administrator.");
+            return;
+        }
+        
         var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
         
         if (isUserBlackListed) {

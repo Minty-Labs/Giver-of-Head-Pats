@@ -5,6 +5,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
+using HeadPats.Data.Models;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
@@ -141,5 +142,45 @@ public class Admin : BaseCommandModule {
         var builder = new DiscordMessageBuilder();
         builder.WithEmbed(e.Build());
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
+    }
+
+    [Command("BlacklistRoleFromPatCommand"), Aliases("brfp"), Description("Blacklists a role from the pat command")]
+    [RequirePermissions(Permissions.ManageRoles)]
+    public async Task BlacklistRoleFromPatCommand(cc c, string mentionedRoleOrId = "", string value = "") {
+        if (string.IsNullOrWhiteSpace(mentionedRoleOrId) || string.IsNullOrWhiteSpace(value)) {
+            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}BlacklistRoleFromPatCommand [@role] [true/false]`");
+            return;
+        }
+        
+        var getRoleIdFromMention = mentionedRoleOrId.Replace("<@&", "").Replace(">", "");
+        
+        var role = c.Guild.GetRole(ulong.Parse(getRoleIdFromMention));
+
+        await using var db = new Context();
+        var checkGuild = db.Guilds.AsQueryable()
+            .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
+        
+        var valueIsTrue = value.ToLower().Contains('t');
+
+        if (checkGuild == null) {
+            var newGuild = new Guilds {
+                GuildId = c.Guild.Id,
+                PatCount = 0,
+                HeadPatBlacklistedRoleId = valueIsTrue ? role.Id : 0
+            };
+            db.Guilds.Add(newGuild);
+            db.Guilds.Update(checkGuild!);
+        }
+        else {
+            checkGuild.HeadPatBlacklistedRoleId = valueIsTrue ? role.Id : 0;
+            db.Guilds.Update(checkGuild);
+        }
+        
+        if (valueIsTrue) {
+            await c.RespondAsync($"The role, **{role.Name}**, is now blacklisted from the pat command.");
+            return;
+        }
+        
+        await c.RespondAsync("The role is no longer blacklisted from the pat command.");
     }
 }
