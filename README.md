@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.3.4, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats v4.4.0, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -20,7 +20,7 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01153</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01159</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -39,14 +39,14 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
 
 <h2>Programs Used</h2>
 <ul>
-    <li>JetBrains
+    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a>
         <ul>
             <li>Rider</li>
-            <li>PhpStorm</li>
+            <li>WebStorm</li>
             <li>dotPeek</li>
         </ul>
     </li>
-    <li>Visual Studio 2022</li>
+    <li>SublimeText</li>
     <li>Photoshop</li>
     <li>Discord*</li>
     <li>Spotify*</li>
@@ -120,9 +120,15 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
 </ul>
 
 <h3>Admin Commands</h3>
+
+```
+*  - Requires Permission: ManageMessages
+** - Requires Permission: ManageRoles
+```
 <ul>
-    <li>InviteInfo - Gets information about a Discord Invite code or URL</li>
-    <li>UserInfo - Gets information about a user</li>
+    <li>InviteInfo* - Gets information about a Discord Invite code or URL</li>
+    <li>UserInfo* - Gets information about a user</li>
+    <li>BlacklistRoleFromPatCommand** - Blacklists a role from the pat command</li>
 </ul>
 
 <h2>Developers</h2>
@@ -130,3 +136,11 @@ Support Guild: <a href="https://discord.gg/98JExhF" target="_blank">Invite Link<
     <a href="https://git.ellyvr.dev/Lily">Lily</a><br>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/2/avatar.png" height="35px" align=center /> &nbsp;
     <a href="https://git.ellyvr.dev/Elly">Elly</a>
+
+<h3>Featured Programs</h3>
+<a href="https://jb.gg/OpenSourceSupport" target="_blank">
+    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider_icon.svg" height="50px" />
+    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/WebStorm_icon.svg" height="50px" />
+    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/PhpStorm_icon.svg" height="50px" />
+    <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/dotPeek_icon.svg" height="50px" />
+</a>
