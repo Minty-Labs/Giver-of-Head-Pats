@@ -130,6 +130,8 @@ public class MessageCreated {
     }*/
 
     private static async Task LookForResetListCommandResponse(DiscordClient sender, MessageCreateEventArgs e) {
+        if (e.Channel.IsPrivate) return;
+        if (e.Author.IsBot) return;
         if (!ProtectCommands.LookingForAnswer) return;
         if (e.Author.Id == 167335587488071682 && e.Message.Content.ToLower().Contains('y')) { /* ID of Lily */
             var path = BuildInfo.IsWindows ? 
@@ -150,6 +152,7 @@ public class MessageCreated {
             await File.WriteAllTextAsync(path,  JsonConvert.SerializeObject(protectBase, Formatting.Indented));
             
             ProtectStructure.Save();
+            ProtectCommands.LookingForAnswer = false;
         }
     }
 }
