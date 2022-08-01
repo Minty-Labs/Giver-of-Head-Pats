@@ -17,7 +17,7 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-nightly-01159";
+    public const string DSharpVer = "4.3.0-nightly-01160";
     public const string MintApiVer = "1.4.2";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
@@ -26,8 +26,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.4.0";
-    public static readonly DateTime BuildTime = new(2022, 7, 28, 0, 31, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.4.1";
+    public static readonly DateTime BuildTime = new(2022, 7, 31, 20, 08, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -159,7 +159,7 @@ public sealed class Program {
         });
         
         ReplyStructure.CreateFile();
-        VRChat.ProtectStructure.CreateFile();
+        MelonLoaderBlacklist.ProtectStructure.CreateFile();
             
         await Client.ConnectAsync();
 

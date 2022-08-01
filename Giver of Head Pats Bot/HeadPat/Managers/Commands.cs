@@ -13,7 +13,7 @@ internal static class Commands {
         c?.RegisterCommands<Contributors>();
         c?.RegisterCommands<Admin>();
         
-        c?.RegisterCommands<VRChat.ProtectCommands>();
+        c?.RegisterCommands<MelonLoaderBlacklist.ProtectCommands>();
     }
 
     public static void Register(SlashCommandsExtension? s) {
