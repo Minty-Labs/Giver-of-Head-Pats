@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 
-namespace HeadPats.VRChat;
+namespace HeadPats.MelonLoaderBlacklist;
 public class BaseProtection {
     [JsonProperty("Users")]
     public List<Users>? Users { get; set; }
@@ -38,19 +38,17 @@ internal static class ProtectStructure {
     
     private static BaseProtection Load() {
         var path = BuildInfo.IsWindows ? 
-            $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json" :
-            $"{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json";
+            $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
+            $"{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
         CreateFile();
-        var j = JsonConvert.DeserializeObject<BaseProtection>(File.ReadAllText(
-            path));
+        var j = JsonConvert.DeserializeObject<BaseProtection>(File.ReadAllText(path));
         return j ?? throw new Exception();
     }
     
     public static void CreateFile() {
         var path = BuildInfo.IsWindows ? 
-            $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json" :
-            $"{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json";
-        
+            $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
+            $"{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
         // if (!Directory.Exists($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}VRChat"))
         //     Directory.CreateDirectory($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}VRChat");
         
@@ -64,21 +62,19 @@ internal static class ProtectStructure {
                     Role = Roles.Admin
                 }
             },
-            ModNames = new List<string> { "astral" },
-            PluginNames = new List<string> { "freeloading" },
-            AuthorNames = new List<string> { "largestboi" }
+            ModNames = new List<string> { "___Test" },
+            PluginNames = new List<string> { "___Test" },
+            AuthorNames = new List<string> { "___Test" }
         };
-        File.WriteAllText(
-            path, JsonConvert.SerializeObject(Base, Formatting.Indented));
+        File.WriteAllText(path, JsonConvert.SerializeObject(Base, Formatting.Indented));
         Logger.Log("Created VRChat Protection JSON: BaseProtection");
         Save();
     }
     
-    private static void Save() {
+    internal static void Save() {
         var path = BuildInfo.IsWindows ? 
-            $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json" :
-            $"{Path.DirectorySeparatorChar}VRChat{Path.DirectorySeparatorChar}Protection.json";
-        
+            $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
+            $"{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
         File.WriteAllText(path, JsonConvert.SerializeObject(Base, Formatting.Indented));
         Logger.Log("Saved VRChat Protection JSON: BaseProtection");
     }

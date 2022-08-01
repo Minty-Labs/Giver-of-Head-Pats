@@ -5,7 +5,7 @@ using DSharpPlus.Entities;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 
-namespace HeadPats.VRChat;
+namespace HeadPats.MelonLoaderBlacklist;
 
 public class ProtectCommands : BaseCommandModule {
     public ProtectCommands() => Logger.Loadodule("ProtectCommands");
@@ -27,8 +27,7 @@ public class ProtectCommands : BaseCommandModule {
         e.WithFooter(footerText);
         e.WithTimestamp(DateTime.Now);
         e.AddField("Admin Commands", "`AddUser`, `RemoveUser`");
-        e.AddField("Mod Commands", "`AddMod`, `AddAuthor`, `AddPlugin`, `RemoveMod`, `RemoveAuthor`, `RemovePlugin`");
-        e.AddField("No Role Commands", "`ListUsers`, `ListMods`, `ListAuthors`, `ListPlugins`, `ListEverything`");
+        e.AddField("Mod Commands", "`AddMod`, `AddAuthor`, `AddPlugin`, `ListUsers`, `ListMods`, `ListAuthors`, `ListPlugins`, `ListEverything`, `RemoveMod`, `RemoveAuthor`, `RemovePlugin`");
         await builder.WithReply(c.Message.Id).WithEmbed(e.Build()).SendAsync(c.Channel);
     }
 
@@ -291,5 +290,13 @@ public class ProtectCommands : BaseCommandModule {
         }
         
         await ProtectStructure.RemovePlugin(c, plugin);
+    }
+
+    public static bool LookingForAnswer;
+    [Command("ResetEntireList"), Description("Reset the entire protect list")]
+    [RequireOwner]
+    public async Task ResetEntireList(cc c) {
+        if (LookingForAnswer) return;
+        await c.RespondAsync("Are you sure you want to reset the entire protect list? (y/n)");
     }
 }

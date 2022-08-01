@@ -1,7 +1,7 @@
 ﻿using DSharpPlus.CommandsNext.Attributes;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 
-namespace HeadPats.VRChat;
+namespace HeadPats.MelonLoaderBlacklist;
 
 public class IsMod : CheckBaseAttribute {
     public override Task<bool> ExecuteCheckAsync(cc c, bool yes) {
