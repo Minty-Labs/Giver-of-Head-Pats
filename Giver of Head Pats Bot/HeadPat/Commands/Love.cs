@@ -280,7 +280,7 @@ public class LoveSlash : ApplicationCommandModule {
         else if (ctx.TargetMember.Id == ctx.User.Id)
             await ctx.CreateResponseAsync("You cant give yourself hugs, but I'll gladly give you some!");
         else 
-            await ctx.CreateResponseAsync($"{ctx.User.Username} hugs <@{ctx.TargetMember.Id}>!");
+            await ctx.CreateResponseAsync($"{ctx.User.Username} hugs <@{ctx.TargetMember.DisplayName}>!");
     }
     
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
