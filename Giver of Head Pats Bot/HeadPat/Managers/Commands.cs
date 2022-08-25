@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using HeadPats.Commands;
+// using HeadPats.Commands.Modules;
 
 namespace HeadPats.Managers;
 internal static class Commands {
@@ -22,9 +23,12 @@ internal static class Commands {
         
         // s?.RegisterCommands<SlashOwner>();
         // Logger.Log("Owner Slash commands registered");
+#if!DEBUG
         s?.RegisterCommands<LoveSlash>();
         Logger.Log("Love Slash commands registered");
+#endif
 
-        // s?.RefreshCommands();
+        // s?.RegisterCommands<Moderation>();
+        // Logger.Log("Moderation Slash commands registered");
     }
 }

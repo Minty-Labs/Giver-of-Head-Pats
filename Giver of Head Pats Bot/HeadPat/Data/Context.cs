@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HeadPats.Data.Models;
+using HeadPats.Handlers;
 
 namespace HeadPats.Data;
 
@@ -17,3 +18,14 @@ public class Context : DbContext {
 
     }
 }
+
+/*public class ModerationModuleContext : DbContext {
+    public ModerationModuleContext() => Database.EnsureCreated();
+    public DbSet<Moderation> Moderation { get; set; }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+        const string path = "Data/moderation.db";
+        optionsBuilder.UseSqlite($"Data Source={path}");
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+}*/
