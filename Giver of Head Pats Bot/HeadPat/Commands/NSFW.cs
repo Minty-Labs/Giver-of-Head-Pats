@@ -1,4 +1,4 @@
-﻿using DSharpPlus.CommandsNext;
+﻿/*using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
@@ -218,4 +218,4 @@ public class Nsfw : BaseCommandModule {
 
         await OutputBaseCommand(c, neko?.Result.ImageUrl, "Yuri");
     }
-}
+}*/
