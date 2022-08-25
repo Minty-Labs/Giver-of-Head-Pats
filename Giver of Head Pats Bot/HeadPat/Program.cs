@@ -8,6 +8,7 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
+using HeadPats.Handlers;
 using HeadPats.Handlers.Events;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -17,17 +18,18 @@ using Pastel;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-nightly-01168";
-    public const string MintApiVer = "1.4.2";
+    public const string DSharpVer = "4.3.0-nightly-01169";
+    public const string MintApiVer = "1.5.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
+    public const ulong TestGuildId = 279459962843955201;
 #if DEBUG
-    public const string Version = "4.3.0-dev2";
+    public const string Version = "4.5.0-dev2";
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.4.3";
-    public static readonly DateTime BuildTime = new(2022, 8, 11, 17, 36, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.4.5";
+    public static readonly DateTime BuildTime = new(2022, 8, 25, 16, 43, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -114,11 +116,7 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix,
-#if !DEBUG
-                "-"
-#endif
-            },
+            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix },
             EnableDefaultHelp = true
         };
 
@@ -157,6 +155,26 @@ public sealed class Program {
             PaginationBehaviour = DSharpPlus.Interactivity.Enums.PaginationBehaviour.Ignore,
             Timeout = TimeSpan.FromMinutes(2)
         });
+
+        /*await using var moderationDb = new ModerationModuleContext();
+        var checkModerationModule = moderationDb.Moderation.AsQueryable().Where(m => m.GuildId == BuildInfo.TestGuildId).ToList().FirstOrDefault();
+        
+        if (checkModerationModule == null) {
+            var moderation = new Moderation {
+                GuildId = BuildInfo.TestGuildId, // Test Guild ID
+                Enabled = false,
+                LogChannelId = 1009952339832078396, // Test Log Channel ID
+            };
+            moderationDb.Add(moderation);
+            await moderationDb.SaveChangesAsync();
+        }
+
+        GuildCommandCheckList = new List<GuildCommandCheck>();
+        var things = new GuildCommandCheck {
+            GuildId = BuildInfo.TestGuildId,
+            Enabled = false
+        };
+        GuildCommandCheckList.Add(things);*/
         
         ReplyStructure.CreateFile();
         MelonLoaderBlacklist.ProtectStructure.CreateFile();
@@ -165,6 +183,8 @@ public sealed class Program {
 
         await Task.Delay(-1);
     }
+    
+    // public static List<GuildCommandCheck>? GuildCommandCheckList;
     
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 
