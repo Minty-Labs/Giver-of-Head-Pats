@@ -32,7 +32,9 @@ public class Owner : BaseCommandModule {
 
     [Command("ChangeActivity"), Aliases("ca"), Description("Change the bot\'s Activity")]
     [RequireOwner]
-    public async Task ChangeActivity(cc c, string status, string activityType, [RemainingText]string args = "") {
+    public async Task ChangeActivity(cc c, [Description("Online Status (Online, Idle, etc)")] string status,
+        [Description("Activity (playing, watching, etc)")] string activityType, 
+        [RemainingText, Description("Extra Text to add after the activity")] string args = "") {
         if (activityType.ToLower().Contains("stream") && !args.Contains("%http")) {
             await c.RespondAsync("Streaming needs a URL: Something like `%http...`");
             return;
@@ -116,7 +118,7 @@ public class Owner : BaseCommandModule {
 
     [Command("LeaveGuild"), Aliases("leave"), Description("Forces the bot to leave a guild")]
     [RequireOwner]
-    public async Task LeaveGuild(cc c, string guildId = "") {
+    public async Task LeaveGuild(cc c, [Description("Guild ID to leave from")] string guildId = "") {
         if (string.IsNullOrWhiteSpace(guildId)) {
             await c.RespondAsync("Please provide a guild ID.");
             return;
@@ -131,7 +133,7 @@ public class Owner : BaseCommandModule {
 
     [Command("DeregisterSlash"), Description("Removes and deregisters a slash command")]
     [RequireOwner]
-    public async Task DeregisterSlash(cc c, string command) {
+    public async Task DeregisterSlash(cc c, [Description("You should not use this command")] string command) {
         var cmdList = await c.Client.GetGlobalApplicationCommandsAsync();
         ulong cmdId;
         try {
@@ -158,7 +160,7 @@ public class Owner : BaseCommandModule {
 
     [Command("GetPresence"), Aliases("gp"), Description("Gets users with the given presence")]
     [RequireOwner] // Made by Eric van Fandenfart
-    public async Task GetPresence(cc c, string activity = "") {
+    public async Task GetPresence(cc c, [Description("Text to search presences with")] string activity = "") {
         if (string.IsNullOrWhiteSpace(activity)) {
             await c.RespondAsync("activity field was empty");
             return;
@@ -197,7 +199,8 @@ public class Owner : BaseCommandModule {
 
     [Command("BlacklistUserFromPatCommand"), Aliases("blufpc"), Description("Blacklists a user from the pat command")]
     [RequireOwner]
-    public async Task BlacklistUserFromPatCommand(cc c, string mentionedUser = "", string value = "") {
+    public async Task BlacklistUserFromPatCommand(cc c, [Description("Looks for User ID")] string mentionedUser = "",
+        [Description("Boolean as text; Add(t) or remove(f) blacklist")] string value = "") {
         if (string.IsNullOrWhiteSpace(mentionedUser) || string.IsNullOrWhiteSpace(value)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}BlacklistUserFromPatCommand [@user] [true/false]`");
             return;

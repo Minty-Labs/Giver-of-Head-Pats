@@ -66,7 +66,7 @@ public class Love : BaseCommandModule {
     }
 
     [Command("pat"), Aliases("pet", "p", "pets", "pats", "headpat"), Description("Give headpats to a specified user.")]
-    public async Task GivePat(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
+    public async Task GivePat(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null, [RemainingText, Description("Add text to command message")] string? extraText = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}pat [@user]`");
             return;
@@ -143,7 +143,7 @@ public class Love : BaseCommandModule {
     }*/
     
     [Command("cuddle"), Aliases("c"), Description("Give cuddles to a specified user.")]
-    public async Task GiveCuddles(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
+    public async Task GiveCuddles(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}cuddle [@user]`");
             return;
@@ -164,7 +164,7 @@ public class Love : BaseCommandModule {
     }
     
     [Command("hug"), Aliases("h"), Description("Give hugs to a specified user.")]
-    public async Task GiveHugs(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
+    public async Task GiveHugs(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}hug [@user]`");
             return;
@@ -185,7 +185,7 @@ public class Love : BaseCommandModule {
     }
     
     [Command("kiss"), Aliases("k"), Description("Give kisses to a specified user.")]
-    public async Task GiveKiss(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
+    public async Task GiveKiss(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}kiss [@user]`");
             return;
@@ -206,7 +206,7 @@ public class Love : BaseCommandModule {
     }
     
     [Command("slap"), Description("Slap a specified user.")]
-    public async Task Slap(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
+    public async Task Slap(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}slap [@user]`");
             return;
@@ -227,7 +227,7 @@ public class Love : BaseCommandModule {
     }
 
     [Command("lick"), Description("Lick a specified user.")]
-    public async Task Lick(cc c, string? mentionedUser = null, [RemainingText] string? extraText = null) {
+    public async Task Lick(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}lick [@user]`");
             return;
@@ -249,7 +249,7 @@ public class Love : BaseCommandModule {
     }
     
     [Command("poke"), Aliases("boop", "pokes"), Description("Poke a specified user.")]
-    public async Task Poke(cc c, string? mentionedUser = null, [RemainingText]string? extraText = null) {
+    public async Task Poke(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
         if (string.IsNullOrWhiteSpace(mentionedUser)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}poke [@user]`");
             return;
@@ -271,7 +271,6 @@ public class Love : BaseCommandModule {
 }
 
 public class LoveSlash : ApplicationCommandModule {
-    public LoveSlash() => Logger.Loadodule("LoveSlash");
 
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
     public async Task Hug(ContextMenuContext ctx) {
@@ -280,7 +279,7 @@ public class LoveSlash : ApplicationCommandModule {
         else if (ctx.TargetMember.Id == ctx.User.Id)
             await ctx.CreateResponseAsync("You cant give yourself hugs, but I'll gladly give you some!");
         else 
-            await ctx.CreateResponseAsync($"{ctx.User.Username} hugs <@{ctx.TargetMember.DisplayName}>!");
+            await ctx.CreateResponseAsync($"{ctx.User.Username} hugged {ctx.TargetMember.DisplayName}!");
     }
     
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]

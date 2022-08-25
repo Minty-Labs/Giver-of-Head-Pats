@@ -17,7 +17,7 @@ public class Admin : BaseCommandModule {
 
     [Command("InviteInfo"), Aliases("ii"), Description("Gets a basic description about an invite by code")]
     [RequirePermissions(Permissions.ManageMessages)]
-    public async Task GetInviteInfo(cc c, string code) {
+    public async Task GetInviteInfo(cc c, [Description("Full link or just invite code")] string code) {
         var hasLink = code.ToLower().Contains("discord.gg") || code.ToLower().Contains(".gg") || code.ToLower().Contains("https://");
         var final = code
             .Replace("https://", "")
@@ -56,7 +56,7 @@ public class Admin : BaseCommandModule {
 
     [Command("UserInfo"), Aliases("ui", "user-info", "uinfo"), Description("Displays information about a user")]
     [RequirePermissions(Permissions.ManageMessages)]
-    public async Task UserInfo(cc c, string userId = "") {
+    public async Task UserInfo(cc c, [Description("User ID")] string userId = "") {
         if (string.IsNullOrWhiteSpace(userId)) {
             await c.RespondAsync("Please provide a user to get info.");
             return;
@@ -101,7 +101,7 @@ public class Admin : BaseCommandModule {
 
     [Command("UserInfo")]
     [RequirePermissions(Permissions.ManageMessages)]
-    public async Task UserInfo(cc c, DiscordUser? user = null) {
+    public async Task UserInfo(cc c, [Description("User snowflake object; Mention, User ID, etc")] DiscordUser? user = null) {
         if (user is null) {
             await c.RespondAsync("Please provide a user to get info.");
             return;
@@ -146,7 +146,8 @@ public class Admin : BaseCommandModule {
 
     [Command("BlacklistRoleFromPatCommand"), Aliases("brfp"), Description("Blacklists a role from the pat command")]
     [RequirePermissions(Permissions.ManageRoles)]
-    public async Task BlacklistRoleFromPatCommand(cc c, string mentionedRoleOrId = "", string value = "") {
+    public async Task BlacklistRoleFromPatCommand(cc c, [Description("Mentioned Role or Role ID")] string mentionedRoleOrId = "",
+        [Description("Boolean as text; Add(t) or remove(f) blacklist")] string value = "") {
         if (string.IsNullOrWhiteSpace(mentionedRoleOrId) || string.IsNullOrWhiteSpace(value)) {
             await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}BlacklistRoleFromPatCommand [@role] [true/false]`");
             return;

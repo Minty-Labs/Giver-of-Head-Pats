@@ -19,7 +19,9 @@ public class Replies : BaseCommandModule {
 
     [Command("AddReply"), Aliases("ar"), Description("Adds an auto response for the server")]
     [RequirePermissions(Permissions.ManageMessages)]
-    public async Task AddReply(cc c, string trigger = "", string response = "", string requireOnlyTriggerText = "false") {
+    public async Task AddReply(cc c, [Description("Trigger word or phrase (separated by \"Quotations\")")] string trigger = "",
+        [Description("The response given that is triggered by the word or phrase")] string response = "",
+        [Description("Boolean as string; Respond ONLY with the trigger word or phrase")] string requireOnlyTriggerText = "false") {
         if (string.IsNullOrWhiteSpace(trigger) || string.IsNullOrWhiteSpace(response)) {
             await c.RespondAsync("Incorrect format. Please use the following format: " +
                                  $"`{BuildInfo.Config.Prefix}AddReply [\"Trigger\"] [\"Response\"] (\"RequireOnlyTriggerText\")`\n" +
@@ -41,7 +43,7 @@ public class Replies : BaseCommandModule {
 
     [Command("RemoveReply"), Aliases("rr"), Description("Removes a trigger response by the provided trigger")]
     [RequirePermissions(Permissions.ManageMessages)]
-    public async Task RemoveReply(cc c, [RemainingText]string trigger) {
+    public async Task RemoveReply(cc c, [RemainingText, Description("Trigger word or phrase (separated by \"Quotations\") to remove")] string trigger) {
         ReplyStructure.RemoveValue(c.Guild.Id, trigger);
         if (ReplyStructure.ErroredOnRemove) {
             await c.RespondAsync("Either the provided trigger does not exist, or an error has occured.");

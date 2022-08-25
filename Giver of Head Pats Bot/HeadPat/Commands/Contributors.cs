@@ -14,7 +14,7 @@ public class Contributors : BaseCommandModule {
 
     [Command("AddContributor"), Aliases("ac"), Description("Adds a Contributor to the list")]
     [RequireOwner]
-    public async Task AddContributor(cc c, string userName, [RemainingText] string info) {
+    public async Task AddContributor(cc c, [Description("Username or alias name to add")] string userName, [RemainingText, Description("Information about what they did")] string info) {
         if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(info)) {
             await c.RespondAsync("Incorrect format. Please use the following format: " +
                                  $"`{BuildInfo.Config.Prefix}AddContributor [\"UserName\"] [\"Info\"]`\n");
@@ -27,7 +27,7 @@ public class Contributors : BaseCommandModule {
 
     [Command("RemoveContributor"), Aliases("rc"), Description("Removes a Contributor from the list")]
     [RequireOwner]
-    public async Task RemoveContributor(cc c, string userName) {
+    public async Task RemoveContributor(cc c, [Description("Username or alias name to remove")] string userName) {
         if (string.IsNullOrWhiteSpace(userName)) {
             await c.RespondAsync("Incorrect format. Please use the following format: " +
                                  $"`{BuildInfo.Config.Prefix}RemoveContributor [\"UserName\"]`\n");
