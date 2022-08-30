@@ -32,7 +32,7 @@ public class Basic : BaseCommandModule {
                                               "Donate: https://ko-fi.com/MintLily \n" +
                                               "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
                                               "Add to Your Guild: [Invite Link](https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands) \n" +
-                                              "Support Guild: [Invite Link](https://discord.gg/98JExhF)");
+                                              "Support Guild: [Invite Link](https://discord.gg/CVGpTWRjSd)");
         FooterText(e);
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(BuildInfo.ClientId, true);
