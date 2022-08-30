@@ -18,16 +18,16 @@ public class MessageCreated {
         c.MessageCreated += RespondToDmFromChannel;
         // c.MessageCreated += TotallyWholesomeSuggestionAutoResponse;
         c.MessageCreated += LookForResetListCommandResponse;
-        c.MessageCreated += HiddenMinecraftCommand;
+        // c.MessageCreated += HiddenMinecraftCommand;
     }
 
-    private static async Task HiddenMinecraftCommand(DiscordClient sender, MessageCreateEventArgs e) {
-        if (e.Channel.IsPrivate) return;
-        if (e.Author.IsBot) return;
-        if (e.Message.Content.ToLower().StartsWith("hp!minecraft")) {
-            await e.Message.RespondAsync("Did you now the bot creator has a minecraft server?\nIP: `mintlily.lgbt` - Vanilla 1.19.1");
-        }
-    }
+    // private static async Task HiddenMinecraftCommand(DiscordClient sender, MessageCreateEventArgs e) {
+    //     if (e.Channel.IsPrivate) return;
+    //     if (e.Author.IsBot) return;
+    //     if (e.Message.Content.ToLower().StartsWith("hp!minecraft")) {
+    //         await e.Message.RespondAsync("Did you now the bot creator has a minecraft server?\nIP: `mintlily.lgbt` - Vanilla 1.19.x+");
+    //     }
+    // }
 
     internal static DiscordChannel? DmCategory;
 
