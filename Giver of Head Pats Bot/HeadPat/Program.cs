@@ -8,7 +8,6 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
-using HeadPats.Handlers;
 using HeadPats.Handlers.Events;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -19,7 +18,6 @@ namespace HeadPats;
 
 public static class BuildInfo {
     public const string DSharpVer = "4.3.0-nightly-01171";
-    public const string MintApiVer = "1.5.0";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
     public const ulong TestGuildId = 279459962843955201;
@@ -28,8 +26,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.4.8";
-    public static readonly DateTime BuildTime = new(2022, 9, 14, 15, 20, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.4.9";
+    public static readonly DateTime BuildTime = new(2022, 9, 15, 13, 33, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -94,9 +92,10 @@ public sealed class Program {
 
     private async Task MainAsync() {
         Logger.Log("Bot is starting . . .");
-#if !DEBUG
-        MobileManager.CreateMobilePatch();
-#endif
+        
+        if (!BuildInfo.IsDebug)
+            MobileManager.CreateMobilePatch();
+        
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
 #if DEBUG
@@ -116,7 +115,7 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = new[] { BuildInfo.Config.Prefix.ToLower(), BuildInfo.Config.Prefix },
+            StringPrefixes = new[] { BuildInfo.Config.Prefix!.ToLower(), BuildInfo.Config.Prefix },
             EnableDefaultHelp = true
         };
 
@@ -201,17 +200,17 @@ public sealed class Program {
         Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
         Logger.Log("Game                          = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
         Logger.Log("Streaming URL                 = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
-        Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count + 1}".Pastel("FBADBC"));
+        Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count}".Pastel("FBADBC"));
         //Logger.Log("Active Events                 = " + $"16".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
-            ActivityType = GetActivityType(BuildInfo.Config.ActivityType)
+            ActivityType = GetActivityType(BuildInfo.Config.ActivityType!)
         },
 #if !DEBUG
             UserStatus.Online
 #endif
 #if DEBUG
-        UserStatus.Idle
+            UserStatus.Idle
 #endif
             );
 
@@ -222,7 +221,7 @@ public sealed class Program {
         em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
         em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}");
         em.AddField("Build Time", $"{BuildInfo.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
-        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R> {(BuildInfo.IsWindows ? "" : "(Broken)")}");
+        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
         em.WithFooter($"v{BuildInfo.Version}");
         em.WithTimestamp(DateTime.Now);
         GeneralLogChannel = await sender.GetChannelAsync(BuildInfo.Config.GeneralLogChannelId);
@@ -256,7 +255,7 @@ public sealed class Program {
         return temp ?? "***************";
     }
     
-    private static ActivityType GetActivityType(string type) {
+    public static ActivityType GetActivityType(string type) {
         return type.ToLower() switch {
             "playing" => ActivityType.Playing,
             "listening" => ActivityType.ListeningTo,
@@ -276,12 +275,25 @@ public sealed class Program {
     public static string GetActivityAsString(ActivityType type) {
         return type switch {
             ActivityType.Playing => "playing",
-             ActivityType.ListeningTo => "listening",
-             ActivityType.Watching => "watching",
-             ActivityType.Streaming => "streaming",
-             ActivityType.Competing => "competing",
-             ActivityType.Custom => "other",
+            ActivityType.ListeningTo => "listening",
+            ActivityType.Watching => "watching",
+            ActivityType.Streaming => "streaming",
+            ActivityType.Competing => "competing",
+            ActivityType.Custom => "other",
             _ => ""
+        };
+    }
+
+    public static UserStatus GetUserStatus(string status) {
+        return status.ToLower() switch {
+            "online" => UserStatus.Online,
+            "idle" => UserStatus.Idle,
+            "donotdisturb" => UserStatus.DoNotDisturb,
+            "dnd" => UserStatus.DoNotDisturb,
+            "offline" => UserStatus.Offline,
+            "invisible" => UserStatus.Invisible,
+            "invis" => UserStatus.Invisible,
+            _ => UserStatus.Online
         };
     }
 }
