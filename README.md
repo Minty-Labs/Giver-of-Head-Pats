@@ -1,4 +1,4 @@
-<h1>Giver of Head Pats v4.4.8, <i>DSharpPlus (C#)</i></h1>
+<h1>Giver of Head Pats, <i>DSharpPlus (C#)</i></h1>
 <img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
@@ -6,7 +6,7 @@ created by <a href="https://mintlily.lgbt/">Lily</a>. <br>
 Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do.
 At the moment you can see what I can do by running the <code>hp!help</code> command. <br>
 I was recently rewritten from Discord.JS (Javascript) to DSharpPlus (C#). So if things seem broken or missing from the older version, don't worry, they'll be fixed
-or added in the near future.
+or added in the near future.<br>
 I hope I will be the perfect caregiver for your guild.
 </p>
 
@@ -15,7 +15,7 @@ I hope I will be the perfect caregiver for your guild.
 Donate: <a href="https://ko-fi.com/MintLily" target="_blank">https://ko-fi.com/MintLily</a><br>
 Open-Source: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
 Add to Your Guild: <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot" target="_blank">Invite Link</a><br>
-Support Guild: <a href="https://discord.gg/CVGpTWRjSd" target="_blank">Invite Link</a><br>
+Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new" target="_blank">Create an Issue</a><br>
 </p>
 
 <h2>Packages (Nuget)</h2>

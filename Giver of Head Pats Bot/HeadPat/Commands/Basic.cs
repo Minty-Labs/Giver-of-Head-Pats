@@ -32,7 +32,7 @@ public class Basic : BaseCommandModule {
                                               "Donate: https://ko-fi.com/MintLily \n" +
                                               "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
                                               "Add to Your Guild: [Invite Link](https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands) \n" +
-                                              "Support Guild: [Invite Link](https://discord.gg/CVGpTWRjSd)");
+                                              "Need Support? [Create an Issue](https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new)");
         FooterText(e);
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(BuildInfo.ClientId, true);
@@ -41,11 +41,11 @@ public class Basic : BaseCommandModule {
         await c.RespondAsync(e.Build());
     }
 
-    [Command("Support"), Description("Sends a DM for a  server invite link to the bot support server")]
+    [Command("Support"), Description("Sends a DM to find where to get support")]
     public async Task Support(cc c) {
         await c.Message.DeleteAsync();
         var message = new DiscordMessageBuilder();
-        message.WithContent("Need support or have questions? Join the **Giver of Head Pats** Discord support guild:\n  https://discord.gg/98JExhF");
+        message.WithContent("Need support? Create an issue on our GitLab:\n  https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new");
         var member = await c.Guild.GetMemberAsync(c.Message.Author.Id);
         try {
             var dm = await member.CreateDmChannelAsync();
@@ -81,10 +81,6 @@ public class Basic : BaseCommandModule {
     [Command("stats"), Description("Shows the bot status including server status and bot stats")]
     public async Task Stats(cc c) {
         var ram = GC.GetTotalMemory(false) / 1024 / 1024;
-        //var cpu = "x";
-        const string platform = "Linux";
-        const string discordNetVer = BuildInfo.DSharpVer;
-        const string mintApiVer = BuildInfo.MintApiVer;
         var tempNow = DateTime.Now;
         var days = tempNow.Subtract(BuildInfo.StartTime).Days;
         var hours = tempNow.Subtract(BuildInfo.StartTime).Hours;
@@ -95,13 +91,12 @@ public class Basic : BaseCommandModule {
         e.WithTitle($"{BuildInfo.Name} Stats");
         e.WithColor(DiscordColor.Teal);
 
-        e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count + 1}", true);
+        e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count}", true);
         e.AddField("Ping", $"{c.Client.Ping}ms", true);
-        e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{platform}**", true);
+        e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(BuildInfo.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
-        e.AddField("Bot Versions Info", $"DSharpPlus: **v{discordNetVer}** \nBot: **v{BuildInfo.Version}** \nMintAPI: **v{mintApiVer}** \nBuild Date: **{BuildInfo.BuildDateShort}**");
-        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **Debian 11**");
-        //e.AddField("Server Info", $"Location: **South Carolina, USA** \nServer: **[Sypher](https://mintlily.lgbt/pc)** \nMax RAM: **32 GB** \nOS: **{platform} 10 (21H1)**");
+        e.AddField("Bot Versions Info", $"DSharpPlus: **v{BuildInfo.DSharpVer}** \nBot: **v{BuildInfo.Version}** \nBuild Date: **{BuildInfo.BuildDateShort}**");
+        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **8 GB** \nOS: **Debian 11**");
 
         FooterText(e);
         await c.RespondAsync(e.Build());
@@ -116,9 +111,8 @@ public class Basic : BaseCommandModule {
 
     [Command("inspirobot"), Aliases("ib"), Description("Generates a random inspirational quote created by an AI.")]
     public async Task InspiroBot(cc c) {
-        var content = "";
         var httpClient = new HttpClient();
-        content = await httpClient.GetStringAsync("https://inspirobot.me/api?generate=true&oy=vey"); // out puts an image URL link
+        var content = await httpClient.GetStringAsync("https://inspirobot.me/api?generate=true&oy=vey"); // out puts an image URL link
         if (string.IsNullOrWhiteSpace(content)) {
             httpClient.Dispose();
             await c.RespondAsync("Failed to get an image.");
@@ -340,42 +334,3 @@ public class Basic : BaseCommandModule {
         await c.RespondAsync(e.Build());
     }
 }
-
-/*public class BasicSlashCommands : ApplicationCommandModule {
-    public BasicSlashCommands() => Logger.Loadodule("BasicSlashCommands");
-    
-    private readonly string _footerText = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}";
-    
-    [SlashCommand("ping", "Outputs the bot's latency to discord.")]
-    public async Task Ping(ic c) => await c.CreateResponseAsync($":ping_pong: Pong > {c.Client.Ping}ms");
-
-    [SlashCommand("stats", "Shows the bot status including server status and bot stats")]
-    public async Task Stats(ic c) {
-        var ram = GC.GetTotalMemory(false) / 1024 / 1024;
-        //var cpu = "x";
-        const string platform = "Linux";
-        const string discordNetVer = BuildInfo.DSharpVer;
-        const string mintApiVer = BuildInfo.MintApiVer;
-        var tempNow = DateTime.Now;
-        var days = tempNow.Subtract(BuildInfo.StartTime).Days;
-        var hours = tempNow.Subtract(BuildInfo.StartTime).Hours;
-        var minutes = tempNow.Subtract(BuildInfo.StartTime).Minutes;
-        var seconds = tempNow.Subtract(BuildInfo.StartTime).Seconds;
-
-        var e = new DiscordEmbedBuilder();
-        e.WithTitle($"{BuildInfo.Name} Stats");
-        e.WithColor(DiscordColor.Teal);
-
-        e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count}", true);
-        e.AddField("Ping", $"{c.Client.Ping}ms", true);
-        e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{platform}**", true);
-        e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
-        e.AddField("Bot Versions Info", $"DSharpPlus: **v{discordNetVer}** \nBot: **v{BuildInfo.Version}** \nMintAPI: **v{mintApiVer}** \nBuild Date: **{BuildInfo.BuildDateShort}**");
-        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **4 GB** \nOS: **Debian 11**");
-        //e.AddField("Server Info", $"Location: **South Carolina, USA** \nServer: **[Sypher](https://mintlily.lgbt/pc)** \nMax RAM: **32 GB** \nOS: **{platform} 10 (21H1)**");
-        
-        e.WithTimestamp(DateTime.Now);
-        e.WithFooter(_footerText);
-        await c.CreateResponseAsync(e.Build());
-    }
-}*/
