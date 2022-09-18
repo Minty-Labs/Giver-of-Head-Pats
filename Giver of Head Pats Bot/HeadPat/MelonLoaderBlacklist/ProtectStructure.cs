@@ -39,7 +39,7 @@ internal static class ProtectStructure {
     private static BaseProtection Load() {
         var path = BuildInfo.IsWindows ? 
             $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
-            $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
+            $"{Path.DirectorySeparatorChar}web{Path.DirectorySeparatorChar}mintlily{Path.DirectorySeparatorChar}extra{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
         CreateFile();
         var j = JsonConvert.DeserializeObject<BaseProtection>(File.ReadAllText(path));
         return j ?? throw new Exception();
@@ -48,7 +48,7 @@ internal static class ProtectStructure {
     public static void CreateFile() {
         var path = BuildInfo.IsWindows ? 
             $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
-            $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
+            $"{Path.DirectorySeparatorChar}web{Path.DirectorySeparatorChar}mintlily{Path.DirectorySeparatorChar}extra{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
         
         if (File.Exists(path)) return;
         
@@ -65,16 +65,16 @@ internal static class ProtectStructure {
             AuthorNames = new List<string> { "___Test" }
         };
         File.WriteAllText(path, JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created VRChat Protection JSON: BaseProtection");
+        Logger.Log("Created MelonLoaderBlacklist Protection JSON: BaseProtection");
         Save();
     }
     
     internal static void Save() {
         var path = BuildInfo.IsWindows ? 
             $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
-            $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
+            $"{Path.DirectorySeparatorChar}web{Path.DirectorySeparatorChar}mintlily{Path.DirectorySeparatorChar}extra{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
         File.WriteAllText(path, JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Saved VRChat Protection JSON: BaseProtection");
+        Logger.Log("Saved MelonLoaderBlacklist Protection JSON: BaseProtection");
     }
     
     public static List<string>? GetAllModsAsList() => Base.ModNames;
