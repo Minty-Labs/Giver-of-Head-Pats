@@ -99,7 +99,7 @@ public class Love : BaseCommandModule {
         var num1 = rnd1.Next(0, 1);
 
         var neko = num1 == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
         
         var rnd = new Random();
         var num = rnd.Next(0, 3);
@@ -110,37 +110,17 @@ public class Love : BaseCommandModule {
         var special = num == 3 ? 2 : 1;
         var patAmount = yes && isOwner ? int.Parse(extraText!.Split('%')[1].Split('>')[0]) : special;
         
-        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (BlacklistedNekosLifeGifs.StoredMemoryUrls.Any(i => i.Contains(image!))) {
+            Logger.Log("Hit a blacklisted GIF URL");
+            goto start;
+        }
+        
+        await OutputBaseCommand(c, mentionedUser, image!, outputs[num],
             $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{getUserIdFromMention}>", "headpats", patAmount, "ffff00", doNotDelete);
         Logger.Log($"Total Pat amount Given: {patAmount}");
     }
-    
-    /*[Command("pat"), Description("Give headpats to a specified user via user ID.")]
-    public async Task GivePat(cc c, ulong mentionedUser = 0, [RemainingText]string? extraText = null) {
-        if (mentionedUser == 0) {
-            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}pat [UserID]`");
-            return;
-        }
-
-        var isOwner = c.Message.Author.Id == BuildInfo.Config.OwnerUserId;
-        
-        var rnd1 = new Random();
-        var num1 = rnd1.Next(0, 1);
-
-        var neko = num1 == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
-        
-        var rnd = new Random();
-        var num = rnd.Next(0, 3);
-        var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
-
-        var yes = !string.IsNullOrWhiteSpace(extraText) && extraText.Contains('%');
-        var special = num == 3 ? 2 : 1;
-        var patAmount = yes && isOwner ? int.Parse(extraText!.Split('%')[1]) : special;
-        
-        await OutputBaseCommand(c, mentionedUser.ToString(), neko?.Result.ImageUrl, outputs[num],
-            $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{mentionedUser}>", "headpats", patAmount);
-        Logger.Log($"Total Pat amount Given: {patAmount}");
-    }*/
     
     [Command("cuddle"), Aliases("c"), Description("Give cuddles to a specified user.")]
     public async Task GiveCuddles(cc c, [Description("Looks for User ID or mention")] string? mentionedUser = null) {
@@ -153,7 +133,7 @@ public class Love : BaseCommandModule {
         var num1 = rnd1.Next(0, 1);
 
         var neko = num1 == 0 ? Program.NekoClient?.Action.Cuddle() : Program.NekoClient?.Action_v3.CuddleGif();
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
         
         var rnd = new Random();
         var num = rnd.Next(0, 4);
@@ -174,7 +154,7 @@ public class Love : BaseCommandModule {
         var num1 = rnd1.Next(0, 1);
 
         var neko = num1 == 0 ? Program.NekoClient?.Action.Hug() : Program.NekoClient?.Action_v3.HugGif();
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
 
         var rnd = new Random();
         var num = rnd.Next(0, 3);
@@ -195,7 +175,7 @@ public class Love : BaseCommandModule {
         var num1 = rnd1.Next(0, 1);
 
         var neko = num1 == 0 ? Program.NekoClient?.Action.Kiss() : Program.NekoClient?.Action_v3.KissGif();
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
 
         var rnd = new Random();
         var num = rnd.Next(0, 1);
@@ -216,7 +196,7 @@ public class Love : BaseCommandModule {
         var num1 = rnd1.Next(0, 1);
 
         var neko = num1 == 0 ? Program.NekoClient?.Action.Slap() : Program.NekoClient?.Action_v3.SlapGif();
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
 
         var rnd = new Random();
         var num = rnd.Next(0, 2);
@@ -234,7 +214,7 @@ public class Love : BaseCommandModule {
         }
         await c.Message.DeleteAsync("Auto Delete from command");
         
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
         
         var rnd = new Random();
         var num = rnd.Next(0, 4);
@@ -259,7 +239,7 @@ public class Love : BaseCommandModule {
         var num1 = rnd1.Next(0, 1);
 
         var neko = num1 == 0 ? Program.NekoClient?.Action.Poke() : Program.NekoClient?.Action_v3.PokeGif();
-        var getUserIdFromMention = mentionedUser?.Replace("<@", "").Replace(">", "");
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
 
         var rnd = new Random();
         var num = rnd.Next(0, 1);
@@ -311,10 +291,17 @@ public class LoveSlash : ApplicationCommandModule {
         var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
         
         var special = num == 3 ? 2 : 1;
+        
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (BlacklistedNekosLifeGifs.StoredMemoryUrls.Any(i => i.Contains(image!))) {
+            Logger.Log("Hit a blacklisted GIF URL");
+            goto start;
+        }
 
         var e = new DiscordEmbedBuilder();
         e.WithTitle(outputs[num]);
-        e.WithImageUrl(neko?.Result.ImageUrl);
+        e.WithImageUrl(image);
         e.WithColor(Colors.HexToColor("ffff00"));
         e.WithFooter("Powered by nekos.life");
         e.WithDescription(gaveToBot ? $"Gave headpats to <@{c.TargetUser.Id}>" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to <@{c.TargetUser.Id}>");

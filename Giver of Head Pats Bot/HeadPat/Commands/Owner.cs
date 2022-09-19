@@ -249,6 +249,16 @@ public class Owner : BaseCommandModule {
         
         await c.RespondAsync("User is no longer blacklisted from the pat command.");
     }
+
+    [Command("AddGIFBlacklist"), Aliases("addblacklist", "agb"), Description("Adds a GIF URL to a blacklist not to be shown in commands")]
+    [RequireOwner]
+    public async Task AddBlacklistGif(cc c, [RemainingText, Description("URL to be blacklisted")] string url) 
+        => await BlacklistedNekosLifeGifs.AddBlacklist(c, url);
+    
+    [Command("RemoveGIFBlacklist"), Aliases("removeblacklist", "rgb"), Description("Removes a GIF URL from the blacklist to be shown in commands")]
+    [RequireOwner]
+    public async Task RemoveBlacklistGif(cc c, [RemainingText, Description("URL to be removed")] string url) 
+        => await BlacklistedNekosLifeGifs.RemoveBlacklist(c, url);
 }
 
 // public class RequireUserIdAttribute : SlashCheckBaseAttribute {
