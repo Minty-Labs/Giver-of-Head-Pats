@@ -112,7 +112,7 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (BlacklistedNekosLifeGifs.StoredMemoryUrls.Any(i => i.Contains(image!))) {
+        if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
             Logger.Log("Hit a blacklisted GIF URL");
             goto start;
         }
@@ -294,7 +294,7 @@ public class LoveSlash : ApplicationCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (BlacklistedNekosLifeGifs.StoredMemoryUrls.Any(i => i.Contains(image!))) {
+        if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
             Logger.Log("Hit a blacklisted GIF URL");
             goto start;
         }
