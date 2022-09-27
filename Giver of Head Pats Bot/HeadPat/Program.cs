@@ -8,6 +8,7 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
+// using HeadPats.Data.Modules;
 using HeadPats.Handlers.Events;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -178,6 +179,7 @@ public sealed class Program {
         ReplyStructure.CreateFile();
         MelonLoaderBlacklist.ProtectStructure.CreateFile();
         BlacklistedNekosLifeGifs.CreateFile();
+        // ActionLogging.CreateFile();
             
         await Client.ConnectAsync();
 
