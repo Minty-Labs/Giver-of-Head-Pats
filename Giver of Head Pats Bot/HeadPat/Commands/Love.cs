@@ -161,7 +161,7 @@ public class Love : BaseCommandModule {
         var outputs = new[] { "_huggies_", "_huggle_", "_hugs_", "_ultra hugs_" };
 
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
-            $"{c.Message.Author.Mention} gave cuddles to <@{getUserIdFromMention}>", "hugs", 0, "6F41B6");
+            $"{c.Message.Author.Mention} hugged <@{getUserIdFromMention}>", "hugs", 0, "6F41B6");
     }
     
     [Command("kiss"), Aliases("k"), Description("Give kisses to a specified user.")]
@@ -182,7 +182,7 @@ public class Love : BaseCommandModule {
         var outputs = new[] { "_kissies_", "_kisses_" };
 
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
-            $"{c.Message.Author.Mention} gave kisses to <@{getUserIdFromMention}>", "kisses", 0, "F771A3");
+            $"{c.Message.Author.Mention} kissed <@{getUserIdFromMention}>", "kisses", 0, "F771A3");
     }
     
     [Command("slap"), Description("Slap a specified user.")]

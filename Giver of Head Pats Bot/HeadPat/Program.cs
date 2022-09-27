@@ -26,8 +26,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.5.1";
-    public static readonly DateTime BuildTime = new(2022, 9, 19, 16, 54, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.5.2";
+    public static readonly DateTime BuildTime = new(2022, 9, 27, 11, 25, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
