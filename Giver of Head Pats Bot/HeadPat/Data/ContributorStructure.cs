@@ -26,7 +26,7 @@ public class ContributorStructure {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Contributors.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created Responses JSON: ContributorBase");
+        Logger.Log("Created JSON: ContributorBase");
         Save();
     }
 
@@ -39,7 +39,7 @@ public class ContributorStructure {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Contributors.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Saved Responses JSON: ContributorBase");
+        Logger.Log("Saved JSON: ContributorBase");
     }
     
     private static bool DoesUserNameExist(string? name) => Base.Base.FirstOrDefault(n => n.UserName == name)?.UserName == name;

@@ -18,7 +18,7 @@ public class BlacklistedNekosLifeGifs {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}BlacklistedGifs.json",
             JsonConvert.SerializeObject(BlacklistedGifs, Formatting.Indented));
-        Logger.Log("Created BlacklistedURLs JSON: BlacklistedGifs");
+        Logger.Log("Created JSON: BlacklistedGifs");
         Save();
     }
 
@@ -31,7 +31,7 @@ public class BlacklistedNekosLifeGifs {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}BlacklistedGifs.json",
             JsonConvert.SerializeObject(BlacklistedGifs, Formatting.Indented));
-        Logger.Log("Save BlacklistedURLs JSON: BlacklistedGifs");
+        Logger.Log("Saved JSON: BlacklistedGifs");
     }
 
     public static async Task AddBlacklist(DSharpPlus.CommandsNext.CommandContext cc, string url) {

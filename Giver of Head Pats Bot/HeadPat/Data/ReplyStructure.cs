@@ -38,7 +38,7 @@ public static class ReplyStructure {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created Responses JSON: Replies");
+        Logger.Log("Created JSON: Replies");
         Save();
     }
 
@@ -51,7 +51,7 @@ public static class ReplyStructure {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Saved Responses JSON: Replies");
+        Logger.Log("Saved JSON: Replies");
     }
 
     public static string GetResponse(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Response ?? "{{NULL}}";
