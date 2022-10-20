@@ -20,7 +20,7 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01171</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01173</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -30,8 +30,8 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
         </ul>
     </li>
     <li>Lib.Harmony <b>v2.2.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.0-rc.1.22426.7</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.0-rc.1.22426.7</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.0-rc.2.22472.11</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.0-rc.2.22472.11</b></li>
     <li>Nekos-Sharp <b>v3.5.0</b></li>
     <li>Newtonsoft.Json <b>v13.0.2-beta2</b></li>
     <li>Pastel <b>v3.0.1</b></li>
