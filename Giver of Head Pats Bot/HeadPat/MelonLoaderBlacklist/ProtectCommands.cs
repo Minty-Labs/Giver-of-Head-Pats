@@ -50,7 +50,7 @@ public class ProtectCommands : BaseCommandModule {
         ms.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordMessageBuilder();
-        builder.WithFile("Users.txt", ms);
+        builder.AddFile("Users.txt", ms);
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
 
@@ -72,7 +72,7 @@ public class ProtectCommands : BaseCommandModule {
         ms.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordMessageBuilder();
-        builder.WithFile("Mods.txt", ms);
+        builder.AddFile("Mods.txt", ms);
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
     
@@ -94,7 +94,7 @@ public class ProtectCommands : BaseCommandModule {
         ms.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordMessageBuilder();
-        builder.WithFile("Authors.txt", ms);
+        builder.AddFile("Authors.txt", ms);
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
     
@@ -116,7 +116,7 @@ public class ProtectCommands : BaseCommandModule {
         ms.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordMessageBuilder();
-        builder.WithFile("Plugins.txt", ms);
+        builder.AddFile("Plugins.txt", ms);
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
     
@@ -168,7 +168,7 @@ public class ProtectCommands : BaseCommandModule {
         ms.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordMessageBuilder();
-        builder.WithFile("Everything.txt", ms);
+        builder.AddFile("Everything.txt", ms);
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
     

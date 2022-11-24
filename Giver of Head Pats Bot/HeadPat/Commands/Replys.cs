@@ -89,7 +89,7 @@ public class Replies : BaseCommandModule {
         ms.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordMessageBuilder();
-        builder.WithFile("Responses.txt", ms);
+        builder.AddFile("Responses.txt", ms);
         await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
     }
 }
