@@ -29,12 +29,13 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
             <li>SlashCommands</li>
         </ul>
     </li>
-    <li>Lib.Harmony <b>v2.2.2</b></li>
+    <li>Lib.Harmony <i>by pardeike</i><b>v2.2.2</b></li>
     <li>Microsoft.EntityFrameworkCore <b>v7.0.0</b></li>
     <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.0</b></li>
-    <li>Nekos-Sharp <b>v3.5.0</b></li>
-    <li>Newtonsoft.Json <b>v13.0.2</b></li>
-    <li>Pastel <b>v4.0.2</b></li>
+    <li>Nekos-Sharp <i>by xXBuilderBXx</i><b>v3.5.0</b></li>
+    <li>Newtonsoft.Json <i>by James Newton-King</i><b>v13.0.2</b></li>
+    <li>Pastel <i>by silkfire</i><b>v4.0.2</b></li>
+    <li>ColorHelper <i>by iamartyom</i> <b>v1.8.0</b></li>
 </ul>
 
 <h2>Programs Used</h2>

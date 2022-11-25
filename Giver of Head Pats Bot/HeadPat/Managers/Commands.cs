@@ -24,9 +24,11 @@ internal static class Commands {
         
         // s?.RegisterCommands<SlashOwner>();
         // Logger.Log("Owner Slash commands registered");
-#if!DEBUG
+#if !DEBUG
         s?.RegisterCommands<LoveSlash>();
         Logger.Log("Love Slash commands registered");
+        s?.RegisterCommands<Utility_Random>();
+        Logger.Log("Random / Utility Slash commands registered");
 #endif
 
         // s?.RegisterCommands<Moderation>();
