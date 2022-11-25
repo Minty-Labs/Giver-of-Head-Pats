@@ -13,6 +13,7 @@ internal static class Commands {
         c?.RegisterCommands<Replies>();
         c?.RegisterCommands<Contributors>();
         c?.RegisterCommands<Admin>();
+        c?.RegisterCommands<Random_Utility>();
         
         c?.RegisterCommands<MelonLoaderBlacklist.ProtectCommands>();
     }
