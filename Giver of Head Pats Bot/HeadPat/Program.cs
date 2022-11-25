@@ -27,8 +27,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.5.3";
-    public static readonly DateTime BuildTime = new(2022, 11, 24, 18, 13, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.5.4";
+    public static readonly DateTime BuildTime = new(2022, 11, 25, 10, 13, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -198,7 +198,7 @@ public sealed class Program {
         Logger.Log("Process ID                    = " + BuildInfo.ThisProcess.Id);
         Logger.Log("Build Date                    = " + BuildInfo.BuildDateShort);
         Logger.Log("Current OS                    = " + (BuildInfo.IsWindows ? "Windows" : "Linux"));
-        Logger.Log("Token                         = " + OutputStringAsHidden(BuildInfo.Config.Token).Pastel("FBADBC"));
+        Logger.Log("Token                         = " + OutputStringAsHidden(BuildInfo.Config.Token!).Pastel("FBADBC"));
         Logger.Log("Prefix                        = " + $"{BuildInfo.Config.Prefix}".Pastel("FBADBC"));
         Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
         Logger.Log("Game                          = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
@@ -258,7 +258,7 @@ public sealed class Program {
         return temp ?? "***************";
     }
     
-    public static ActivityType GetActivityType(string type) {
+    private static ActivityType GetActivityType(string type) {
         return type.ToLower() switch {
             "playing" => ActivityType.Playing,
             "listening" => ActivityType.ListeningTo,
