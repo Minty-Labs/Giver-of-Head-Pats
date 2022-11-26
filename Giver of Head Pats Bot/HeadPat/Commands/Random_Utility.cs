@@ -25,10 +25,10 @@ public class Random_Utility : BaseCommandModule {
             return;
         }
 
-        const string baseUrl = "https://c.devminer.xyz/512/512";
+        const string baseUrl = "https://c.devminer.xyz/256/256";
         var em = new DiscordEmbedBuilder();
 
-        var tempColorValue = values.ToLower().ReplaceAll("abcdefghijklmnopqrstuvwxyz()#!", "");
+        var tempColorValue = values.ToLower().ReplaceAll("abcdefghijklmnopqrstuvwxyz()#!%°", "");
         var hasCommas = tempColorValue.Contains(',');
         var newColorValue = tempColorValue.Split(hasCommas ? ',' : ' ');
 
@@ -38,7 +38,9 @@ public class Random_Utility : BaseCommandModule {
                 var g = float.Parse(newColorValue[1]);
                 var b = float.Parse(newColorValue[2]);
                 em.WithColor(new DiscordColor(r / 255, g / 255, b / 255)); // DiscordColor is picky and wants decimal values *pukes in math*
+                var rgbToHex = ColorConverter.RgbToHex(new RGB((byte)r, (byte)g, (byte)b));
                 em.WithImageUrl($"{baseUrl}/rgb/{r}/{g}/{b}");
+                em.WithDescription($"#{rgbToHex}");
                 em.WithTitle($"rgb({r}, {g}, {b})");
                 break;
             case "hex": 
@@ -55,7 +57,8 @@ public class Random_Utility : BaseCommandModule {
                 var cmykToHex = ColorConverter.CmykToHex(new CMYK((byte)_c, (byte)m, (byte)y, (byte)k));
                 em.WithColor(Colors.HexToColor(cmykToHex.ToString()));
                 em.WithImageUrl($"{baseUrl}/hex/{cmykToHex}");
-                em.WithTitle($"#{cmykToHex}");
+                em.WithDescription($"#{cmykToHex}");
+                em.WithTitle($"cmyk({_c}, {m}, {y}, {k})");
                 break;
             case "hsv":
                 var h = float.Parse(newColorValue[0]);
@@ -64,7 +67,8 @@ public class Random_Utility : BaseCommandModule {
                 var hsvToHex = ColorConverter.HsvToHex(new HSV((int)h, (byte)s, (byte)v));
                 em.WithColor(Colors.HexToColor(hsvToHex.ToString()));
                 em.WithImageUrl($"{baseUrl}/hex/{hsvToHex}");
-                em.WithTitle($"#{hsvToHex}");
+                em.WithDescription($"#{hsvToHex}");
+                em.WithTitle($"hsv({h}, {s}, {v})");
                 break;
             case "hsl":
                 var _h = float.Parse(newColorValue[0]);
@@ -73,7 +77,8 @@ public class Random_Utility : BaseCommandModule {
                 var hslToHex = ColorConverter.HslToHex(new HSL((int)_h, (byte)_s, (byte)l));
                 em.WithColor(Colors.HexToColor(hslToHex.ToString()));
                 em.WithImageUrl($"{baseUrl}/hex/{hslToHex}");
-                em.WithTitle($"#{hslToHex}");
+                em.WithDescription($"#{hslToHex}");
+                em.WithTitle($"hsl({_h}, {_s}, {l})");
                 break;
         }
         
@@ -93,16 +98,16 @@ public class Utility_Random : ApplicationCommandModule {
         [Choice("HSL", "hsl")]
         [Option("Type", "Choose between a type of color")] string type,
         
-        [Option("ColorValue", "HEX or RGB values")] string values = "") {
+        [Option("ColorValue", "Color values non-hex separate with spaces or commas")] string values = "") {
         if (string.IsNullOrWhiteSpace(values)) {
             await c.CreateResponseAsync("You must in a color value\nExamples: `fd3ac1` or `148, 78, 36` or `48 128 71` etc.", true);
             return;
         }
         
-        const string baseUrl = "https://c.devminer.xyz/512/512";
+        const string baseUrl = "https://c.devminer.xyz/256/256";
         var em = new DiscordEmbedBuilder();
         
-        var tempColorValue = values.ToLower().ReplaceAll("abcdefghijklmnopqrstuvwxyz()#!", "");
+        var tempColorValue = values.ToLower().ReplaceAll("abcdefghijklmnopqrstuvwxyz()#!%°", "");
         var hasCommas = tempColorValue.Contains(',');
         var newColorValue = tempColorValue.Split(hasCommas ? ',' : ' ');
 
@@ -112,7 +117,9 @@ public class Utility_Random : ApplicationCommandModule {
                 var g = float.Parse(newColorValue[1]);
                 var b = float.Parse(newColorValue[2]);
                 em.WithColor(new DiscordColor(r / 255, g / 255, b / 255)); // DiscordColor is picky and wants decimal values *pukes in math*
+                var rgbToHex = ColorConverter.RgbToHex(new RGB((byte)r, (byte)g, (byte)b));
                 em.WithImageUrl($"{baseUrl}/rgb/{r}/{g}/{b}");
+                em.WithDescription($"#{rgbToHex}");
                 em.WithTitle($"rgb({r}, {g}, {b})");
                 break;
             case "hex": 
@@ -129,7 +136,8 @@ public class Utility_Random : ApplicationCommandModule {
                 var cmykToHex = ColorConverter.CmykToHex(new CMYK((byte)_c, (byte)m, (byte)y, (byte)k));
                 em.WithColor(Colors.HexToColor(cmykToHex.ToString()));
                 em.WithImageUrl($"{baseUrl}/hex/{cmykToHex}");
-                em.WithTitle($"#{cmykToHex}");
+                em.WithDescription($"#{cmykToHex}");
+                em.WithTitle($"cmyk({_c}, {m}, {y}, {k})");
                 break;
             case "hsv":
                 var h = float.Parse(newColorValue[0]);
@@ -138,7 +146,8 @@ public class Utility_Random : ApplicationCommandModule {
                 var hsvToHex = ColorConverter.HsvToHex(new HSV((int)h, (byte)s, (byte)v));
                 em.WithColor(Colors.HexToColor(hsvToHex.ToString()));
                 em.WithImageUrl($"{baseUrl}/hex/{hsvToHex}");
-                em.WithTitle($"#{hsvToHex}");
+                em.WithDescription($"#{hsvToHex}");
+                em.WithTitle($"hsv({h}, {s}, {v})");
                 break;
             case "hsl":
                 var _h = float.Parse(newColorValue[0]);
@@ -147,7 +156,8 @@ public class Utility_Random : ApplicationCommandModule {
                 var hslToHex = ColorConverter.HslToHex(new HSL((int)_h, (byte)_s, (byte)l));
                 em.WithColor(Colors.HexToColor(hslToHex.ToString()));
                 em.WithImageUrl($"{baseUrl}/hex/{hslToHex}");
-                em.WithTitle($"#{hslToHex}");
+                em.WithDescription($"#{hslToHex}");
+                em.WithTitle($"hsl({_h}, {_s}, {l})");
                 break;
         }
         
