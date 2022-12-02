@@ -324,12 +324,20 @@ public class Basic : BaseCommandModule {
             max++;
         }
 
+        var temp = sb.ToString();
+        temp = temp.Replace("MintLily#0001", "Lily");
+        temp = temp.Replace("Silentt.#5610", "Elly");
+        temp = temp.Replace("Penny#9538", "Penny");
+        temp = temp.Replace(".FS.#8519", "Autumn");
+        temp = temp.Replace("Nail#3021", "Iana");
+        //temp = temp.Replace("", "");
+
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Head Pat Leaderboard");
         e.WithColor(Colors.HexToColor("DFFFDD"));
         e.WithFooter($"Synced across all servers • {BuildInfo.Name} (v{BuildInfo.Version})");
         e.AddField("Current Server Stats", 
-            $"{(string.IsNullOrWhiteSpace(sb.ToString()) ? "Data is Empty" : $"{sb}")}\nTotal Server Pats **{guildPats}**");
+            $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}**");
         e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
