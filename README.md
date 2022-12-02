@@ -20,7 +20,7 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.3.0-nightly-01188</b>
+    <li>DSharpPlus <b>v4.3.0-nightly-01189</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
