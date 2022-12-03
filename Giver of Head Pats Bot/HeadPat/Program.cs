@@ -133,7 +133,7 @@ public sealed class Program {
         Slash.SlashCommandErrored += Slash_SlashCommandErrored;
 
         Client.Ready += Client_Ready;
-        var meh = new Handlers.EventHandler(Client); // Setup Command Handler
+        var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
 
         NekoClient = new NekoClient(BuildInfo.Name);
 
