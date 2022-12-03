@@ -9,7 +9,7 @@ internal static class Commands {
         c?.RegisterCommands<Basic>();
         c?.RegisterCommands<Love>();
         // c?.RegisterCommands<Nsfw>();
-        c?.RegisterCommands<Owner>();
+        // c?.RegisterCommands<Owner>();
         c?.RegisterCommands<Replies>();
         c?.RegisterCommands<Contributors>();
         c?.RegisterCommands<Admin>();
@@ -21,10 +21,10 @@ internal static class Commands {
     public static void Register(SlashCommandsExtension? s) {
         // s?.RegisterCommands<BasicSlashCommands>();
         if (s == null) Logger.Error("Slash commands extension is null");
-        
-        // s?.RegisterCommands<SlashOwner>();
-        // Logger.Log("Owner Slash commands registered");
+
 #if !DEBUG
+        s?.RegisterCommands<SlashOwner>();
+        Logger.Log("Owner Slash commands registered");
         s?.RegisterCommands<LoveSlash>();
         Logger.Log("Love Slash commands registered");
         s?.RegisterCommands<Utility_Random>();

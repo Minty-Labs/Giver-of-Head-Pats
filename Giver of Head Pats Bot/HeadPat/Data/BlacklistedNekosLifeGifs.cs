@@ -44,6 +44,17 @@ public class BlacklistedNekosLifeGifs {
         await cc.RespondAsync("Added URL to the blacklist");
         Save();
     }
+    
+    public static async Task AddBlacklist(DSharpPlus.SlashCommands.InteractionContext cc, string url) {
+        if (BlacklistedGifs.Urls!.Any(c => c.Contains(url))) {
+            await cc.CreateResponseAsync("URL is already blacklisted.", true);
+            return;
+        }
+
+        BlacklistedGifs.Urls!.Add(url);
+        await cc.CreateResponseAsync($"Added URL to the blacklist: `{url}`");
+        Save();
+    }
 
     public static async Task RemoveBlacklist(DSharpPlus.CommandsNext.CommandContext cc, string url) {
         if (BlacklistedGifs.Urls!.Any(c => !c.Contains(url))) {
@@ -53,6 +64,17 @@ public class BlacklistedNekosLifeGifs {
 
         BlacklistedGifs.Urls!.Remove(url);
         await cc.RespondAsync("Removed URL from the blacklist");
+        Save();
+    }
+    
+    public static async Task RemoveBlacklist(DSharpPlus.SlashCommands.InteractionContext cc, string url) {
+        if (BlacklistedGifs.Urls!.Any(c => !c.Contains(url))) {
+            await cc.CreateResponseAsync("URL is not blacklisted.", true);
+            return;
+        }
+
+        BlacklistedGifs.Urls!.Remove(url);
+        await cc.CreateResponseAsync($"Removed URL from the blacklist `{url}`");
         Save();
     }
 }
