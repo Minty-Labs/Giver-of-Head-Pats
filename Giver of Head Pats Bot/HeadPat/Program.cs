@@ -231,6 +231,7 @@ public sealed class Program {
         ErrorLogChannel = await sender.GetChannelAsync(BuildInfo.Config.ErrorLogChannelId);
         MessageCreated.DmCategory = await sender.GetChannelAsync(BuildInfo.Config.DmResponseCategoryId);
         await sender.SendMessageAsync(GeneralLogChannel, em.Build());
+        StatusUpdater.Start(false);
     }
 
     private static Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
