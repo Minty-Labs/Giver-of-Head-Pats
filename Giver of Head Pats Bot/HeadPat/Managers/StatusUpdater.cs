@@ -32,16 +32,21 @@ public class StatusUpdater {
         using var db = new Context();
         var globalPats = db.Overall.AsQueryable().ToList();
         _tempPatCount = globalPats.First().PatCount;
+        var alreadyRanOnce = false;
 
         ScheduleTask(600, () => {
             var tempGlobalPats = globalPats.First().PatCount;
-            if (tempGlobalPats == _tempPatCount) 
-                return; // Don't run update if number is the same
+            if (alreadyRanOnce) {
+                if (tempGlobalPats == _tempPatCount) 
+                    return; // Don't run update if number is the same
+            }
             
             Program.Client!.UpdateStatusAsync(new DiscordActivity {
                 Name = $"{tempGlobalPats} head pats | hp!help",
                 ActivityType = ActivityType.Watching
             }, UserStatus.Online);
+
+            alreadyRanOnce = true;
         });
     }
 }
