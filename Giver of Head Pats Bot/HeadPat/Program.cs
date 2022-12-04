@@ -14,6 +14,7 @@ using HeadPats.Managers;
 using HeadPats.Utils;
 using NekosSharp;
 using Pastel;
+using TaskScheduler = HeadPats.Managers.TaskScheduler;
 
 namespace HeadPats;
 
@@ -231,7 +232,7 @@ public sealed class Program {
         ErrorLogChannel = await sender.GetChannelAsync(BuildInfo.Config.ErrorLogChannelId);
         MessageCreated.DmCategory = await sender.GetChannelAsync(BuildInfo.Config.DmResponseCategoryId);
         await sender.SendMessageAsync(GeneralLogChannel, em.Build());
-        StatusUpdater.Start(false);
+        TaskScheduler.StartStatusLoop();
     }
 
     private static Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {

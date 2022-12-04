@@ -8,8 +8,9 @@ using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
 using HeadPats.Utils;
-using cc = DSharpPlus.CommandsNext.CommandContext;
+//using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
+using TaskScheduler = HeadPats.Managers.TaskScheduler;
 
 namespace HeadPats.Commands; 
 
@@ -262,41 +263,47 @@ public class RequireUserIdAttribute : SlashCheckBaseAttribute {
 
 public class SlashOwner : ApplicationCommandModule {
     
-    [SlashCommand("Update Presence", "Updates the bot's Presence")]
+    [SlashCommand("UpdatePresence", "Updates the bot's Presence", false)]
     [SlashRequireOwner]
     public async Task UpdatePresence(ic c,
-        [Choice("False", "false")]
-        [Choice("True", "true")]
+        [Choice("false", "false")]
+        [Choice("true", "true")]
         [Option("clearAndInvokeNew", "Clears Timers and restarts the Scheduled Task")] string clearAndInvokeNew,
         
-        [Choice("False", "false")]
-        [Choice("True", "true")]
+        [Choice("false", "false")]
+        [Choice("true", "true")]
         [Option("disableAndSetStaticStatus", "Ignores first boolean, switches to static status")] string disableAndSetStaticStatus = "false") {
         if (disableAndSetStaticStatus.Equals("true")) {
-            StatusUpdater.Start(false, true);
+            TaskScheduler.StopStatusLoop();
+            await Task.Delay(1000);
+            TaskScheduler.NormalDiscordActivity();
             await c.CreateResponseAsync("Set status to static default text > `lots of cuties | hp!help`", true);
             return;
         }
 
-        StatusUpdater.Start(clearAndInvokeNew.Equals("true") && disableAndSetStaticStatus.Equals("false"));
+        if (clearAndInvokeNew.Equals("true") && disableAndSetStaticStatus.Equals("false")) {
+            TaskScheduler.StopStatusLoop();
+            await Task.Delay(1000);
+            TaskScheduler.StartStatusLoop();
+        }
 
         await c.CreateResponseAsync("Reset status scheduled task", true);
     }
     
-    [SlashCommand("Add GIF Blacklist", "Adds a GIF URL to a blacklist not to be shown in commands")]
+    [SlashCommand("AddGIFBlacklist", "Adds a GIF URL to a blacklist not to be shown in commands", false)]
     [SlashRequireOwner]
     public async Task AddBlacklistGif(ic c, [Option("URL", "URL of GIF you want to add to the blacklist")] string url) 
         => await BlacklistedNekosLifeGifs.AddBlacklist(c, url);
 
-    [SlashCommand("Remove GIF Blacklist", "Removes a GIF URL from the blacklist to be shown in commands")]
+    [SlashCommand("RemoveGIFBlacklist", "Removes a GIF URL from the blacklist to be shown in commands", false)]
     [SlashRequireOwner]
     public async Task RemoveBlacklistGif(ic c, [Option("URL", "URL of GIF you want to remove from blacklist")] string url) 
         => await BlacklistedNekosLifeGifs.RemoveBlacklist(c, url);
     
-    [SlashCommand("Blacklist User From Pat Command", "Blacklists a user from the pat command")]
+    [SlashCommand("BlacklistUserFromPatCommand", "Blacklists a user from the pat command", false)]
     [SlashRequireOwner]
     public async Task BlacklistUserFromPatCommand(ic c, 
-        [Option("Mentioned User", "Looks for User ID")] string mentionedUser,
+        [Option("MentionedUser", "Looks for User ID")] string mentionedUser,
         
         [Choice("Add", "add")]
         [Choice("Remove", "remove")]
@@ -350,9 +357,9 @@ public class SlashOwner : ApplicationCommandModule {
         await c.CreateResponseAsync("User is no longer blacklisted from the pat command.");
     }
     
-    [SlashCommand("Get Presence", "Gets users with the given presence")]
+    [SlashCommand("GetPresence", "Gets users with the given presence", false)]
     [SlashRequireOwner] // Made by Eric van Fandenfart
-    public async Task GetPresence(ic c, [Option("Activity", "Text to search presences with")] string activity = "") {
+    public async Task GetPresence(ic c, [Option("Activity", "Text to search presences with")] string activity) {
         if (string.IsNullOrWhiteSpace(activity)) {
             await c.CreateResponseAsync("activity field was empty", true);
             return;
@@ -389,7 +396,7 @@ public class SlashOwner : ApplicationCommandModule {
         }
     }
     
-    [SlashCommand("Guilds", "Lists all guilds the bot is in.")]
+    [SlashCommand("Guilds", "Lists all guilds the bot is in.", false)]
     [SlashRequireOwner]
     public async Task ListGuilds(ic c) {
         var guilds = c.Client.Guilds;
@@ -409,7 +416,7 @@ public class SlashOwner : ApplicationCommandModule {
             await c.Client.SendMessageAsync(c.Channel, f[1999..3999]);
     }
 
-    [SlashCommand("Leave Guild", "Forces the bot to leave a guild")]
+    [SlashCommand("LeaveGuild", "Forces the bot to leave a guild", false)]
     [SlashRequireOwner]
     public async Task LeaveGuild(ic c, [Option("GuildID", "Guild ID to leave from")] string guildId) {
         if (string.IsNullOrWhiteSpace(guildId)) {

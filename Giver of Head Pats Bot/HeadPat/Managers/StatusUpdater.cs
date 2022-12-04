@@ -1,9 +1,51 @@
 ﻿using DSharpPlus.Entities;
 using HeadPats.Data;
 
-namespace HeadPats.Managers; 
+namespace HeadPats.Managers;
 
-public class StatusUpdater {
+public static class TaskScheduler {
+    public static void StartStatusLoop() => new Thread(LoopStatus).Start();
+
+    public static void StopStatusLoop() {
+        _tempPatCount = 0;
+        _alreadyRanOnce = false;
+        new Thread(LoopStatus).Suspend();
+    }
+    
+    private static bool _alreadyRanOnce;
+    private static int _tempPatCount;
+
+    public static void NormalDiscordActivity() {
+        Program.Client!.UpdateStatusAsync(new DiscordActivity {
+            Name = "lots of cuties | hp!help",
+            ActivityType = ActivityType.Watching
+        }, UserStatus.Online);
+    }
+
+    private static void LoopStatus() {
+        using var db = new Context();
+        while (true) {
+            var globalPats = db.Overall.AsQueryable().ToList();
+            _tempPatCount = globalPats.First().PatCount;
+            
+            var tempGlobalPats = globalPats.First().PatCount;
+            if (_alreadyRanOnce) {
+                if (tempGlobalPats == _tempPatCount) 
+                    return; // Don't run update if number is the same
+            }
+            
+            Program.Client!.UpdateStatusAsync(new DiscordActivity {
+                Name = $"{tempGlobalPats} head pats | hp!help",
+                ActivityType = ActivityType.Watching
+            }, UserStatus.Online);
+
+            _alreadyRanOnce = true;
+            Thread.Sleep(TimeSpan.FromMinutes(10));
+        }
+    }
+}
+
+/*public class StatusUpdater {
     private static List<Timer> _timers = new();
     private static int _tempPatCount;
 
@@ -49,4 +91,4 @@ public class StatusUpdater {
             alreadyRanOnce = true;
         });
     }
-}
+}*/
