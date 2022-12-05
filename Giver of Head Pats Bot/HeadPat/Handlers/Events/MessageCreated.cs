@@ -36,6 +36,9 @@ public class MessageCreated {
         if (e.Author.IsBot) return;
         var builder = new DiscordMessageBuilder();
         // format: userId-userName
+
+        if (e.Message.ToString().StartsWith("hp!")) return;
+        
         var author = e.Message.Author;
         DiscordChannel? serverChannelFromDm;
         var supportGuild = await sender.GetGuildAsync(BuildInfo.Config.SupportGuildId);
@@ -117,6 +120,9 @@ public class MessageCreated {
                 
                 else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
                     await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+
+                if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
+                    await e.Message.DeleteAsync("Auto delete by bot response.");
             }
         }
     }

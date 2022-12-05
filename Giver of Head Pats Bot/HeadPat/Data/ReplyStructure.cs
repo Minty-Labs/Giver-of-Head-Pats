@@ -19,6 +19,9 @@ public class Reply {
     
     [JsonProperty("RequireOnlyTriggerText")]
     public bool OnlyTrigger { get; set; }
+    
+    [JsonProperty("DeleteTrigger")]
+    public bool DeleteTrigger { get; set; }
 }
 
 public static class ReplyStructure {
@@ -32,7 +35,8 @@ public static class ReplyStructure {
                     GuildId = 0,
                     Trigger = "creeper",
                     Response = "Awwwww man!",
-                    OnlyTrigger = false
+                    OnlyTrigger = false,
+                    DeleteTrigger = false
                 }
             }
         };
@@ -58,6 +62,8 @@ public static class ReplyStructure {
 
     public static string GetInfo(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.OnlyTrigger.ToString() ?? "{{NULL}}";
     
+    public static string GetsDeleted(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.DeleteTrigger.ToString() ?? "{{NULL}}";
+    
     private static bool DoesTriggerExist(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Trigger == trigger;
 
     public static List<string?>? GetListOfTriggers() => Base.Replies?.Select(x => x.Trigger).ToList() ?? null;
@@ -72,8 +78,8 @@ public static class ReplyStructure {
         });
         return list;
     }
-
-    public static void AddValue(ulong guildId, string trigger, string response, bool requireOnlyTriggerText = false) {
+    
+    public static void AddValue(ulong guildId, string trigger, string response, bool requireOnlyTriggerText = false, bool deleteTrigger = false) {
         if (DoesTriggerExist(trigger, guildId)) {
             Logger.Log("Removing duplicate trigger");
             var itemToRemove = Base.Replies?.Single(t => string.Equals(t.Trigger, trigger, StringComparison.CurrentCultureIgnoreCase));
@@ -84,7 +90,8 @@ public static class ReplyStructure {
             GuildId = guildId,
             Trigger = trigger,
             Response = response,
-            OnlyTrigger = requireOnlyTriggerText
+            OnlyTrigger = requireOnlyTriggerText,
+            DeleteTrigger = deleteTrigger
         };
         Base.Replies?.Add(item);
         Save();
