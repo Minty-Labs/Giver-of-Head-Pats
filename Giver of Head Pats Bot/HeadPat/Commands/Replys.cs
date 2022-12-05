@@ -56,7 +56,7 @@ public class ReplyApplication : ApplicationCommandModule {
 
         if (list != null) {
             foreach (var t in list) {
-                if (t.GuildId == c.Guild.Id) continue;
+                if (t.GuildId != c.Guild.Id) continue;
                 var r = ReplyStructure.GetResponse(t.Trigger, c.Guild.Id);
                 var i = ReplyStructure.GetInfo(t.Trigger, c.Guild.Id);
                 var d = ReplyStructure.GetsDeleted(t.Trigger, c.Guild.Id);
