@@ -10,7 +10,7 @@ internal static class Commands {
         c?.RegisterCommands<Love>();
         // c?.RegisterCommands<Nsfw>();
         // c?.RegisterCommands<Owner>();
-        c?.RegisterCommands<Replies>();
+        // c?.RegisterCommands<Replies>();
         c?.RegisterCommands<Contributors>();
         c?.RegisterCommands<Admin>();
         c?.RegisterCommands<Random_Utility>();
@@ -29,6 +29,8 @@ internal static class Commands {
         Logger.Log("Love Slash commands registered");
         s?.RegisterCommands<Utility_Random>();
         Logger.Log("Random / Utility Slash commands registered");
+        s?.RegisterCommands<ReplyApplication>();
+        Logger.Log("Reply Slash commands registered");
 #endif
 
         // s?.RegisterCommands<Moderation>();
