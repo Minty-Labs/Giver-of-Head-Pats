@@ -102,7 +102,7 @@ internal class Logger {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("ff0000") + $" > {(isSlashCmd ? "Slash" : "")}Command [" + $"{cmd}".Pastel("FFD766") + "] was executed by [" + 
                           $"{username}".Pastel("EECCE0") + "] in guild [" + $"{guild}".Pastel("91D7FD") + "] \n" + $"{stacktrace}".Pastel("CF284D"));
         _log?.WriteLine($"[{GetTimestamp()}] [CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {stacktrace}");
-        SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {stacktrace}");
+        SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n ```\n{stacktrace}\n```");
     }
         
     public static void Loadodule(string message) {
