@@ -19,7 +19,7 @@ using TaskScheduler = HeadPats.Managers.TaskScheduler;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-nightly-01189";
+    public const string DSharpVer = "4.3.0-nightly-01192";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
     public const ulong TestGuildId = 279459962843955201;
