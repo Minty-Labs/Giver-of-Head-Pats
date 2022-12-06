@@ -8,11 +8,9 @@ public static class TaskScheduler {
 
     public static void StopStatusLoop() {
         _tempPatCount = 0;
-        _alreadyRanOnce = false;
         new Thread(LoopStatus).Suspend();
     }
     
-    private static bool _alreadyRanOnce;
     private static int _tempPatCount;
 
     public static void NormalDiscordActivity() {
@@ -28,18 +26,11 @@ public static class TaskScheduler {
             var globalPats = db.Overall.AsQueryable().ToList();
             _tempPatCount = globalPats.First().PatCount;
             
-            var tempGlobalPats = globalPats.First().PatCount;
-            if (_alreadyRanOnce) {
-                if (tempGlobalPats == _tempPatCount) 
-                    return; // Don't run update if number is the same
-            }
-            
             Program.Client!.UpdateStatusAsync(new DiscordActivity {
-                Name = $"{tempGlobalPats} head pats | hp!help",
+                Name = $"{_tempPatCount} head pats | hp!help",
                 ActivityType = ActivityType.Watching
             }, UserStatus.Online);
-
-            _alreadyRanOnce = true;
+            
             Thread.Sleep(TimeSpan.FromMinutes(10));
         }
     }
