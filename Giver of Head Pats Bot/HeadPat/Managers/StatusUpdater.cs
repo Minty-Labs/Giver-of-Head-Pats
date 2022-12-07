@@ -17,7 +17,7 @@ public static class TaskScheduler {
         Program.Client!.UpdateStatusAsync(new DiscordActivity {
             Name = "lots of cuties | hp!help",
             ActivityType = ActivityType.Watching
-        }, UserStatus.Online);
+        }, UserStatus.Online).GetAwaiter().GetResult();;
     }
 
     private static void LoopStatus() {
@@ -29,7 +29,8 @@ public static class TaskScheduler {
             Program.Client!.UpdateStatusAsync(new DiscordActivity {
                 Name = $"{_tempPatCount} head pats | hp!help",
                 ActivityType = ActivityType.Watching
-            }, UserStatus.Online);
+            }, UserStatus.Online).GetAwaiter().GetResult();
+            // Logger.Log("Updated Status");
             
             Thread.Sleep(TimeSpan.FromMinutes(10));
         }

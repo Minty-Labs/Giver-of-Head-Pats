@@ -29,7 +29,7 @@ public static class BuildInfo {
     public static bool IsDebug = true;
 #elif !DEBUG
     public const string Version = "4.6.1";
-    public static readonly DateTime BuildTime = new(2022, 12, 6, 16, 37, 00); // (year, month, day, hour, min, sec)
+    public static readonly DateTime BuildTime = new(2022, 12, 6, 19, 53, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
