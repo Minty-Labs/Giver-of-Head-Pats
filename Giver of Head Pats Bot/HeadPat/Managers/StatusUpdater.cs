@@ -21,8 +21,8 @@ public static class TaskScheduler {
     }
 
     private static void LoopStatus() {
-        using var db = new Context();
         while (true) {
+            using var db = new Context();
             var globalPats = db.Overall.AsQueryable().ToList();
             _tempPatCount = globalPats.First().PatCount;
             
@@ -31,6 +31,7 @@ public static class TaskScheduler {
                 ActivityType = ActivityType.Watching
             }, UserStatus.Online).GetAwaiter().GetResult();
             // Logger.Log("Updated Status");
+            db.Dispose();
             
             Thread.Sleep(TimeSpan.FromMinutes(10));
         }
