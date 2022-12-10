@@ -221,9 +221,12 @@ public sealed class Program {
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
         Logger.WriteSeperator("C75450");
 
+        using var db = new Context();
+        var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
         var em = new DiscordEmbedBuilder();
         em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
-        em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}");
+        em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}\n" +
+                           $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given");
         em.AddField("Build Time", $"{BuildInfo.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
         em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
         em.WithFooter($"v{BuildInfo.Version}");
@@ -231,8 +234,8 @@ public sealed class Program {
         GeneralLogChannel = await sender.GetChannelAsync(BuildInfo.Config.GeneralLogChannelId);
         ErrorLogChannel = await sender.GetChannelAsync(BuildInfo.Config.ErrorLogChannelId);
         MessageCreated.DmCategory = await sender.GetChannelAsync(BuildInfo.Config.DmResponseCategoryId);
-        await sender.SendMessageAsync(GeneralLogChannel, em.Build());
         TaskScheduler.StartStatusLoop();
+        await sender.SendMessageAsync(GeneralLogChannel, em.Build());
     }
 
     private static Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
