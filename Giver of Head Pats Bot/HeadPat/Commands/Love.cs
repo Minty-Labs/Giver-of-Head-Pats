@@ -8,6 +8,7 @@ using HeadPats.Data;
 using HeadPats.Utils;
 using HeadPats.Data.Models;
 using cc = DSharpPlus.CommandsNext.CommandContext;
+using ic = DSharpPlus.SlashCommands.InteractionContext;
 
 namespace HeadPats.Commands; 
 
@@ -162,6 +163,7 @@ public class Love : BaseCommandModule {
 
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
             $"{c.Message.Author.Mention} hugged <@{getUserIdFromMention}>", "hugs", 0, "6F41B6");
+        // e.WithDescription($"{ctx.User.Mention} gave {(special != 1 ? $"**{special}** hugs" : "a hug")} to <@{user.Id}>");
     }
     
     [Command("kiss"), Aliases("k"), Description("Give kisses to a specified user.")]
@@ -331,4 +333,111 @@ public class LoveSlash : ApplicationCommandModule {
         await c.CreateResponseAsync(e.Build());
         Logger.Log($"Total Pat amount Given: {special}");
     }
+
+    /*[SlashCommandGroup("user", "User Actions")]
+    public class LoveUser : ApplicationCommandModule {
+        [SlashCommand("pat", "Pat a specified user.")]
+        public async Task Pat(ic c, [Option("user", "The user to pat")] DiscordUser user) {
+            await using var db = new Context();
+            var checkGuild = db.Guilds.AsQueryable()
+                .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
+        
+            var checkUser = db.Users.AsQueryable()
+                .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+
+            var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
+
+            if (isRoleBlackListed) {
+                await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
+                return;
+            }
+        
+            var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
+        
+            if (isUserBlackListed) {
+                await c.CreateResponseAsync("You are not allowed to use this command. This was set by a bot developer.", true);
+                return;
+            }
+            
+            if (user.Id == c.User.Id) {
+                await c.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("You cannot give yourself headpats."));
+                return;
+            }
+
+            if (user.IsBot) {
+                await c.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("You cannot give bots headpats."));
+                return;
+            }
+            
+            if (user.Id == BuildInfo.ClientId) {
+                await c.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("How dare you give me headpats! No, have some of your own~"));
+                return;
+            }
+
+            var num1 = new Random().Next(0, 1);
+
+            var neko = num1 == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
+
+            var num = new Random().Next(0, 3);
+            var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
+
+            var special = num == 3 ? 2 : 1;
+
+            start:
+            var image = neko?.Result.ImageUrl;
+            if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
+                Logger.Log("Hit a blacklisted GIF URL");
+                goto start;
+            }
+
+            var e = new DiscordEmbedBuilder();
+            e.WithTitle(outputs[num]);
+            e.WithImageUrl(image);
+            e.WithColor(Colors.HexToColor("ffff00"));
+            e.WithFooter("Powered by nekos.life");
+            e.WithDescription($"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to <@{user.Id}>");
+            UserControl.AddPatToUser(user.Id, special, true, c.Guild.Id);
+            await c.CreateResponseAsync(e.Build());
+            Logger.Log($"Total Pat amount Given: {special}");
+        }
+        
+        [SlashCommand("hug", "Hug a specified user.")]
+        public async Task Hug(ic c, [Option("user", "The user to hug")] DiscordUser user) {
+            if (user.Id == c.User.Id) {
+                await c.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("You cannot give yourself hugs."));
+                return;
+            }
+
+            if (user.IsBot) {
+                await c.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("You cannot give bots hugs."));
+                return;
+            }
+            if (user.Id == BuildInfo.ClientId) {
+                await c.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("How dare you give me hugs! No, have some of your own~"));
+                return;
+            }
+
+            var num1 = new Random().Next(0, 1);
+
+            var neko = num1 == 0 ? Program.NekoClient?.Action.Hug() : Program.NekoClient?.Action_v3.HugGif();
+
+            var num = new Random().Next(0, 3);
+            var outputs = new[] { "_huggies_", "_huggle_", "_hugs_", "_ultra hugs_" };
+
+            start:
+            var image = neko?.Result.ImageUrl;
+            if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
+                Logger.Log("Hit a blacklisted GIF URL");
+                goto start;
+            }
+
+            var e = new DiscordEmbedBuilder();
+            e.WithTitle(outputs[num]);
+            e.WithImageUrl(image);
+            e.WithColor(Colors.HexToColor("6F41B6"));
+            e.WithFooter("Powered by nekos.life");
+            e.WithDescription($"{c.User.Mention} gave a hug to <@{user.Id}>");
+            await c.CreateResponseAsync(e.Build());
+        }
+    }*/
 }

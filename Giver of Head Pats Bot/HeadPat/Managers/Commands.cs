@@ -31,6 +31,8 @@ internal static class Commands {
         Logger.Log("Random / Utility Slash commands registered");
         s?.RegisterCommands<ReplyApplication>();
         Logger.Log("Reply Slash commands registered");
+        s?.RegisterCommands<SlashBasic>();
+        Logger.Log("Basic Slash commands registered");
 #endif
 
         // s?.RegisterCommands<Moderation>();
