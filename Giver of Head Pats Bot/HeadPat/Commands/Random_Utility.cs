@@ -1,10 +1,12 @@
-﻿using ColorHelper;
+﻿using System.Drawing;
+using ColorHelper;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
+using ColorConverter = ColorHelper.ColorConverter;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 
 namespace HeadPats.Commands; 
@@ -96,10 +98,11 @@ public class Utility_Random : ApplicationCommandModule {
         [Choice("CMYK", "cmyk")]
         [Choice("HSV", "hsv")]
         [Choice("HSL", "hsl")]
+        [Choice("Random", "random")]
         [Option("Type", "Choose between a type of color")] string type,
         
-        [Option("ColorValue", "Color values non-hex separate with spaces or commas")] string values = "") {
-        if (string.IsNullOrWhiteSpace(values)) {
+        [Option("Value", "Color values non-hex separate with spaces or commas")] string values = "") {
+        if (string.IsNullOrWhiteSpace(values) && type != "random") {
             await c.CreateResponseAsync("You must in a color value\nExamples: `fd3ac1` or `148, 78, 36` or `48 128 71` etc.", true);
             return;
         }
@@ -159,9 +162,23 @@ public class Utility_Random : ApplicationCommandModule {
                 em.WithDescription($"#{hslToHex}");
                 em.WithTitle($"hsl({_h}, {_s}, {l})");
                 break;
+            case "random":
+                var randomR = new Random().Next(new RgbRandomColorFilter().minR, new RgbRandomColorFilter().maxR);
+                var randomG = new Random().Next(new RgbRandomColorFilter().minG, new RgbRandomColorFilter().maxG);
+                var randomB = new Random().Next(new RgbRandomColorFilter().minB, new RgbRandomColorFilter().maxB);
+                var randomHex = ColorConverter.RgbToHex(new RGB((byte)randomR, (byte)randomG, (byte)randomB));
+                em.WithColor(Colors.HexToColor(randomHex.ToString()));
+                em.WithImageUrl($"{baseUrl}/hex/{randomHex}");
+                em.WithDescription($"HEX: #{randomHex}\n" +
+                                   $"RGB: {randomR}, {randomG}, {randomB}\n" +
+                                   $"CMYK: {ColorConverter.RgbToCmyk(new RGB((byte)randomR, (byte)randomG, (byte)randomB))}\n" +
+                                   $"HSV: {ColorConverter.RgbToHsv(new RGB((byte)randomR, (byte)randomG, (byte)randomB))}\n" +
+                                   $"HSL: {ColorConverter.RgbToHsl(new RGB((byte)randomR, (byte)randomG, (byte)randomB))}");
+                em.WithTitle("Your RANDOM Color");
+                break;
         }
         
-        em.WithFooter("Powered by devminer.xyz");
+        em.WithFooter("Powered by devminer.xyz + iamartyom");
         await c.CreateResponseAsync(em.Build());
     }
 }
