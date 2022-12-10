@@ -27,8 +27,17 @@ public class Admin : BaseCommandModule {
             return;
         }
         var e = new DiscordEmbedBuilder();
-        var inv = c.Client.GetInviteByCodeAsync(hasLink ? final : code, true, true).Result;
-        e.WithTitle($"Invite for {inv.Guild.Name}");
+        DiscordInvite? inv = null;
+        try {
+            inv = await c.Client.GetInviteByCodeAsync(hasLink ? final : code, true, true);
+        }
+        catch (Exception ex) {
+            if (ex.ToString().Contains("DSharpPlus.Exceptions.NotFoundException: Not found: 404")) {
+                await c.RespondAsync("Invite not found");
+                return;
+            }
+        }
+        e.WithTitle($"Invite for {inv!.Guild.Name}");
         string createdByName;
         try { createdByName = inv.Inviter.Username; } catch { createdByName = "null"; }
         string createdByDiscriminator;

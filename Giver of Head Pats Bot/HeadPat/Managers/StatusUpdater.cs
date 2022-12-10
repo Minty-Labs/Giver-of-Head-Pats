@@ -23,11 +23,10 @@ public static class TaskScheduler {
     private static void LoopStatus() {
         while (true) {
             using var db = new Context();
-            var globalPats = db.Overall.AsQueryable().ToList();
-            _tempPatCount = globalPats.First().PatCount;
+            var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
             
             Program.Client!.UpdateStatusAsync(new DiscordActivity {
-                Name = $"{_tempPatCount} head pats | hp!help",
+                Name = $"{tempPatCount} head pats | hp!help",
                 ActivityType = ActivityType.Watching
             }, UserStatus.Online).GetAwaiter().GetResult();
             // Logger.Log("Updated Status");

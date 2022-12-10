@@ -74,12 +74,6 @@ internal class Logger {
 
     public static void Log() => Console.WriteLine();
 
-    public static void Error(string message) {
-        Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > {message}".Pastel("ff0000"));
-        _log?.WriteLine($"[{GetTimestamp()}] [ERROR] HeadPat > {message}");
-        SendLog(message);
-    }
-
     public static void Error(object @object) {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > {@object}".Pastel("ff0000"));
         _log?.WriteLine($"[{GetTimestamp()}] [ERROR] HeadPat > {@object}");
@@ -102,7 +96,7 @@ internal class Logger {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("ff0000") + $" > {(isSlashCmd ? "Slash" : "")}Command [" + $"{cmd}".Pastel("FFD766") + "] was executed by [" + 
                           $"{username}".Pastel("EECCE0") + "] in guild [" + $"{guild}".Pastel("91D7FD") + "] \n" + $"{stacktrace}".Pastel("CF284D"));
         _log?.WriteLine($"[{GetTimestamp()}] [CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {stacktrace}");
-        SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n ```\n{stacktrace}\n```");
+        SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] ```{stacktrace}```");
     }
         
     public static void Loadodule(string message) {
@@ -110,9 +104,9 @@ internal class Logger {
         _log?.WriteLine($"[{GetTimestamp()}] [LOAD] HeadPat > {message}");
     }
         
-    public static void WriteSeperator(string PastelHexTextColor = "FFFFFF") {
+    public static void WriteSeperator(string pastelHexTextColor = "ffffff") {
         var pad = "".PadLeft(Console.WindowWidth, '=');
-        Console.WriteLine(pad.Pastel(PastelHexTextColor));
+        Console.WriteLine(pad.Pastel(pastelHexTextColor));
         _log?.WriteLine(pad);
     }
 
