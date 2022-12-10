@@ -264,6 +264,27 @@ public class LoveSlash : ApplicationCommandModule {
     
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
     public async Task Pat(ContextMenuContext c) {
+        await using var db = new Context();
+        var checkGuild = db.Guilds.AsQueryable()
+            .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
+        
+        var checkUser = db.Users.AsQueryable()
+            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+
+        var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
+
+        if (isRoleBlackListed) {
+            await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
+            return;
+        }
+        
+        var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
+        
+        if (isUserBlackListed) {
+            await c.CreateResponseAsync("You are not allowed to use this command. This was set by a bot developer.", true);
+            return;
+        }
+        
         if (c.TargetUser.Id == c.User.Id) {
             await c.CreateResponseAsync("You cannot give yourself headpats.");
             return;
