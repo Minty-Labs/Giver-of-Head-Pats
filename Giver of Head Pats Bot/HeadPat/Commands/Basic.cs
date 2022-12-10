@@ -287,19 +287,15 @@ public class Basic : BaseCommandModule {
     [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderboard for most headpats")]
     public async Task TopPat(cc c, [RemainingText] string input) {
         await using var db = new Context();
-        var guildList = db.Guilds.AsQueryable().ToList();
-        var usersList = db.Users.AsQueryable().ToList();
-        var serverList = db.Overall.AsQueryable().ToList();
-
         var guildPats = 0;
-        try { guildPats = guildList.FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; } catch { Logger.Error("[TopPat] Guilds DataSet is Empty"); }
+        try { guildPats = db.Guilds.AsQueryable().ToList().FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; } catch { Logger.Error("[TopPat] Guilds DataSet is Empty"); }
 
         var globalPats = 0;
-        try { globalPats = serverList.First().PatCount; } catch { Logger.Error("[TopPat] Server DataSet is Empty"); }
+        try { globalPats = db.Overall.AsQueryable().ToList().First().PatCount; } catch { Logger.Error("[TopPat] Server DataSet is Empty"); }
 
-        var newUserList = usersList.OrderBy(p => -p.PatCount);
+        var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
 
-        if (!string.IsNullOrWhiteSpace(input) &&  input.ToLower() == "server") {
+        if (!string.IsNullOrWhiteSpace(input) && input.ToLower() == "server") {
             var strings = new StringBuilder();
             strings.AppendLine($"Top 50 that are in this server. - Server Pats: **{guildPats}** - Global Pats: **{globalPats}**");
             var counter = 1;
@@ -341,5 +337,201 @@ public class Basic : BaseCommandModule {
         e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
+    }
+}
+
+public static class BasicCmdUtils {
+    public static async Task OutputBaseCommand(ic c, string embedTitle, string? imageUrl, string colorHex, string footerText) {
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle(embedTitle);
+        e.WithImageUrl(imageUrl);
+        e.WithColor(Colors.HexToColor(colorHex));
+        FooterText(e, $"Powered by {footerText}");
+        await c.CreateResponseAsync(e.Build());
+    }
+    
+    private static void FooterText(DiscordEmbedBuilder em, string extraText = "") {
+        em.WithTimestamp(DateTime.Now);
+        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
+    }
+}
+
+public class SlashBasic : ApplicationCommandModule {
+
+    [SlashCommand("Support", "Get the support server invite link")]
+    public async Task Support(ic c)
+        => await c.CreateResponseAsync("Need support? Create an issue on our GitLab:\n  https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new", true);
+
+    [SlashCommand("Invite", "Get the bot invite link")]
+    public async Task Invite(ic c)
+        => await c.CreateResponseAsync("Want to invite me to your guild? Add me here:\n  https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands", true);
+
+    [SlashCommandGroup("Summon", "Summon a picture of various options")]
+    public class SummonPicture : ApplicationCommandModule {
+        [SlashCommand("Cat", "Cat pics are always nice")]
+        public async Task Cat(ic c) {
+            var rnd1 = new Random();
+            var num1 = rnd1.Next(0, 1);
+            var neko = num1 == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
+
+            await BasicCmdUtils.OutputBaseCommand(c, "", neko?.Result.ImageUrl, "FFFF00", "nekos.life");
+        }
+
+        [SlashCommand("Bunny", "Bunnies are mega adorable")]
+        public async Task Bunny(ic c) {
+            start:
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var content = await httpClient.GetStringAsync("https://api.bunnies.io/v2/loop/random/?media=gif,png");
+            // Logger.Log($"Data: {content}");
+            var id = content.Split("\"id\":\"")[1].Split("\"")[0];
+            var url = content.Split("\"gif\":\"")[1].Split("\"")[0];
+            var source = content.Split("\"source\":\"")[1].Split("\"")[0];
+            // Logger.Log(id);
+            // Logger.Log(url);
+
+            if (string.IsNullOrWhiteSpace(url)) {
+                httpClient.Dispose();
+                goto start;
+            }
+
+            var e = new DiscordEmbedBuilder();
+            if (source != "unknown") {
+                e.WithAuthor("Source", source);
+            }
+
+            e.WithTitle($"Bunny #{id}");
+            e.WithColor(Colors.HexToColor("#B88F64"));
+            e.WithImageUrl(url);
+            e.WithFooter("Powered by Bunnies.io");
+            httpClient.Dispose();
+            await c.CreateResponseAsync(e.Build());
+            // BunnyJson.BunnyData = null;
+        }
+
+        [SlashCommand("Fox", "Foxes are cute")]
+        public async Task Fox(ic c) {
+            RandomFoxJson.FoxData = null;
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+            var content = await httpClient.GetStringAsync("https://randomfox.ca/floof/");
+            RandomFoxJson.GetData(content);
+
+            var foxCount = await RandomFoxHtml.GetFoxCount();
+
+            var e = new DiscordEmbedBuilder();
+            e.WithTitle($"{RandomFoxJson.GetImageNumber()} / {foxCount}");
+            e.WithColor(Colors.HexToColor("AC5F25"));
+            e.WithImageUrl(RandomFoxJson.GetImage());
+            e.WithFooter("Powered by randomfox.ca");
+            httpClient.Dispose();
+            await c.CreateResponseAsync(e.Build());
+            RandomFoxJson.FoxData = null;
+        }
+    }
+
+    [SlashCommand("TopPat", "Get the top pat leaderboard")]
+    public async Task PatLeaderboard(ic c,
+        [Option("KeyWords", "Key words (can be empty)")]
+        string? keyWords = "") {
+        await using var db = new Context();
+
+        var guildPats = 0;
+        try { guildPats = db.Guilds.AsQueryable().ToList().FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; }
+        catch { Logger.Error("[TopPat] Guilds DataSet is Empty"); }
+
+        var globalPats = 0;
+        try { globalPats = db.Overall.AsQueryable().ToList().First().PatCount; }
+        catch { Logger.Error("[TopPat] Server DataSet is Empty"); }
+
+        var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
+
+        if (keyWords!.ToLower().Equals("server")) {
+            var strings = new StringBuilder();
+            strings.AppendLine($"Top 50 that are in this server. - Server Pats: **{guildPats}** - Global Pats: **{globalPats}**");
+            var counter = 1;
+            foreach (var u in newUserList) {
+                if (counter >= 51) continue;
+                if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
+                strings.AppendLine($"`{counter}.` {u.UsernameWithNumber.Split('#')[0]} - Total Pats: **{u.PatCount}**");
+                counter++;
+            }
+
+            await c.CreateResponseAsync(strings.ToString());
+            return;
+        }
+
+        var max = 1;
+        var sb = new StringBuilder();
+
+        foreach (var u in newUserList) {
+            if (max >= 11) continue;
+            if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
+            sb.AppendLine($"`{max}.` {u.UsernameWithNumber} - Total Pats: **{u.PatCount}**");
+            max++;
+        }
+
+        var temp = sb.ToString();
+        temp = temp.Replace("MintLily#0001", "Lily");
+        temp = temp.Replace("Silentt.#5610", "Elly");
+        temp = temp.Replace("Penny#9538", "Penny");
+        temp = temp.Replace(".FS.#8519", "Autumn");
+        temp = temp.Replace("Nail#3021", "Iana");
+        //temp = temp.Replace("", "");
+
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle("Head Pat Leaderboard");
+        e.WithColor(Colors.HexToColor("DFFFDD"));
+        e.WithFooter($"Synced across all servers • {BuildInfo.Name} (v{BuildInfo.Version})");
+        e.AddField("Current Server Stats",
+            $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}**");
+        e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
+        e.WithTimestamp(DateTime.Now);
+        await c.CreateResponseAsync(e.Build());
+    }
+
+    [SlashCommand("Meme", "Get a random meme from one of nine subreddits")]
+    public async Task Meme(ic c) {
+        start:
+        var subreddit = TheData.MemeSubreddits[new Random().Next(0, 8)];
+
+        TheData.RedditData = null;
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        var content = await httpClient.GetStringAsync($"https://www.reddit.com/r/{subreddit}/random/.json");
+        //await c.RespondAsync(string.Concat(new [] {
+        //    "```json\n",
+        //    content[..1979],
+        //    "```"
+        //}));
+        try {
+            TheData.GetData(content);
+        }
+        catch {
+            httpClient.Dispose();
+            goto start;
+        }
+
+        if (TheData.IsNsfw()) {
+            httpClient.Dispose();
+            goto start;
+        }
+
+        var image = TheData.GetImageUrl();
+        if (string.IsNullOrWhiteSpace(image)) {
+            httpClient.Dispose();
+            goto start;
+        }
+
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&mdash;", "\u2014"));
+        e.WithColor(Colors.Random);
+        //e.WithUrl(TheData.GetPostUrl()); // It no likey
+        e.WithImageUrl(image);
+        e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • Powered by Reddit from r/{subreddit}");
+        httpClient.Dispose();
+        await c.CreateResponseAsync(e.Build());
+        TheData.RedditData = null;
     }
 }
