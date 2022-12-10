@@ -19,7 +19,7 @@ using TaskScheduler = HeadPats.Managers.TaskScheduler;
 namespace HeadPats;
 
 public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-nightly-01192";
+    public const string DSharpVer = "4.3.0-nightly-01193";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
     public const ulong TestGuildId = 279459962843955201;
@@ -28,8 +28,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.6.2";
-    public static readonly DateTime BuildTime = new(2022, 12, 7, 16, 40, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.7.0";
+    public static readonly DateTime BuildTime = new(2022, 12, 10, 00, 58, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
