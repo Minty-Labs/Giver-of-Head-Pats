@@ -15,6 +15,8 @@ namespace HeadPats.Commands;
 public class Love : BaseCommandModule {
     public Love() => Logger.Loadodule("LoveCommands");
 
+    public static string tempPatGifUrl, tempHugGifUrl, tempSlapGifUrl, tempCuddleGifUrl, tempPokeGifUrl;
+
     private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
         em.WithTimestamp(DateTime.Now);
         em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
@@ -113,12 +115,19 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
+        if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image))) {
             Logger.Log("Hit a blacklisted GIF URL");
             goto start;
         }
+
+        if (image!.Equals(tempPatGifUrl)) {
+            Logger.Log("Image is same as previous image");
+            goto start;
+        }
+
+        tempPatGifUrl = image;
         
-        await OutputBaseCommand(c, mentionedUser, image!, outputs[num],
+        await OutputBaseCommand(c, mentionedUser, image, outputs[num],
             $"{c.Message.Author.Mention} gave {(patAmount != 1 ? $"**{patAmount}** headpats" : "a headpat")} to <@{getUserIdFromMention}>", "headpats", patAmount, "ffff00", doNotDelete);
         Logger.Log($"Total Pat amount Given: {patAmount}");
     }
@@ -139,8 +148,17 @@ public class Love : BaseCommandModule {
         var rnd = new Random();
         var num = rnd.Next(0, 4);
         var outputs = new[] { "_snuggies_", "_snuggles_", "_snugs_", "_cuddles_", "_ultra cuddles_" };
+        
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (image!.Equals(tempCuddleGifUrl)) {
+            Logger.Log("Image is same as previous image");
+            goto start;
+        }
 
-        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
+        tempCuddleGifUrl = image;
+
+        await OutputBaseCommand(c, mentionedUser, image, outputs[num],
             $"{c.Message.Author.Mention} gave cuddles to <@{getUserIdFromMention}>", "cuddles", 0, "3498DB");
     }
     
@@ -160,8 +178,17 @@ public class Love : BaseCommandModule {
         var rnd = new Random();
         var num = rnd.Next(0, 3);
         var outputs = new[] { "_huggies_", "_huggle_", "_hugs_", "_ultra hugs_" };
+        
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (image!.Equals(tempHugGifUrl)) {
+            Logger.Log("Image is same as previous image");
+            goto start;
+        }
 
-        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
+        tempHugGifUrl = image;
+
+        await OutputBaseCommand(c, mentionedUser, image, outputs[num],
             $"{c.Message.Author.Mention} hugged <@{getUserIdFromMention}>", "hugs", 0, "6F41B6");
         // e.WithDescription($"{ctx.User.Mention} gave {(special != 1 ? $"**{special}** hugs" : "a hug")} to <@{user.Id}>");
     }
@@ -203,8 +230,17 @@ public class Love : BaseCommandModule {
         var rnd = new Random();
         var num = rnd.Next(0, 2);
         var outputs = new[] { "_bap_", "_crack_", "_slap_" };
+        
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (image!.Equals(tempSlapGifUrl)) {
+            Logger.Log("Image is same as previous image");
+            goto start;
+        }
 
-        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
+        tempSlapGifUrl = image;
+
+        await OutputBaseCommand(c, mentionedUser, image, outputs[num],
             $"{c.Message.Author.Mention} slapped <@{getUserIdFromMention}>", "slapped", 0, "E74C3C");
     }
 
@@ -246,6 +282,15 @@ public class Love : BaseCommandModule {
         var rnd = new Random();
         var num = rnd.Next(0, 1);
         var outputs = new[] { "_poke_", "_boop_" };
+        
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (image!.Equals(tempPokeGifUrl)) {
+            Logger.Log("Image is same as previous image");
+            goto start;
+        }
+
+        tempPokeGifUrl = image;
 
         await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
             $"{c.Message.Author.Mention} poked <@{getUserIdFromMention}>", "poked", 0, "0E4730");
@@ -321,6 +366,13 @@ public class LoveSlash : ApplicationCommandModule {
             Logger.Log("Hit a blacklisted GIF URL");
             goto start;
         }
+        
+        if (image!.Equals(Love.tempPatGifUrl)) {
+            Logger.Log("Image is same as previous image");
+            goto start;
+        }
+
+        Love.tempPatGifUrl = image;
 
         var e = new DiscordEmbedBuilder();
         e.WithTitle(outputs[num]);
