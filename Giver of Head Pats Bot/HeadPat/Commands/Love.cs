@@ -17,11 +17,6 @@ public class Love : BaseCommandModule {
 
     public static string tempPatGifUrl, tempHugGifUrl, tempSlapGifUrl, tempCuddleGifUrl, tempPokeGifUrl;
 
-    private void FooterText(DiscordEmbedBuilder em, string extraText = "") {
-        em.WithTimestamp(DateTime.Now);
-        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
-    }
-
     private async Task OutputBaseCommand(cc c, string? mentionedUser, string? imageUrlFromApi, string embedTitle, string embedDesc, string action, int pats, string embedColorHex = "ffff00", bool deleteMessage = true) {
         if (deleteMessage)
             await c.Message.DeleteAsync("Auto Delete from command");
@@ -62,7 +57,8 @@ public class Love : BaseCommandModule {
         e.WithTitle(embedTitle);
         e.WithImageUrl(imageUrlFromApi);
         e.WithColor(Colors.HexToColor(embedColorHex));
-        FooterText(e, $"{(string.IsNullOrEmpty(imageUrlFromApi) ? "" : "Powered by nekos.life")}");
+        e.WithTimestamp(DateTime.Now);
+        e.WithFooter($"{(string.IsNullOrEmpty(imageUrlFromApi) ? "" : "Powered by nekos.life")}");
         e.WithDescription(gaveToBot ? $"Gave {action} to <@{c.Message.Author.Id}>" : embedDesc);
         UserControl.AddPatToUser(user.Id, pats, true, guild.Id);
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
@@ -261,7 +257,7 @@ public class Love : BaseCommandModule {
         var e = new DiscordEmbedBuilder();
         e.WithTitle(outputs[num]);
         e.WithColor(Colors.HexToColor("FF00FF"));
-        FooterText(e);
+        e.WithTimestamp(DateTime.Now);
         e.WithDescription($"{c.Message.Author.Mention} licked <@{getUserIdFromMention}>");
         await c.Client.SendMessageAsync(c.Message.Channel, e.Build());
     }
