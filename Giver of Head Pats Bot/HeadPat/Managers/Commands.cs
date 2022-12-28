@@ -11,9 +11,9 @@ internal static class Commands {
         // c?.RegisterCommands<Nsfw>();
         // c?.RegisterCommands<Owner>();
         // c?.RegisterCommands<Replies>();
-        c?.RegisterCommands<Contributors>();
-        c?.RegisterCommands<Admin>();
-        c?.RegisterCommands<Random_Utility>();
+        // c?.RegisterCommands<Contributors>();
+        // c?.RegisterCommands<Admin>();
+        // c?.RegisterCommands<Random_Utility>();
         
         c?.RegisterCommands<MelonLoaderBlacklist.ProtectCommands>();
     }
@@ -33,6 +33,10 @@ internal static class Commands {
         Logger.Log("Reply Slash commands registered");
         s?.RegisterCommands<SlashBasic>();
         Logger.Log("Basic Slash commands registered");
+        s?.RegisterCommands<Contributors>();
+        Logger.Log("Contributor Slash commands registered");
+        s?.RegisterCommands<Admin>();
+        Logger.Log("Admin Slash commands registered");
 #endif
 
         // s?.RegisterCommands<Moderation>();

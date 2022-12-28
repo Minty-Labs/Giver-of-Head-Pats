@@ -60,33 +60,31 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
 ```
 
 <h2>Features</h2>
-<p>Prefix: <code>hp!</code><br> Global Command: <code>help</code> is available.</p>
+<p>Prefix: <code>hp!</code><br> Global Command: <code>help</code> is available. Slash Commands are available.</p>
 <h3>Basic Commands</h3>
 <ul>
-    <li>About - Shows a message that describes the bot</li>
-    <li>Support - Sends a DM to invite user to the Support Guild</li>
-    <li>Invite - Sends a DM to invite the bot to a server</li>
-    <li>ListContributors - Lists the Contributors of the bot</li>
+    <li>About - Shows a message that describes the bot *</li>
+    <li>Support - Sends a DM to invite user to the Support Guild *</li>
+    <li>Invite - Sends a DM to invite the bot to a server *</li>
     <li>Ping - Shows bot's latency from you <-> discord <-> you</li>
     <li>Stats - Shows the bot status including server status and bot stats</li>
     <li>FlipCoin - Flip a coin</li>
-    <li>InspiroBot - Generates a random inspirational quote created by an AI.</li>
-    <li>Meme - Grabs a random meme image from one of 5 meme subreddits</li>
-    <li>Fox - Summon a random fox picture</li>
-    <li>Bunny - Summon a random bunny picture</li>
-    <li>Neko - Summon a picture or GIF of a SFW neko</li>
-    <li>Smug - Summon a picture or GIF of a smug face</li>
-    <li>Cat - Summon a picture or GIF of a cat</li>
+    <li>InspiroBot - Generates a random inspirational quote created by an AI *</li>
+    <li>Meme - Grabs a random meme image from one of 5 meme subreddits *</li>
+    <li>Fox - Summon a random fox picture *</li>
+    <li>Bunny - Summon a random bunny picture *</li>
+    <li>Neko - Summon a picture or GIF of a SFW neko *</li>
+    <li>Cat - Summon a picture or GIF of a cat *</li>
     <li>Cry - Summon a picture of GIF of a crying post</li>
-    <li>TopPat - Shows the leaderbord for most headpats</li>
+    <li>TopPat - Shows the leaderbord for most headpats *</li>
     <li>Color - Accepts HEX, RGB, HSV, HSL, and CMYK values, shows the color swatch of a given value *</li>
 </ul>
 
 ```
-    * - Also has a /slash command
+    * - Is a /slash command
 ```
 
-<h3>Contributor Commands</h3>
+<h3>Contributor Commands (Slash)</h3>
 <ul>
     <li>AddContributor - Adds a Contributor to the list *</li>
     <li>RemoveContributor - Removes a Contributor from the list *</li>
@@ -110,22 +108,16 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
     <li>Poke - Poke a specified user</li>
 </ul>
 
-<ul>
-    <li>AddReply - Adds an auto response for the server *</li>
-    <li>RemoveReply - Removes a trigger response by the provided trigger *</li>
-    <li>ListTriggers - Lists the triggers for auto responses</li>
-</ul>
-
-```
-    * - Requires Permission: ManageMessages
-```
-
-<h3>Admin Commands</h3>
+<h3>Admin Commands (Slash)</h3>
 
 <ul>
     <li>InviteInfo - Gets information about a Discord Invite code or URL *</li>
-    <li>UserInfo - Gets information about a user *</li>
+    <li>UserInfo - Gets information about a user (With Mentioned User) *</li>
+    <li>UserInfoID - Gets information about a user (With User ID) *</li>
     <li>BlacklistRoleFromPatCommand - Blacklists a role from the pat command **</li>
+    <li>AddReply - Adds an auto response for the server *</li>
+    <li>RemoveReply - Removes a trigger response by the provided trigger *</li>
+    <li>ListTriggers - Lists the triggers for auto responses</li>
 </ul>
 
 ```

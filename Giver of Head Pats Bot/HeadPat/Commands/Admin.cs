@@ -1,29 +1,26 @@
 ﻿using System.Text;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
-using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 
 namespace HeadPats.Commands; 
 
-public class Admin : BaseCommandModule {
-    public Admin() => Logger.Loadodule("AdminCommands");
+public class Admin : ApplicationCommandModule {
 
-    [Command("InviteInfo"), Aliases("ii"), Description("Gets a basic description about an invite by code")]
-    [RequirePermissions(Permissions.ManageMessages)]
-    public async Task GetInviteInfo(cc c, [Description("Full link or just invite code")] string code) {
+    [SlashCommand("InviteInfo", "Gets a basic description about an invite by code")]
+    [SlashRequirePermissions(Permissions.ManageMessages)]
+    public async Task GetInviteInfo(ic c, [Option("Code", "Full link or just invite code")] string code) {
         var hasLink = code.ToLower().Contains("discord.gg") || code.ToLower().Contains(".gg") || code.ToLower().Contains("https://");
         var final = code
             .Replace("https://", "")
             .Replace("discord.gg", "");
         if (string.IsNullOrWhiteSpace(hasLink ? final : code)) {
-            await c.RespondAsync("Please provide an invite link or code\nUsage: `-inviteinfo [code]`");
+            await c.CreateResponseAsync("Please provide an invite link or code\nUsage: `-inviteinfo [code]`");
             return;
         }
         var e = new DiscordEmbedBuilder();
@@ -33,7 +30,7 @@ public class Admin : BaseCommandModule {
         }
         catch (Exception ex) {
             if (ex.ToString().Contains("DSharpPlus.Exceptions.NotFoundException: Not found: 404")) {
-                await c.RespondAsync("Invite not found");
+                await c.CreateResponseAsync("Invite not found");
                 return;
             }
         }
@@ -60,14 +57,14 @@ public class Admin : BaseCommandModule {
         e.WithThumbnail(inv.Guild.IconUrl);
         e.WithColor(Colors.HexToColor("5C7F90"));
         e.WithFooter("Invite Inspector Created by SourVodka", "https://cdn.discordapp.com/avatars/211681643235115008/e47f3414381c5cbd1fc305f45dc2ffc8.png?size=2048");
-        await c.RespondAsync(e.Build());
+        await c.CreateResponseAsync(e.Build());
     }
 
-    [Command("UserInfo"), Aliases("ui", "user-info", "uinfo"), Description("Displays information about a user")]
-    [RequirePermissions(Permissions.ManageMessages)]
-    public async Task UserInfo(cc c, [Description("User ID")] string userId = "") {
+    [SlashCommand("UserInfoID", "Displays information about a user")]
+    [SlashRequirePermissions(Permissions.ManageMessages)]
+    public async Task UserInfo(ic c, [Option("UserID", "User ID")] string userId = "") {
         if (string.IsNullOrWhiteSpace(userId)) {
-            await c.RespondAsync("Please provide a user to get info.");
+            await c.CreateResponseAsync("Please provide a user to get info.");
             return;
         }
 
@@ -76,14 +73,14 @@ public class Admin : BaseCommandModule {
         try {
             u = await c.Client.GetUserAsync(ul, true);
         } catch {
-            await c.RespondAsync("The provided member is invalid. Did you put a message ID there instead?");
+            await c.CreateResponseAsync("The provided member is invalid. Did you put a message ID there instead?");
             return;
         }
         DiscordMember? m;
         try {
             m = await c.Guild.GetMemberAsync(ul);
         } catch {
-            await c.RespondAsync("User is not in the server, I cannot provide any information about them.");
+            await c.CreateResponseAsync("User is not in the server, I cannot provide any information about them.");
             return;
         }
 
@@ -102,33 +99,19 @@ public class Admin : BaseCommandModule {
         e.AddField($"Roles ({(m.Roles == null ? "null" : $"{m.Roles.Count()}")})", sb.ToString());
         e.WithThumbnail(u.GetAvatarUrl(ImageFormat.Auto));
         e.WithColor(Colors.HexToColor("F771A3"));
-
-        var builder = new DiscordMessageBuilder();
-        builder.WithEmbed(e.Build());
-        await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
+        
+        await c.CreateResponseAsync(e.Build());
     }
 
-    [Command("UserInfo")]
-    [RequirePermissions(Permissions.ManageMessages)]
-    public async Task UserInfo(cc c, [Description("User snowflake object; Mention, User ID, etc")] DiscordUser? user = null) {
-        if (user is null) {
-            await c.RespondAsync("Please provide a user to get info.");
-            return;
-        }
-
-        DiscordUser? u;
-        try {
-            u = await c.Client.GetUserAsync(user.Id, true);
-        } catch {
-            await c.RespondAsync("The provided member is invalid. Did you put a message ID there instead?");
-            return;
-        }
+    [SlashCommand("UserInfo", "Displays information about a user")]
+    [SlashRequirePermissions(Permissions.ManageMessages)]
+    public async Task UserInfo(ic c, [Option("User", "Mentioned User to get info about")] DiscordUser user) {
         DiscordMember m;
         try {
             m = await c.Guild.GetMemberAsync(user.Id);
         }
         catch {
-            await c.RespondAsync("User is not in the server, I cannot provide any information about them.");
+            await c.CreateResponseAsync("User is not in the server, I cannot provide any information about them.");
             return;
         }
 
@@ -147,30 +130,23 @@ public class Admin : BaseCommandModule {
         e.AddField($"Roles ({m.Roles.Count()})", sb.ToString());
         e.WithThumbnail(user.GetAvatarUrl(ImageFormat.Auto));
         e.WithColor(Colors.HexToColor("F771A3"));
-
-        var builder = new DiscordMessageBuilder();
-        builder.WithEmbed(e.Build());
-        await builder.WithReply(c.Message.Id).SendAsync(c.Channel);
+        
+        await c.CreateResponseAsync(e.Build());
     }
 
-    [Command("BlacklistRoleFromPatCommand"), Aliases("brfp"), Description("Blacklists a role from the pat command")]
-    [RequirePermissions(Permissions.ManageRoles)]
-    public async Task BlacklistRoleFromPatCommand(cc c, [Description("Mentioned Role or Role ID")] string mentionedRoleOrId = "",
-        [Description("Boolean as text; Add(t) or remove(f) blacklist")] string value = "") {
-        if (string.IsNullOrWhiteSpace(mentionedRoleOrId) || string.IsNullOrWhiteSpace(value)) {
-            await c.RespondAsync($"Incorrect command format! Please use the command like this:\n`{BuildInfo.Config.Prefix}BlacklistRoleFromPatCommand [@role] [true/false]`");
-            return;
-        }
-        
-        var getRoleIdFromMention = mentionedRoleOrId.Replace("<@&", "").Replace(">", "");
-        
-        var role = c.Guild.GetRole(ulong.Parse(getRoleIdFromMention));
+    [SlashCommand("BlacklistRoleFromPatCommand", "Blacklists a role from the pat command")]
+    [SlashRequirePermissions(Permissions.ManageRoles)]
+    public async Task BlacklistRoleFromPatCommand(ic c, [Option("Role", "Role to blacklist")] DiscordRole role,
+        [Option("Action", "Action to take")]
+        [Choice("Add", "add")]
+        [Choice("Remove", "remove")]
+        string value) {
 
         await using var db = new Context();
         var checkGuild = db.Guilds.AsQueryable()
             .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
         
-        var valueIsTrue = value.ToLower().Contains('t');
+        var valueIsTrue = value.ToLower().Equals("add");
 
         if (checkGuild == null) {
             var newGuild = new Guilds {
@@ -187,10 +163,10 @@ public class Admin : BaseCommandModule {
         }
         
         if (valueIsTrue) {
-            await c.RespondAsync($"The role, **{role.Name}**, is now blacklisted from the pat command.");
+            await c.CreateResponseAsync($"The role, **{role.Name}**, is now blacklisted from the pat command.");
             return;
         }
         
-        await c.RespondAsync("The role is no longer blacklisted from the pat command.");
+        await c.CreateResponseAsync("The role is no longer blacklisted from the pat command.");
     }
 }
