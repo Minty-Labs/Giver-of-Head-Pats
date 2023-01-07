@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -111,12 +110,17 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
+        if (image == null) {
+            Logger.Log("Image is null, restarting to get new image");
+            goto start;
+        }
+        
         if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image))) {
             Logger.Log("Hit a blacklisted GIF URL");
             goto start;
         }
 
-        if (image!.Equals(tempPatGifUrl)) {
+        if (image.Equals(tempPatGifUrl)) {
             Logger.Log("Image is same as previous image");
             goto start;
         }
@@ -147,7 +151,11 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (image!.Equals(tempCuddleGifUrl)) {
+        if (image == null) {
+            Logger.Log("Image is null, restarting to get new image");
+            goto start;
+        }
+        if (image.Equals(tempCuddleGifUrl)) {
             Logger.Log("Image is same as previous image");
             goto start;
         }
@@ -177,7 +185,11 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (image!.Equals(tempHugGifUrl)) {
+        if (image == null) {
+            Logger.Log("Image is null, restarting to get new image");
+            goto start;
+        }
+        if (image.Equals(tempHugGifUrl)) {
             Logger.Log("Image is same as previous image");
             goto start;
         }
@@ -205,8 +217,15 @@ public class Love : BaseCommandModule {
         var rnd = new Random();
         var num = rnd.Next(0, 1);
         var outputs = new[] { "_kissies_", "_kisses_" };
+        
+        start:
+        var image = neko?.Result.ImageUrl;
+        if (image == null) {
+            Logger.Log("Image is null, restarting to get new image");
+            goto start;
+        }
 
-        await OutputBaseCommand(c, mentionedUser, neko?.Result.ImageUrl, outputs[num],
+        await OutputBaseCommand(c, mentionedUser, image, outputs[num],
             $"{c.Message.Author.Mention} kissed <@{getUserIdFromMention}>", "kisses", 0, "F771A3");
     }
     
@@ -229,7 +248,11 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (image!.Equals(tempSlapGifUrl)) {
+        if (image == null) {
+            Logger.Log("Image is null, restarting to get new image");
+            goto start;
+        }
+        if (image.Equals(tempSlapGifUrl)) {
             Logger.Log("Image is same as previous image");
             goto start;
         }
@@ -281,7 +304,11 @@ public class Love : BaseCommandModule {
         
         start:
         var image = neko?.Result.ImageUrl;
-        if (image!.Equals(tempPokeGifUrl)) {
+        if (image == null) {
+            Logger.Log("Image is null, restarting to get new image");
+            goto start;
+        }
+        if (image.Equals(tempPokeGifUrl)) {
             Logger.Log("Image is same as previous image");
             goto start;
         }
