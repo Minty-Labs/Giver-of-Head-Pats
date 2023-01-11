@@ -28,8 +28,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.8.1";
-    public static readonly DateTime BuildTime = new(2023, 1, 6, 23, 00, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.8.2";
+    public static readonly DateTime BuildTime = new(2023, 1, 11, 17, 46, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
@@ -248,12 +248,12 @@ public sealed class Program {
         if (e.Command == null && e.Context.Member != null)
             Logger.CommandNull(e.Context.Member.Username, e.Context.Message.Content);
         else
-            Logger.CommandErrored(e.Command!.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception);
+            Logger.CommandErrored(e.Command!.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Context.Message.Content, e.Exception);
         return Task.CompletedTask;
     }
 
     private static Task Slash_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e) {
-        Logger.CommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception, true);
+        Logger.SlashCommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception);
         return Task.CompletedTask;
     }
     

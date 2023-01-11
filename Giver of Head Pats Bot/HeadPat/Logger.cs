@@ -92,11 +92,18 @@ internal class Logger {
         _log?.WriteLine($"[{GetTimestamp()}] [CMDEXEC] HeadPat > Command [{cmd}] was executed by [{username}] in guild [{guild}]");
     }
 
-    public static void CommandErrored(string cmd, string username, string guild, object stacktrace, bool isSlashCmd = false) {
+    public static void CommandErrored(string cmd, string username, string guild, object message, object exception) {
+        Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("ff0000") + $" > Command [" + $"{cmd}".Pastel("FFD766") + "] was executed by [" + 
+                          $"{username}".Pastel("EECCE0") + "] in guild [" + $"{guild}".Pastel("91D7FD") + "] \n" + $"{exception}".Pastel("CF284D"));
+        _log?.WriteLine($"[{GetTimestamp()}] [CMDERROR] HeadPat > Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {exception}");
+        SendLog(@$"[CMDERROR] HeadPat > Command [{cmd}] was executed by [{username}] in guild [{guild}] Message:\n```{message}```\nStackTrace\n```{exception}```");
+    }
+    
+    public static void SlashCommandErrored(string cmd, string username, string guild, object exception, bool isSlashCmd = false) {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("ff0000") + $" > {(isSlashCmd ? "Slash" : "")}Command [" + $"{cmd}".Pastel("FFD766") + "] was executed by [" + 
-                          $"{username}".Pastel("EECCE0") + "] in guild [" + $"{guild}".Pastel("91D7FD") + "] \n" + $"{stacktrace}".Pastel("CF284D"));
-        _log?.WriteLine($"[{GetTimestamp()}] [CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {stacktrace}");
-        SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] ```{stacktrace}```");
+                          $"{username}".Pastel("EECCE0") + "] in guild [" + $"{guild}".Pastel("91D7FD") + "] \n" + $"{exception}".Pastel("CF284D"));
+        _log?.WriteLine($"[{GetTimestamp()}] [CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {exception}");
+        SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] StackTrace\n```{exception}```");
     }
         
     public static void LoadModule(string message) {
