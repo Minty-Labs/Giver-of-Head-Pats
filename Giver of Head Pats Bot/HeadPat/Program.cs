@@ -219,9 +219,9 @@ public sealed class Program {
             );
 
         Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
-        Logger.WriteSeperator("C75450");
+        Logger.WriteSeparator("C75450");
 
-        using var db = new Context();
+        await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
         var em = new DiscordEmbedBuilder();
         em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);

@@ -12,7 +12,7 @@ using ic = DSharpPlus.SlashCommands.InteractionContext;
 namespace HeadPats.Commands; 
 
 public class Love : BaseCommandModule {
-    public Love() => Logger.Loadodule("LoveCommands");
+    public Love() => Logger.LoadModule("LoveCommands");
 
     public static string tempPatGifUrl, tempHugGifUrl, tempSlapGifUrl, tempCuddleGifUrl, tempPokeGifUrl;
 
@@ -372,13 +372,9 @@ public class LoveSlash : ApplicationCommandModule {
             await Task.Delay(300);
         }
 
-        var rnd1 = new Random();
-        var num1 = rnd1.Next(0, 1);
-
-        var neko = num1 == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
+        var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
         
-        var rnd = new Random();
-        var num = rnd.Next(0, 3);
+        var num = new Random().Next(0, 3);
         var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
         
         var special = num == 3 ? 2 : 1;
@@ -411,6 +407,7 @@ public class LoveSlash : ApplicationCommandModule {
 
     /*[SlashCommandGroup("user", "User Actions")]
     public class LoveUser : ApplicationCommandModule {
+    
         [SlashCommand("pat", "Pat a specified user.")]
         public async Task Pat(ic c, [Option("user", "The user to pat")] DiscordUser user) {
             await using var db = new Context();

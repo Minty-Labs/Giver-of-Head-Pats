@@ -99,12 +99,12 @@ internal class Logger {
         SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] ```{stacktrace}```");
     }
         
-    public static void Loadodule(string message) {
+    public static void LoadModule(string message) {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > Loading " + $"{message}".Pastel("FFC366") + " Module");
         _log?.WriteLine($"[{GetTimestamp()}] [LOAD] HeadPat > {message}");
     }
         
-    public static void WriteSeperator(string pastelHexTextColor = "ffffff") {
+    public static void WriteSeparator(string pastelHexTextColor = "ffffff") {
         var pad = "".PadLeft(Console.WindowWidth, '=');
         Console.WriteLine(pad.Pastel(pastelHexTextColor));
         _log?.WriteLine(pad);

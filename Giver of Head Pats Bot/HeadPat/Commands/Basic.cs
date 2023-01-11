@@ -12,7 +12,7 @@ using ic = DSharpPlus.SlashCommands.InteractionContext;
 namespace HeadPats.Commands; 
 
 public class Basic : BaseCommandModule {
-    public Basic() => Logger.Loadodule("BasicCommands");
+    public Basic() => Logger.LoadModule("BasicCommands");
     
     [Command("ping"), Description("Shows bot's latency from you <-> discord <-> you.")]
     public async Task Ping(cc c) => await c.RespondAsync($":ping_pong: Pong > {c.Client.Ping}ms");

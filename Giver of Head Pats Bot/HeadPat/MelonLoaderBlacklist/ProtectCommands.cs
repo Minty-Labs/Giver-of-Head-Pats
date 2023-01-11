@@ -8,7 +8,7 @@ using cc = DSharpPlus.CommandsNext.CommandContext;
 namespace HeadPats.MelonLoaderBlacklist;
 
 public class ProtectCommands : BaseCommandModule {
-    public ProtectCommands() => Logger.Loadodule("ProtectCommands");
+    public ProtectCommands() => Logger.LoadModule("ProtectCommands");
 
     [Command("Blacklist"), Description("Lists the all the blacklist commands.")]
     [IsOnList]
