@@ -5,6 +5,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
+using HeadPats.Managers;
 using HeadPats.Utils;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
@@ -232,13 +233,7 @@ public class SlashBasic : ApplicationCommandModule {
             max++;
         }
 
-        var temp = sb.ToString();
-        temp = temp.Replace("MintLily#0001", "Lily");
-        temp = temp.Replace("Silentt.#5610", "Elly");
-        temp = temp.Replace("Penny#9538", "Penny");
-        temp = temp.Replace(".FS.#8519", "Autumn");
-        temp = temp.Replace("Nail#3021", "Iana");
-        //temp = temp.Replace("", "");
+        var temp = sb.ToString().ReplaceTheNamesWithTags();
 
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Head Pat Leaderboard");

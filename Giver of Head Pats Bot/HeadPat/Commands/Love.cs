@@ -6,6 +6,7 @@ using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Utils;
 using HeadPats.Data.Models;
+using HeadPats.Managers;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 
@@ -324,12 +325,13 @@ public class LoveSlash : ApplicationCommandModule {
 
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
     public async Task Hug(ContextMenuContext ctx) {
+        var target = ctx.TargetMember.Username + "#" + ctx.TargetMember.Discriminator;
         if (ctx.TargetMember.Id == BuildInfo.ClientId)
             await ctx.CreateResponseAsync($"I got hugs from {ctx.User.Username}?! Thankies~");
         else if (ctx.TargetMember.Id == ctx.User.Id)
             await ctx.CreateResponseAsync("You cant give yourself hugs, but I'll gladly give you some!");
         else 
-            await ctx.CreateResponseAsync($"{ctx.User.Username} hugged {ctx.TargetMember.DisplayName}!");
+            await ctx.CreateResponseAsync($"{ctx.User.Username} hugged {target.ReplaceTheNamesWithTags()}!");
     }
     
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
