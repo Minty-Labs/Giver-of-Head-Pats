@@ -14,7 +14,7 @@ public class HelpFormatter : DefaultHelpFormatter {
             Text = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}"
         };
         EmbedBuilder.Footer = f;
-
+        EmbedBuilder.Description = "Listing all top-level commands and groups. Specify a command to see more information. There are also slash commands available for this bot.";
         return base.Build();
     }
 }

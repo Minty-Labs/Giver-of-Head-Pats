@@ -1,6 +1,4 @@
-﻿using DSharpPlus.Entities;
-
-namespace HeadPats.Managers; 
+﻿namespace HeadPats.Managers; 
 
 public static class NameReplacing {
     public static string ReplaceTheNamesWithTags(this string input) {
@@ -10,6 +8,7 @@ public static class NameReplacing {
         input = input.Replace(".FS.#8519", "Autumn");
         input = input.Replace("Nail#3021", "Iana");
         input = input.Replace("jettsd#1111", "Emily");
+        input = input.Replace("AxolotlFren#9690", "Erin");
         return input;
     }
 }

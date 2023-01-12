@@ -36,7 +36,7 @@ public class Basic : BaseCommandModule {
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(BuildInfo.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{BuildInfo.DSharpVer}** \nBot: **v{BuildInfo.Version}** \nBuild Date: {BuildInfo.BuildTime:F} - <t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
-        e.AddField("Server Info", $"Location: **Finland** \nServer: **Hetzner** \nMax RAM: **8 GB** \nOS: **Debian 11**");
+        e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **8 GB** \nOS: **Debian 11**");
 
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
@@ -122,9 +122,7 @@ public class SlashBasic : ApplicationCommandModule {
     public class SummonPicture : ApplicationCommandModule {
         [SlashCommand("Cat", "Cat pics are always nice")]
         public async Task Cat(ic c) {
-            var rnd1 = new Random();
-            var num1 = rnd1.Next(0, 1);
-            var neko = num1 == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
+            var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
 
             await BasicCmdUtils.OutputBaseCommand(c, "", neko?.Result.ImageUrl, "FFFF00", "nekos.life");
         }
