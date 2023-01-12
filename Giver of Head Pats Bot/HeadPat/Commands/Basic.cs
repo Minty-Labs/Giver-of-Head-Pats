@@ -41,13 +41,6 @@ public class Basic : BaseCommandModule {
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
     }
-
-    [Command("flipcoin"), Aliases("fc", "coinflip"), Description("Flip a coin")]
-    public async Task CoinFlip(cc c) {
-        var rnd = new Random();
-        var point = rnd.Next(0, 1);
-        await c.RespondAsync($"The coin flip result is **{(point == 0 ? "Heads" : "Tails")}**");
-    }
     
     [Command("Cry"), Aliases("crying"), Description("Summon a picture or GIF of a crying post")]
     public async Task Cry(cc c) {
@@ -121,6 +114,10 @@ public class SlashBasic : ApplicationCommandModule {
     public async Task Invite(ic c)
         => await c.CreateResponseAsync("Want to invite me to your guild? Add me here:\n  https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands", true);
 
+    [SlashCommand("FlipCoin", "Flip a coin")]
+    public async Task FlipCoin(ic c) 
+        => await c.CreateResponseAsync($"The coin flip result is **{(new Random().Next(0, 1) == 0 ? "Heads" : "Tails")}**");
+    
     [SlashCommandGroup("Summon", "Summon a picture of various options")]
     public class SummonPicture : ApplicationCommandModule {
         [SlashCommand("Cat", "Cat pics are always nice")]
