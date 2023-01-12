@@ -245,6 +245,7 @@ public class SlashBasic : ApplicationCommandModule {
 
     [SlashCommand("Meme", "Get a random meme from one of nine subreddits")]
     public async Task Meme(ic c) {
+        var counter = 0;
         start:
         var subreddit = TheData.MemeSubreddits[new Random().Next(0, 8)];
 
@@ -276,14 +277,22 @@ public class SlashBasic : ApplicationCommandModule {
             goto start;
         }
 
-        var e = new DiscordEmbedBuilder();
-        e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&mdash;", "\u2014"));
-        e.WithColor(Colors.Random);
-        //e.WithUrl(TheData.GetPostUrl()); // It no likey
-        e.WithImageUrl(image);
-        e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • Powered by Reddit from r/{subreddit}");
-        httpClient.Dispose();
-        await c.CreateResponseAsync(e.Build());
+        try {
+            counter += 1;
+            var e = new DiscordEmbedBuilder();
+            e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&mdash;", "\u2014"));
+            e.WithColor(Colors.Random);
+            //e.WithUrl(TheData.GetPostUrl()); // It no likey
+            e.WithImageUrl(image);
+            e.WithFooter($"Powered by Reddit from r/{subreddit}");
+            httpClient.Dispose();
+            await c.CreateResponseAsync(e.Build());
+        }
+        catch {
+            if (counter >= 3)
+                return;
+            goto start;
+        }
         TheData.RedditData = null;
     }
 
@@ -302,7 +311,7 @@ public class SlashBasic : ApplicationCommandModule {
         e.WithTitle("Got your image!");
         e.WithColor(Colors.Random);
         e.WithImageUrl(content);
-        e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • Powered by inspirobot.me");
+        e.WithFooter($"Powered by inspirobot.me");
         httpClient.Dispose();
         await c.CreateResponseAsync(e.Build());
     }
