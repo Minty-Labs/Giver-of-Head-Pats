@@ -7,7 +7,7 @@ namespace HeadPats.Managers;
 internal static class Commands {
     public static void Register(CommandsNextExtension? c) {
         c?.RegisterCommands<Basic>();
-        c?.RegisterCommands<Love>();
+        // c?.RegisterCommands<Love>();
         // c?.RegisterCommands<Nsfw>();
         // c?.RegisterCommands<Owner>();
         // c?.RegisterCommands<Replies>();
