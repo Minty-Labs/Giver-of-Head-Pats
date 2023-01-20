@@ -205,7 +205,6 @@ public sealed class Program {
         Logger.Log("Game                          = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
         Logger.Log("Streaming URL                 = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
         Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count}".Pastel("FBADBC"));
-        //Logger.Log("Active Events                 = " + $"16".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
             ActivityType = GetActivityType(BuildInfo.Config.ActivityType!)

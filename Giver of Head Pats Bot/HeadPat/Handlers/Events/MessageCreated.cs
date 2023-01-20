@@ -16,7 +16,6 @@ public class MessageCreated {
         c.MessageCreated += GetAndMaybeRespondToTrigger;
         c.MessageCreated += GetUserBotDm;
         c.MessageCreated += RespondToDmFromChannel;
-        // c.MessageCreated += TotallyWholesomeSuggestionAutoResponse;
         c.MessageCreated += LookForResetListCommandResponse;
         // c.MessageCreated += HiddenMinecraftCommand;
     }
@@ -127,22 +126,6 @@ public class MessageCreated {
         }
     }
 
-    /*private static async Task TotallyWholesomeSuggestionAutoResponse(DiscordClient sender, MessageCreateEventArgs e) {
-        if (e.Author.IsBot) return;
-        if (e.Guild.Id != 716536783621587004) return;
-        if (e.Channel.Id != 953481226734403615) return;
-        
-        var content = e.Message.Content.ToLower().Replace("\'", string.Empty).Replace(" ", string.Empty);
-        
-        string[] filter = { "color", "colour", "leash", "lead", "rope", "custim", "custom", "drop" };
-        var counter = filter.Count(word => content.Contains(word));
-
-        var builder = new DiscordMessageBuilder();
-        builder.WithContent("<#953526223764619284>");
-
-        if (counter >= 2)
-            await builder.WithReply(e.Message.Id, true).SendAsync(e.Channel);
-    }*/
 
     private static async Task LookForResetListCommandResponse(DiscordClient sender, MessageCreateEventArgs e) {
         if (e.Channel.IsPrivate) return;
