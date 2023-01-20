@@ -28,8 +28,8 @@ public static class BuildInfo {
     public static readonly DateTime BuildTime = DateTime.Now;
     public static bool IsDebug = true;
 #elif !DEBUG
-    public const string Version = "4.9.0";
-    public static readonly DateTime BuildTime = new(2023, 1, 12, 17, 15, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "4.9.1";
+    public static readonly DateTime BuildTime = new(2023, 1, 20, 00, 22, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
     public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
