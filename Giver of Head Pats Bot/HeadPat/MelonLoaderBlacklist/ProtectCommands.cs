@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿/*using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -299,4 +299,4 @@ public class ProtectCommands : BaseCommandModule {
         if (LookingForAnswer) return;
         await c.RespondAsync("Are you sure you want to reset the entire protect list? (y/n)");
     }
-}
+}*/

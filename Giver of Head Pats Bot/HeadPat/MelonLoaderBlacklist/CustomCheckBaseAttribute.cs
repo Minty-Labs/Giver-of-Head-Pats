@@ -1,4 +1,4 @@
-﻿using DSharpPlus.CommandsNext.Attributes;
+﻿/*using DSharpPlus.CommandsNext.Attributes;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 
 namespace HeadPats.MelonLoaderBlacklist;
@@ -32,4 +32,4 @@ public class IsOnList : CheckBaseAttribute {
                        ProtectStructure.Base.Users?.FirstOrDefault(x => x.UserId == c.User.Id)?.Role == Roles.None;
         return Task.FromResult(isOnList);
     }
-}
+}*/

@@ -15,7 +15,7 @@ internal static class Commands {
         // c?.RegisterCommands<Admin>();
         // c?.RegisterCommands<Random_Utility>();
         
-        c?.RegisterCommands<MelonLoaderBlacklist.ProtectCommands>();
+        // c?.RegisterCommands<MelonLoaderBlacklist.ProtectCommands>();
     }
 
     public static void Register(SlashCommandsExtension? s) {

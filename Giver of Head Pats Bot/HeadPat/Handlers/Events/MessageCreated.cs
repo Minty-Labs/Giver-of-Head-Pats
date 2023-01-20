@@ -3,7 +3,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HeadPats.Data;
-using HeadPats.MelonLoaderBlacklist;
+// using HeadPats.MelonLoaderBlacklist;
 using HeadPats.Utils;
 using Newtonsoft.Json;
 
@@ -16,7 +16,7 @@ public class MessageCreated {
         c.MessageCreated += GetAndMaybeRespondToTrigger;
         c.MessageCreated += GetUserBotDm;
         c.MessageCreated += RespondToDmFromChannel;
-        c.MessageCreated += LookForResetListCommandResponse;
+        // c.MessageCreated += LookForResetListCommandResponse;
         // c.MessageCreated += HiddenMinecraftCommand;
     }
 
@@ -126,12 +126,11 @@ public class MessageCreated {
         }
     }
 
-
-    private static async Task LookForResetListCommandResponse(DiscordClient sender, MessageCreateEventArgs e) {
+    /*private static async Task LookForResetListCommandResponse(DiscordClient sender, MessageCreateEventArgs e) {
         if (e.Channel.IsPrivate) return;
         if (e.Author.IsBot) return;
         if (!ProtectCommands.LookingForAnswer) return;
-        if (e.Author.Id == 167335587488071682 && e.Message.Content.ToLower().Contains('y')) { /* ID of Lily */
+        if (e.Author.Id == 167335587488071682 && e.Message.Content.ToLower().Contains('y')) { /* ID of Lily #1#
             var path = BuildInfo.IsWindows ? 
                 $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
                 $"{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
@@ -152,5 +151,5 @@ public class MessageCreated {
             ProtectStructure.Save();
             ProtectCommands.LookingForAnswer = false;
         }
-    }
+    }*/
 }

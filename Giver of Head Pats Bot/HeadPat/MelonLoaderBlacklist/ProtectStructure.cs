@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿/*using Newtonsoft.Json;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 
 namespace HeadPats.MelonLoaderBlacklist;
@@ -209,4 +209,4 @@ internal static class ProtectStructure {
         await c.RespondAsync($"Removed {pluginName}");
         Logger.LogEvent($"{c.User.Username} removed plugin {{ {pluginName} }}");
     }
-}
+}*/

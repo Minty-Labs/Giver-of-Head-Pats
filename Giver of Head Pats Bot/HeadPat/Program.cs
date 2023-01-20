@@ -178,7 +178,7 @@ public sealed class Program {
         GuildCommandCheckList.Add(things);*/
         
         ReplyStructure.CreateFile();
-        MelonLoaderBlacklist.ProtectStructure.CreateFile();
+        // MelonLoaderBlacklist.ProtectStructure.CreateFile();
         BlacklistedNekosLifeGifs.CreateFile();
         // ActionLogging.CreateFile();
             
