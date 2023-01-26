@@ -11,7 +11,7 @@ internal static class Logger {
     public static void ConsoleLogger() {
         if (_log == null) {
             var file = Path.Combine(Environment.CurrentDirectory, "Data", "Logs",
-                $"{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.log");
+                $"{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.log");
                 
             var info = new FileInfo(file);
             if (info.DirectoryName != null) {
