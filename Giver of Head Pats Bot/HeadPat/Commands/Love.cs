@@ -16,12 +16,13 @@ public class LoveSlash : ApplicationCommandModule {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
     public async Task Hug(ContextMenuContext ctx) {
         var target = ctx.TargetMember.Username + "#" + ctx.TargetMember.Discriminator;
+        var author = ctx.User.Username;
         if (ctx.TargetMember.Id == BuildInfo.ClientId)
-            await ctx.CreateResponseAsync($"I got hugs from {ctx.User.Username}?! Thankies~");
+            await ctx.CreateResponseAsync($"I got hugs from {author.ReplaceTheNames()}?! Thankies~");
         else if (ctx.TargetMember.Id == ctx.User.Id)
             await ctx.CreateResponseAsync("You cant give yourself hugs, but I'll gladly give you some!");
         else 
-            await ctx.CreateResponseAsync($"{ctx.User.Username} hugged {target.ReplaceTheNamesWithTags()}!");
+            await ctx.CreateResponseAsync($"{author.ReplaceTheNames()} hugged {target.ReplaceTheNamesWithTags()}!");
     }
     
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
