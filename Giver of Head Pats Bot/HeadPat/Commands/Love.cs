@@ -100,7 +100,9 @@ public class LoveSlash : ApplicationCommandModule {
      public class LoveUser : ApplicationCommandModule {
      
          [SlashCommand("pat", "Pat a specified user.")]
-         public async Task Pat(ic c, [Option("user", "The user to pat")] DiscordUser user) {
+         public async Task Pat(ic c, [Option("user", "The user to pat", true)] DiscordUser user, 
+             [Option("params", "Extra parameters (for the owner)")] string extraParams = "") {
+             var canUseParams = c.User.Id == 167335587488071682;
              await using var db = new Context();
              var checkGuild = db.Guilds.AsQueryable()
                  .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
@@ -145,6 +147,29 @@ public class LoveSlash : ApplicationCommandModule {
              var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
 
              var special = num == 3 ? 2 : 1;
+             var doingTheEllySpecial = false;
+             
+             switch (canUseParams) {
+                 case true: {
+                     if (!string.IsNullOrWhiteSpace(extraParams)) {
+                         if (extraParams.Equals("mega"))
+                             special = 2;
+
+                         if (extraParams.Contains('%'))
+                             special = int.Parse(extraParams.Split('%')[1]);
+
+                         if (extraParams.ToLower().Contains("elly")) {
+                             special = 5;
+                             doingTheEllySpecial = true;
+                         }
+                     }
+
+                     break;
+                 }
+                 case false when !string.IsNullOrWhiteSpace(extraParams):
+                     await c.CreateResponseAsync("You do not have permission to use extra parameters.", true);
+                     return;
+             }
 
              start:
              var image = neko?.Result.ImageUrl;
@@ -165,8 +190,10 @@ public class LoveSlash : ApplicationCommandModule {
              e.WithImageUrl(image);
              e.WithColor(Colors.HexToColor("ffff00"));
              e.WithFooter("Powered by nekos.life");
-             //e.WithDescription($"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
-             e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
+             if (doingTheEllySpecial)
+                 e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave **{special}** headpats to {user.Mention}");
+             else 
+                 e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
              UserControl.AddPatToUser(user.Id, special, true, c.Guild.Id);
              await c.CreateResponseAsync(e.Build());
              Logger.Log($"Total Pat amount Given: {special}");
