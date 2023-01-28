@@ -13,8 +13,10 @@ public class HelpFormatter : DefaultHelpFormatter {
         var f = new DiscordEmbedBuilder.EmbedFooter {
             Text = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}"
         };
+        var text = "Listing all top-level commands and groups. Specify a command to see more information. There are also slash commands available for this bot.";
         EmbedBuilder.Footer = f;
-        EmbedBuilder.Description = "Listing all top-level commands and groups. Specify a command to see more information. There are also slash commands available for this bot.";
+        EmbedBuilder.Description = text;     // Just work
+        EmbedBuilder.WithDescription(text);  // already reee
         return base.Build();
     }
 }

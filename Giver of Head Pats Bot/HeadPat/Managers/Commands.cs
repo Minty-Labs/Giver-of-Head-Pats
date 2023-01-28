@@ -7,19 +7,11 @@ namespace HeadPats.Managers;
 internal static class Commands {
     public static void Register(CommandsNextExtension? c) {
         c?.RegisterCommands<Basic>();
-        // c?.RegisterCommands<Love>();
-        // c?.RegisterCommands<Nsfw>();
-        // c?.RegisterCommands<Owner>();
-        // c?.RegisterCommands<Replies>();
-        // c?.RegisterCommands<Contributors>();
-        // c?.RegisterCommands<Admin>();
-        // c?.RegisterCommands<Random_Utility>();
         
         // c?.RegisterCommands<MelonLoaderBlacklist.ProtectCommands>();
     }
 
     public static void Register(SlashCommandsExtension? s) {
-        // s?.RegisterCommands<BasicSlashCommands>();
         if (s == null) Logger.Error("Slash commands extension is null");
 
 #if !DEBUG
@@ -37,6 +29,8 @@ internal static class Commands {
         Logger.Log("Contributor Slash commands registered");
         s?.RegisterCommands<Admin>();
         Logger.Log("Admin Slash commands registered");
+        s?.RegisterCommands<SlashConfigCommands>();
+        Logger.Log("Config Slash commands registered");
 #endif
 
         // s?.RegisterCommands<Moderation>();

@@ -4,10 +4,15 @@ namespace HeadPats.Managers;
 
 public class Config {
     [JsonProperty("Token")] public string? Token { get; set; }
+    
     [JsonProperty("OwnerID")] public ulong OwnerUserId { get; set; }
+    
     [JsonProperty("Prefix")] public string? Prefix { get; set; }
+    
     [JsonProperty("ActivityType")] public string? ActivityType { get; set; }
+    
     [JsonProperty("Game")] public string? Game { get; set; }
+    
     [JsonProperty("StreamingUrl")] public string? StreamingUrl { get; set; }
     
     [JsonProperty("SupportGuildID")] public ulong SupportGuildId { get; set; }
@@ -18,7 +23,12 @@ public class Config {
     
     [JsonProperty("DMResponseCategoryID")] public ulong DmResponseCategoryId { get; set; }
     
+    [JsonProperty("Unsplash Access Key")] public string? UnsplashAccessKey { get; set; }
+    
+    [JsonProperty("Unsplash Secret Key")] public string? UnsplashSecretKey { get; set; }
+    
     /*[JsonProperty("EnableRotation")] public bool EnableRotation;
+     
     [JsonProperty("RotatingStatuses")] public List<RotatingStatus>? RotatingStatuses;
 }
 
@@ -57,6 +67,8 @@ public static class Configuration {
             GeneralLogChannelId = 0,
             ErrorLogChannelId = 0,
             DmResponseCategoryId = 0,
+            UnsplashAccessKey = "",
+            UnsplashSecretKey = "",
             // EnableRotation = false,
             // RotatingStatuses = new List<RotatingStatus> { rS1, rS2 }
         };

@@ -29,7 +29,7 @@ public class Utility_Random : ApplicationCommandModule {
         const string baseUrl = "https://c.devminer.xyz/256/256";
         var em = new DiscordEmbedBuilder();
         
-        var tempColorValue = values.ToLower().ReplaceAll("abcdefghijklmnopqrstuvwxyz()#!%°", "");
+        var tempColorValue = values.ToLower().ReplaceAll("abcdefghijklmnopqrstuvwxyz()#!%°*^");
         var hasCommas = tempColorValue.Contains(',');
         var newColorValue = tempColorValue.Split(hasCommas ? ',' : ' ');
 

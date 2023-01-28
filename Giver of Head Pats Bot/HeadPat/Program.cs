@@ -195,16 +195,16 @@ public sealed class Program {
         BuildInfo.StartTime = DateTime.Now;
         BuildInfo.ThisProcess = Process.GetCurrentProcess();
         Logger.Log("Welcome, " + "Lily".Pastel("9fffe3"));
-        Logger.Log("Bot Version                   = " + BuildInfo.Version);
-        Logger.Log("Process ID                    = " + BuildInfo.ThisProcess.Id);
-        Logger.Log("Build Date                    = " + BuildInfo.BuildDateShort);
-        Logger.Log("Current OS                    = " + (BuildInfo.IsWindows ? "Windows" : "Linux"));
-        Logger.Log("Token                         = " + OutputStringAsHidden(BuildInfo.Config.Token!).Pastel("FBADBC"));
-        Logger.Log("Prefix                        = " + $"{BuildInfo.Config.Prefix}".Pastel("FBADBC"));
-        Logger.Log("ActivityType                  = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
-        Logger.Log("Game                          = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
-        Logger.Log("Streaming URL                 = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
-        Logger.Log("Number of Commands            = " + $"{Commands?.RegisteredCommands.Count}".Pastel("FBADBC"));
+        Logger.Log("Bot Version                    = " + BuildInfo.Version);
+        Logger.Log("Process ID                     = " + BuildInfo.ThisProcess.Id);
+        Logger.Log("Build Date                     = " + BuildInfo.BuildDateShort);
+        Logger.Log("Current OS                     = " + (BuildInfo.IsWindows ? "Windows" : "Linux"));
+        Logger.Log("Token                          = " + OutputStringAsHidden(BuildInfo.Config.Token!).Pastel("FBADBC"));
+        Logger.Log("Prefix                         = " + $"{BuildInfo.Config.Prefix}".Pastel("FBADBC"));
+        Logger.Log("ActivityType                   = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
+        Logger.Log("Game                           = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
+        Logger.Log("Streaming URL                  = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
+        Logger.Log("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count}".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{BuildInfo.Config.Game}",
             ActivityType = GetActivityType(BuildInfo.Config.ActivityType!)

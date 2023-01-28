@@ -45,7 +45,7 @@ public class MessageCreated {
         if (!DmCategory!.IsCategory) return;
 
         if (!DmCategory.Children.Any(c => c.Name.Contains(author.Id.ToString()))) {
-            serverChannelFromDm = await supportGuild.CreateChannelAsync($"{author.Id}-{author.Username.ReplaceAll("[ǃ@#$%^`~&*()+=,./<>?;:'\"\\|{}]", "")}",
+            serverChannelFromDm = await supportGuild.CreateChannelAsync($"{author.Id}-{author.Username.ReplaceAll("[ǃ@#$%^`~&*()+=,./<>?;:'\"\\|{}]")}",
                 ChannelType.Text, DmCategory, $"DM from: {author.Username}#{author.Discriminator} ({author.Id})");
         }
         else 
@@ -60,7 +60,7 @@ public class MessageCreated {
                 attsb.AppendLine($"{a.ProxyUrl}");
             }
         }
-        builder.WithContent($"From {author.Username}#{author.Discriminator} ({author.Id}):\n{(att ? $"Has `{count}` {attsb.ToString()}\n" : "")}\n" +
+        builder.WithContent($"From {author.Username}#{author.Discriminator} ({author.Id}):\n{(att ? $"Has `{count}` {attsb}\n" : "")}\n" +
                             $"{e.Message.Content}");
         
         await builder.SendAsync(serverChannelFromDm);

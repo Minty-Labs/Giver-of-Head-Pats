@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using DSharpPlus;
+﻿using System.Drawing;
 using DSharpPlus.Entities;
-using System.Net;
 using System.Globalization;
-using System.IO;
 
 namespace HeadPats.Utils; 
 
@@ -47,56 +39,4 @@ public class Colors {
         if (hash) str = "#" + str;
         return str;
     }
-    /*
-    public static Color GetNearestColor(string bitMapURL) {
-        Color inputColor = GetMostUsedColor(bitMapURL);
-        var inputRed = Convert.ToDouble(inputColor.R);
-        var inputGreen = Convert.ToDouble(inputColor.G);
-        var inputBlue = Convert.ToDouble(inputColor.B);
-        var colors = new List<Color>();
-        foreach (var knownColor in Enum.GetValues(typeof(KnownColor))) {
-            var color = Color.FromKnownColor((KnownColor)knownColor);
-            if (!color.IsSystemColor)
-                colors.Add(color);
-        }
-        var nearestColor = Color.Empty;
-        var distance = 500.0;
-        foreach (var color in colors) {
-            // Compute Euclidean distance between the two colors
-            var testRed = Math.Pow(Convert.ToDouble(color.R) - inputRed, 2.0);
-            var testGreen = Math.Pow(Convert.ToDouble(color.G) - inputGreen, 2.0);
-            var testBlue = Math.Pow(Convert.ToDouble(color.B) - inputBlue, 2.0);
-            var tempDistance = Math.Sqrt(testBlue + testGreen + testRed);
-            if (tempDistance == 0.0)
-                return color;
-            if (tempDistance < distance) {
-                distance = tempDistance;
-                nearestColor = color;
-            }
-        }
-        return nearestColor;
-    }
-
-        private static Color GetMostUsedColor(string bitMapURL) {
-            Bitmap bitMap;
-            var httpClient = new HttpClient();
-            var bytes = httpClient.GetByteArrayAsync(bitMapURL).GetAwaiter().GetResult();
-            Stream s = new MemoryStream(bytes);
-            //Stream s = wc.OpenRead(bitMapURL);
-            Bitmap bmp = new(s);
-            bitMap = bmp;
-            httpClient.Dispose();
-
-            var colorIncidence = new Dictionary<int, int>();
-            for (var x = 0; x < bitMap.Size.Width; x++)
-                for (var y = 0; y < bitMap.Size.Height; y++) {
-                    var pixelColor = bitMap.GetPixel(x, y).ToArgb();
-                    if (colorIncidence.Keys.Contains(pixelColor))
-                        colorIncidence[pixelColor]++;
-                    else
-                        colorIncidence.Add(pixelColor, 1);
-                }
-            return Color.FromArgb(colorIncidence.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).First().Key);
-        }
-        */
 }
