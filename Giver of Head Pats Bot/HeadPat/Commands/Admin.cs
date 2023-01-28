@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using DSharpPlus;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -14,7 +15,11 @@ public class Admin : ApplicationCommandModule {
 
     [SlashCommand("InviteInfo", "Gets a basic description about an invite by code")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
-    public async Task GetInviteInfo(ic c, [Option("Code", "Full link or just invite code")] string code) {
+    public async Task GetInviteInfo(ic c, [Option("Code", "Full link or just invite code", true)] string code) {
+        if (c.Member.Permissions != Permissions.ManageMessages) {
+            await c.CreateResponseAsync("You do not have permission to use this command.");
+            return;
+        }
         var hasLink = code.ToLower().Contains("discord.gg") || code.ToLower().Contains(".gg") || code.ToLower().Contains("https://");
         var final = code
             .Replace("https://", "")
@@ -63,6 +68,10 @@ public class Admin : ApplicationCommandModule {
     [SlashCommand("UserInfoID", "Displays information about a user")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(ic c, [Option("UserID", "User ID")] string userId = "") {
+        if (c.Member.Permissions != Permissions.ManageMessages) {
+            await c.CreateResponseAsync("You do not have permission to use this command.");
+            return;
+        }
         if (string.IsNullOrWhiteSpace(userId)) {
             await c.CreateResponseAsync("Please provide a user to get info.");
             return;
@@ -105,7 +114,11 @@ public class Admin : ApplicationCommandModule {
 
     [SlashCommand("UserInfo", "Displays information about a user")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
-    public async Task UserInfo(ic c, [Option("User", "Mentioned User to get info about")] DiscordUser user) {
+    public async Task UserInfo(ic c, [Option("User", "Mentioned User to get info about", true)] DiscordUser user) {
+        if (c.Member.Permissions != Permissions.ManageMessages) {
+            await c.CreateResponseAsync("You do not have permission to use this command.");
+            return;
+        }
         DiscordMember m;
         try {
             m = await c.Guild.GetMemberAsync(user.Id);
@@ -136,12 +149,16 @@ public class Admin : ApplicationCommandModule {
 
     [SlashCommand("BlacklistRoleFromPatCommand", "Blacklists a role from the pat command")]
     [SlashRequirePermissions(Permissions.ManageRoles)]
-    public async Task BlacklistRoleFromPatCommand(ic c, [Option("Role", "Role to blacklist")] DiscordRole role,
+    public async Task BlacklistRoleFromPatCommand(ic c, [Option("Role", "Role to blacklist", true)] DiscordRole role,
         [Option("Action", "Action to take")]
         [Choice("Add", "add")]
         [Choice("Remove", "remove")]
         string value) {
 
+        if (c.Member.Permissions != Permissions.ManageRoles) {
+            await c.CreateResponseAsync("You do not have permission to use this command.");
+            return;
+        }
         await using var db = new Context();
         var checkGuild = db.Guilds.AsQueryable()
             .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();

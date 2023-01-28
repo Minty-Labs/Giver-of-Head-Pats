@@ -16,11 +16,11 @@ public class ReplyApplication : ApplicationCommandModule {
 
     [SlashCommandGroup("Reply", "Self-creating simple trigger-based command message outputs")]
     public class Replies : ApplicationCommandModule {
-        [SlashCommand("add", "Adds an auto response for the server", false)]
+        [SlashCommand("add", "Adds an auto response for the server")]
         [SlashRequireUserPermissions(Permissions.ManageMessages)]
         public async Task AddReply(ic c,
-            [Option("Trigger", "Word or phrase as the trigger")] string trigger,
-            [Option("Response", "Response from trigger (add '<br>' for new lines)")] string response,
+            [Option("Trigger", "Word or phrase as the trigger", true)] string trigger,
+            [Option("Response", "Response from trigger (add '<br>' for new lines)", true)] string response,
             [Choice("false", "false")] [Choice("true", "true")]
             [Option("RequireOnlyTriggerText", "Respond ONLY if the message is equal to the trigger?")] string requireOnlyTriggerText = "false",
             [Choice("false", "false")] [Choice("true", "true")]
@@ -34,7 +34,7 @@ public class ReplyApplication : ApplicationCommandModule {
         [SlashCommand("Remove", "Removes a trigger response by the provided trigger", false)]
         [SlashRequireUserPermissions(Permissions.ManageMessages)]
         public async Task RemoveReply(ic c,
-            [Option("Trigger", "Enter the trigger word or phrase exactly")]
+            [Option("Trigger", "Enter the trigger word or phrase exactly", true)]
             string trigger) {
             ReplyStructure.RemoveValue(c.Guild.Id, trigger);
             if (ReplyStructure.ErroredOnRemove) {

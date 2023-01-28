@@ -201,7 +201,7 @@ public class LoveSlash : ApplicationCommandModule {
          }
          
          [SlashCommand("hug", "Hug a specified user.")]
-         public async Task Hug(ic c, [Option("user", "The user to hug")] DiscordUser user) {
+         public async Task Hug(ic c, [Option("user", "The user to hug", true)] DiscordUser user) {
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself hugs.", true);
                  return;
@@ -244,7 +244,7 @@ public class LoveSlash : ApplicationCommandModule {
          }
 
          [SlashCommand("Cuddle", "Cuddle a specified user.")]
-         public async Task Cuddle(ic c, [Option("user", "The user to cuddle")] DiscordUser user) {
+         public async Task Cuddle(ic c, [Option("user", "The user to cuddle", true)] DiscordUser user) {
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself cuddles.", true);
                  return;
@@ -283,7 +283,7 @@ public class LoveSlash : ApplicationCommandModule {
          }
 
          [SlashCommand("kiss", "Kiss a specified user.")]
-         public async Task Kiss(ic c, [Option("user", "The user to kiss")] DiscordUser user) {
+         public async Task Kiss(ic c, [Option("user", "The user to kiss", true)] DiscordUser user) {
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself kisses.", true);
                  return;
@@ -323,7 +323,7 @@ public class LoveSlash : ApplicationCommandModule {
          }
 
          [SlashCommand("slap", "Slap a specified user.")]
-         public async Task Slap(ic c, [Option("user", "The user to slap")] DiscordUser user) {
+         public async Task Slap(ic c, [Option("user", "The user to slap", true)] DiscordUser user) {
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot slap yourself.", true);
                  return;
@@ -363,7 +363,7 @@ public class LoveSlash : ApplicationCommandModule {
          }
          
          [SlashCommand("Poke", "Poke a user.")]
-         public async Task Poke(ic c, [Option("user", "The user to poke")] DiscordUser user) {
+         public async Task Poke(ic c, [Option("user", "The user to poke", true)] DiscordUser user) {
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot poke yourself.", true);
                  return;

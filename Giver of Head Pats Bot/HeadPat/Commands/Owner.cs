@@ -290,20 +290,20 @@ public class SlashOwner : ApplicationCommandModule {
         await c.CreateResponseAsync("Reset status scheduled task", true);
     }
     
-    [SlashCommand("AddGIFBlacklist", "Adds a GIF URL to a blacklist not to be shown in commands", false)]
+    [SlashCommand("AddGIFBlacklist", "Adds a GIF URL to a blacklist not to be shown in commands")]
     [SlashRequireOwner]
-    public async Task AddBlacklistGif(ic c, [Option("URL", "URL of GIF you want to add to the blacklist")] string url) 
+    public async Task AddBlacklistGif(ic c, [Option("URL", "URL of GIF you want to add to the blacklist", true)] string url) 
         => await BlacklistedNekosLifeGifs.AddBlacklist(c, url);
 
-    [SlashCommand("RemoveGIFBlacklist", "Removes a GIF URL from the blacklist to be shown in commands", false)]
+    [SlashCommand("RemoveGIFBlacklist", "Removes a GIF URL from the blacklist to be shown in commands")]
     [SlashRequireOwner]
-    public async Task RemoveBlacklistGif(ic c, [Option("URL", "URL of GIF you want to remove from blacklist")] string url) 
+    public async Task RemoveBlacklistGif(ic c, [Option("URL", "URL of GIF you want to remove from blacklist", true)] string url) 
         => await BlacklistedNekosLifeGifs.RemoveBlacklist(c, url);
     
-    [SlashCommand("BlacklistUserFromPatCommand", "Blacklists a user from the pat command", false)]
+    [SlashCommand("BlacklistUserFromPatCommand", "Blacklists a user from the pat command")]
     [SlashRequireOwner]
     public async Task BlacklistUserFromPatCommand(ic c, 
-        [Option("MentionedUser", "Looks for User ID")] string mentionedUser,
+        [Option("MentionedUser", "Looks for User ID", true)] string mentionedUser,
         
         [Choice("Add", "add")]
         [Choice("Remove", "remove")]
@@ -359,7 +359,7 @@ public class SlashOwner : ApplicationCommandModule {
     
     [SlashCommand("GetPresence", "Gets users with the given presence", false)]
     [SlashRequireOwner] // Made by Eric van Fandenfart
-    public async Task GetPresence(ic c, [Option("Activity", "Text to search presences with")] string activity) {
+    public async Task GetPresence(ic c, [Option("Activity", "Text to search presences with", true)] string activity) {
         if (string.IsNullOrWhiteSpace(activity)) {
             await c.CreateResponseAsync("activity field was empty", true);
             return;
@@ -416,9 +416,9 @@ public class SlashOwner : ApplicationCommandModule {
             await c.Client.SendMessageAsync(c.Channel, f[1999..3999]);
     }
 
-    [SlashCommand("LeaveGuild", "Forces the bot to leave a guild", false)]
+    [SlashCommand("LeaveGuild", "Forces the bot to leave a guild")]
     [SlashRequireOwner]
-    public async Task LeaveGuild(ic c, [Option("GuildID", "Guild ID to leave from")] string guildId) {
+    public async Task LeaveGuild(ic c, [Option("GuildID", "Guild ID to leave from", true)] string guildId) {
         if (string.IsNullOrWhiteSpace(guildId)) {
             await c.CreateResponseAsync("Please provide a guild ID.", true);
             return;
