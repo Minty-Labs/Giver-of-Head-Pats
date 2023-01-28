@@ -1,11 +1,14 @@
-﻿/*using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.SlashCommands;
-using HeadPats.Data;
+// using DSharpPlus.SlashCommands;
 
 namespace HeadPats.Handlers;
 
-public class GuildCommandCheck {
+public class LockCommandForOnlyMintyLabs : CheckBaseAttribute {
+    public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild.Id == 805663181170802719);
+}
+
+/*public class GuildCommandCheck {
     public ulong GuildId { get; set; }
     public bool Enabled { get; set; }
 }

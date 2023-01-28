@@ -5,6 +5,7 @@ using DSharpPlus.EventArgs;
 using HeadPats.Data;
 // using HeadPats.MelonLoaderBlacklist;
 using HeadPats.Utils;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 
 namespace HeadPats.Handlers.Events; 
@@ -113,6 +114,9 @@ public class MessageCreated {
             foreach (var t in ReplyStructure.Base.Replies.Where(t => t.Trigger != null)) {
                 if (e.Channel.IsPrivate) return;
                 if (t.GuildId != e.Guild.Id) continue;
+
+                if (t.Trigger!.ToLower().Equals("salad") && e.Message.Content.Contains("hp!salad") && e.Guild.Id == 805663181170802719)
+                    break; // for the Minty Labs salad command
                 
                 if (contents.Equals(t.Trigger) && t.OnlyTrigger) 
                     await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));

@@ -1,12 +1,16 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
+using HeadPats.Handlers;
 using HeadPats.Managers;
 using HeadPats.Utils;
+using Newtonsoft.Json;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 
@@ -65,6 +69,100 @@ public class Basic : BaseCommandModule {
 
     [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderboard for most headpats")]
     public async Task TopPat(cc c) => await c.RespondAsync("Use slash commands instead.");
+
+    [Command("Salad"), Description("Summon a picture of salad")]
+    [Cooldown(50, 3600, CooldownBucketType.Guild)]
+    [LockCommandForOnlyMintyLabs]
+    public async Task Salad(cc c) {
+        if (string.IsNullOrWhiteSpace(BuildInfo.Config.UnsplashAccessKey) || string.IsNullOrWhiteSpace(BuildInfo.Config.UnsplashSecretKey)) {
+            var noGoodMsg = await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.");
+            await Task.Delay(TimeSpan.FromSeconds(10));
+            await noGoodMsg.DeleteAsync();
+            await c.Message.DeleteAsync();
+            return;
+        }
+        
+        var unsplashApiUrl = $"https://api.unsplash.com/photos/random/?query=salad&count=1&client_id={BuildInfo.Config.UnsplashAccessKey}";
+        if (UnsplashApiJson.unsplashApi != null) UnsplashApiJson.unsplashApi.Clear();
+        UnsplashApiJson.unsplashApi = null;
+        var httpClient = new HttpClient();
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        var content = await httpClient.GetStringAsync(unsplashApiUrl);
+        var logged = JsonConvert.SerializeObject(content, Formatting.Indented);
+        Logger.Log(logged);
+        httpClient.Dispose();
+        UnsplashApiJson.GetData(content);
+        await c.Message.DeleteAsync();
+        
+        var unsplashSaladUrlLink = UnsplashApiJson.GetImage();
+        var unsplashSaladPostTime = UnsplashApiJson.GetCreatedAt();
+        var unsplashSaladPostAuthor = UnsplashApiJson.GetAuthorName();
+        var unsplashSaladPostAuthorProfileLink = UnsplashApiJson.GetAuthorProfileLink();
+        var unsplashSaladPostAuthorProfileImage = UnsplashApiJson.GetAuthorProfileImage();
+        var imageLinkCounter = UnsplashApiJson.GetLikes();
+        var imageDownloadCounter = UnsplashApiJson.GetDownloadCount();
+        var imageId = UnsplashApiJson.GetImageId();
+
+        var saladEmbed = new DiscordEmbedBuilder {
+            Title = "I got you a salad!",
+            Description = $"[Direct Photo Link]({unsplashSaladUrlLink})",
+            ImageUrl = unsplashSaladUrlLink,
+            Color = UnsplashApiJson.GetColor(),
+            Timestamp = unsplashSaladPostTime,
+            Footer = new DiscordEmbedBuilder.EmbedFooter {
+                Text = $"Powered by Unsplash | Photo by {unsplashSaladPostAuthor}"
+            },
+            Author = new DiscordEmbedBuilder.EmbedAuthor {
+                IconUrl = unsplashSaladPostAuthorProfileImage,
+                Url = unsplashSaladPostAuthorProfileLink,
+                Name = unsplashSaladPostAuthor
+            }
+        };
+        
+        var builder = new DiscordMessageBuilder();
+        builder.WithEmbed(saladEmbed.Build());
+        
+        var likeButton = new DiscordButtonComponent(ButtonStyle.Primary, "like_image", $"{imageLinkCounter}", false, new DiscordComponentEmoji("❤️"));
+        var downloadCountButton = new DiscordButtonComponent(ButtonStyle.Secondary, "download_count", $"{imageDownloadCounter}", true, new DiscordComponentEmoji("💾"));
+        builder.AddComponents(likeButton, downloadCountButton);
+        var message = await builder.SendAsync(c.Channel);
+        var args = await c.Client.GetInteractivity().WaitForButtonAsync(message, TimeSpan.FromMinutes(2.5f));
+        start:
+        var isOriginalCmdAuthor = args.Result.User == c.User;
+        if (!args.TimedOut && !isOriginalCmdAuthor) {
+            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+            args = await c.Client.GetInteractivity().WaitForButtonAsync(message, TimeSpan.FromMinutes(2.5f));
+            await Task.Delay(450);
+        }
+        
+        if (args.TimedOut) {
+            var timedOutButton = new DiscordButtonComponent(ButtonStyle.Danger, "timeout", "Timed Out!", true, new DiscordComponentEmoji("⏰"));
+            builder.ClearComponents();
+            builder.AddComponents(timedOutButton, downloadCountButton);
+            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(builder));
+            await Task.Delay(TimeSpan.FromSeconds(15));
+            builder.ClearComponents();
+            builder.AddComponents(downloadCountButton);
+            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(builder));
+        }
+        else if (args.Result.Id == "like_image" && isOriginalCmdAuthor) {
+            var liked = UnsplashApiJson.LikeImage(imageId);
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            if (liked) {
+                likeButton = new DiscordButtonComponent(ButtonStyle.Primary, "like_image", $"{imageLinkCounter + 1}", true, new DiscordComponentEmoji("❤️"));
+                builder.ClearComponents();
+                builder.AddComponents(likeButton, downloadCountButton);
+                await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(builder));
+            }
+            await Task.Delay(900);
+        }
+        else {
+            var temp = await c.RespondAsync("Only the original command author can like the image.");
+            await Task.Delay(TimeSpan.FromSeconds(10));
+            await temp.DeleteAsync();
+            goto start;
+        }
+    }
 }
 
 public static class BasicCmdUtils {
