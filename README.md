@@ -136,9 +136,9 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
 
 <h2>Developers</h2>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/7/avatar.png" height="35px" align=center /> &nbsp;
-    <a href="https://git.ellyvr.dev/Lily">Lily</a><br>
+    <a href="https://git.ellyvr.dev/Lily">Lily</a> (Main, Lead, Owner, Creator)<br>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/2/avatar.png" height="35px" align=center /> &nbsp;
-    <a href="https://git.ellyvr.dev/Elly">Elly</a>
+    <a href="https://git.ellyvr.dev/Elly">Elly</a> (Supporting)
 
 <h3>Featured Programs</h3>
 <a href="https://jb.gg/OpenSourceSupport" target="_blank">

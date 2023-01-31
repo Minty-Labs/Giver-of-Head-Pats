@@ -137,6 +137,8 @@ public sealed class Program {
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
 
         NekoClient = new NekoClient(BuildInfo.Name);
+        
+        eventHandler.Complete();
 
         await using var db = new Context();
         var check = db.Overall.AsQueryable()

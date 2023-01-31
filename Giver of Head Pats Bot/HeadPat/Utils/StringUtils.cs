@@ -17,4 +17,15 @@ public static class StringUtils {
     /// <param name="input"></param>
     /// <returns></returns>
     public static bool GetBooleanFromString(string input) => input.ToLower().Equals("true");
+    
+    /// <summary>
+    /// Returns a random string of a specified length
+    /// </summary>
+    /// <param name="length"></param>
+    /// <returns></returns>
+    public static string GetRandomString(int length = 15) {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[new Random().Next(s.Length)]).ToArray());
+    }
 }
