@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 
@@ -108,8 +109,8 @@ public class UnsplashApi {
     public int height { get; set; }
     public string color { get; set; }
     public string blur_hash { get; set; }
-    public string description { get; set; }
-    public string alt_description { get; set; }
+    public string? description { get; set; }
+    public string? alt_description { get; set; }
     public Urls urls { get; set; }
     public Links links { get; set; }
     public int likes { get; set; }
@@ -124,9 +125,16 @@ public class UnsplashApi {
     public int downloads { get; set; }
 }
 
+/*public class UnsplashApi_Download {
+    public string url { get; set; }
+}*/
+
 public class UnsplashApiJson {
     public static List<UnsplashApi>? unsplashApi;
+    //public static UnsplashApi_Download? DownloadImage;
     public static void GetData(string data) => unsplashApi = JsonConvert.DeserializeObject<List<UnsplashApi>>(data);
+
+    //public static void DownloadImageMethod(string data) => DownloadImage = JsonConvert.DeserializeObject<UnsplashApi_Download>(data);
     
     public static string GetImage() => unsplashApi![0].urls.regular;
     public static DateTime GetCreatedAt() => unsplashApi?[0].created_at ?? DateTime.Now;
@@ -137,25 +145,56 @@ public class UnsplashApiJson {
     public static int GetDownloadCount() => unsplashApi?[0].downloads ?? 0;
     public static string GetImageId() => unsplashApi![0].id;
     public static DiscordColor GetColor() => Colors.HexToColor(unsplashApi![0].color);
+    public static string? GetPostDescription() => unsplashApi![0].description;
+    public static string? GetPostAltDescription() => unsplashApi![0].alt_description;
+    public static string GetDownloadImageLink() => unsplashApi![0].links.download_location;
 
+    // public static bool tempMethod;
     public static bool LikeImage(string imageId) {
         var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={BuildInfo.Config.UnsplashAccessKey}";
-        var content = new StringContent("", Encoding.UTF8, "application/json");
+        var content = new StringContent(imageId, Encoding.UTF8);
         try {
             var likeAction = new HttpClient().PostAsync(url, content).GetAwaiter().GetResult();
-            return likeAction.StatusCode == HttpStatusCode.Created;
+            return likeAction.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK;
         }
         catch (Exception e) {
             Logger.Error(e);
             return false;
         }
     }
+
+    /*public static void LikeImageAction(string imageId, CommandContext c) {
+        var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={BuildInfo.Config.UnsplashAccessKey}";
+        var hit = 0;
+        try {
+            hit++;
+            var content = new StringContent(imageId, Encoding.UTF8, "application/json");
+            new HttpClient().PostAsync(url, content).GetAwaiter().GetResult();
+        }
+        catch {
+            try {
+                hit++;
+                var content = new StringContent(imageId, Encoding.UTF8, "x-www-form-urlencoded");
+                new HttpClient().PostAsync(url, content).GetAwaiter().GetResult();
+            }
+            catch {
+                try {
+                    hit++;
+                    var content = new StringContent(imageId, Encoding.UTF8);
+                    new HttpClient().PostAsync(url, content).GetAwaiter().GetResult();
+                }
+                catch {
+                    c.RespondAsync($"Things really did not work. Hit {hit} times").GetAwaiter().GetResult();
+                }
+            }
+        }
+    }*/
     
     public static bool DislikeImage(string imageId) {
         var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={BuildInfo.Config.UnsplashAccessKey}";
         try {
             var likeAction = new HttpClient().DeleteAsync(url).GetAwaiter().GetResult();
-            return likeAction.StatusCode == HttpStatusCode.NoContent;
+            return likeAction.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.OK;
         }
         catch (Exception e) {
             Logger.Error(e);

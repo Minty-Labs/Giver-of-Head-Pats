@@ -75,9 +75,7 @@ public class Basic : BaseCommandModule {
     [LockCommandForOnlyMintyLabs]
     public async Task Salad(cc c) {
         if (string.IsNullOrWhiteSpace(BuildInfo.Config.UnsplashAccessKey) || string.IsNullOrWhiteSpace(BuildInfo.Config.UnsplashSecretKey)) {
-            var noGoodMsg = await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.");
-            await Task.Delay(TimeSpan.FromSeconds(10));
-            await noGoodMsg.DeleteAsync();
+            await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.").DeleteAfter(10);
             await c.Message.DeleteAsync();
             return;
         }
@@ -86,10 +84,10 @@ public class Basic : BaseCommandModule {
         if (UnsplashApiJson.unsplashApi != null) UnsplashApiJson.unsplashApi.Clear();
         UnsplashApiJson.unsplashApi = null;
         var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
         var content = await httpClient.GetStringAsync(unsplashApiUrl);
         var logged = JsonConvert.SerializeObject(content, Formatting.Indented);
-        Logger.Log(logged);
+        // Logger.Log(logged);
         httpClient.Dispose();
         UnsplashApiJson.GetData(content);
         await c.Message.DeleteAsync();
@@ -102,10 +100,18 @@ public class Basic : BaseCommandModule {
         var imageLinkCounter = UnsplashApiJson.GetLikes();
         var imageDownloadCounter = UnsplashApiJson.GetDownloadCount();
         var imageId = UnsplashApiJson.GetImageId();
+        
+        /*UnsplashApiJson.DownloadImage = null;
+        var url = $"https://api.unsplash.com/photos/{imageId}/download?client_id={BuildInfo.Config.UnsplashAccessKey}";
+        var http = new HttpClient();
+        var dlContent = await http.GetStringAsync(url);
+        UnsplashApiJson.DownloadImageMethod(dlContent);
+        http.Dispose();*/
 
         var saladEmbed = new DiscordEmbedBuilder {
             Title = "I got you a salad!",
-            Description = $"[Direct Photo Link]({unsplashSaladUrlLink})",
+            Description = $"[Direct Photo Link]({UnsplashApiJson.GetDownloadImageLink()})\n" +
+                          $"{UnsplashApiJson.GetPostDescription() ?? UnsplashApiJson.GetPostAltDescription() ?? ""}",
             ImageUrl = unsplashSaladUrlLink,
             Color = UnsplashApiJson.GetColor(),
             Timestamp = unsplashSaladPostTime,
@@ -124,12 +130,14 @@ public class Basic : BaseCommandModule {
         
         var likeButton = new DiscordButtonComponent(ButtonStyle.Primary, "like_image", $"{imageLinkCounter}", false, new DiscordComponentEmoji("❤️"));
         var downloadCountButton = new DiscordButtonComponent(ButtonStyle.Secondary, "download_count", $"{imageDownloadCounter}", true, new DiscordComponentEmoji("💾"));
+        //var downloadImageButton = new DiscordButtonComponent(ButtonStyle.Primary, "dlImage", "Download Image", false, new DiscordComponentEmoji("↗️"));
         builder.AddComponents(likeButton, downloadCountButton);
         var message = await builder.SendAsync(c.Channel);
         var args = await c.Client.GetInteractivity().WaitForButtonAsync(message, TimeSpan.FromMinutes(2.5f));
+        var likedOnce = false;
         start:
-        var isOriginalCmdAuthor = args.Result.User == c.User;
-        if (!args.TimedOut && !isOriginalCmdAuthor) {
+        // var isOriginalCmdAuthor = args.Result.User == c.User;
+        if (!args.TimedOut) {
             await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
             args = await c.Client.GetInteractivity().WaitForButtonAsync(message, TimeSpan.FromMinutes(2.5f));
             await Task.Delay(450);
@@ -138,31 +146,45 @@ public class Basic : BaseCommandModule {
         if (args.TimedOut) {
             var timedOutButton = new DiscordButtonComponent(ButtonStyle.Danger, "timeout", "Timed Out!", true, new DiscordComponentEmoji("⏰"));
             builder.ClearComponents();
-            builder.AddComponents(timedOutButton, downloadCountButton);
-            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(builder));
-            await Task.Delay(TimeSpan.FromSeconds(15));
-            builder.ClearComponents();
-            builder.AddComponents(downloadCountButton);
-            await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(builder));
+            var newBuilder = new DiscordMessageBuilder();
+            newBuilder.WithContent(builder.Content);
+            newBuilder.AddEmbeds(builder.Embeds);
+            newBuilder.AddComponents(timedOutButton, downloadCountButton);
+            await message.ModifyAsync(newBuilder);
+            await Task.Delay(900);
         }
-        else if (args.Result.Id == "like_image" && isOriginalCmdAuthor) {
+        else if (args.Result.Id == "like_image" && !likedOnce/* && isOriginalCmdAuthor*/) {
+            likedOnce = true;
             var liked = UnsplashApiJson.LikeImage(imageId);
             await Task.Delay(TimeSpan.FromSeconds(1));
             if (liked) {
-                likeButton = new DiscordButtonComponent(ButtonStyle.Primary, "like_image", $"{imageLinkCounter + 1}", true, new DiscordComponentEmoji("❤️"));
+                var likeButton2 = new DiscordButtonComponent(ButtonStyle.Primary, "like_image", $"{imageLinkCounter + 1}", true, new DiscordComponentEmoji("❤️"));
                 builder.ClearComponents();
-                builder.AddComponents(likeButton, downloadCountButton);
-                await args.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder(builder));
+                var newBuilder = new DiscordMessageBuilder();
+                newBuilder.WithContent(builder.Content);
+                newBuilder.AddEmbeds(builder.Embeds);
+                newBuilder.AddComponents(likeButton2, downloadCountButton);
+                await message.ModifyAsync(newBuilder);
+            }
+            else {
+                await c.RespondAsync("Something went wrong. Please try again later.").DeleteAfter(10);
             }
             await Task.Delay(900);
         }
         else {
-            var temp = await c.RespondAsync("Only the original command author can like the image.");
-            await Task.Delay(TimeSpan.FromSeconds(10));
-            await temp.DeleteAsync();
+            await c.RespondAsync("Image was already liked."/*"Only the original command author can like the image."*/).DeleteAfter(10);
             goto start;
         }
+        await Task.Delay(450);
     }
+
+    /*[Command("SwapLikeMethod")]
+    [RequireOwner]
+    public async Task SLM(cc c) {
+        UnsplashApiJson.tempMethod = !UnsplashApiJson.tempMethod;
+        await c.RespondAsync($"Done. Using {(UnsplashApiJson.tempMethod ? "Action" : "Boolean")}").DeleteAfter(5);
+        await c.Message.DeleteAsync();
+    }*/
 }
 
 public static class BasicCmdUtils {
@@ -171,13 +193,8 @@ public static class BasicCmdUtils {
         e.WithTitle(embedTitle);
         e.WithImageUrl(imageUrl);
         e.WithColor(Colors.HexToColor(colorHex));
-        FooterText(e, $"Powered by {footerText}");
+        e.WithTimestamp(DateTime.Now);
         await c.CreateResponseAsync(e.Build());
-    }
-    
-    private static void FooterText(DiscordEmbedBuilder em, string extraText = "") {
-        em.WithTimestamp(DateTime.Now);
-        em.WithFooter($"{(string.IsNullOrWhiteSpace(extraText) ? "" : $"{extraText}")}");
     }
 }
 
@@ -399,8 +416,6 @@ public class SlashBasic : ApplicationCommandModule {
         if (string.IsNullOrWhiteSpace(content)) {
             httpClient.Dispose();
             await c.CreateResponseAsync("Failed to get an image.", true);
-            await Task.Delay(10000);
-            await c.DeleteResponseAsync();
             return;
         }
         var e = new DiscordEmbedBuilder();
