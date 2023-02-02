@@ -122,10 +122,13 @@ public class MessageCreated {
                 
                 else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
                     await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+                
+                else if (t.Trigger != null && contents.Equals(t.Trigger) && !t.OnlyTrigger && t.DeleteTriggerIfIsOnlyInMessage) {
+                    await e.Message.DeleteAsync("Auto delete by bot response.");
+                    await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+                }
 
                 if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
-                    await e.Message.DeleteAsync("Auto delete by bot response.");
-                else if (contents.Equals(t.Trigger?.ToLower()) && !t.DeleteTrigger && t.DeleteTriggerIfIsOnlyInMessage)
                     await e.Message.DeleteAsync("Auto delete by bot response.");
             }
         }
