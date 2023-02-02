@@ -68,7 +68,7 @@ public class Basic : BaseCommandModule {
     }
 
     [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderboard for most headpats")]
-    public async Task TopPat(cc c) => await c.RespondAsync("Use slash commands instead.");
+    public async Task TopPat(cc c) => await c.RespondAsync("Use slash commands instead. `/TopPat`");
 
     [Command("Salad"), Description("Summon a picture of salad")]
     [Cooldown(50, 3600, CooldownBucketType.Guild)]
@@ -120,7 +120,8 @@ public class Basic : BaseCommandModule {
             },
             Author = new DiscordEmbedBuilder.EmbedAuthor {
                 IconUrl = unsplashSaladPostAuthorProfileImage,
-                Url = unsplashSaladPostAuthorProfileLink,
+                Url = unsplashSaladPostAuthorProfileLink + $"?utm_source={Vars.Name.Replace(" ", "_")}_-_Discord_Bot&utm_medium=referral",
+                // {BuildInfo.Name.Replace(" ", "_")} refers to the bot's name, but with underscores instead of spaces. Being "Giver of Head Pats"
                 Name = unsplashSaladPostAuthor
             }
         };
