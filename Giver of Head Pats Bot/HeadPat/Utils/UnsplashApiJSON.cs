@@ -151,7 +151,7 @@ public class UnsplashApiJson {
 
     // public static bool tempMethod;
     public static bool LikeImage(string imageId) {
-        var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={BuildInfo.Config.UnsplashAccessKey}";
+        var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={Vars.Config.UnsplashAccessKey}";
         var content = new StringContent(imageId, Encoding.UTF8);
         try {
             var likeAction = new HttpClient().PostAsync(url, content).GetAwaiter().GetResult();
@@ -191,7 +191,7 @@ public class UnsplashApiJson {
     }*/
     
     public static bool DislikeImage(string imageId) {
-        var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={BuildInfo.Config.UnsplashAccessKey}";
+        var url = $"https://api.unsplash.com/photos/{imageId}/like?client_id={Vars.Config.UnsplashAccessKey}";
         try {
             var likeAction = new HttpClient().DeleteAsync(url).GetAwaiter().GetResult();
             return likeAction.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.OK;

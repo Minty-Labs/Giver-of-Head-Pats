@@ -41,7 +41,7 @@ public class MessageCreated {
         
         var author = e.Message.Author;
         DiscordChannel? serverChannelFromDm;
-        var supportGuild = await sender.GetGuildAsync(BuildInfo.Config.SupportGuildId);
+        var supportGuild = await sender.GetGuildAsync(Vars.Config.SupportGuildId);
 
         if (!DmCategory!.IsCategory) return;
 

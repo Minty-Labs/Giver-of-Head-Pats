@@ -26,21 +26,21 @@ public class Basic : BaseCommandModule {
     public async Task Stats(cc c) {
         var ram = GC.GetTotalMemory(false) / 1024 / 1024;
         var tempNow = DateTime.Now;
-        var days = tempNow.Subtract(BuildInfo.StartTime).Days;
-        var hours = tempNow.Subtract(BuildInfo.StartTime).Hours;
-        var minutes = tempNow.Subtract(BuildInfo.StartTime).Minutes;
-        var seconds = tempNow.Subtract(BuildInfo.StartTime).Seconds;
+        var days = tempNow.Subtract(Vars.StartTime).Days;
+        var hours = tempNow.Subtract(Vars.StartTime).Hours;
+        var minutes = tempNow.Subtract(Vars.StartTime).Minutes;
+        var seconds = tempNow.Subtract(Vars.StartTime).Seconds;
 
         var e = new DiscordEmbedBuilder();
-        e.WithTitle($"{BuildInfo.Name} Stats");
+        e.WithTitle($"{Vars.Name} Stats");
         e.WithColor(DiscordColor.Teal);
 
         e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count}", true);
         e.AddField("Ping", $"{c.Client.Ping}ms", true);
-        e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(BuildInfo.IsWindows ? "Windows" : "Linux")}**", true);
+        e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(Vars.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
-        e.AddField("Bot Versions Info", $"DSharpPlus: **v{BuildInfo.DSharpVer}** \nBot: **v{BuildInfo.Version}** \nBuild Date: {BuildInfo.BuildTime:F} - <t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
-        e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **8 GB** \nOS: **Debian 11**");
+        e.AddField("Bot Versions Info", $"DSharpPlus: **v{Vars.DSharpVer}** \nBot: **v{Vars.Version}** \nBuild Date: {Vars.BuildTime:F} - <t:{TimeConverter.GetUnixTime(Vars.BuildTime)}:R>");
+        e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **16 GB** \nOS: **Debian 11**");
 
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
@@ -74,13 +74,13 @@ public class Basic : BaseCommandModule {
     [Cooldown(50, 3600, CooldownBucketType.Guild)]
     [LockCommandForOnlyMintyLabs]
     public async Task Salad(cc c) {
-        if (string.IsNullOrWhiteSpace(BuildInfo.Config.UnsplashAccessKey) || string.IsNullOrWhiteSpace(BuildInfo.Config.UnsplashSecretKey)) {
+        if (string.IsNullOrWhiteSpace(Vars.Config.UnsplashAccessKey) || string.IsNullOrWhiteSpace(Vars.Config.UnsplashSecretKey)) {
             await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.").DeleteAfter(10);
             await c.Message.DeleteAsync();
             return;
         }
         
-        var unsplashApiUrl = $"https://api.unsplash.com/photos/random/?query=salad&count=1&client_id={BuildInfo.Config.UnsplashAccessKey}";
+        var unsplashApiUrl = $"https://api.unsplash.com/photos/random/?query=salad&count=1&client_id={Vars.Config.UnsplashAccessKey}";
         if (UnsplashApiJson.unsplashApi != null) UnsplashApiJson.unsplashApi.Clear();
         UnsplashApiJson.unsplashApi = null;
         var httpClient = new HttpClient();
@@ -205,17 +205,17 @@ public class SlashBasic : ApplicationCommandModule {
         var e = new DiscordEmbedBuilder();
         e.WithColor(Colors.HexToColor("00ffaa"));
         e.WithDescription("Hi, I am the **Giver of Head Pats**. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do. " +
-                          $"At the moment you can see what I can do by running the `{BuildInfo.Config.Prefix}help` command.\n" +
+                          $"At the moment you can see what I can do by running the `{Vars.Config.Prefix}help` command.\n" +
                           "I was recently rewritten from Javascript to C#. So if things seem broken or missing from the older version, don't worry, they'll be fixed " +
                           "or added in the near future.\nI hope I will be the perfect caregiver for your guild.");
         e.AddField("Bot Creator Information", "Website: https://mintlily.lgbt/ \n" +
                                               "Donate: https://ko-fi.com/MintLily \n" +
                                               "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
-                                              "Add to Your Guild: [Invite Link](https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands) \n" +
+                                              $"Add to Your Guild: [Invite Link]({Vars.InviteLike}) \n" +
                                               "Need Support? [Create an Issue](https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new) \n" +
                                               "Privacy Policy: [Link](https://mintlily.lgbt/gohp/privacy)");
         e.WithTimestamp(DateTime.Now);
-        var u = await c.Client.GetUserAsync(BuildInfo.ClientId, true);
+        var u = await c.Client.GetUserAsync(Vars.ClientId, true);
         e.WithThumbnail(u.AvatarUrl);
         e.WithAuthor("MintLily#0001", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily_Art_Headshot_pfp_x1024.png");
         await c.CreateResponseAsync(e.Build());
@@ -227,7 +227,7 @@ public class SlashBasic : ApplicationCommandModule {
 
     [SlashCommand("Invite", "Get the bot invite link")]
     public async Task Invite(ic c)
-        => await c.CreateResponseAsync("Want to invite me to your guild? Add me here:\n  https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1240977501264&scope=bot%20applications.commands", true);
+        => await c.CreateResponseAsync($"Want to invite me to your guild? Add me here:\n  {Vars.InviteLike}", true);
 
     [SlashCommand("FlipCoin", "Flip a coin")]
     public async Task FlipCoin(ic c) 
@@ -348,7 +348,7 @@ public class SlashBasic : ApplicationCommandModule {
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Head Pat Leaderboard");
         e.WithColor(Colors.HexToColor("DFFFDD"));
-        e.WithFooter($"Synced across all servers • {BuildInfo.Name} (v{BuildInfo.Version})");
+        e.WithFooter($"Synced across all servers • {Vars.Name} (v{Vars.Version})");
         e.AddField("Current Server Stats",
             $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}**");
         e.AddField("Global Stats", $"Total Pats: **{globalPats}**");

@@ -18,63 +18,6 @@ using TaskScheduler = HeadPats.Managers.TaskScheduler;
 
 namespace HeadPats;
 
-public static class BuildInfo {
-    public const string DSharpVer = "4.3.0-stable";
-    public const string Name = "Giver of Head Pats";
-    public const ulong ClientId = 489144212911030304;
-    public const ulong TestGuildId = 279459962843955201;
-#if DEBUG
-    public const string Version = "4.5.0-dev2";
-    public static readonly DateTime BuildTime = DateTime.Now;
-    public static bool IsDebug = true;
-#elif !DEBUG
-    public const string Version = "4.10.1";
-    public static readonly DateTime BuildTime = new(2023, 1, 30, 19, 54, 00); // (year, month, day, hour, min, sec)
-    public static bool IsDebug = false;
-#endif
-    public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
-    public static string BuildDate = $"Last Updated: {BuildDateShort}";
-    public static DateTime StartTime = new();
-    public static bool IsWindows;
-    
-    private static string GetMonth(int month) {
-        return month switch {
-            1 => "January",
-            2 => "February",
-            3 => "March",
-            4 => "April",
-            5 => "May",
-            6 => "June",
-            7 => "July",
-            8 => "August",
-            9 => "September",
-            10 => "October",
-            11 => "November",
-            12 => "December",
-            _ => ""
-        };
-    }
-
-    private static string ChangeSingleNumber(int num) {
-        return num switch {
-            0 => "00",
-            1 => "01",
-            2 => "02",
-            3 => "03",
-            4 => "04",
-            5 => "05",
-            6 => "06",
-            7 => "07",
-            8 => "08",
-            9 => "09",
-            _ => num.ToString()
-        };
-    }
-        
-    public static readonly Config Config = Configuration.TheConfig;
-    public static Process? ThisProcess { get; set; }
-}
-
 public sealed class Program {
     public static DiscordClient? Client { get; set; }
     public static CommandsNextExtension? Commands { get; set; }
@@ -82,8 +25,8 @@ public sealed class Program {
     public static NekoClient? NekoClient { get; set; }
     
     private static void Main(string[] args) {
-        BuildInfo.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
-        Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version}");
+        Vars.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
+        Console.Title = string.Format($"{Vars.Name} v{Vars.Version}");
         new Program().MainAsync().GetAwaiter().GetResult();
     }
     
@@ -95,7 +38,7 @@ public sealed class Program {
     private async Task MainAsync() {
         Logger.Log("Bot is starting . . .");
         
-        if (!BuildInfo.IsDebug)
+        if (!Vars.IsDebug)
             MobileManager.CreateMobilePatch();
         
         Client = new DiscordClient(new DiscordConfiguration {
@@ -106,7 +49,7 @@ public sealed class Program {
 #if !DEBUG
             MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.None,
 #endif
-            Token = BuildInfo.Config.Token,
+            Token = Vars.Config.Token,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
             AutoReconnect = true
@@ -117,7 +60,7 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = new[] { BuildInfo.Config.Prefix!.ToLower(), BuildInfo.Config.Prefix },
+            StringPrefixes = new[] { Vars.Config.Prefix!.ToLower(), Vars.Config.Prefix },
             EnableDefaultHelp = true
         };
 
@@ -136,17 +79,17 @@ public sealed class Program {
         Client.Ready += Client_Ready;
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
 
-        NekoClient = new NekoClient(BuildInfo.Name);
+        NekoClient = new NekoClient(Vars.Name);
         
         eventHandler.Complete();
 
         await using var db = new Context();
         var check = db.Overall.AsQueryable()
-            .Where(u => u.ApplicationId.Equals(BuildInfo.ClientId)).ToList().FirstOrDefault();
+            .Where(u => u.ApplicationId.Equals(Vars.ClientId)).ToList().FirstOrDefault();
         
         if (check == null) {
             var overall = new Overlord {
-                ApplicationId = BuildInfo.ClientId,
+                ApplicationId = Vars.ClientId,
                 PatCount = 0,
                 NsfwCommandsUsed = 0
             };
@@ -194,22 +137,22 @@ public sealed class Program {
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 
     private static async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e) {
-        BuildInfo.StartTime = DateTime.Now;
-        BuildInfo.ThisProcess = Process.GetCurrentProcess();
+        Vars.StartTime = DateTime.Now;
+        Vars.ThisProcess = Process.GetCurrentProcess();
         Logger.Log("Welcome, " + "Lily".Pastel("9fffe3"));
-        Logger.Log("Bot Version                    = " + BuildInfo.Version);
-        Logger.Log("Process ID                     = " + BuildInfo.ThisProcess.Id);
-        Logger.Log("Build Date                     = " + BuildInfo.BuildDateShort);
-        Logger.Log("Current OS                     = " + (BuildInfo.IsWindows ? "Windows" : "Linux"));
-        Logger.Log("Token                          = " + OutputStringAsHidden(BuildInfo.Config.Token!).Pastel("FBADBC"));
-        Logger.Log("Prefix                         = " + $"{BuildInfo.Config.Prefix}".Pastel("FBADBC"));
-        Logger.Log("ActivityType                   = " + $"{BuildInfo.Config.ActivityType}".Pastel("FBADBC"));
-        Logger.Log("Game                           = " + $"{BuildInfo.Config.Game}".Pastel("FBADBC"));
-        Logger.Log("Streaming URL                  = " + $"{BuildInfo.Config.StreamingUrl}".Pastel("FBADBC"));
+        Logger.Log("Bot Version                    = " + Vars.Version);
+        Logger.Log("Process ID                     = " + Vars.ThisProcess.Id);
+        Logger.Log("Build Date                     = " + Vars.BuildDateShort);
+        Logger.Log("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
+        Logger.Log("Token                          = " + OutputStringAsHidden(Vars.Config.Token!).Pastel("FBADBC"));
+        Logger.Log("Prefix (non-Slash)             = " + $"{Vars.Config.Prefix}".Pastel("FBADBC"));
+        Logger.Log("ActivityType                   = " + $"{Vars.Config.ActivityType}".Pastel("FBADBC"));
+        Logger.Log("Game                           = " + $"{Vars.Config.Game}".Pastel("FBADBC"));
+        Logger.Log("Streaming URL                  = " + $"{Vars.Config.StreamingUrl}".Pastel("FBADBC"));
         Logger.Log("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count}".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
-            Name = $"{BuildInfo.Config.Game}",
-            ActivityType = GetActivityType(BuildInfo.Config.ActivityType!)
+            Name = $"{Vars.Config.Game}",
+            ActivityType = GetActivityType(Vars.Config.ActivityType!)
         },
 #if !DEBUG
             UserStatus.Online
@@ -219,23 +162,23 @@ public sealed class Program {
 #endif
             );
 
-        Console.Title = string.Format($"{BuildInfo.Name} v{BuildInfo.Version} - {BuildInfo.Config.Game}");
+        Console.Title = string.Format($"{Vars.Name} v{Vars.Version} - {Vars.Config.Game}");
         Logger.WriteSeparator("C75450");
 
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
         var em = new DiscordEmbedBuilder();
-        em.WithColor(BuildInfo.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
-        em.WithDescription($"Bot has started on {(BuildInfo.IsWindows ? "Windows" : "Linux")}\n" +
+        em.WithColor(Vars.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
+        em.WithDescription($"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
                            $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given");
-        em.AddField("Build Time", $"{BuildInfo.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(BuildInfo.BuildTime)}:R>");
+        em.AddField("Build Time", $"{Vars.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(Vars.BuildTime)}:R>");
         em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
-        em.AddField("DSharpPlus Version", BuildInfo.DSharpVer);
-        em.WithFooter($"v{BuildInfo.Version}");
+        em.AddField("DSharpPlus Version", Vars.DSharpVer);
+        em.WithFooter($"v{Vars.Version}");
         em.WithTimestamp(DateTime.Now);
-        GeneralLogChannel = await sender.GetChannelAsync(BuildInfo.Config.GeneralLogChannelId);
-        ErrorLogChannel = await sender.GetChannelAsync(BuildInfo.Config.ErrorLogChannelId);
-        MessageCreated.DmCategory = await sender.GetChannelAsync(BuildInfo.Config.DmResponseCategoryId);
+        GeneralLogChannel = await sender.GetChannelAsync(Vars.Config.GeneralLogChannelId);
+        ErrorLogChannel = await sender.GetChannelAsync(Vars.Config.ErrorLogChannelId);
+        MessageCreated.DmCategory = await sender.GetChannelAsync(Vars.Config.DmResponseCategoryId);
         TaskScheduler.StartStatusLoop();
         await sender.SendMessageAsync(GeneralLogChannel, em.Build());
     }

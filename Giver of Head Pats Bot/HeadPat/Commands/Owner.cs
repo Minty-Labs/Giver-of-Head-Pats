@@ -205,7 +205,7 @@ public class SlashConfigCommands : ApplicationCommandModule {
     [SlashCommand("updateunsplashaccesskey", "Updates the unsplash api key", false)]
     [SlashRequireOwner]
     public async Task UpdateUnsplashAccessKey(ic c, [Option("AccessKey", "Unsplash Access Key", true)] string accessKey) {
-        BuildInfo.Config.UnsplashAccessKey = accessKey;
+        Vars.Config.UnsplashAccessKey = accessKey;
         await c.CreateResponseAsync("Updated Unsplash Access Key", true);
         Configuration.Save();
     }
@@ -213,7 +213,7 @@ public class SlashConfigCommands : ApplicationCommandModule {
     [SlashCommand("updateunsplashsecretkey", "Updates the unsplash secret key", false)]
     [SlashRequireOwner]
     public async Task UpdateUnsplashSecretKey(ic c, [Option("SecretKey", "Unsplash Secret Key", true)] string secretKey) {
-        BuildInfo.Config.UnsplashSecretKey = secretKey;
+        Vars.Config.UnsplashSecretKey = secretKey;
         await c.CreateResponseAsync("Updated Unsplash Secret Key", true);
         Configuration.Save();
     }

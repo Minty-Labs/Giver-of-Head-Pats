@@ -20,7 +20,7 @@ public static class UserControl {
             .Where(u => u.GuildId.Equals(guildToAddPatTo)).ToList().FirstOrDefault();
         
         var checkOverall = db.Overall.AsQueryable()
-            .Where(u => u.ApplicationId.Equals(BuildInfo.ClientId)).ToList().FirstOrDefault();
+            .Where(u => u.ApplicationId.Equals(Vars.ClientId)).ToList().FirstOrDefault();
 
         var user = Program.Client?.GetUserAsync(userId).GetAwaiter().GetResult();
         
@@ -56,7 +56,7 @@ public static class UserControl {
         
         if (checkOverall == null) {
             var overall = new Overlord {
-                ApplicationId = BuildInfo.ClientId,
+                ApplicationId = Vars.ClientId,
                 PatCount = 0,
                 NsfwCommandsUsed = 0
             };

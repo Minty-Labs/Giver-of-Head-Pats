@@ -33,8 +33,8 @@ public class Contributors : ApplicationCommandModule {
             e.WithDescription("These are the Contributors of this bot's project, as I must give credit where its due.");
             foreach (var co in ContributorStructure.Base.Base)
                 e.AddField(co.UserName, co.Info.Replace("<br>", "\n"));
-            e.WithFooter($"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}");
-            var bot = await c.Client.GetUserAsync(BuildInfo.ClientId);
+            e.WithFooter($"{Vars.Name} (v{Vars.Version}) • {Vars.BuildDate}");
+            var bot = await c.Client.GetUserAsync(Vars.ClientId);
             e.WithThumbnail(bot.GetAvatarUrl(ImageFormat.Auto));
             e.WithTitle("Contributors");
             await c.CreateResponseAsync(e.Build());

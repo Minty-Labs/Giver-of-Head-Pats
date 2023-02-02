@@ -11,7 +11,7 @@ public class HelpFormatter : DefaultHelpFormatter {
     public override CommandHelpMessage Build() {
         EmbedBuilder.Color = DiscordColor.SpringGreen;
         var f = new DiscordEmbedBuilder.EmbedFooter {
-            Text = $"{BuildInfo.Name} (v{BuildInfo.Version}) • {BuildInfo.BuildDate}"
+            Text = $"{Vars.Name} (v{Vars.Version}) • {Vars.BuildDate}"
         };
         /*Listing all top-level commands and groups. Specify a command to see more information. */
         var text = "There are also slash commands available for this bot.";
