@@ -126,6 +126,8 @@ public class MessageCreated {
 
                 if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
                     await e.Message.DeleteAsync("Auto delete by bot response.");
+                else if (contents.Equals(t.Trigger?.ToLower()) && !t.DeleteTrigger && t.DeleteTriggerIfIsOnlyInMessage)
+                    await e.Message.DeleteAsync("Auto delete by bot response.");
             }
         }
     }

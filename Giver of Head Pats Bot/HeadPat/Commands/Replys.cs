@@ -24,14 +24,19 @@ public class ReplyApplication : ApplicationCommandModule {
             [Choice("false", "false")] [Choice("true", "true")]
             [Option("RequireOnlyTriggerText", "Respond ONLY if the message is equal to the trigger?")] string requireOnlyTriggerText = "false",
             [Choice("false", "false")] [Choice("true", "true")]
-            [Option("DeleteTrigger", "Auto Remove the trigger text message?")] string deleteTrigger = "false") {
+            [Option("DeleteTrigger", "Auto Remove the trigger text message?")] string deleteTrigger = "false",
+            [Option("delTrigIfOnly", "Deletes trigger message if type alone and is the only text in message")] string deleteTriggerIfIsOnlyInMessage = "false") {
         
             if (c.Member.Permissions != Permissions.ManageMessages) {
                 await c.CreateResponseAsync("You do not have permission to use this command.");
                 return;
             }
-            ReplyStructure.AddValue(c.Guild.Id, trigger, response, 
-                StringUtils.GetBooleanFromString(requireOnlyTriggerText), StringUtils.GetBooleanFromString(deleteTrigger));
+            
+            ReplyStructure.AddValue(c.Guild.Id, trigger, response,
+                StringUtils.GetBooleanFromString(requireOnlyTriggerText),
+                StringUtils.GetBooleanFromString(deleteTrigger),
+                StringUtils.GetBooleanFromString(deleteTriggerIfIsOnlyInMessage));
+            
             await c.CreateResponseAsync("Trigger saved!");
         }
     
@@ -47,7 +52,7 @@ public class ReplyApplication : ApplicationCommandModule {
             ReplyStructure.RemoveValue(c.Guild.Id, trigger);
             if (ReplyStructure.ErroredOnRemove) {
                 await c.CreateResponseAsync("Either the provided trigger does not exist, or an error has occured.", true);
-                if (BuildInfo.IsDebug)
+                if (Vars.IsDebug)
                     await c.CreateResponseAsync($"[Debug] Error: {ReplyStructure.ErroredException}", true);
             }
             else await c.CreateResponseAsync($"Removed the trigger: {trigger}");
@@ -63,6 +68,7 @@ public class ReplyApplication : ApplicationCommandModule {
             legend.AppendLine("Response");
             legend.AppendLine("Respond only to the trigger alone");
             legend.AppendLine("Does trigger message auto delete");
+            legend.AppendLine("Does trigger message auto delete if it is the only text in the message");
             legend.AppendLine("==============================================================================");
 
             if (list != null) {
@@ -71,11 +77,13 @@ public class ReplyApplication : ApplicationCommandModule {
                     var r = ReplyStructure.GetResponse(t.Trigger, c.Guild.Id);
                     var i = ReplyStructure.GetInfo(t.Trigger, c.Guild.Id);
                     var d = ReplyStructure.GetsDeleted(t.Trigger, c.Guild.Id);
+                    var a = ReplyStructure.GetsDeletedIfAlone(t.Trigger, c.Guild.Id);
 
                     triggers.AppendLine(t.Trigger);
                     triggers.AppendLine(r);
                     triggers.AppendLine(i);
                     triggers.AppendLine(d);
+                    triggers.AppendLine(a);
                     triggers.AppendLine();
                 }
             }

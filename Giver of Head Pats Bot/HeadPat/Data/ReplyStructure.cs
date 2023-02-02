@@ -22,6 +22,9 @@ public class Reply {
     
     [JsonProperty("DeleteTrigger")]
     public bool DeleteTrigger { get; set; }
+    
+    [JsonProperty("Delete Trigger If Is Only In Message")]
+    public bool DeleteTriggerIfIsOnlyInMessage { get; set; }
 }
 
 public static class ReplyStructure {
@@ -36,7 +39,8 @@ public static class ReplyStructure {
                     Trigger = "creeper",
                     Response = "Awwwww man!",
                     OnlyTrigger = false,
-                    DeleteTrigger = false
+                    DeleteTrigger = false,
+                    DeleteTriggerIfIsOnlyInMessage = false
                 }
             }
         };
@@ -64,6 +68,8 @@ public static class ReplyStructure {
     
     public static string GetsDeleted(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.DeleteTrigger.ToString() ?? "{{NULL}}";
     
+    public static string GetsDeletedIfAlone(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.DeleteTriggerIfIsOnlyInMessage.ToString() ?? "{{NULL}}";
+    
     private static bool DoesTriggerExist(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Trigger == trigger;
 
     public static List<string?>? GetListOfTriggers() => Base.Replies?.Select(x => x.Trigger).ToList() ?? null;
@@ -79,7 +85,11 @@ public static class ReplyStructure {
         return list;
     }
     
-    public static void AddValue(ulong guildId, string trigger, string response, bool requireOnlyTriggerText = false, bool deleteTrigger = false) {
+    public static void AddValue(ulong guildId, string trigger, string response,
+        bool requireOnlyTriggerText = false,
+        bool deleteTrigger = false,
+        bool deleteTriggerIfIsOnlyInMessage = false) {
+        
         if (DoesTriggerExist(trigger, guildId)) {
             Logger.Log("Removing duplicate trigger");
             var itemToRemove = Base.Replies?.Single(t => string.Equals(t.Trigger, trigger, StringComparison.CurrentCultureIgnoreCase));
@@ -91,7 +101,8 @@ public static class ReplyStructure {
             Trigger = trigger,
             Response = response,
             OnlyTrigger = requireOnlyTriggerText,
-            DeleteTrigger = deleteTrigger
+            DeleteTrigger = deleteTrigger,
+            DeleteTriggerIfIsOnlyInMessage = deleteTriggerIfIsOnlyInMessage
         };
         Base.Replies?.Add(item);
         Save();
