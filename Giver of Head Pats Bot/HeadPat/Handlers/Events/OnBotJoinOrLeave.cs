@@ -17,13 +17,13 @@ public class OnBotJoinOrLeave {
         try {
             var em = new DiscordEmbedBuilder();
             em.WithColor(Colors.HexToColor("FF2525"));
-            em.WithDescription($"Left server: `{e.Guild?.Name}` ({e.Guild?.Id})");
-            try { em.AddField("Created", $"{e.Guild?.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "unknown", true); }
-            try { em.AddField("Joined", $"{e.Guild?.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
-            em.AddField("Members", e.Guild?.MemberCount.ToString(), true);
-            em.AddField("Description", e.Guild?.Description ?? "None");
-            em.AddField("Owner", $"{e.Guild?.Owner.Username}#{e.Guild?.Owner.Discriminator}");
-            em.WithThumbnail(e.Guild?.IconUrl ?? "https://totallywholeso.me/assets/img/team/null.jpg");
+            em.WithDescription($"Left server: `{e.Guild.Name}` ({e.Guild.Id})");
+            try { em.AddField("Created", $"{e.Guild.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "unknown", true); }
+            try { em.AddField("Joined", $"{e.Guild.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
+            em.AddField("Members", e.Guild.MemberCount.ToString(), true);
+            em.AddField("Description", e.Guild.Description ?? "None");
+            em.AddField("Owner", $"{e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator} ({e.Guild.Owner.Id})");
+            em.WithThumbnail(e.Guild.IconUrl ?? "https://totallywholeso.me/assets/img/team/null.jpg");
             em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
@@ -41,8 +41,8 @@ public class OnBotJoinOrLeave {
             try { em.AddField("Joined", $"{e.Guild.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
             em.AddField("Members", e.Guild.MemberCount.ToString(), true);
             em.AddField("Description", e.Guild.Description ?? "None");
-            em.AddField("Owner", $"{e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}");
-            em.WithThumbnail(e.Guild.IconUrl ?? "https://totallywholeso.me/assets/img/team/null.jpg");
+            em.AddField("Owner", $"{e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator} ({e.Guild.Owner.Id})");
+            em.WithThumbnail(e.Guild!.IconUrl ?? "https://totallywholeso.me/assets/img/team/null.jpg");
             em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());

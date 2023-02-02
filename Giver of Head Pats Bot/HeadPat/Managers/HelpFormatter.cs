@@ -13,12 +13,9 @@ public class HelpFormatter : DefaultHelpFormatter {
         var f = new DiscordEmbedBuilder.EmbedFooter {
             Text = $"{Vars.Name} (v{Vars.Version}) • {Vars.BuildDate}"
         };
-        /*Listing all top-level commands and groups. Specify a command to see more information. */
-        var text = "There are also slash commands available for this bot.";
         EmbedBuilder.Footer = f;
-        //EmbedBuilder.Description = text;     // Just work
-        //EmbedBuilder.WithDescription(text);  // already reee
-        EmbedBuilder.AddField("Addition Information", text);
+        EmbedBuilder.AddField("Addition Information", "There are also slash commands available for this bot." +
+                                                      $"Don't see them? Keep the bot in your server and [re-invite it with this link]({Vars.InviteLike}) to update it's permissions.");
         return base.Build();
     }
 }

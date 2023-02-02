@@ -180,6 +180,7 @@ public sealed class Program {
         ErrorLogChannel = await sender.GetChannelAsync(Vars.Config.ErrorLogChannelId);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Vars.Config.DmResponseCategoryId);
         TaskScheduler.StartStatusLoop();
+        await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, em.Build());
     }
 
