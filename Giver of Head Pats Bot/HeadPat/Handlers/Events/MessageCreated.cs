@@ -29,7 +29,7 @@ public class MessageCreated {
     //     }
     // }
 
-    internal static DiscordChannel? DmCategory;
+    internal static DiscordChannel? DmCategory { get; set; }
 
     private static async Task GetUserBotDm(DiscordClient sender, MessageCreateEventArgs e) {
         if (!e.Channel.IsPrivate) return;
@@ -61,8 +61,7 @@ public class MessageCreated {
                 attsb.AppendLine($"{a.ProxyUrl}");
             }
         }
-        builder.WithContent($"From {author.Username}#{author.Discriminator} ({author.Id}):\n{(att ? $"Has `{count}` {attsb}\n" : "")}\n" +
-                            $"{e.Message.Content}");
+        builder.WithContent($"{(att ? $"Has `{count}` {attsb}\n" : "")}\n{e.Message.Content}");
         
         await builder.SendAsync(serverChannelFromDm);
     }
