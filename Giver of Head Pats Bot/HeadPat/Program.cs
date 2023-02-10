@@ -15,6 +15,7 @@ using HeadPats.Utils;
 using NekosSharp;
 using Pastel;
 using TaskScheduler = HeadPats.Managers.TaskScheduler;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace HeadPats;
 
@@ -43,12 +44,7 @@ public sealed class Program {
         
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
-#if DEBUG
-            MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
-#endif
-#if !DEBUG
-            MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.None,
-#endif
+            MinimumLogLevel = Vars.IsDebug ? LogLevel.Debug : LogLevel.None,
             Token = Vars.Config.Token,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
@@ -60,7 +56,7 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = new[] { Vars.Config.Prefix!.ToLower(), Vars.Config.Prefix },
+            StringPrefixes = Vars.IsDebug ? new [] { ".." } : new[] { Vars.Config.Prefix!.ToLower(), Vars.Config.Prefix },
             EnableDefaultHelp = true
         };
 
@@ -142,7 +138,7 @@ public sealed class Program {
         Logger.Log("Welcome, " + "Lily".Pastel("9fffe3"));
         Logger.Log("Bot Version                    = " + Vars.Version);
         Logger.Log("Process ID                     = " + Vars.ThisProcess.Id);
-        Logger.Log("Build Date                     = " + Vars.BuildDateShort);
+        Logger.Log("Build Date                     = " + Vars.BuildDate);
         Logger.Log("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
         Logger.Log("Token                          = " + OutputStringAsHidden(Vars.Config.Token!).Pastel("FBADBC"));
         Logger.Log("Prefix (non-Slash)             = " + $"{Vars.Config.Prefix}".Pastel("FBADBC"));
@@ -153,14 +149,7 @@ public sealed class Program {
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{Vars.Config.Game}",
             ActivityType = GetActivityType(Vars.Config.ActivityType!)
-        },
-#if !DEBUG
-            UserStatus.Online
-#endif
-#if DEBUG
-            UserStatus.Idle
-#endif
-            );
+        }, Vars.IsDebug ? UserStatus.Idle : UserStatus.Online);
 
         Console.Title = string.Format($"{Vars.Name} v{Vars.Version} - {Vars.Config.Game}");
         Logger.WriteSeparator("C75450");
@@ -171,8 +160,8 @@ public sealed class Program {
         em.WithColor(Vars.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
         em.WithDescription($"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
                            $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given");
-        em.AddField("Build Time", $"{Vars.BuildTime:F}\n<t:{TimeConverter.GetUnixTime(Vars.BuildTime)}:R>");
-        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{TimeConverter.GetUnixTime(DateTime.Now)}:R>");
+        em.AddField("Build Time", $"{Vars.BuildTime:F}\n<t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>");
+        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{DateTime.Now.GetSecondsFromUnixTime()}:R>");
         em.AddField("DSharpPlus Version", Vars.DSharpVer);
         em.WithFooter($"v{Vars.Version}");
         em.WithTimestamp(DateTime.Now);

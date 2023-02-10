@@ -17,13 +17,12 @@ public static class Vars {
     public static readonly DateTime BuildTime = new(2023, 2, 2, 17, 54, 00); // (year, month, day, hour, min, sec)
     public static bool IsDebug = false;
 #endif
-    public static string BuildDateShort = $"{BuildTime.Day} {GetMonth(BuildTime.Month)} @ {BuildTime.Hour}:{ChangeSingleNumber(BuildTime.Minute)}";
-    public static string BuildDate = $"Last Updated: {BuildDateShort}";
+    public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime = new();
     public static bool IsWindows;
-    public static readonly string InviteLike = $"https://discord.com/api/oauth2/authorize?client_id={ClientId}&permissions=1240977501264&scope=bot%20applications.commands";
+    public static readonly string InviteLink = $"https://discord.com/api/oauth2/authorize?client_id={ClientId}&permissions=1240977501264&scope=bot%20applications.commands";
 
-    private static string GetMonth(int month) {
+    /*private static string GetMonth(int month) {
         return month switch {
             1 => "January",
             2 => "February",
@@ -55,7 +54,7 @@ public static class Vars {
             9 => "09",
             _ => num.ToString()
         };
-    }
+    }*/
         
     public static readonly Config Config = Configuration.TheConfig;
     public static Process? ThisProcess { get; set; }

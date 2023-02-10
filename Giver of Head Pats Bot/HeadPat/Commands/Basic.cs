@@ -39,7 +39,7 @@ public class Basic : BaseCommandModule {
         e.AddField("Ping", $"{c.Client.Ping}ms", true);
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(Vars.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
-        e.AddField("Bot Versions Info", $"DSharpPlus: **v{Vars.DSharpVer}** \nBot: **v{Vars.Version}** \nBuild Date: {Vars.BuildTime:F} - <t:{TimeConverter.GetUnixTime(Vars.BuildTime)}:R>");
+        e.AddField("Bot Versions Info", $"DSharpPlus: **v{Vars.DSharpVer}** \nBot: **v{Vars.Version}** \nBuild Date: {Vars.BuildTime:F} - <t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>");
         e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **16 GB** \nOS: **Debian 11**");
 
         e.WithTimestamp(DateTime.Now);
@@ -212,7 +212,7 @@ public class SlashBasic : ApplicationCommandModule {
         e.AddField("Bot Creator Information", "Website: https://mintlily.lgbt/ \n" +
                                               "Donate: https://ko-fi.com/MintLily \n" +
                                               "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
-                                              $"Add to Your Guild: [Invite Link]({Vars.InviteLike}) \n" +
+                                              $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
                                               "Need Support? [Create an Issue](https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new) \n" +
                                               "Privacy Policy: [Link](https://mintlily.lgbt/gohp/privacy)");
         e.WithTimestamp(DateTime.Now);
@@ -228,7 +228,7 @@ public class SlashBasic : ApplicationCommandModule {
 
     [SlashCommand("Invite", "Get the bot invite link")]
     public async Task Invite(ic c)
-        => await c.CreateResponseAsync($"Want to invite me to your guild? Add me here:\n  {Vars.InviteLike}", true);
+        => await c.CreateResponseAsync($"Want to invite me to your guild? Add me here:\n  {Vars.InviteLink}", true);
 
     [SlashCommand("FlipCoin", "Flip a coin")]
     public async Task FlipCoin(ic c) 
