@@ -401,5 +401,19 @@ public class LoveSlash : ApplicationCommandModule {
              e.WithDescription($"{c.User.Mention} poked {user.Mention}");
              await c.CreateResponseAsync(e.Build());
          }
+
+         [SlashCommand("Cookie", "Give a user a cookie.")]
+         public async Task Cookie(ic c, [Option("user", "The user to give a cookie to", true)] DiscordUser user) {
+             if (user.Id == c.User.Id) {
+                 await c.CreateResponseAsync("You requested a cookie, so here you go!");
+                 UserControl.AddCookieToUser(c.User.Id, 1);
+             } else if (user.IsBot || user.Id == Vars.ClientId) {
+                 await c.CreateResponseAsync("I cannot do anything with a cookie, so here, you have it!");
+                 UserControl.AddCookieToUser(c.User.Id, 1);
+             } else {
+                 await c.CreateResponseAsync($"{c.User.Mention} gave {user.Mention} a cookie.");
+                 UserControl.AddCookieToUser(user.Id, 1);
+             }
+         }
      }
 }

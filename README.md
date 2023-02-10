@@ -115,6 +115,7 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
     <li>Slap - Slap a specified user</li>
     <li>Lick - Lick a specified user</li>
     <li>Poke - Poke a specified user</li>
+    <li>Cookie - Give someone a cookie</li>
 </ul>
 
 <h3>Admin Commands (Slash)</h3>
