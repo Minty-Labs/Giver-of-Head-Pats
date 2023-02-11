@@ -111,7 +111,20 @@ public class LoveSlash : ApplicationCommandModule {
              var checkUser = db.Users.AsQueryable()
                  .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
 
-             var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
+             var isRoleBlackListed = false;
+             try {
+                 isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId);
+             }
+             catch (Exception ex) {
+                 try {
+                     isRoleBlackListed = c.Member!.Roles.FirstOrDefault()!.Id == checkGuild!.HeadPatBlacklistedRoleId;
+                 }
+                 catch (Exception ex2) {
+                     Logger.SendLog(ex);
+                     Logger.SendLog(ex2);
+                     return;
+                 }
+             }
 
              if (isRoleBlackListed) {
                  await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
