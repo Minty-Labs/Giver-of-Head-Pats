@@ -23,9 +23,26 @@ public static class StringUtils {
     /// </summary>
     /// <param name="length">Length of string</param>
     /// <returns>random string of characters and numbers</returns>
-    public static string GetRandomString(int length = 15) {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[new Random().Next(s.Length)]).ToArray());
-    }
+    public static string GetRandomString(int length = 15) => new (Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz", length)
+        .Select(s => s[new Random().Next(s.Length)]).ToArray());
+
+    /// <summary>
+    /// Checks if the string contains the given string, if it does, it replaces it with your given string.
+    /// </summary>
+    /// <param name="theStringToBeEdited">this</param>
+    /// <param name="contains">string to check if it contains to</param>
+    /// <param name="replaceWith">string to replace contains string with</param>
+    /// <returns>new string with replaced content</returns>
+    public static string ContainsAndReplace(this string theStringToBeEdited, string contains, string replaceWith)
+        => !theStringToBeEdited.Contains(contains) ? theStringToBeEdited : theStringToBeEdited.Replace(contains, replaceWith);
+
+    /// <summary>
+    /// Checks if the string contains the given string, if it does, it replaces the entire string with your given string.
+    /// </summary>
+    /// <param name="theStringToBeEdited">this</param>
+    /// <param name="contains">string to check if it contains to</param>
+    /// <param name="replaceWith">string to replace entire string with</param>
+    /// <returns>new string with replaced content</returns>
+    public static string ContainsAndReplaceWhole(this string theStringToBeEdited, string contains, string replaceWith)
+        => !theStringToBeEdited.Contains(contains) ? theStringToBeEdited : replaceWith;
 }

@@ -1,4 +1,6 @@
-﻿namespace HeadPats.Managers; 
+﻿using HeadPats.Utils;
+
+namespace HeadPats.Managers; 
 
 public static class NameReplacing {
     public static string ReplaceTheNamesWithTags(this string input) {
@@ -7,7 +9,7 @@ public static class NameReplacing {
         input = input.Replace("Penny#9538", "Penny");
         input = input.Replace("AutumnFS#0540", "Autumn");
         input = input.Replace("Nail#3021", "Iana");
-        input = input.Replace("Nail#9290", "Iana");
+        input = input.Replace("ianaFaye#9290", "Iana");
         input = input.Replace("jettsd#1111", "Emily");
         input = input.Replace("AxolotlFren#9690", "Erin");
         input = input.Replace("Arshy, The Pie#1337", "🥗");
@@ -23,6 +25,19 @@ public static class NameReplacing {
         input = input.Replace("jettsd", "Emily");
         input = input.Replace("AxolotlFren", "Erin");
         input = input.Replace("Arshy, The Pie", "🥗");
+        return input;
+    }
+
+    public static string NameReplace(this string input) {
+        input = input.ToLower().ContainsAndReplaceWhole("mintlily", "Lily");
+        input = input.ToLower().ContainsAndReplaceWhole("silentt", "Elly");
+        input = input.ToLower().ContainsAndReplaceWhole("penny", "Penny");
+        input = input.Replace("AutumnFS", "Autumn");
+        input = input.Replace(".FS.", "Autumn");
+        input = input.ToLower().ContainsAndReplaceWhole("iana", "Iana");
+        input = input.ToLower().ContainsAndReplaceWhole("jettsd", "Emily");
+        input = input.ToLower().ContainsAndReplaceWhole("axolotlfren", "Erin");
+        input = input.ToLower().ContainsAndReplaceWhole("arshy", "🥗");
         return input;
     }
 }

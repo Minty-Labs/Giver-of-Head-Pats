@@ -10,6 +10,7 @@ public static class MessageTasks {
     /// <param name="seconds">time until deletion</param>
     /// <param name="reason">deletion reason (for Audit Log)</param>
     /// <returns>an Asynchronous Task</returns>
+    /// <exception cref="ArgumentNullException">message is null</exception>
     public static Task<DiscordMessage> DeleteAfter(this Task<DiscordMessage> message, int seconds, string reason = "") {
         Task.Delay(TimeSpan.FromSeconds(seconds)).ContinueWith(async _ => await message.GetAwaiter().GetResult().DeleteAsync(reason));
         return Task.FromResult(message.GetAwaiter().GetResult());
