@@ -14,9 +14,14 @@ internal static class Commands {
     public static void Register(SlashCommandsExtension? s) {
         if (s == null) Logger.Error("Slash commands extension is null");
 
-#if !DEBUG
+// #if !DEBUG
         s?.RegisterCommands<SlashOwner>();
-        Logger.Log("Owner Slash commands registered");
+        Logger.Log("[Owner] Owner Slash commands registered");
+        s?.RegisterCommands<SlashConfigCommands>();
+        Logger.Log("[Owner] Config Slash commands registered");
+        s?.RegisterCommands<BlacklistCommands>();
+        Logger.Log("[Owner] Blacklist Slash commands registered");
+        
         s?.RegisterCommands<LoveSlash>();
         Logger.Log("Love Slash commands registered");
         s?.RegisterCommands<Utility_Random>();
@@ -29,9 +34,7 @@ internal static class Commands {
         Logger.Log("Contributor Slash commands registered");
         s?.RegisterCommands<Admin>();
         Logger.Log("Admin Slash commands registered");
-        s?.RegisterCommands<SlashConfigCommands>();
-        Logger.Log("Config Slash commands registered");
-#endif
+// #endif
 
         // s?.RegisterCommands<Moderation>();
         // Logger.Log("Moderation Slash commands registered");

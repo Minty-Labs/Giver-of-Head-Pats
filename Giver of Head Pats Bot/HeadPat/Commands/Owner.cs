@@ -154,7 +154,7 @@ public class BlacklistCommands : ApplicationCommandModule {
         [Choice("Remove", "remove")]
         [Option("Action", "Add or Remove user to or from Blacklist")] string value) {
         if (string.IsNullOrWhiteSpace(mentionedUser) || string.IsNullOrWhiteSpace(value)) {
-            await c.CreateResponseAsync("Incorrect command format! Please use the command like this:\n`/BlacklistUserFromPatCommand [@user] [add/remove]`", true);
+            await c.CreateResponseAsync("Incorrect command format! Please use the command like this:\n`/BlacklistUserFromPatCommand [@user] [\"add\"/\"remove\"]`", true);
             return;
         }
         
