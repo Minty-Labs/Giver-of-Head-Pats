@@ -33,17 +33,6 @@ public class BlacklistedNekosLifeGifs {
             JsonConvert.SerializeObject(BlacklistedGifs, Formatting.Indented));
         Logger.Log("Saved JSON: BlacklistedGifs");
     }
-
-    public static async Task AddBlacklist(DSharpPlus.CommandsNext.CommandContext cc, string url) {
-        if (BlacklistedGifs.Urls!.Any(c => c.Contains(url))) {
-            await cc.RespondAsync("URL is already blacklisted.");
-            return;
-        }
-
-        BlacklistedGifs.Urls!.Add(url);
-        await cc.RespondAsync("Added URL to the blacklist");
-        Save();
-    }
     
     public static async Task AddBlacklist(DSharpPlus.SlashCommands.InteractionContext cc, string url) {
         if (BlacklistedGifs.Urls!.Any(c => c.Contains(url))) {
@@ -53,17 +42,6 @@ public class BlacklistedNekosLifeGifs {
 
         BlacklistedGifs.Urls!.Add(url);
         await cc.CreateResponseAsync($"Added URL to the blacklist: `{url}`");
-        Save();
-    }
-
-    public static async Task RemoveBlacklist(DSharpPlus.CommandsNext.CommandContext cc, string url) {
-        if (BlacklistedGifs.Urls!.Any(c => !c.Contains(url))) {
-            await cc.RespondAsync("URL is not blacklisted.");
-            return;
-        }
-
-        BlacklistedGifs.Urls!.Remove(url);
-        await cc.RespondAsync("Removed URL from the blacklist");
         Save();
     }
     

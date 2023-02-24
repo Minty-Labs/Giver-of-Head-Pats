@@ -40,10 +40,10 @@ internal static class Logger {
             list[i].Delete();
     }
 
-    public static void SendLog(object message) {
+    public static void SendLog(object message, bool useGuard = false) {
         var e = new DiscordEmbedBuilder();
         e.WithColor(Colors.HexToColor("FF2525"));
-        e.WithDescription(message.ToString());
+        e.WithDescription($"{(useGuard ? "``` " : "")}{message}{(useGuard ? " ```" : "")}");
         e.WithTimestamp(DateTime.Now);
 
         Program.Client?.SendMessageAsync(Program.ErrorLogChannel, e.Build()).GetAwaiter().GetResult();

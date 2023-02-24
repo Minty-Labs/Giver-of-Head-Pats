@@ -102,8 +102,18 @@ public class LoveSlash : ApplicationCommandModule {
      
          [SlashCommand("pat", "Pat a specified user.")]
          public async Task Pat(ic c, [Option("user", "The user to pat", true)] DiscordUser user, 
-             [Option("params", "Extra parameters (for the owner)")] string extraParams = "") {
+             [Option("params", "Extra parameters (for the bot owner)")] string extraParams = "") {
              var canUseParams = c.User.Id == 167335587488071682;
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("pat"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+             
              await using var db = new Context();
              var checkGuild = db.Guilds.AsQueryable()
                  .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
@@ -111,7 +121,7 @@ public class LoveSlash : ApplicationCommandModule {
              var checkUser = db.Users.AsQueryable()
                  .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
 
-             var isRoleBlackListed = false;
+             bool isRoleBlackListed, failed = false;
              try {
                  isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId);
              }
@@ -120,11 +130,14 @@ public class LoveSlash : ApplicationCommandModule {
                      isRoleBlackListed = c.Member!.Roles.FirstOrDefault()!.Id == checkGuild!.HeadPatBlacklistedRoleId;
                  }
                  catch (Exception ex2) {
-                     Logger.SendLog(ex);
-                     Logger.SendLog(ex2);
+                     failed = true;
+                     if (!Vars.IsDebug) return;
+                     Logger.SendLog(ex, true);
+                     Logger.SendLog(ex2, true);
                      return;
                  }
              }
+             if (failed) return;
 
              if (isRoleBlackListed) {
                  await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
@@ -215,6 +228,16 @@ public class LoveSlash : ApplicationCommandModule {
          
          [SlashCommand("hug", "Hug a specified user.")]
          public async Task Hug(ic c, [Option("user", "The user to hug", true)] DiscordUser user) {
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("hug"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+             
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself hugs.", true);
                  return;
@@ -258,6 +281,16 @@ public class LoveSlash : ApplicationCommandModule {
 
          [SlashCommand("Cuddle", "Cuddle a specified user.")]
          public async Task Cuddle(ic c, [Option("user", "The user to cuddle", true)] DiscordUser user) {
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("cuddle"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+             
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself cuddles.", true);
                  return;
@@ -297,6 +330,16 @@ public class LoveSlash : ApplicationCommandModule {
 
          [SlashCommand("kiss", "Kiss a specified user.")]
          public async Task Kiss(ic c, [Option("user", "The user to kiss", true)] DiscordUser user) {
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("kiss"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+             
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself kisses.", true);
                  return;
@@ -337,6 +380,16 @@ public class LoveSlash : ApplicationCommandModule {
 
          [SlashCommand("slap", "Slap a specified user.")]
          public async Task Slap(ic c, [Option("user", "The user to slap", true)] DiscordUser user) {
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("slap"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+             
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot slap yourself.", true);
                  return;
@@ -377,6 +430,16 @@ public class LoveSlash : ApplicationCommandModule {
          
          [SlashCommand("Poke", "Poke a user.")]
          public async Task Poke(ic c, [Option("user", "The user to poke", true)] DiscordUser user) {
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("poke"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot poke yourself.", true);
                  return;
@@ -417,6 +480,16 @@ public class LoveSlash : ApplicationCommandModule {
 
          [SlashCommand("Cookie", "Give a user a cookie.")]
          public async Task Cookie(ic c, [Option("user", "The user to give a cookie to", true)] DiscordUser user) {
+             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             if (hasCommandBlacklist) {
+                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
+                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("cookie"));
+                 if (isThisCommandBlacklisted) {
+                     await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
+                     return;
+                 }
+             }
+
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You requested a cookie, so here you go!");
                  UserControl.AddCookieToUser(c.User.Id, 1);

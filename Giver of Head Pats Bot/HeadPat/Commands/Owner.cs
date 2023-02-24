@@ -51,73 +51,6 @@ public class SlashOwner : ApplicationCommandModule {
         await c.CreateResponseAsync("Reset status scheduled task", true);
     }
     
-    [SlashCommand("AddGIFBlacklist", "Adds a GIF URL to a blacklist not to be shown in commands")]
-    [SlashRequireOwner]
-    public async Task AddBlacklistGif(ic c, [Option("URL", "URL of GIF you want to add to the blacklist", true)] string url) 
-        => await BlacklistedNekosLifeGifs.AddBlacklist(c, url);
-
-    [SlashCommand("RemoveGIFBlacklist", "Removes a GIF URL from the blacklist to be shown in commands")]
-    [SlashRequireOwner]
-    public async Task RemoveBlacklistGif(ic c, [Option("URL", "URL of GIF you want to remove from blacklist", true)] string url) 
-        => await BlacklistedNekosLifeGifs.RemoveBlacklist(c, url);
-    
-    [SlashCommand("BlacklistUserFromPatCommand", "Blacklists a user from the pat command")]
-    [SlashRequireOwner]
-    public async Task BlacklistUserFromPatCommand(ic c, 
-        [Option("MentionedUser", "Looks for User ID", true)] string mentionedUser,
-        
-        [Choice("Add", "add")]
-        [Choice("Remove", "remove")]
-        [Option("Action", "Add or Remove user to or from Blacklist")] string value) {
-        if (string.IsNullOrWhiteSpace(mentionedUser) || string.IsNullOrWhiteSpace(value)) {
-            await c.CreateResponseAsync("Incorrect command format! Please use the command like this:\n`/BlacklistUserFromPatCommand [@user] [add/remove]`", true);
-            return;
-        }
-        
-        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
-
-        await using var db = new Context();
-        var checkUser = db.Users.AsQueryable()
-            .Where(u => u.UserId.Equals(getUserIdFromMention)).ToList().FirstOrDefault();
-
-        var discordUser = await c.Client.GetUserAsync(ulong.Parse(getUserIdFromMention));
-
-        if (discordUser == null) {
-            await c.CreateResponseAsync("Discord user not found! Getting user as guild member...", true);
-            discordUser = await c.Guild.GetMemberAsync(ulong.Parse(getUserIdFromMention), true);
-            
-            if (discordUser == null) {
-                await c.CreateResponseAsync("Discord user as a guild member not found! Stopping command.", true);
-                return;
-            }
-        }
-
-        var valueIsTrue = value.ToLower().Contains('t');
-
-        if (checkUser == null) {
-            var newUser = new Users {
-                UserId = discordUser.Id,
-                UsernameWithNumber = $"{discordUser.Username}#{discordUser.Discriminator}",
-                PatCount = 0,
-                CookieCount = 0,
-                IsUserBlacklisted = valueIsTrue ? 1 : 0
-            };
-            db.Users.Add(newUser);
-            db.Users.Update(checkUser!);
-        }
-        else {
-            checkUser.IsUserBlacklisted = valueIsTrue ? 1 : 0;
-            db.Users.Update(checkUser);
-        }
-
-        if (valueIsTrue) {
-            await c.CreateResponseAsync("User is now blacklisted from the pat command.");
-            return;
-        }
-        
-        await c.CreateResponseAsync("User is no longer blacklisted from the pat command.");
-    }
-    
     [SlashCommand("GetPresence", "Gets users with the given presence", false)]
     [SlashRequireOwner] // Made by Eric van Fandenfart
     public async Task GetPresence(ic c, [Option("Activity", "Text to search presences with", true)] string activity) {
@@ -198,6 +131,89 @@ public class SlashOwner : ApplicationCommandModule {
         await guild.LeaveAsync();
         await c.CreateResponseAsync($"Left the server: {guild.Name}");
     }
+}
+
+[SlashCommandGroup("Blacklist", "Blacklist related commands")]
+public class BlacklistCommands : ApplicationCommandModule {
+    [SlashCommand("AddGIF", "Adds a GIF URL to a blacklist not to be shown in commands")]
+    [SlashRequireOwner]
+    public async Task AddBlacklistGif(ic c, [Option("URL", "URL of GIF you want to add to the blacklist", true)] string url) 
+        => await BlacklistedNekosLifeGifs.AddBlacklist(c, url);
+
+    [SlashCommand("RemoveGIF", "Removes a GIF URL from the blacklist to be shown in commands")]
+    [SlashRequireOwner]
+    public async Task RemoveBlacklistGif(ic c, [Option("URL", "URL of GIF you want to remove from blacklist", true)] string url) 
+        => await BlacklistedNekosLifeGifs.RemoveBlacklist(c, url);
+    
+    [SlashCommand("UserFromPatCommand", "Blacklists a user from the pat command")]
+    [SlashRequireOwner]
+    public async Task BlacklistUserFromPatCommand(ic c, 
+        [Option("UserId", "Looks for User ID", true)] string mentionedUser,
+        
+        [Choice("Add", "add")]
+        [Choice("Remove", "remove")]
+        [Option("Action", "Add or Remove user to or from Blacklist")] string value) {
+        if (string.IsNullOrWhiteSpace(mentionedUser) || string.IsNullOrWhiteSpace(value)) {
+            await c.CreateResponseAsync("Incorrect command format! Please use the command like this:\n`/BlacklistUserFromPatCommand [@user] [add/remove]`", true);
+            return;
+        }
+        
+        var getUserIdFromMention = mentionedUser.Replace("<@", "").Replace(">", "");
+
+        await using var db = new Context();
+        var checkUser = db.Users.AsQueryable()
+            .Where(u => u.UserId.Equals(getUserIdFromMention)).ToList().FirstOrDefault();
+
+        var discordUser = await c.Client.GetUserAsync(ulong.Parse(getUserIdFromMention));
+
+        if (discordUser == null) {
+            await c.CreateResponseAsync("Discord user not found! Getting user as guild member...", true);
+            discordUser = await c.Guild.GetMemberAsync(ulong.Parse(getUserIdFromMention), true);
+            
+            if (discordUser == null) {
+                await c.CreateResponseAsync("Discord user as a guild member not found! Stopping command.", true);
+                return;
+            }
+        }
+
+        var valueIsTrue = value.ToLower().Contains('t');
+
+        if (checkUser == null) {
+            var newUser = new Users {
+                UserId = discordUser.Id,
+                UsernameWithNumber = $"{discordUser.Username}#{discordUser.Discriminator}",
+                PatCount = 0,
+                CookieCount = 0,
+                IsUserBlacklisted = valueIsTrue ? 1 : 0
+            };
+            db.Users.Add(newUser);
+            db.Users.Update(checkUser!);
+        }
+        else {
+            checkUser.IsUserBlacklisted = valueIsTrue ? 1 : 0;
+            db.Users.Update(checkUser);
+        }
+
+        if (valueIsTrue) {
+            await c.CreateResponseAsync("User is now blacklisted from the pat command.");
+            return;
+        }
+        
+        await c.CreateResponseAsync("User is no longer blacklisted from the pat command.");
+    }
+
+    [SlashCommand("AddGuild", "Adds a guild to the blacklist")]
+    [SlashRequireOwner]
+    public async Task AddGuildToBlacklist(ic c,
+        [Option("GuildId", "Guild ID to add to blacklist", true)] string guildId,
+        [Option("Commands", "List the commands to block (separate by comma)", true)] string commands) 
+        => await BlacklistedCmdsGuilds.AddBlacklist(c, guildId, commands);
+    
+    [SlashCommand("RemoveGuild", "Removes a guild from the blacklist")]
+    [SlashRequireOwner]
+    public async Task RemoveGuildFromBlacklist(ic c,
+        [Option("GuildId", "Guild ID to remove from blacklist", true)] string guildId) 
+        => await BlacklistedCmdsGuilds.RemoveBlacklist(c, guildId);
 }
 
 [SlashCommandGroup("Config", "Config related commands")]

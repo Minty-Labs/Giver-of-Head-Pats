@@ -121,6 +121,7 @@ public sealed class Program {
         ReplyStructure.CreateFile();
         // MelonLoaderBlacklist.ProtectStructure.CreateFile();
         BlacklistedNekosLifeGifs.CreateFile();
+        BlacklistedCmdsGuilds.CreateFile();
         // ActionLogging.CreateFile();
             
         await Client.ConnectAsync();
