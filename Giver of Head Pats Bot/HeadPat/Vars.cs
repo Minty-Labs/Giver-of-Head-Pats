@@ -21,6 +21,7 @@ public static class Vars {
     public static DateTime StartTime { get; set; }
     public static bool IsWindows { get; set; }
     public static readonly string InviteLink = $"https://discord.com/api/oauth2/authorize?client_id={ClientId}&permissions=1240977501264&scope=bot%20applications.commands";
+    public const string SupportServer = "https://discord.gg/Qg9eVB34sq";
 
     public static readonly Config Config = Configuration.TheConfig;
     public static Process? ThisProcess { get; set; }

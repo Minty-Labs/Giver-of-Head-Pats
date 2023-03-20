@@ -212,7 +212,7 @@ public class SlashBasic : ApplicationCommandModule {
                                               "Donate: https://ko-fi.com/MintLily \n" +
                                               "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
                                               $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
-                                              "Need Support? [Create an Issue](https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new) \n" +
+                                              $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
                                               "Privacy Policy: [Link](https://mintlily.lgbt/gohp/privacy)");
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(Vars.ClientId, true);
@@ -223,7 +223,7 @@ public class SlashBasic : ApplicationCommandModule {
 
     [SlashCommand("Support", "Get the support server invite link")]
     public async Task Support(ic c)
-        => await c.CreateResponseAsync("Need support? Create an issue on our GitLab:\n  https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/new", true);
+        => await c.CreateResponseAsync($"Need support? Join the Support Sever at {Vars.SupportServer}", true);
 
     [SlashCommand("Invite", "Get the bot invite link")]
     public async Task Invite(ic c)
