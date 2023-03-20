@@ -143,8 +143,20 @@ public class LoveSlash : ApplicationCommandModule {
                  await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
                  return;
              }
+
+             if (checkUser is null) {
+                 var newUser = new Users {
+                     UserId = user.Id,
+                     UsernameWithNumber = $"{user.Username}#{user.Discriminator}",
+                     PatCount = 0,
+                     CookieCount = 0,
+                     IsUserBlacklisted = 0
+                 };
+                 Logger.Log("Added user to database");
+                 db.Users.Add(newUser);
+             }
          
-             var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
+             var isUserBlackListed = checkUser is not null && checkUser.IsUserBlacklisted == 1;
          
              if (isUserBlackListed) {
                  await c.CreateResponseAsync("You are not allowed to use this command. This was set by a bot developer.", true);
