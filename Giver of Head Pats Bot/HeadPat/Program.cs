@@ -123,7 +123,7 @@ public sealed class Program {
         Logger.Log("ActivityType                   = " + $"{Vars.Config.ActivityType}".Pastel("FBADBC"));
         Logger.Log("Game                           = " + $"{Vars.Config.Game}".Pastel("FBADBC"));
         Logger.Log("Streaming URL                  = " + $"{Vars.Config.StreamingUrl}".Pastel("FBADBC"));
-        Logger.Log("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count}".Pastel("FBADBC"));
+        Logger.Log("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}".Pastel("FBADBC"));
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{Vars.Config.Game}",
             ActivityType = GetActivityType(Vars.Config.ActivityType!)
@@ -134,21 +134,27 @@ public sealed class Program {
 
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
-        var em = new DiscordEmbedBuilder();
-        em.WithColor(Vars.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen);
-        em.WithDescription($"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
-                           $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given");
-        em.AddField("Build Time", $"{Vars.BuildTime:F}\n<t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>");
-        em.AddField("Start Time", $"{DateTime.Now:F}\n<t:{DateTime.Now.GetSecondsFromUnixTime()}:R>");
-        em.AddField("DSharpPlus Version", Vars.DSharpVer);
-        em.WithFooter($"v{Vars.Version}");
-        em.WithTimestamp(DateTime.Now);
+        
+        var startEmbed = new DiscordEmbedBuilder {
+            Color = Vars.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen,
+            Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
+                          $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given",
+            Footer = new DiscordEmbedBuilder.EmbedFooter {
+                Text = $"v{Vars.Version}"
+            },
+            Timestamp = DateTime.Now
+        }
+            .AddField("Build Time", $"{Vars.BuildTime:F}\n<t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>")
+            .AddField("Start Time", $"{DateTime.Now:F}\n<t:{DateTime.Now.GetSecondsFromUnixTime()}:R>")
+            .AddField("DSharpPlus Version", Vars.DSharpVer)
+            .Build();
+        
         GeneralLogChannel = await sender.GetChannelAsync(Vars.Config.GeneralLogChannelId);
         ErrorLogChannel = await sender.GetChannelAsync(Vars.Config.ErrorLogChannelId);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Vars.Config.DmResponseCategoryId);
         TaskScheduler.StartStatusLoop();
         await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
-        await sender.SendMessageAsync(GeneralLogChannel, em.Build());
+        await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
 
     private static Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {

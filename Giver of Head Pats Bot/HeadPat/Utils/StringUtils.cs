@@ -45,4 +45,30 @@ public static class StringUtils {
     /// <returns>new string with replaced content</returns>
     public static string ContainsAndReplaceWhole(this string theStringToBeEdited, string contains, string replaceWith)
         => !theStringToBeEdited.Contains(contains) ? theStringToBeEdited : replaceWith;
+    
+    /// <summary>
+    /// Escapes Discord text modifiers (bold, italics, strikethrough, code, and spoiler) in a string.
+    /// </summary>
+    /// <param name="thisString">this</param>
+    /// <returns>Returns a string with the modifers escaped.</returns>
+    public static string EscapeTextModifiers(this string thisString) {
+        var asChars = thisString.ToCharArray();
+        var hasTwoOrMoreUnderscores = asChars.Count(c => c == '_') >= 2;
+        var hasTwoOrMoreAsterisks = asChars.Count(c => c == '*') >= 2;
+        var hasTwoOrMoreTildes = asChars.Count(c => c == '~') >= 2;
+        var hasTwoOrMoreBackticks = asChars.Count(c => c == '`') >= 2;
+        var hasBackSlash = asChars.Count(c => c == '\\') >= 1;
+
+        if (hasTwoOrMoreUnderscores)
+            thisString = thisString.ReplaceAll("_", "\\_");
+        if (hasTwoOrMoreAsterisks)
+            thisString = thisString.ReplaceAll("*", "\\*");
+        if (hasTwoOrMoreTildes)
+            thisString = thisString.ReplaceAll("~", "\\~");
+        if (hasTwoOrMoreBackticks)
+            thisString = thisString.ReplaceAll("`", "\\`");
+        if (hasBackSlash)
+            thisString = thisString.ReplaceAll("\\", "\\\\");
+        return thisString;
+    }
 }
