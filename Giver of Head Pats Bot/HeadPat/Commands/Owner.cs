@@ -7,12 +7,36 @@ using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
-using HeadPats.Utils;
-//using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 using TaskScheduler = HeadPats.Managers.TaskScheduler;
 
-namespace HeadPats.Commands; 
+namespace HeadPats.Commands;
+
+public class ClassicOwner : BaseCommandModule {
+    public ClassicOwner() => Logger.LoadModule("ClassicOwner");
+    
+    [Command("MultiKick"), Aliases("mk"), Description("Kicks multiple users at once"), RequireOwner]
+    public async Task MultiKick(CommandContext c, [Description("List of users separated by commas")] string userIds,
+        [Description("Reason for kick"), RemainingText] string reason = "No reason provided.") {
+        if (string.IsNullOrWhiteSpace(userIds)) {
+            await c.RespondAsync("Please provide one or more user IDs, separated by commas.");
+            return;
+        }
+        
+        var ulongList = userIds.Split(',').Select(ulong.Parse).ToList();
+        var num = 0;
+        foreach (var id in ulongList) {
+            if (num != 0) // Instantly do the first, delay the rest
+                await Task.Delay(TimeSpan.FromSeconds(2));
+
+            var user = await c.Guild.GetMemberAsync(id);
+            await user.RemoveAsync(reason);
+            num++;
+        }
+        
+        await c.RespondAsync($"Finished kicking {num} users.");
+    }
+}
 
 public class RequireUserIdAttribute : SlashCheckBaseAttribute {
     public ulong UserId;
@@ -176,7 +200,7 @@ public class BlacklistCommands : ApplicationCommandModule {
             }
         }
 
-        var valueIsTrue = value.ToLower().Contains('t');
+        var valueIsTrue = value.ToLower().Equals("add");
 
         if (checkUser == null) {
             var newUser = new Users {
@@ -186,6 +210,7 @@ public class BlacklistCommands : ApplicationCommandModule {
                 CookieCount = 0,
                 IsUserBlacklisted = valueIsTrue ? 1 : 0
             };
+            Logger.Log("Added user to database");
             db.Users.Add(newUser);
             db.Users.Update(checkUser!);
         }
