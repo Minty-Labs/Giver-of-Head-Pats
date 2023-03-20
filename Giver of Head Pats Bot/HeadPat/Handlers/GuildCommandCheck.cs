@@ -5,6 +5,10 @@ using DSharpPlus.CommandsNext.Attributes;
 namespace HeadPats.Handlers;
 
 public class LockCommandForOnlyMintyLabs : CheckBaseAttribute {
+    public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild.Id == 1083619886980403272);
+}
+
+public class LockCommandForOnlyLilysComfiCorner : CheckBaseAttribute {
     public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild.Id == 805663181170802719);
 }
 

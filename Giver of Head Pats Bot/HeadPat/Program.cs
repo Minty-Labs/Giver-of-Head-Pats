@@ -97,39 +97,16 @@ public sealed class Program {
             PaginationBehaviour = DSharpPlus.Interactivity.Enums.PaginationBehaviour.Ignore,
             Timeout = TimeSpan.FromMinutes(2)
         });
-
-        /*await using var moderationDb = new ModerationModuleContext();
-        var checkModerationModule = moderationDb.Moderation.AsQueryable().Where(m => m.GuildId == BuildInfo.TestGuildId).ToList().FirstOrDefault();
-        
-        if (checkModerationModule == null) {
-            var moderation = new Moderation {
-                GuildId = BuildInfo.TestGuildId, // Test Guild ID
-                Enabled = false,
-                LogChannelId = 1009952339832078396, // Test Log Channel ID
-            };
-            moderationDb.Add(moderation);
-            await moderationDb.SaveChangesAsync();
-        }
-
-        GuildCommandCheckList = new List<GuildCommandCheck>();
-        var things = new GuildCommandCheck {
-            GuildId = BuildInfo.TestGuildId,
-            Enabled = false
-        };
-        GuildCommandCheckList.Add(things);*/
         
         ReplyStructure.CreateFile();
         // MelonLoaderBlacklist.ProtectStructure.CreateFile();
         BlacklistedNekosLifeGifs.CreateFile();
         BlacklistedCmdsGuilds.CreateFile();
-        // ActionLogging.CreateFile();
             
         await Client.ConnectAsync();
 
         await Task.Delay(-1);
     }
-    
-    // public static List<GuildCommandCheck>? GuildCommandCheckList;
     
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 

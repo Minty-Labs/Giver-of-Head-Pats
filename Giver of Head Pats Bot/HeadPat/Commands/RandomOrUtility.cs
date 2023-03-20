@@ -8,7 +8,7 @@ using ic = DSharpPlus.SlashCommands.InteractionContext;
 
 namespace HeadPats.Commands; 
 
-public class Utility_Random : ApplicationCommandModule {
+public class UtilityOrRandom : ApplicationCommandModule {
 
     [SlashCommand("Color", "Shows you the color from the given input")]
     public async Task GiveColor(ic c,

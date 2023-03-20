@@ -35,9 +35,12 @@ public class MessageCreated {
         if (!e.Channel.IsPrivate) return;
         if (e.Author.IsBot) return;
         var builder = new DiscordMessageBuilder();
+        var message = e.Message.Content;
         // format: userId-userName
 
-        if (e.Message.ToString().StartsWith("hp!")) return;
+        if (message.ToString().Contains("hp!")) return;
+        if (message.StartsWith("."))
+            return;
         
         var author = e.Message.Author;
         DiscordChannel? serverChannelFromDm;
@@ -61,7 +64,7 @@ public class MessageCreated {
                 attsb.AppendLine($"{a.ProxyUrl}");
             }
         }
-        builder.WithContent($"{(att ? $"Has `{count}` {attsb}\n" : "")}\n{e.Message.Content}");
+        builder.WithContent($"{(att ? $"Has `{count}` {attsb}\n" : "")}\n{message}");
         
         await builder.SendAsync(serverChannelFromDm);
     }

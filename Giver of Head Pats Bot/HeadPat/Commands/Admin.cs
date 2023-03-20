@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using DSharpPlus;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -54,24 +53,24 @@ public class Admin : ApplicationCommandModule {
                 $"Created by: `{createdByName}#{createdByDiscriminator}`\n",
                 $"For Channel: #{inv.Channel.Name} (ID: {inv.Channel.Id})\n",
                 $"Uses: {(uses.Equals("0/0") ? "Unlimited" : uses)}\n",
-                $"Date Created: {(createdDateFinal.Equals("Monday, 01 January 0001 00:00:00") ? "Unknown Creation Date" : createdDateFinal)}\n",
+                $"Date Created: {(createdDateFinal.Contains("January 1, 0001") ? "Invalid Creation Date" : createdDateFinal)}\n",
                 $"Expires: {inv.ExpiresAt:F}\n",
                 $"[Click to Join Server](https://discord.gg/{inv.Code}) {(createdByDiscriminator == "null" ? "(Vanity URL Invite)" : "")}"
             }));
 
         e.WithThumbnail(inv.Guild.IconUrl);
         e.WithColor(Colors.HexToColor("5C7F90"));
-        e.WithFooter("Invite Inspector Created by SourVodka", "https://cdn.discordapp.com/avatars/211681643235115008/e47f3414381c5cbd1fc305f45dc2ffc8.png?size=2048");
+        // e.WithFooter("Invite Inspector Created by SourVodka", "https://cdn.discordapp.com/avatars/211681643235115008/e47f3414381c5cbd1fc305f45dc2ffc8.png?size=2048");
         await c.CreateResponseAsync(e.Build());
     }
 
     [SlashCommand("UserInfoID", "Displays information about a user")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(ic c, [Option("UserID", "User ID")] string userId = "") {
-        if (c.Member.Permissions != Permissions.ManageMessages) {
+        /*if (c.Member.Permissions != Permissions.ManageMessages) {
             await c.CreateResponseAsync("You do not have permission to use this command.");
             return;
-        }
+        }*/
         if (string.IsNullOrWhiteSpace(userId)) {
             await c.CreateResponseAsync("Please provide a user to get info.");
             return;
@@ -115,10 +114,10 @@ public class Admin : ApplicationCommandModule {
     [SlashCommand("UserInfo", "Displays information about a user")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(ic c, [Option("User", "Mentioned User to get info about", true)] DiscordUser user) {
-        if (c.Member.Permissions != Permissions.ManageMessages) {
+        /*if (c.Member.Permissions != Permissions.ManageMessages) {
             await c.CreateResponseAsync("You do not have permission to use this command.");
             return;
-        }
+        }*/
         DiscordMember m;
         try {
             m = await c.Guild.GetMemberAsync(user.Id);

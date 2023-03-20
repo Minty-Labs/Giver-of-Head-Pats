@@ -24,7 +24,7 @@ internal static class Commands {
         
         s?.RegisterCommands<LoveSlash>();
         Logger.Log("Love Slash commands registered");
-        s?.RegisterCommands<Utility_Random>();
+        s?.RegisterCommands<UtilityOrRandom>();
         Logger.Log("Random / Utility Slash commands registered");
         s?.RegisterCommands<ReplyApplication>();
         Logger.Log("Reply Slash commands registered");

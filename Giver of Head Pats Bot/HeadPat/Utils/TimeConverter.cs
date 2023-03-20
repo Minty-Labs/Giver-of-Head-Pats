@@ -2,19 +2,21 @@
 
 public static class TimeConverter {
     /*
-     1969, 19 (for Daylight Savings)
-     1969, 20 (for NO Daylight Savings)
+     Hour 19 (for Autumn/Winter)
+     Hour 20 (for Spring/Summer)
      */
     /// <summary>
     /// Calculates the total seconds from the given DateTime
     /// </summary>
-    /// <returns>Total Seconds</returns>
-    public static int GetSecondsFromUnixTime(this DateTime dateTime) => (int)dateTime.Subtract(new DateTime(1969, 12, 31, 19, 00, 00)).TotalSeconds;
+    /// <param name="dateTime"></param>
+    /// <returns></returns>
+    public static int GetSecondsFromUnixTime(this DateTime dateTime) => (int)dateTime.Subtract(new DateTime(1969, 12, 31, 20, 00, 00)).TotalSeconds;
 
     /// <summary>
     /// Calculates the total seconds from the given DateTimeOffset
     /// </summary>
-    /// <returns>Total Seconds</returns>
+    /// <param name="dateTimeOffset"></param>
+    /// <returns></returns>
     public static int GetSecondsFromUnixTime(this DateTimeOffset dateTimeOffset) 
         => (int)dateTimeOffset.DateTime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
 }

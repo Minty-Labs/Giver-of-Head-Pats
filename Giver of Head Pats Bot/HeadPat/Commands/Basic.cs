@@ -10,7 +10,6 @@ using HeadPats.Data;
 using HeadPats.Handlers;
 using HeadPats.Managers;
 using HeadPats.Utils;
-using Newtonsoft.Json;
 using cc = DSharpPlus.CommandsNext.CommandContext;
 using ic = DSharpPlus.SlashCommands.InteractionContext;
 
@@ -40,7 +39,7 @@ public class Basic : BaseCommandModule {
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(Vars.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{Vars.DSharpVer}** \nBot: **v{Vars.Version}** \nBuild Date: {Vars.BuildTime:F} - <t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>");
-        e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **16 GB** \nOS: **Debian 11**");
+        // e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **16 GB** \nOS: **Debian 11**");
 
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
@@ -72,7 +71,7 @@ public class Basic : BaseCommandModule {
 
     [Command("Salad"), Description("Summon a picture of salad")]
     [Cooldown(50, 3600, CooldownBucketType.Guild)]
-    [LockCommandForOnlyMintyLabs]
+    [LockCommandForOnlyLilysComfiCorner]
     public async Task Salad(cc c) {
         if (string.IsNullOrWhiteSpace(Vars.Config.UnsplashAccessKey) || string.IsNullOrWhiteSpace(Vars.Config.UnsplashSecretKey)) {
             await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.").DeleteAfter(10);
@@ -86,7 +85,7 @@ public class Basic : BaseCommandModule {
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
         var content = await httpClient.GetStringAsync(unsplashApiUrl);
-        var logged = JsonConvert.SerializeObject(content, Formatting.Indented);
+        // var logged = JsonConvert.SerializeObject(content, Formatting.Indented);
         // Logger.Log(logged);
         httpClient.Dispose();
         UnsplashApiJson.GetData(content);
@@ -354,7 +353,8 @@ public class SlashBasic : ApplicationCommandModule {
             $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}**");
         e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         e.WithTimestamp(DateTime.Now);
-        await c.CreateResponseAsync(e.Build());
+        // await c.CreateResponseAsync(e.Build());
+        await c.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(e.Build()));
     }
 
     [SlashCommand("Meme", "Get a random meme from one of nine subreddits")]

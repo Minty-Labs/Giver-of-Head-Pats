@@ -14,8 +14,9 @@ public class HelpFormatter : DefaultHelpFormatter {
             Text = $"{Vars.Name} (v{Vars.Version}) • {Vars.BuildDate}"
         };
         EmbedBuilder.Footer = f;
-        EmbedBuilder.AddField("Addition Information", "There are also slash commands available for this bot." +
-                                                      $"Don't see them? Keep the bot in your server and [re-invite it with this link]({Vars.InviteLink}) to update it's permissions.");
+        EmbedBuilder.AddField("Addition Information", 
+            "There are also slash commands available for this bot." +
+            $"Don't see them? Keep the bot in your server and [re-invite it with this link]({Vars.InviteLink}) to update it's permissions.");
         return base.Build();
     }
 }

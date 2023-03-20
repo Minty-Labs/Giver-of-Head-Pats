@@ -18,7 +18,7 @@ public class MobileManager { // Thanks Dubya
             Logger.Log("MobilePatch Success: You are on \"" + "Discord iOS".Pastel("00ff00") + "\"");
         }
         catch (Exception e) {
-            Logger.Error($"Failed Mobile Patch{e}");
+            Logger.Error($"Failed Mobile Patch\n{e}");
         }
     }
         
