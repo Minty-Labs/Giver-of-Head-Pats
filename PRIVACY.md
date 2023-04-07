@@ -59,7 +59,7 @@
       Discord
       <ul>
         <li>Direct Message: <code>MintLily#0001</code></li>
-        <li>Server Invite: <code>Server Invite Unavailable</code></li>
+        <li>Server Invite: <code>https://discord.gg/Qg9eVB34sq</code></li>
       </ul>
     </li>
   </ul>
