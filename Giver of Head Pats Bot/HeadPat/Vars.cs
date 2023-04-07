@@ -4,7 +4,7 @@ using HeadPats.Managers;
 namespace HeadPats; 
 
 public static class Vars {
-    public const string DSharpVer = "4.3.0-stable";
+    public const string DSharpVer = "4.4.0-stable";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
     public const ulong TestGuildId = 279459962843955201;
@@ -13,8 +13,8 @@ public static class Vars {
     public static readonly DateTime BuildTime = DateTime.Now;
     public const bool IsDebug = true;
 #else
-    public const string Version = "2023.3.2"; // Year.Month.Revision
-    public static readonly DateTime BuildTime = new(2023, 3, 20, 17, 08, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "2023.4.1"; // Year.Month.Revision
+    public static readonly DateTime BuildTime = new(2023, 4, 7, 18, 17, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
 #endif
     public static string BuildDate { get; } = $"{BuildTime:F}";
