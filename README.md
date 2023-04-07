@@ -21,6 +21,7 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
 <h2>Packages (Nuget)</h2>
 <ul>
     <li>DSharpPlus <b>v4.3.0 (Stable)</b>
+    <li>DSharpPlus <b>v4.4.0 (Stable)</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -35,7 +36,7 @@ Need Support? <a href="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/issues/n
     <li>Nekos-Sharp <i>by BuilderB</i> <b>v3.5.0</b></li>
     <li>Newtonsoft.Json <i>by James Newton-King</i> <b>v13.0.2</b></li>
     <li>Pastel <i>by silkfire</i> <b>v4.1.0</b></li>
-    <li>ColorHelper <i>by iamartyom</i> <b>v1.8.0</b></li>
+    <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
 </ul>
 
 <h2>Programs & Services Used</h2>

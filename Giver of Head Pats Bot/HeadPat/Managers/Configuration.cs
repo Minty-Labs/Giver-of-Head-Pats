@@ -27,6 +27,8 @@ public class Config {
     
     [JsonProperty("Unsplash Secret Key")] public string? UnsplashSecretKey { get; set; }
     
+    [JsonProperty("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; set; }
+    
     /*[JsonProperty("EnableRotation")] public bool EnableRotation;
      
     [JsonProperty("RotatingStatuses")] public List<RotatingStatus>? RotatingStatuses;
@@ -69,6 +71,7 @@ public static class Configuration {
             DmResponseCategoryId = 0,
             UnsplashAccessKey = "",
             UnsplashSecretKey = "",
+            FullBlacklistOfGuilds = new List<ulong> { 0 }
             // EnableRotation = false,
             // RotatingStatuses = new List<RotatingStatus> { rS1, rS2 }
         };
