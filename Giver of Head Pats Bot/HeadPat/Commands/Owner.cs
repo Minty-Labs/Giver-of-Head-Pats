@@ -36,6 +36,13 @@ public class ClassicOwner : BaseCommandModule {
         
         await c.RespondAsync($"Finished kicking {num} users.");
     }
+    
+    [Command("AddToFullBlacklist"), Aliases("atfb"), Description("Adds a guild to the full blacklist"), RequireOwner]
+    public async Task AddToFullBlacklist(CommandContext c, [Description("Guild ID")] ulong guildId) {
+        Vars.Config.FullBlacklistOfGuilds!.Add(guildId);
+        Configuration.Save();
+        await c.RespondAsync($"Added {guildId} to the full blacklist.");
+    }
 }
 
 public class RequireUserIdAttribute : SlashCheckBaseAttribute {

@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using HeadPats.Managers;
 using HeadPats.Utils;
 
 namespace HeadPats.Handlers.Events; 
@@ -46,6 +47,12 @@ public class OnBotJoinOrLeave {
             em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
+
+            if (Vars.Config.FullBlacklistOfGuilds!.Contains(e.Guild.Id)) {
+                await sender.SendMessageAsync(Program.GeneralLogChannel, $"Leaving guild {e.Guild.Name} ({e.Guild.Id}) because it is blacklisted.");
+                await e.Guild.LeaveAsync();
+            }
+            
         } catch (Exception ex) {
             Logger.SendLog(ex);
         }
