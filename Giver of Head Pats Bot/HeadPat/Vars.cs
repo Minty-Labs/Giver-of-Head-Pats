@@ -14,7 +14,7 @@ public static class Vars {
     public const bool IsDebug = true;
 #else
     public const string Version = "2023.4.1"; // Year.Month.Revision
-    public static readonly DateTime BuildTime = new(2023, 4, 7, 18, 17, 00); // (year, month, day, hour, min, sec)
+    public static readonly DateTime BuildTime = new(2023, 4, 21, 8, 42, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
 #endif
     public static string BuildDate { get; } = $"{BuildTime:F}";
