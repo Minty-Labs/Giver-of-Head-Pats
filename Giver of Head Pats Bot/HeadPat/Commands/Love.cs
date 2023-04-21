@@ -97,6 +97,52 @@ public class LoveSlash : ApplicationCommandModule {
         Logger.Log($"Total Pat amount Given: {special}");
     }
 
+    [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat (No Embed)")]
+    public async Task PatInline(ContextMenuContext c) {
+        await using var db = new Context();
+        var checkGuild = db.Guilds.AsQueryable()
+            .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
+        
+        var checkUser = db.Users.AsQueryable()
+            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+        
+        if (checkUser is null) {
+            var newUser = new Users {
+                UserId = c.TargetUser.Id,
+                UsernameWithNumber = $"{c.TargetUser.Username}#{c.TargetUser.Discriminator}",
+                PatCount = 0,
+                CookieCount = 0,
+                IsUserBlacklisted = 0
+            };
+            Logger.Log("Added user to database");
+            db.Users.Add(newUser);
+        }
+
+        var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
+
+        if (isRoleBlackListed) {
+            await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
+            return;
+        }
+        
+        var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
+        
+        if (isUserBlackListed) {
+            await c.CreateResponseAsync("You are not allowed to use this command. This was set by a bot developer.", true);
+            return;
+        }
+        
+        var target = c.TargetMember.Username + "#" + c.TargetMember.Discriminator;
+        var author = c.User.Username;
+        if (c.TargetMember.IsBot)
+            await c.CreateResponseAsync("You cannot give bots headpats.", true);
+        else if (c.TargetMember.Id == c.User.Id)
+            await c.CreateResponseAsync("You cannot give yourself headpats.", true);
+        else 
+            await c.CreateResponseAsync($"{author.ReplaceTheNames()} patted {target.ReplaceTheNamesWithTags()}!");
+        UserControl.AddPatToUser(c.TargetUser.Id, 1, true, c.Guild.Id);
+    }
+
      [SlashCommandGroup("user", "User Actions")]
      public class LoveUser : ApplicationCommandModule {
      
