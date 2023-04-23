@@ -54,11 +54,12 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
     <li>Spotify / Plex(amp) *</li>
     <li>APIs
         <ul>
-            <li>Nekos.life [Nekos-Sharp]</li>
+            <li><s>Nekos.life [Nekos-Sharp]</s></li>
             <li>RandomFox.ca</li>
             <li>Bunnies.io</li>
-            <li>neko-love.xyz</li>
+            <li><s>neko-love.xyz</s></li>
             <li>Unsplash</li>
+            <li>CookieAPI</li>
         </ul>
     </li>
 </ul>
@@ -109,7 +110,7 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
 <h3>Love Commands (Slash)</h3>
 <ul>
     <li>Pat - Give headpats to a specified user</li>
-    <li>Cuddle - Give cuddles to a specified user</li>
+    <li><s>Cuddle - Give cuddles to a specified user</s></li>
     <li>Hug - Give hugs to a specified user</li>
     <li>Kiss - Give kisses to a specified user</li>
     <li>Slap - Slap a specified user</li>
@@ -139,7 +140,9 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/7/avatar.png" height="35px" align=center /> &nbsp;
     <a href="https://git.ellyvr.dev/Lily">Lily</a> (Main, Lead, Owner, Creator)<br>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/2/avatar.png" height="35px" align=center /> &nbsp;
-    <a href="https://git.ellyvr.dev/Elly">Elly</a> (Supporting)
+    <a href="https://git.ellyvr.dev/Elly">Elly</a> (Supporting)<br>
+<img src="https://i.mintlily.lgbt/chrome_2018-01-18_04-27-53.png" height="35px" align=center /> &nbsp;
+    <a href="https://www.patreon.com/scorespy">Ahriana</a> (CookieAPI Dev)
 
 <h3>Featured Programs</h3>
 <a href="https://jb.gg/OpenSourceSupport" target="_blank">

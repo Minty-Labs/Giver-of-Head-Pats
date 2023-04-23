@@ -13,8 +13,8 @@ public static class Vars {
     public static readonly DateTime BuildTime = DateTime.Now;
     public const bool IsDebug = true;
 #else
-    public const string Version = "2023.4.3"; // Year.Month.Revision
-    public static readonly DateTime BuildTime = new(2023, 4, 23, 12, 51, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "2023.4.4"; // Year.Month.Revision
+    public static readonly DateTime BuildTime = new(2023, 4, 23, 18, 45, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
 #endif
     public static string BuildDate { get; } = $"{BuildTime:F}";
@@ -25,5 +25,6 @@ public static class Vars {
 
     public static readonly Config Config = Configuration.TheConfig;
     public static Process? ThisProcess { get; set; }
-    public static bool EnableGifs { get; set; }
+    public static bool EnableGifs { get; set; } = true;
+    public const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0";
 }

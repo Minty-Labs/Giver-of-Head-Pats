@@ -49,6 +49,13 @@ public class ClassicOwner : BaseCommandModule {
         Vars.EnableGifs = !Vars.EnableGifs;
         await c.RespondAsync($"Gifs are now {(Vars.EnableGifs ? "enabled" : "disabled")}.");
     }
+    
+    [Command("SetCookieApiKey"), RequireOwner]
+    public async Task SetCookieApiKey(CommandContext c, [Description("API Key")] string apiKey) {
+        Vars.Config.CookieClientApiKey = apiKey;
+        Configuration.Save();
+        await c.RespondAsync("Set API Key.");
+    }
 }
 
 public class RequireUserIdAttribute : SlashCheckBaseAttribute {
