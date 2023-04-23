@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text;
-using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
 

@@ -39,32 +39,32 @@ public class Basic : BaseCommandModule {
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(Vars.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{Vars.DSharpVer}** \nBot: **v{Vars.Version}** \nBuild Date: {Vars.BuildTime:F} - <t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>");
-        // e.AddField("Server Info", "Location: **Finland** \nServer: **Hetzner** \nMax RAM: **16 GB** \nOS: **Debian 11**");
+        e.AddField("APIs", "~~Neko's Life~~\n~~Neko-Love~~\nUnsplash\nDiscord\nCookie");
 
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());
     }
     
-    [Command("Cry"), Aliases("crying"), Description("Summon a picture or GIF of a crying post")]
-    public async Task Cry(cc c) {
-        NekoLoveJson.NekoData = null;
-        var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
-        var content = await httpClient.GetStringAsync("https://neko-love.xyz/api/v1/cry");
-        NekoLoveJson.GetData(content);
-
-        if (NekoLoveJson.ImageHasValidExtension()) {
-            var e = new DiscordEmbedBuilder();
-            e.WithTitle("`*`_cry_`*`");
-            e.WithColor(Colors.HexToColor("58CBCF"));
-            e.WithImageUrl(NekoLoveJson.GetImage());
-            e.WithFooter("Powered by neko-love.xyz");
-            e.WithTimestamp(DateTime.Now);
-            
-            httpClient.Dispose();
-            await c.RespondAsync(e.Build());
-        }
-    }
+    // [Command("Cry"), Aliases("crying"), Description("Summon a picture or GIF of a crying post")]
+    // public async Task Cry(cc c) {
+    //     NekoLoveJson.NekoData = null;
+    //     var httpClient = new HttpClient();
+    //     httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+    //     var content = await httpClient.GetStringAsync("https://neko-love.xyz/api/v1/cry");
+    //     NekoLoveJson.GetData(content);
+    //
+    //     if (NekoLoveJson.ImageHasValidExtension()) {
+    //         var e = new DiscordEmbedBuilder();
+    //         e.WithTitle("`*`_cry_`*`");
+    //         e.WithColor(Colors.HexToColor("58CBCF"));
+    //         e.WithImageUrl(NekoLoveJson.GetImage());
+    //         e.WithFooter("Powered by neko-love.xyz");
+    //         e.WithTimestamp(DateTime.Now);
+    //         
+    //         httpClient.Dispose();
+    //         await c.RespondAsync(e.Build());
+    //     }
+    // }
 
     [Command("TopPat"), Aliases("lb", "leaderboard", "tp"), Description("Shows the leaderboard for most headpats")]
     public async Task TopPat(cc c) => await c.RespondAsync("Use slash commands instead. `/TopPat`");
@@ -83,7 +83,7 @@ public class Basic : BaseCommandModule {
         if (UnsplashApiJson.unsplashApi != null) UnsplashApiJson.unsplashApi.Clear();
         UnsplashApiJson.unsplashApi = null;
         var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+        httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.FakeUserAgent);
         var content = await httpClient.GetStringAsync(unsplashApiUrl);
         // var logged = JsonConvert.SerializeObject(content, Formatting.Indented);
         // Logger.Log(logged);
@@ -235,18 +235,18 @@ public class SlashBasic : ApplicationCommandModule {
     
     [SlashCommandGroup("Summon", "Summon a picture of various options")]
     public class SummonPicture : ApplicationCommandModule {
-        [SlashCommand("Cat", "Cat pics are always nice")]
-        public async Task Cat(ic c) {
-            var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
-
-            await BasicCmdUtils.OutputBaseCommand(c, "", neko?.Result.ImageUrl, "FFFF00", "nekos.life");
-        }
+        // [SlashCommand("Cat", "Cat pics are always nice")]
+        // public async Task Cat(ic c) {
+        //     var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
+        //
+        //     await BasicCmdUtils.OutputBaseCommand(c, "", neko?.Result.ImageUrl, "FFFF00", "nekos.life");
+        // }
 
         [SlashCommand("Bunny", "Bunnies are mega adorable")]
         public async Task Bunny(ic c) {
             start:
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.FakeUserAgent);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var content = await httpClient.GetStringAsync("https://api.bunnies.io/v2/loop/random/?media=gif,png");
             // Logger.Log($"Data: {content}");
@@ -279,7 +279,7 @@ public class SlashBasic : ApplicationCommandModule {
         public async Task Fox(ic c) {
             RandomFoxJson.FoxData = null;
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.FakeUserAgent);
             var content = await httpClient.GetStringAsync("https://randomfox.ca/floof/");
             RandomFoxJson.GetData(content);
 
@@ -295,11 +295,11 @@ public class SlashBasic : ApplicationCommandModule {
             RandomFoxJson.FoxData = null;
         }
         
-        [SlashCommand("Neko", "Summon a picture or GIF of a SFW neko")]
-        public async Task Neko(ic c) {
-            var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Image.Neko() : Program.NekoClient?.Image.NekoGif();
-            await BasicCmdUtils.OutputBaseCommand(c, "Random Neko", neko?.Result.ImageUrl, "42F4A1", "Powered by nekos.life");
-        }
+        // [SlashCommand("Neko", "Summon a picture or GIF of a SFW neko")]
+        // public async Task Neko(ic c) {
+        //     var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Image.Neko() : Program.NekoClient?.Image.NekoGif();
+        //     await BasicCmdUtils.OutputBaseCommand(c, "Random Neko", neko?.Result.ImageUrl, "42F4A1", "Powered by nekos.life");
+        // }
     }
 
     [SlashCommand("TopPat", "Get the top pat leaderboard")]
@@ -365,7 +365,7 @@ public class SlashBasic : ApplicationCommandModule {
 
         TheData.RedditData = null;
         var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0");
+        httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.FakeUserAgent);
         var content = await httpClient.GetStringAsync($"https://www.reddit.com/r/{subreddit}/random/.json");
         //await c.RespondAsync(string.Concat(new [] {
         //    "```json\n",

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿/*using Newtonsoft.Json;
 
 namespace HeadPats.Utils; 
 
@@ -19,4 +19,4 @@ public partial class NekoLove {
     public int? Code { get; set; }
     [JsonProperty("url")]
     public string? Url { get; set; }
-}
+}*/
