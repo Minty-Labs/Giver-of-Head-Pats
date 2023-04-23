@@ -11,7 +11,7 @@ namespace HeadPats.Commands;
 public class Contributors : ApplicationCommandModule {
     [SlashCommandGroup("Contributor", "Contributor Commands")]
     public class Contributor : ApplicationCommandModule {
-        [SlashCommand("Add", "Adds a Contributor to the list")]
+        [SlashCommand("Add", "Adds a Contributor to the list", false)]
         [SlashRequireOwner]
         public async Task AddContributor(ic c, [Option("UserName", "Username or alias name to add", true)] string userName,
             [Option("Info", "Information about what they did", true)] string info) {
@@ -19,7 +19,7 @@ public class Contributors : ApplicationCommandModule {
             await c.CreateResponseAsync("Added and saved Contributor Info!", true);
         }
 
-        [SlashCommand("Remove", "Removes a Contributor from the list")]
+        [SlashCommand("Remove", "Removes a Contributor from the list", false)]
         [SlashRequireOwner]
         public async Task RemoveContributor(ic c, [Option("UserName", "Username or alias name to remove", true)] string userName) {
             ContributorStructure.RemoveValue(userName);

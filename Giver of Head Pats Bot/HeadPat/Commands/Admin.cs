@@ -12,7 +12,7 @@ namespace HeadPats.Commands;
 
 public class Admin : ApplicationCommandModule {
 
-    [SlashCommand("InviteInfo", "Gets a basic description about an invite by code")]
+    [SlashCommand("InviteInfo", "Gets a basic description about an invite by code", false)]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task GetInviteInfo(ic c, [Option("Code", "Full link or just invite code", true)] string code) {
         if (c.Member.Permissions != Permissions.ManageMessages) {
@@ -64,7 +64,7 @@ public class Admin : ApplicationCommandModule {
         await c.CreateResponseAsync(e.Build());
     }
 
-    [SlashCommand("UserInfoID", "Displays information about a user")]
+    [SlashCommand("UserInfoID", "Displays information about a user", false)]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(ic c, [Option("UserID", "User ID")] string userId = "") {
         /*if (c.Member.Permissions != Permissions.ManageMessages) {
@@ -111,7 +111,7 @@ public class Admin : ApplicationCommandModule {
         await c.CreateResponseAsync(e.Build());
     }
 
-    [SlashCommand("UserInfo", "Displays information about a user")]
+    [SlashCommand("UserInfo", "Displays information about a user", false)]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(ic c, [Option("User", "Mentioned User to get info about", true)] DiscordUser user) {
         /*if (c.Member.Permissions != Permissions.ManageMessages) {
@@ -146,7 +146,7 @@ public class Admin : ApplicationCommandModule {
         await c.CreateResponseAsync(e.Build());
     }
 
-    [SlashCommand("BlacklistRoleFromPatCommand", "Blacklists a role from the pat command")]
+    [SlashCommand("BlacklistRoleFromPatCommand", "Blacklists a role from the pat command", false)]
     [SlashRequirePermissions(Permissions.ManageRoles)]
     public async Task BlacklistRoleFromPatCommand(ic c, [Option("Role", "Role to blacklist", true)] DiscordRole role,
         [Option("Action", "Action to take")]

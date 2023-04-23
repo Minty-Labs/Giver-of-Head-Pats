@@ -43,6 +43,12 @@ public class ClassicOwner : BaseCommandModule {
         Configuration.Save();
         await c.RespondAsync($"Added {guildId} to the full blacklist.");
     }
+    
+    [Command("ToggleGifs"), RequireOwner]
+    public async Task ToggleGifs(CommandContext c) {
+        Vars.EnableGifs = !Vars.EnableGifs;
+        await c.RespondAsync($"Gifs are now {(Vars.EnableGifs ? "enabled" : "disabled")}.");
+    }
 }
 
 public class RequireUserIdAttribute : SlashCheckBaseAttribute {
@@ -166,17 +172,17 @@ public class SlashOwner : ApplicationCommandModule {
 
 [SlashCommandGroup("Blacklist", "Blacklist related commands")]
 public class BlacklistCommands : ApplicationCommandModule {
-    [SlashCommand("AddGIF", "Adds a GIF URL to a blacklist not to be shown in commands")]
+    [SlashCommand("AddGIF", "Adds a GIF URL to a blacklist not to be shown in commands", false)]
     [SlashRequireOwner]
     public async Task AddBlacklistGif(ic c, [Option("URL", "URL of GIF you want to add to the blacklist", true)] string url) 
         => await BlacklistedNekosLifeGifs.AddBlacklist(c, url);
 
-    [SlashCommand("RemoveGIF", "Removes a GIF URL from the blacklist to be shown in commands")]
+    [SlashCommand("RemoveGIF", "Removes a GIF URL from the blacklist to be shown in commands", false)]
     [SlashRequireOwner]
     public async Task RemoveBlacklistGif(ic c, [Option("URL", "URL of GIF you want to remove from blacklist", true)] string url) 
         => await BlacklistedNekosLifeGifs.RemoveBlacklist(c, url);
     
-    [SlashCommand("UserFromPatCommand", "Blacklists a user from the pat command")]
+    [SlashCommand("UserFromPatCommand", "Blacklists a user from the pat command", false)]
     [SlashRequireOwner]
     public async Task BlacklistUserFromPatCommand(ic c, 
         [Option("UserId", "Looks for User ID", true)] string mentionedUser,
@@ -234,14 +240,14 @@ public class BlacklistCommands : ApplicationCommandModule {
         await c.CreateResponseAsync("User is no longer blacklisted from the pat command.");
     }
 
-    [SlashCommand("AddGuild", "Adds a guild to the blacklist")]
+    [SlashCommand("AddGuild", "Adds a guild to the blacklist", false)]
     [SlashRequireOwner]
     public async Task AddGuildToBlacklist(ic c,
         [Option("GuildId", "Guild ID to add to blacklist", true)] string guildId,
         [Option("Commands", "List the commands to block (separate by comma)", true)] string commands) 
         => await BlacklistedCmdsGuilds.AddBlacklist(c, guildId, commands);
     
-    [SlashCommand("RemoveGuild", "Removes a guild from the blacklist")]
+    [SlashCommand("RemoveGuild", "Removes a guild from the blacklist", false)]
     [SlashRequireOwner]
     public async Task RemoveGuildFromBlacklist(ic c,
         [Option("GuildId", "Guild ID to remove from blacklist", true)] string guildId) 
