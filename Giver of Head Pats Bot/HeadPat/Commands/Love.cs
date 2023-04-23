@@ -65,32 +65,36 @@ public class LoveSlash : ApplicationCommandModule {
             await Task.Delay(300);
         }
 
-        var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
+        var e = new DiscordEmbedBuilder();
         
         var num = new Random().Next(0, 3);
         var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
         
         var special = num == 3 ? 2 : 1;
+
+        if (Vars.EnableGifs) {
+            var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
         
-        start:
-        var image = neko?.Result.ImageUrl;
-        if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
-            Logger.Log("Hit a blacklisted GIF URL");
-            goto start;
+            start:
+            var image = neko?.Result.ImageUrl;
+            if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
+                Logger.Log("Hit a blacklisted GIF URL");
+                goto start;
+            }
+        
+            if (image!.Equals(_tempPatGifUrl)) {
+                Logger.Log("Image is same as previous image");
+                goto start;
+            }
+
+            _tempPatGifUrl = image;
+            
+            e.WithTitle(outputs[num]);
+            e.WithImageUrl(image);
+            e.WithFooter("Powered by nekos.life");
         }
         
-        if (image!.Equals(_tempPatGifUrl)) {
-            Logger.Log("Image is same as previous image");
-            goto start;
-        }
-
-        _tempPatGifUrl = image;
-
-        var e = new DiscordEmbedBuilder();
-        e.WithTitle(outputs[num]);
-        e.WithImageUrl(image);
         e.WithColor(Colors.HexToColor("ffff00"));
-        e.WithFooter("Powered by nekos.life");
         e.WithDescription(gaveToBot ? $"Gave headpats to {c.TargetUser.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {c.TargetUser.Mention}");
         UserControl.AddPatToUser(c.TargetUser.Id, special, true, c.Guild.Id);
         await c.CreateResponseAsync(e.Build());
@@ -225,13 +229,34 @@ public class LoveSlash : ApplicationCommandModule {
                  gaveToBot = true;
                  await Task.Delay(300);
              }
-
-             var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
-
+             
+             var e = new DiscordEmbedBuilder();
              var num = new Random().Next(0, 3);
              var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
 
              var special = num == 3 ? 2 : 1;
+             
+             e.WithTitle(outputs[num]);
+             if (!Vars.EnableGifs) {
+                 var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
+                 start:
+                 var image = neko?.Result.ImageUrl;
+                 if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
+                     Logger.Log("Hit a blacklisted GIF URL");
+                     goto start;
+                 }
+             
+                 if (image!.Equals(_tempPatGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempPatGifUrl = image;
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by nekos.life");
+             }
+
+             
              var doingTheEllySpecial = false;
              
              switch (canUseParams) {
@@ -256,25 +281,7 @@ public class LoveSlash : ApplicationCommandModule {
                      return;
              }
 
-             start:
-             var image = neko?.Result.ImageUrl;
-             if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
-                 Logger.Log("Hit a blacklisted GIF URL");
-                 goto start;
-             }
-             
-             if (image!.Equals(_tempPatGifUrl)) {
-                 Logger.Log("Image is same as previous image");
-                 goto start;
-             }
-
-             _tempPatGifUrl = image;
-
-             var e = new DiscordEmbedBuilder();
-             e.WithTitle(outputs[num]);
-             e.WithImageUrl(image);
              e.WithColor(Colors.HexToColor("ffff00"));
-             e.WithFooter("Powered by nekos.life");
              if (doingTheEllySpecial)
                  e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave **{special}** headpats to {user.Mention}");
              else 
@@ -305,34 +312,38 @@ public class LoveSlash : ApplicationCommandModule {
                  await c.CreateResponseAsync("You cannot give bots hugs.", true);
                  return;
              }
-
-             var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Hug() : Program.NekoClient?.Action_v3.HugGif();
-
+             
+             var e = new DiscordEmbedBuilder();
              var num = new Random().Next(0, 3);
              var outputs = new[] { "_huggies_", "_huggle_", "_hugs_", "_ultra hugs_" };
-
-             start:
-             var image = neko?.Result.ImageUrl;
-             if (image == null) {
-                 Logger.Log("Image is null, restarting to get new image");
-                 goto start;
-             }
-             if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
-                 Logger.Log("Hit a blacklisted GIF URL");
-                 goto start;
-             }
-             if (image!.Equals(_tempHugGifUrl)) {
-                 Logger.Log("Image is same as previous image");
-                 goto start;
-             }
-
-             _tempHugGifUrl = image;
-
-             var e = new DiscordEmbedBuilder();
+             
              e.WithTitle(outputs[num]);
-             e.WithImageUrl(image);
+             
+             if (!Vars.EnableGifs) {
+                 var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Hug() : Program.NekoClient?.Action_v3.HugGif();
+                 
+                 start:
+                 var image = neko?.Result.ImageUrl;
+                 if (image == null) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
+                     Logger.Log("Hit a blacklisted GIF URL");
+                     goto start;
+                 }
+                 if (image!.Equals(_tempHugGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempHugGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by nekos.life");
+             }
+             
              e.WithColor(Colors.HexToColor("6F41B6"));
-             e.WithFooter("Powered by nekos.life");
              e.WithDescription($"{c.User.Mention} gave a hug to {user.Mention}");
              await c.CreateResponseAsync(e.Build());
          }
@@ -358,30 +369,33 @@ public class LoveSlash : ApplicationCommandModule {
                  await c.CreateResponseAsync("You cannot give bots cuddles.", true);
                  return;
              }
-
-             var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Cuddle() : Program.NekoClient?.Action_v3.CuddleGif();
-        
-             var num = new Random().Next(0, 4);
-             var outputs = new[] { "_snuggies_", "_snuggles_", "_snugs_", "_cuddles_", "_ultra cuddles_" };
-        
-             start:
-             var image = neko?.Result.ImageUrl;
-             if (image == null) {
-                 Logger.Log("Image is null, restarting to get new image");
-                 goto start;
-             }
-             if (image.Equals(_tempCuddleGifUrl)) {
-                 Logger.Log("Image is same as previous image");
-                 goto start;
-             }
-
-             _tempCuddleGifUrl = image;
              
              var e = new DiscordEmbedBuilder();
+             var num = new Random().Next(0, 4);
+             var outputs = new[] { "_snuggies_", "_snuggles_", "_snugs_", "_cuddles_", "_ultra cuddles_" };
+             
              e.WithTitle(outputs[num]);
-             e.WithImageUrl(image);
+             
+             if (Vars.EnableGifs) {
+                 var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Cuddle() : Program.NekoClient?.Action_v3.CuddleGif();
+                 start:
+                 var image = neko?.Result.ImageUrl;
+                 if (image == null) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempCuddleGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempCuddleGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by nekos.life");
+             }
+             
              e.WithColor(Colors.HexToColor("3498DB"));
-             e.WithFooter("Powered by nekos.life");
              e.WithDescription($"{c.User.Mention} gave cuddles to {user.Mention}");
              await c.CreateResponseAsync(e.Build());
          }
@@ -407,31 +421,34 @@ public class LoveSlash : ApplicationCommandModule {
                  await c.CreateResponseAsync("You cannot give bots kisses.", true);
                  return;
              }
-
-             var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Kiss() : Program.NekoClient?.Action_v3.KissGif();
-
+             
+             var e = new DiscordEmbedBuilder();
              var num = new Random().Next(0, 4);
              var outputs = new[] { "_kisses_", "_kissies_", "_kissies_", "_kisses_", "_ultra kisses_" };
-
-             start:
-             var image = neko?.Result.ImageUrl;
-             if (image == null) {
-                 Logger.Log("Image is null, restarting to get new image");
-                 goto start;
-             }
-
-             if (image.Equals(_tempKissGifUrl)) {
-                 Logger.Log("Image is same as previous image");
-                 goto start;
-             }
-
-             _tempKissGifUrl = image;
-
-             var e = new DiscordEmbedBuilder();
+             
              e.WithTitle(outputs[num]);
-             e.WithImageUrl(image);
+             
+             if (Vars.EnableGifs) {
+                 var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Kiss() : Program.NekoClient?.Action_v3.KissGif();
+                 start:
+                 var image = neko?.Result.ImageUrl;
+                 if (image == null) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+
+                 if (image.Equals(_tempKissGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempKissGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by nekos.life");
+             }
+             
              e.WithColor(Colors.HexToColor("F771A3"));
-             e.WithFooter("Powered by nekos.life");
              e.WithDescription($"{c.User.Mention} gave kisses to {user.Mention}");
              await c.CreateResponseAsync(e.Build());
          }
@@ -479,9 +496,11 @@ public class LoveSlash : ApplicationCommandModule {
 
              var e = new DiscordEmbedBuilder();
              e.WithTitle(outputs[num]);
-             e.WithImageUrl(image);
+             if (Vars.EnableGifs) {
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by nekos.life");
+             }
              e.WithColor(Colors.HexToColor("E74C3C"));
-             e.WithFooter("Powered by nekos.life");
              e.WithDescription($"{c.User.Mention} slapped {user.Mention}");
              await c.CreateResponseAsync(e.Build());
          }
@@ -507,31 +526,33 @@ public class LoveSlash : ApplicationCommandModule {
                  await c.CreateResponseAsync("You cannot poke bots.", true);
                  return;
              }
-
-             var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Poke() : Program.NekoClient?.Action_v3.PokeGif();
-
+             
+             var e = new DiscordEmbedBuilder();
              var num = new Random().Next(0, 4);
              var outputs = new[] { "_pokes_", "_pokes_", "_pokes_", "_pokes_", "_ultra pokes_" };
-
-             start:
-             var image = neko?.Result.ImageUrl;
-             if (image == null) {
-                 Logger.Log("Image is null, restarting to get new image");
-                 goto start;
-             }
-
-             if (image.Equals(_tempPokeGifUrl)) {
-                 Logger.Log("Image is same as previous image");
-                 goto start;
-             }
-
-             _tempPokeGifUrl = image;
-
-             var e = new DiscordEmbedBuilder();
+             
              e.WithTitle(outputs[num]);
-             e.WithImageUrl(image);
+             
+             if (Vars.EnableGifs) {
+                 var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Poke() : Program.NekoClient?.Action_v3.PokeGif();
+                 start:
+                 var image = neko?.Result.ImageUrl;
+                 if (image == null) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+
+                 if (image.Equals(_tempPokeGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempPokeGifUrl = image;
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by nekos.life");
+             }
+             
              e.WithColor(Colors.HexToColor("0E4730"));
-             e.WithFooter("Powered by nekos.life");
              e.WithDescription($"{c.User.Mention} poked {user.Mention}");
              await c.CreateResponseAsync(e.Build());
          }

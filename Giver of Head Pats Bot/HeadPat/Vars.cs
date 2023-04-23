@@ -25,4 +25,5 @@ public static class Vars {
 
     public static readonly Config Config = Configuration.TheConfig;
     public static Process? ThisProcess { get; set; }
+    public static bool EnableGifs { get; set; }
 }
