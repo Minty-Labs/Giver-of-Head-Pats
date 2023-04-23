@@ -26,6 +26,7 @@ public class Config {
     [JsonProperty("Unsplash Access Key")] public string? UnsplashAccessKey { get; set; }
     
     [JsonProperty("Unsplash Secret Key")] public string? UnsplashSecretKey { get; set; }
+    [JsonProperty("CookieClientAPI Key")] public string? CookieClientApiKey { get; set; }
     
     [JsonProperty("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; set; }
     
@@ -71,6 +72,7 @@ public static class Configuration {
             DmResponseCategoryId = 0,
             UnsplashAccessKey = "",
             UnsplashSecretKey = "",
+            CookieClientApiKey = "",
             FullBlacklistOfGuilds = new List<ulong> { 0 }
             // EnableRotation = false,
             // RotatingStatuses = new List<RotatingStatus> { rS1, rS2 }

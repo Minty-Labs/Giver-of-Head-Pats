@@ -11,7 +11,7 @@ namespace HeadPats.Commands;
 
 public class LoveSlash : ApplicationCommandModule {
     
-    private static string _tempPatGifUrl, _tempHugGifUrl, _tempSlapGifUrl, _tempCuddleGifUrl, _tempPokeGifUrl, _tempKissGifUrl;
+    private static string _tempPatGifUrl, _tempHugGifUrl, _tempSlapGifUrl, _tempCookieGifUrl, _tempPokeGifUrl, _tempKissGifUrl;
 
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
     public async Task Hug(ContextMenuContext ctx) {
@@ -24,84 +24,8 @@ public class LoveSlash : ApplicationCommandModule {
         else 
             await ctx.CreateResponseAsync($"{author.ReplaceTheNames()} hugged {target.ReplaceTheNamesWithTags()}!");
     }
-    
+
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
-    public async Task Pat(ContextMenuContext c) {
-        await using var db = new Context();
-        var checkGuild = db.Guilds.AsQueryable()
-            .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
-        
-        var checkUser = db.Users.AsQueryable()
-            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
-
-        var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
-
-        if (isRoleBlackListed) {
-            await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
-            return;
-        }
-        
-        var isUserBlackListed = checkUser!.IsUserBlacklisted == 1;
-        
-        if (isUserBlackListed) {
-            await c.CreateResponseAsync("You are not allowed to use this command. This was set by a bot developer.", true);
-            return;
-        }
-        
-        if (c.TargetUser.Id == c.User.Id) {
-            await c.CreateResponseAsync("You cannot give yourself headpats.", true);
-            return;
-        }
-
-        if (c.TargetUser.IsBot) {
-            await c.CreateResponseAsync("You cannot give bots headpats.", true);
-            return;
-        }
-
-        var gaveToBot = false;
-        if (c.TargetUser.Id == Vars.ClientId) {
-            await c.CreateResponseAsync("How dare you give me headpats! No, have some of your own~");
-            gaveToBot = true;
-            await Task.Delay(300);
-        }
-
-        var e = new DiscordEmbedBuilder();
-        
-        var num = new Random().Next(0, 3);
-        var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
-        
-        var special = num == 3 ? 2 : 1;
-
-        if (Vars.EnableGifs) {
-            var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
-        
-            start:
-            var image = neko?.Result.ImageUrl;
-            if (BlacklistedNekosLifeGifs.BlacklistedGifs.Urls!.Any(i => i.Equals(image!))) {
-                Logger.Log("Hit a blacklisted GIF URL");
-                goto start;
-            }
-        
-            if (image!.Equals(_tempPatGifUrl)) {
-                Logger.Log("Image is same as previous image");
-                goto start;
-            }
-
-            _tempPatGifUrl = image;
-            
-            e.WithTitle(outputs[num]);
-            e.WithImageUrl(image);
-            e.WithFooter("Powered by nekos.life");
-        }
-        
-        e.WithColor(Colors.HexToColor("ffff00"));
-        e.WithDescription(gaveToBot ? $"Gave headpats to {c.TargetUser.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {c.TargetUser.Mention}");
-        UserControl.AddPatToUser(c.TargetUser.Id, special, true, c.Guild.Id);
-        await c.CreateResponseAsync(e.Build());
-        Logger.Log($"Total Pat amount Given: {special}");
-    }
-
-    [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat (No Embed)")]
     public async Task PatInline(ContextMenuContext c) {
         await using var db = new Context();
         var checkGuild = db.Guilds.AsQueryable()
@@ -237,7 +161,7 @@ public class LoveSlash : ApplicationCommandModule {
              var special = num == 3 ? 2 : 1;
              
              e.WithTitle(outputs[num]);
-             if (!Vars.EnableGifs) {
+             /*if (!Vars.EnableGifs) {
                  var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Pat() : Program.NekoClient?.Action_v3.PatGif();
                  start:
                  var image = neko?.Result.ImageUrl;
@@ -254,9 +178,9 @@ public class LoveSlash : ApplicationCommandModule {
                  _tempPatGifUrl = image;
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by nekos.life");
-             }
+             }*/
+             // TODO: Add embed image from new CookieAPI once it is done
 
-             
              var doingTheEllySpecial = false;
              
              switch (canUseParams) {
@@ -319,7 +243,7 @@ public class LoveSlash : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (!Vars.EnableGifs) {
+             /*if (!Vars.EnableGifs) {
                  var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Hug() : Program.NekoClient?.Action_v3.HugGif();
                  
                  start:
@@ -341,6 +265,23 @@ public class LoveSlash : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by nekos.life");
+             }*/
+             if (Vars.EnableGifs) {
+                 start:
+                 var image = Program.CookieClient!.GetHug();
+                 if (string.IsNullOrWhiteSpace(image)) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempHugGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempHugGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by CookieAPI");
              }
              
              e.WithColor(Colors.HexToColor("6F41B6"));
@@ -376,7 +317,7 @@ public class LoveSlash : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             /*if (Vars.EnableGifs) {
                  var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Cuddle() : Program.NekoClient?.Action_v3.CuddleGif();
                  start:
                  var image = neko?.Result.ImageUrl;
@@ -393,6 +334,23 @@ public class LoveSlash : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by nekos.life");
+             }*/
+             if (Vars.EnableGifs) {
+                 start:
+                 var image = Program.CookieClient!.GetHug();
+                 if (string.IsNullOrWhiteSpace(image)) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempHugGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempHugGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by CookieAPI");
              }
              
              e.WithColor(Colors.HexToColor("3498DB"));
@@ -428,7 +386,7 @@ public class LoveSlash : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             /*if (Vars.EnableGifs) {
                  var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Kiss() : Program.NekoClient?.Action_v3.KissGif();
                  start:
                  var image = neko?.Result.ImageUrl;
@@ -446,6 +404,23 @@ public class LoveSlash : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by nekos.life");
+             }*/
+             if (Vars.EnableGifs) {
+                 start:
+                 var image = Program.CookieClient!.GetKiss();
+                 if (string.IsNullOrWhiteSpace(image)) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempKissGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempKissGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by CookieAPI");
              }
              
              e.WithColor(Colors.HexToColor("F771A3"));
@@ -474,11 +449,13 @@ public class LoveSlash : ApplicationCommandModule {
                  await c.CreateResponseAsync("You cannot slap bots.", true);
                  return;
              }
-
-             var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Slap() : Program.NekoClient?.Action_v3.SlapGif();
-
+             
+             var e = new DiscordEmbedBuilder();
              var num = new Random().Next(0, 4);
              var outputs = new[] { "_slaps_", "_slaps_", "_slaps_", "_slaps_", "_ultra slaps_" };
+             e.WithTitle(outputs[num]);
+
+             /*var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Slap() : Program.NekoClient?.Action_v3.SlapGif();
 
              start:
              var image = neko?.Result.ImageUrl;
@@ -492,14 +469,26 @@ public class LoveSlash : ApplicationCommandModule {
                  goto start;
              }
 
-             _tempSlapGifUrl = image;
+             _tempSlapGifUrl = image;*/
 
-             var e = new DiscordEmbedBuilder();
-             e.WithTitle(outputs[num]);
              if (Vars.EnableGifs) {
+                 start:
+                 var image = Program.CookieClient!.GetSlap();
+                 if (string.IsNullOrWhiteSpace(image)) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempSlapGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempSlapGifUrl = image;
+                 
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by nekos.life");
+                 e.WithFooter("Powered by CookieAPI");
              }
+
              e.WithColor(Colors.HexToColor("E74C3C"));
              e.WithDescription($"{c.User.Mention} slapped {user.Mention}");
              await c.CreateResponseAsync(e.Build());
@@ -533,7 +522,7 @@ public class LoveSlash : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             /*if (Vars.EnableGifs) {
                  var neko = new Random().Next(0, 1) == 0 ? Program.NekoClient?.Action.Poke() : Program.NekoClient?.Action_v3.PokeGif();
                  start:
                  var image = neko?.Result.ImageUrl;
@@ -550,6 +539,23 @@ public class LoveSlash : ApplicationCommandModule {
                  _tempPokeGifUrl = image;
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by nekos.life");
+             }*/
+             if (Vars.EnableGifs) {
+                 start:
+                 var image = Program.CookieClient!.GetPoke();
+                 if (string.IsNullOrWhiteSpace(image)) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempPokeGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempPokeGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by CookieAPI");
              }
              
              e.WithColor(Colors.HexToColor("0E4730"));
@@ -572,13 +578,42 @@ public class LoveSlash : ApplicationCommandModule {
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You requested a cookie, so here you go!");
                  UserControl.AddCookieToUser(c.User.Id, 1);
-             } else if (user.IsBot || user.Id == Vars.ClientId) {
+                 return;
+             }
+             if (user.IsBot || user.Id == Vars.ClientId) {
                  await c.CreateResponseAsync("I cannot do anything with a cookie, so here, you have it!");
                  UserControl.AddCookieToUser(c.User.Id, 1);
-             } else {
-                 await c.CreateResponseAsync($"{c.User.Mention} gave {user.Mention} a cookie.");
-                 UserControl.AddCookieToUser(user.Id, 1);
+                 return;
              }
+             
+             var e = new DiscordEmbedBuilder();
+             var num = new Random().Next(0, 2);
+             var outputs = new[] { "C O O K I E S", "Cookies!", "nom nom" };
+             
+             e.WithTitle(outputs[num]);
+
+             if (Vars.EnableGifs) {
+                 start:
+                 var image = Program.CookieClient!.GetCookie();
+                 if (string.IsNullOrWhiteSpace(image)) {
+                     Logger.Log("Image is null, restarting to get new image");
+                     goto start;
+                 }
+                 if (image.Equals(_tempCookieGifUrl)) {
+                     Logger.Log("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempCookieGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by CookieAPI");
+             }
+             
+             e.WithColor(Colors.HexToColor("825540"));
+             e.WithDescription($"{c.User.Mention} gave a cookie to {user.Mention}");
+             await c.CreateResponseAsync(e.Build());
+             UserControl.AddCookieToUser(user.Id, 1);
          }
      }
 }

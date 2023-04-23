@@ -6,6 +6,7 @@ using System.Diagnostics;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
+using HeadPats.Cookie;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 // using HeadPats.Data.Modules;
@@ -24,6 +25,7 @@ public sealed class Program {
     public static CommandsNextExtension? Commands { get; set; }
     public static SlashCommandsExtension? Slash { get; set; }
     public static NekoClient? NekoClient { get; set; }
+    public static CookieClient? CookieClient { get; set; }
     
     private static void Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
@@ -76,6 +78,7 @@ public sealed class Program {
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
 
         NekoClient = new NekoClient(Vars.Name);
+        CookieClient = new CookieClient(Vars.Config.CookieClientApiKey!);
         
         eventHandler.Complete();
 
