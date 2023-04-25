@@ -1,6 +1,8 @@
-﻿namespace HeadPats.Cookie;
+﻿using System.Text.Json.Serialization;
+
+namespace HeadPats.Cookie;
 
 public class CookieRes {
-    public string? Checksum { get; set; }
-    public string? Path { get; set; }
+    [JsonPropertyName("checksum")] public string? Checksum { get; set; }
+    [JsonPropertyName("path")] public string? Path { get; set; }
 }

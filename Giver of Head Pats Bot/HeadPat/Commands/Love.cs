@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using HeadPats.Cookie;
 using HeadPats.Data;
 using HeadPats.Utils;
 using HeadPats.Data.Models;
@@ -269,10 +270,6 @@ public class LoveSlash : ApplicationCommandModule {
              if (Vars.EnableGifs) {
                  start:
                  var image = Program.CookieClient!.GetHug();
-                 if (string.IsNullOrWhiteSpace(image)) {
-                     Logger.Log("Image is null, restarting to get new image");
-                     goto start;
-                 }
                  if (image.Equals(_tempHugGifUrl)) {
                      Logger.Log("Image is same as previous image");
                      goto start;
@@ -338,10 +335,6 @@ public class LoveSlash : ApplicationCommandModule {
              if (Vars.EnableGifs) {
                  start:
                  var image = Program.CookieClient!.GetHug();
-                 if (string.IsNullOrWhiteSpace(image)) {
-                     Logger.Log("Image is null, restarting to get new image");
-                     goto start;
-                 }
                  if (image.Equals(_tempHugGifUrl)) {
                      Logger.Log("Image is same as previous image");
                      goto start;
@@ -408,10 +401,6 @@ public class LoveSlash : ApplicationCommandModule {
              if (Vars.EnableGifs) {
                  start:
                  var image = Program.CookieClient!.GetKiss();
-                 if (string.IsNullOrWhiteSpace(image)) {
-                     Logger.Log("Image is null, restarting to get new image");
-                     goto start;
-                 }
                  if (image.Equals(_tempKissGifUrl)) {
                      Logger.Log("Image is same as previous image");
                      goto start;
@@ -474,10 +463,6 @@ public class LoveSlash : ApplicationCommandModule {
              if (Vars.EnableGifs) {
                  start:
                  var image = Program.CookieClient!.GetSlap();
-                 if (string.IsNullOrWhiteSpace(image)) {
-                     Logger.Log("Image is null, restarting to get new image");
-                     goto start;
-                 }
                  if (image.Equals(_tempSlapGifUrl)) {
                      Logger.Log("Image is same as previous image");
                      goto start;
@@ -543,10 +528,6 @@ public class LoveSlash : ApplicationCommandModule {
              if (Vars.EnableGifs) {
                  start:
                  var image = Program.CookieClient!.GetPoke();
-                 if (string.IsNullOrWhiteSpace(image)) {
-                     Logger.Log("Image is null, restarting to get new image");
-                     goto start;
-                 }
                  if (image.Equals(_tempPokeGifUrl)) {
                      Logger.Log("Image is same as previous image");
                      goto start;
@@ -595,10 +576,6 @@ public class LoveSlash : ApplicationCommandModule {
              if (Vars.EnableGifs) {
                  start:
                  var image = Program.CookieClient!.GetCookie();
-                 if (string.IsNullOrWhiteSpace(image)) {
-                     Logger.Log("Image is null, restarting to get new image");
-                     goto start;
-                 }
                  if (image.Equals(_tempCookieGifUrl)) {
                      Logger.Log("Image is same as previous image");
                      goto start;

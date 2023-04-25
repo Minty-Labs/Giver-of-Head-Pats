@@ -12,8 +12,9 @@ public class CookieClient {
     private CookieRes MakeRequest(String endpoint) {
         var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Add("authorization", CookieApiKey);
-        var res = httpClient.GetStringAsync(endpoint);
-        var data = JsonSerializer.Deserialize<CookieRes>(res.GetAwaiter().GetResult());
+        var resultString = httpClient.GetStringAsync(endpoint);
+        // Logger.Log("res: " + resultString.GetAwaiter().GetResult());
+        var data = JsonSerializer.Deserialize<CookieRes>(resultString.GetAwaiter().GetResult());
         return data!;
     }
 
