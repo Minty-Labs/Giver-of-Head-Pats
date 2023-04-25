@@ -1,6 +1,8 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using HeadPats.Data;
+using HeadPats.Data.Models;
 using HeadPats.Managers;
 using HeadPats.Utils;
 
@@ -28,6 +30,22 @@ public class OnBotJoinOrLeave {
             em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
+            
+            await using var db = new Context();
+            var checkUser = db.Users.AsQueryable()
+                .Where(u => u.UserId.Equals(e.Guild.Owner.Id)).ToList().FirstOrDefault();
+        
+            if (checkUser is null) {
+                var newUser = new Users {
+                    UserId = e.Guild.Owner.Id,
+                    UsernameWithNumber = $"{e.Guild.Owner.Username}#{e.Guild.Owner.Discriminator}",
+                    PatCount = 0,
+                    CookieCount = 0,
+                    IsUserBlacklisted = 0
+                };
+                Logger.Log("Added user to database from OnJoinGuild");
+                db.Users.Add(newUser);
+            }
         } catch (Exception ex) {
             Logger.SendLog(ex);
         }

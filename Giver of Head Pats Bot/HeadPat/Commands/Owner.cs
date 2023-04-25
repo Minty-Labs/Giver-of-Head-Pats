@@ -56,6 +56,28 @@ public class ClassicOwner : BaseCommandModule {
         Configuration.Save();
         await c.RespondAsync("Set API Key.");
     }
+    [Command("ForceAddUserToDatabase"), Aliases("fautd"), RequireOwner]
+    public async Task ForceAddUserToDatabase(CommandContext c, [RemainingText] string userIdStr) {
+        await using var db = new Context();
+        var userId = ulong.Parse(userIdStr);
+        var discordUser = await c.Client.GetUserAsync(userId);
+        
+        var checkUser = db.Users.AsQueryable()
+            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+        
+        if (checkUser is null) {
+            var newUser = new Users {
+                UserId = discordUser.Id,
+                UsernameWithNumber = $"{discordUser.Username}#{discordUser.Discriminator}",
+                PatCount = 0,
+                CookieCount = 0,
+                IsUserBlacklisted = 0
+            };
+            Logger.Log("Added user to database from a force command");
+            db.Users.Add(newUser);
+            await c.RespondAsync("Done.");
+        }
+    }
 }
 
 public class RequireUserIdAttribute : SlashCheckBaseAttribute {
