@@ -4,6 +4,8 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
+using fluxpoint_sharp;
+using HeadPats.Cookie;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
@@ -52,10 +54,22 @@ public class ClassicOwner : BaseCommandModule {
     
     [Command("SetCookieApiKey"), RequireOwner]
     public async Task SetCookieApiKey(CommandContext c, [Description("API Key")] string apiKey) {
+        await c.Message.DeleteAsync();
         Vars.Config.CookieClientApiKey = apiKey;
         Configuration.Save();
+        Program.CookieClient = new CookieClient(apiKey);
         await c.RespondAsync("Set API Key.");
     }
+    
+    [Command("SetFluxpointApiKey"), RequireOwner]
+    public async Task SetFluxpointApiKey(CommandContext c, [Description("API Key")] string apiKey) {
+        await c.Message.DeleteAsync();
+        Vars.Config.FluxpointApiKey = apiKey;
+        Configuration.Save();
+        Program.FluxpointClient = new FluxpointClient(Vars.Name ?? "Unknown_Discord_Bot", apiKey);
+        await c.RespondAsync("Set API Key.");
+    }
+
     [Command("ForceAddUserToDatabase"), Aliases("fautd"), RequireOwner]
     public async Task ForceAddUserToDatabase(CommandContext c, [RemainingText] string userIdStr) {
         await using var db = new Context();

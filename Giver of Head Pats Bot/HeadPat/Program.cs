@@ -13,7 +13,7 @@ using HeadPats.Data.Models;
 using HeadPats.Handlers.Events;
 using HeadPats.Managers;
 using HeadPats.Utils;
-// using NekosSharp;
+using fluxpoint_sharp;
 using Pastel;
 using TaskScheduler = HeadPats.Managers.TaskScheduler;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
@@ -24,7 +24,7 @@ public sealed class Program {
     public static DiscordClient? Client { get; set; }
     public static CommandsNextExtension? Commands { get; set; }
     public static SlashCommandsExtension? Slash { get; set; }
-    // public static NekoClient? NekoClient { get; set; }
+    public static FluxpointClient? FluxpointClient { get; set; }
     public static CookieClient? CookieClient { get; set; }
     
     private static void Main(string[] args) {
@@ -76,9 +76,12 @@ public sealed class Program {
 
         Client.Ready += Client_Ready;
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
-
-        // NekoClient = new NekoClient(Vars.Name);
-        CookieClient = new CookieClient(Vars.Config.CookieClientApiKey!);
+        
+        if (!string.IsNullOrWhiteSpace(Vars.Config.CookieClientApiKey!))
+            CookieClient = new CookieClient(Vars.Config.CookieClientApiKey!);
+        
+        if (!string.IsNullOrWhiteSpace(Vars.Config.FluxpointApiKey!))
+            FluxpointClient = new FluxpointClient(Vars.Name, Vars.Config.FluxpointApiKey!);
         
         eventHandler.Complete();
 
