@@ -30,8 +30,8 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
         </ul>
     </li>
     <li>Lib.Harmony <i>by pardeike</i> <b>v2.2.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.2</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.2</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.5</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.5</b></li>
     <li>Nekos-Sharp <i>by BuilderB</i> <b>v3.5.0</b></li>
     <li>Newtonsoft.Json <i>by James Newton-King</i> <b>v13.0.2</b></li>
     <li>Pastel <i>by silkfire</i> <b>v4.1.0</b></li>
@@ -40,7 +40,7 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
 
 <h2>Programs & Services Used</h2>
 <ul>
-    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a>
+    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.1.1+
         <ul>
             <li>Rider</li>
             <li>WebStorm</li>
@@ -48,18 +48,18 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
             <li>dotPeek</li>
         </ul>
     </li>
-    <li>SublimeText</li>
-    <li>Photoshop</li>
+    <li>SublimeText - Build 4121</li>
+    <li>Obsidian (Note Editor)</li>
+    <li>Photoshop v23.1.1</li>
     <li>Discord *</li>
     <li>Spotify / Plex(amp) *</li>
     <li>APIs
         <ul>
-            <li><s>Nekos.life [Nekos-Sharp]</s></li>
             <li>RandomFox.ca</li>
             <li>Bunnies.io</li>
-            <li><s>neko-love.xyz</s></li>
             <li>Unsplash</li>
             <li>CookieAPI</li>
+            <li>Fluxpoint</li>
         </ul>
     </li>
 </ul>
@@ -71,70 +71,105 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
 
 <h2>Features</h2>
 <p>Prefix: <code>hp!</code><br> Global Command: <code>help</code> is available. Slash Commands are available.</p>
-<h3>Basic Commands</h3>
+
+<h2>Slash Commands</h2>
+<h3>Basic</h3>
 <ul>
-    <li>About - Shows a message that describes the bot *</li>
-    <li>Support - Sends a DM to invite user to the Support Guild *</li>
-    <li>Invite - Sends a DM to invite the bot to a server *</li>
-    <li>Ping - Shows bot's latency from you <-> discord <-> you</li>
-    <li>Stats - Shows the bot status including server status and bot stats</li>
-    <li>FlipCoin - Flip a coin *</li>
-    <li>InspiroBot - Generates a random inspirational quote created by an AI *</li>
-    <li>Meme - Grabs a random meme image from one of 5 meme subreddits *</li>
-    <li>Fox - Summon a random fox picture *</li>
-    <li>Bunny - Summon a random bunny picture *</li>
-    <li>Neko - Summon a picture or GIF of a SFW neko *</li>
-    <li>Cat - Summon a picture or GIF of a cat *</li>
-    <li>Cry - Summon a picture of GIF of a crying post</li>
-    <li>TopPat - Shows the leaderbord for most headpats *</li>
-    <li>Color - Accepts HEX, RGB, HSV, HSL, and CMYK values, shows the color swatch of a given value *</li>
+    <li>Color</li>
+    <li>Summon
+        <ul>
+            <li>Bunny</li>
+            <li>Fox</li>
+            <li><s>Neko</s></li>
+            <li>Meme</li>
+            <li>InspiroBot</li>
+        </ul>
+    </li>
+    <li>Other
+        <ul>
+            <li>About</li>
+            <li>Support</li>
+            <li>Invite</li>
+            <li>FlipCoin</li>
+        </ul>
+    </li>
+</ul>
+<h3>Contributors</h3>
+<ul>
+    <li>Add (BotOwner)</li>
+    <li>Remove (BotOwner)</li>
+    <li>List</li>
+</ul>
+<h3>Replies</h3>
+<p>(Moderator)</p>
+<ul>
+    <li>Add</li>
+    <li>Remove</li>
+    <li>List</li>
+</ul>
+<h3>User Love</h3>
+<ul>
+    <li>Leaderboards
+        <ul>
+            <li>TopPat</li>
+            <li>(Coming Soon) TopCookie</li>
+        </ul>
+    </li>
+    <li>Love [ <code>/user &lt;action&gt; &lt;@User&gt;</code> ]
+        <ul>
+            <li>Pat</li>
+            <li>Hug</li>
+            <li>Cuddle</li>
+            <li>Kiss</li>
+            <li>Slap</li>
+            <li>Poke</li>
+            <li>Cookie</li>
+        </ul>
+    </li>
 </ul>
 
-```
-    * - Is a /slash command
-```
-
-<h3>Contributor Commands (Slash)</h3>
+<h2>Context Menu Commands</h2>
+<p>
+    These are quick commands that show up when you right-click a user and are under the "Apps" submenu.
+</p>
 <ul>
-    <li>AddContributor - Adds a Contributor to the list *</li>
-    <li>RemoveContributor - Removes a Contributor from the list *</li>
-    <li>ListContributors - Lists the Contributors of the bot</li>
-    <li>AddGIFBlacklist - Adds a GIF URL to a blacklist not to be shown in commands *</li>
-    <li>RemoveGIFBlacklist - Removes a GIF URL from the blacklist to be shown in commands *</li>
+    <li>Hug</li>
+    <li>Pat</li>
 </ul>
 
-```
-    * - Requires Permission: Bot Owner
-```
-
-<h3>Love Commands (Slash)</h3>
+<h2>Legacy Commands</h2>
+<h3>Basic</h3>
 <ul>
-    <li>Pat - Give headpats to a specified user</li>
-    <li><s>Cuddle - Give cuddles to a specified user</s></li>
-    <li>Hug - Give hugs to a specified user</li>
-    <li>Kiss - Give kisses to a specified user</li>
-    <li>Slap - Slap a specified user</li>
-    <li>Lick - Lick a specified user</li>
-    <li>Poke - Poke a specified user</li>
-    <li>Cookie - Give someone a cookie</li>
+    <li>Information
+        <ul>
+            <li>Ping</li>
+            <li>Stats</li>
+        </ul>
+    </li>
+    <li>Salad</li>
 </ul>
-
-<h3>Admin Commands (Slash)</h3>
-
+<h3>Admin</h3>
 <ul>
-    <li>InviteInfo - Gets information about a Discord Invite code or URL *</li>
-    <li>UserInfo - Gets information about a user (With Mentioned User) *</li>
-    <li>UserInfoID - Gets information about a user (With User ID) *</li>
-    <li>BlacklistRoleFromPatCommand - Blacklists a role from the pat command **</li>
-    <li>AddReply - Adds an auto response for the server *</li>
-    <li>RemoveReply - Removes a trigger response by the provided trigger *</li>
-    <li>ListTriggers - Lists the triggers for auto responses</li>
+    <li>BlacklistRoleFromPatCommand - Prevent Roles from using the pat command</li>
 </ul>
-
-```
-    *  - Requires Permission: ManageMessages
-    ** - Requires Permission: ManageRoles
-```
+<h3>Owner</h3>
+<ul>
+    <li>Blacklist Control</li>
+    <li>Bot Control
+        <ul>
+            <li>List Guilds</li>
+            <li>Leave Guild</li>
+        </ul>
+    </li>
+    <li>Configuration Control</li>
+    <li>User Control
+        <ul>
+            <li>MultiKick</li>
+            <li>ForceAddUserToDatabase</li>
+            <li>GetUserPresence</li>
+        </ul>
+    </li>
+</ul>
 
 <h2>Developers</h2>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/7/avatar.png" height="35px" align=center /> &nbsp;
