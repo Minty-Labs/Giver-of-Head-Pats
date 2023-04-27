@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using HeadPats.Managers;
 using Newtonsoft.Json;
 
 namespace HeadPats.Data;
@@ -45,6 +46,17 @@ public class BlacklistedNekosLifeGifs {
         Save();
     }
     
+    public static async Task AddBlacklist(DSharpPlus.CommandsNext.CommandContext cc, string url) {
+        if (BlacklistedGifs.Urls!.Any(c => c.Contains(url))) {
+            await cc.RespondAsync("URL is already blacklisted.").DeleteAfter(3);
+            return;
+        }
+
+        BlacklistedGifs.Urls!.Add(url);
+        //await cc.RespondAsync($"Added URL to the blacklist: `{url}`");
+        Save();
+    }
+    
     public static async Task RemoveBlacklist(DSharpPlus.SlashCommands.InteractionContext cc, string url) {
         if (BlacklistedGifs.Urls!.Any(c => !c.Contains(url))) {
             await cc.CreateResponseAsync("URL is not blacklisted.", true);
@@ -53,6 +65,17 @@ public class BlacklistedNekosLifeGifs {
 
         BlacklistedGifs.Urls!.Remove(url);
         await cc.CreateResponseAsync($"Removed URL from the blacklist `{url}`");
+        Save();
+    }
+    
+    public static async Task RemoveBlacklist(DSharpPlus.CommandsNext.CommandContext cc, string url) {
+        if (BlacklistedGifs.Urls!.Any(c => !c.Contains(url))) {
+            await cc.RespondAsync("URL is not blacklisted.").DeleteAfter(3);
+            return;
+        }
+
+        BlacklistedGifs.Urls!.Remove(url);
+        //await cc.RespondAsync($"Removed URL from the blacklist `{url}`");
         Save();
     }
 }

@@ -2,16 +2,14 @@
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Utils;
-using cc = DSharpPlus.CommandsNext.CommandContext;
 using ColorConverter = ColorHelper.ColorConverter;
-using ic = DSharpPlus.SlashCommands.InteractionContext;
 
-namespace HeadPats.Commands; 
+namespace HeadPats.Commands.Slash.Basic; 
 
-public class UtilityOrRandom : ApplicationCommandModule {
+public class Color : ApplicationCommandModule {
 
     [SlashCommand("Color", "Shows you the color from the given input")]
-    public async Task GiveColor(ic c,
+    public async Task GiveColor(InteractionContext c,
         [Choice("HEX", "hex")]
         [Choice("RGB", "rgb")]
         [Choice("CMYK", "cmyk")]

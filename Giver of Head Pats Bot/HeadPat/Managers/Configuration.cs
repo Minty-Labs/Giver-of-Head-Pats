@@ -31,6 +31,8 @@ public class Config {
     
     [JsonProperty("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; set; }
     
+    [JsonProperty("API Media URL Blacklist")] public List<string>? ApiMediaUrlBlacklist { get; set; }
+    
     /*[JsonProperty("EnableRotation")] public bool EnableRotation;
      
     [JsonProperty("RotatingStatuses")] public List<RotatingStatus>? RotatingStatuses;
@@ -75,7 +77,8 @@ public static class Configuration {
             UnsplashSecretKey = "",
             CookieClientApiKey = "",
             FluxpointApiKey = "",
-            FullBlacklistOfGuilds = new List<ulong> { 0 }
+            FullBlacklistOfGuilds = new List<ulong> { 0 },
+            ApiMediaUrlBlacklist = new List<string> { "https://your.mom.gay/requis.png" } // this isnt real lmao
             // EnableRotation = false,
             // RotatingStatuses = new List<RotatingStatus> { rS1, rS2 }
         };

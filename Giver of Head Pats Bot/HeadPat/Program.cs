@@ -14,6 +14,9 @@ using HeadPats.Handlers.Events;
 using HeadPats.Managers;
 using HeadPats.Utils;
 using fluxpoint_sharp;
+using HeadPats.Commands.ContextMenu;
+using HeadPats.Commands.Legacy;
+using HeadPats.Commands.Slash;
 using Pastel;
 using TaskScheduler = HeadPats.Managers.TaskScheduler;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
@@ -66,12 +69,13 @@ public sealed class Program {
         Slash = Client.UseSlashCommands();
         
         Commands.SetHelpFormatter<HelpFormatter>();
-
-        Managers.Commands.Register(Commands);
+        
+        LegacyCommandHandler.Register(Commands);
         Commands.CommandExecuted += Commands_CommandExecuted;
         Commands.CommandErrored += Commands_CommandErrored;
 
-        Managers.Commands.Register(Slash);
+        SlashCommandHandler.Register(Slash);
+        ContextMenuHandler.Register(Slash);
         Slash.SlashCommandErrored += Slash_SlashCommandErrored;
 
         Client.Ready += Client_Ready;
