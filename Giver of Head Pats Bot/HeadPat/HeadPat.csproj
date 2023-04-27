@@ -24,8 +24,8 @@
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.4.0" />
     <PackageReference Include="fluxpoint-sharp" Version="3.0.1" />
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pastel" Version="4.1.0" />
   </ItemGroup>
@@ -37,13 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\ContextMenu\User\" />
-    <Folder Include="Commands\Legacy\Basic\" />
-    <Folder Include="Commands\Slash\Admin\" />
-    <Folder Include="Commands\Slash\Basic\" />
-    <Folder Include="Commands\Slash\Contributors\" />
-    <Folder Include="Commands\Slash\Reply\" />
-    <Folder Include="Commands\Slash\UserLove\" />
     <Folder Include="Data\Modules" />
   </ItemGroup>
 
