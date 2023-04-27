@@ -116,6 +116,7 @@ public sealed class Program {
         await Client.ConnectAsync();
 
         await Task.Delay(-1);
+        Logger.Stop();
     }
     
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;

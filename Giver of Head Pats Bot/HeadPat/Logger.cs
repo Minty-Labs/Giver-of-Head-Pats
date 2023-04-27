@@ -58,7 +58,7 @@ internal static class Logger {
         Program.Client?.SendMessageAsync(Program.GeneralLogChannel, e.Build()).GetAwaiter().GetResult();
     }
     
-    private static void Stop() => _log?.Close();
+    public static void Stop() => _log?.Close();
 
     private static string GetTimestamp() => DateTime.Now.ToString("HH:mm:ss.fff");
     
@@ -66,8 +66,6 @@ internal static class Logger {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > {message}");
         _log?.WriteLine($"[{GetTimestamp()}] HeadPat > {message}");
     }
-
-    public static void Log() => Console.WriteLine();
 
     public static void Error(object @object) {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + $" > {@object}".Pastel("ff0000"));
@@ -99,11 +97,6 @@ internal static class Logger {
                           $"{username}".Pastel("EECCE0") + "] in guild [" + $"{guild}".Pastel("91D7FD") + "] \n" + $"{exception}".Pastel("CF284D"));
         _log?.WriteLine($"[{GetTimestamp()}] [CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] \n {exception}");
         SendLog(@$"[CMDERROR] HeadPat > {(isSlashCmd ? "Slash" : "")}Command [{cmd}] was executed by [{username}] in guild [{guild}] StackTrace ```{exception}```");
-    }
-        
-    public static void LoadModule(string message) {
-        Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " HeadPat".Pastel("47c687") + " > Loading " + $"{message}".Pastel("FFC366") + " Module");
-        _log?.WriteLine($"[{GetTimestamp()}] [LOAD] HeadPat > {message}");
     }
         
     public static void WriteSeparator(string pastelHexTextColor = "ffffff") {
@@ -164,11 +157,6 @@ internal static class Logger {
         Console.WriteLine($"[{GetTimestamp()}]".Pastel("00F8FF") + " SOCKET   ".Pastel("#ff9f9f") + $" > {e.Exception}".Pastel("ff0000"));
         await _log?.WriteLineAsync($"[{GetTimestamp()}] SOCKET    > {e.Exception}")!;
         IsInErrorState = true;
-        // if (e.Exception.ToString().Contains("Could not connect to Discord") || e.Exception.ToString().Contains("No such host is known.")) {
-        //     Stop();
-        //     Process.Start("HeadPatDS.exe");
-        //     Process.GetCurrentProcess().Kill();
-        // }
     }
     
     private static async Task DiscordClientOnSocketErrored(DiscordClient sender, ClientErrorEventArgs e) {

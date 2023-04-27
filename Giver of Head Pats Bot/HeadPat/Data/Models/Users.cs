@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace HeadPats.Data.Models; 
 
@@ -11,7 +12,7 @@ public class Users {
 }
 
 public static class UserControl {
-    public static void AddPatToUser(ulong userId, int numberOfPats, bool addToGuild = false, ulong guildToAddPatTo = 0) {
+    public static void AddPatToUser(ulong userId, int numberOfPats, bool addToGuild = true, ulong guildToAddPatTo = 0) {
         using var db = new Context();
         var checkUser = db.Users.AsQueryable()
             .Where(u => u.UserId.Equals(userId)).ToList().FirstOrDefault();
