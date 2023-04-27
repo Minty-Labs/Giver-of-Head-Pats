@@ -32,8 +32,22 @@ public class OnBotJoinOrLeave {
             await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
             
             await using var db = new Context();
+            
+            var checkGuild = db.Guilds.AsQueryable()
+                .Where(u => u.GuildId.Equals(e.Guild.Id)).ToList().FirstOrDefault();
+            
             var checkUser = db.Users.AsQueryable()
                 .Where(u => u.UserId.Equals(e.Guild.Owner.Id)).ToList().FirstOrDefault();
+
+            if (checkGuild is null) {
+                var newGuild = new Guilds {
+                    GuildId = e.Guild.Id,
+                    HeadPatBlacklistedRoleId = 0,
+                    PatCount = 0
+                };
+                Logger.Log("Added guild to database from OnJoinGuild");
+                db.Guilds.Add(newGuild);
+            }
         
             if (checkUser is null) {
                 var newUser = new Users {
@@ -46,6 +60,8 @@ public class OnBotJoinOrLeave {
                 Logger.Log("Added user to database from OnJoinGuild");
                 db.Users.Add(newUser);
             }
+            
+            await db.SaveChangesAsync();
         } catch (Exception ex) {
             Logger.SendLog(ex);
         }
