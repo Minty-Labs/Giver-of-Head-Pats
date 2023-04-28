@@ -12,15 +12,16 @@ public class FunnyCommands : BaseCommandModule {
     [Command("nsfw"), Description("NSFW Commands"), RequireNsfw, CanUseNsfwCommands, Hidden]
     public async Task Nsfw(CommandContext ctx, 
         [Description("Media Type (Image or GIF)")] string mediaType,
-        [Description("Content Type / Endpoint (Do hp!nsfw <media> list)")] string contentType = "kitsune") {
+        [Description("Content Type / Endpoint (Do hp!nsfw <media> list)")] string contentType = "list") {
 
         if (!ctx.Channel.IsNSFW) {
             await ctx.RespondAsync("You cannot run NSFW commands in a non-NSFW channel.").DeleteAfter(5);
             return;
         }
         
-        if (string.IsNullOrWhiteSpace(mediaType) || mediaType.ToLower() is not "image" || mediaType.ToLower() is not "gif") {
-            await ctx.RespondAsync("Please specify a valid media type [`image` or `gif`]");
+        if (string.IsNullOrWhiteSpace(mediaType)) {
+            await ctx.RespondAsync("Please specify a valid media type [`image` or `gif`]\n" +
+                                   "If you are looking for a list of endpoints, please do `hp!nsfw <media> list`; media being `image` or `gif`.");
             return;
         }
 
@@ -42,7 +43,6 @@ public class FunnyCommands : BaseCommandModule {
             }
         }
 
-        var flux = Program.FluxpointClient;
         if (string.IsNullOrWhiteSpace(Vars.Config.FluxpointApiKey!)) {
             await ctx.RespondAsync("The bot owner has not setup access to the API for this command; therefore, this command will not continue.");
             return;
@@ -68,7 +68,7 @@ public class FunnyCommands : BaseCommandModule {
 
         var embed = new DiscordEmbedBuilder {
             Title = contentType,
-            ImageUrl = await NsfwExtensions.GetImageUrlFromMediaType(mediaType, contentType, flux!),
+            ImageUrl = await NsfwExtensions.GetImageUrlFromMediaType(mediaType, contentType, Program.FluxpointClient!),
             Footer = new DiscordEmbedBuilder.EmbedFooter {
                 Text = "Powered by Fluxpoint API"
             }
