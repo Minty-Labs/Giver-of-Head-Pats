@@ -50,4 +50,10 @@ public class BotControl : BaseCommandModule  {
         await c.RespondAsync($"Left the server: {guild.Name}");
     }
     
+    [Command("SwapApis"), Description("Swaps the API used for image commands"), RequireOwner]
+    public async Task SwapApis(CommandContext c) {
+        Vars.UseCookieApi = !Vars.UseCookieApi;
+        await c.RespondAsync($"API changed to: {(Vars.UseCookieApi ? "Cookie" : "Fluxpoint")}");
+    }
+    
 }
