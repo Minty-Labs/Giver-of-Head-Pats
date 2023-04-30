@@ -2,6 +2,7 @@
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
+using HeadPats.Managers;
 using HeadPats.Utils;
 using Serilog;
 
@@ -103,6 +104,23 @@ public class LoveCommands : ApplicationCommandModule {
              e.WithTitle(outputs[num]);
              
              // TODO: Add embed image from new CookieAPI once it is done
+             // Todo: Temp using FluxpointAPI
+             if (Vars.UseCookieApi) {
+                 // 
+             }
+             else {
+                 start2:
+                 var image = (await Program.FluxpointClient!.Gifs.GetPatAsync()).file;
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start2;
+                 }
+
+                 _tempHugGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by FluxpointAPI");
+             }
 
              var doingTheEllySpecial = false;
              
@@ -166,7 +184,7 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetHug();
                  if (image.Equals(_tempHugGifUrl)) {
@@ -178,6 +196,19 @@ public class LoveCommands : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by CookieAPI");
+             }
+             else {
+                 start2:
+                 var image = (await Program.FluxpointClient!.Gifs.GetHugAsync()).file;
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start2;
+                 }
+
+                 _tempHugGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by FluxpointAPI");
              }
              
              e.WithColor(Colors.HexToColor("6F41B6"));
@@ -213,7 +244,7 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetHug();
                  if (image.Equals(_tempHugGifUrl)) {
@@ -225,6 +256,19 @@ public class LoveCommands : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by CookieAPI");
+             }
+             else {
+                 start2:
+                 var image = (await Program.FluxpointClient!.Gifs.GetHugAsync()).file;
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start2;
+                 }
+
+                 _tempHugGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by FluxpointAPI");
              }
              
              e.WithColor(Colors.HexToColor("3498DB"));
@@ -260,7 +304,7 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetKiss();
                  if (image.Equals(_tempKissGifUrl)) {
@@ -272,6 +316,19 @@ public class LoveCommands : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by CookieAPI");
+             }
+             else {
+                 start2:
+                 var image = (await Program.FluxpointClient!.Gifs.GetKissAsync()).file;
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start2;
+                 }
+
+                 _tempKissGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by FluxpointAPI");
              }
              
              e.WithColor(Colors.HexToColor("F771A3"));
@@ -307,7 +364,7 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
 
-             if (Vars.EnableGifs) {
+             if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetSlap();
                  if (image.Equals(_tempSlapGifUrl)) {
@@ -319,6 +376,19 @@ public class LoveCommands : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by CookieAPI");
+             }
+             else {
+                 start2:
+                 var image = (await Program.FluxpointClient!.Gifs.GetSlapAsync()).file;
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start2;
+                 }
+
+                 _tempSlapGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by FluxpointAPI");
              }
 
              e.WithColor(Colors.HexToColor("E74C3C"));
@@ -354,7 +424,7 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             if (Vars.EnableGifs) {
+             if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetPoke();
                  if (image.Equals(_tempPokeGifUrl)) {
@@ -366,6 +436,19 @@ public class LoveCommands : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by CookieAPI");
+             }
+             else {
+                 start2:
+                 var image = (await Program.FluxpointClient!.Gifs.GetPokeAsync()).file;
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start2;
+                 }
+
+                 _tempPokeGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by FluxpointAPI");
              }
              
              e.WithColor(Colors.HexToColor("0E4730"));
@@ -402,7 +485,7 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
 
-             if (Vars.EnableGifs) {
+             if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetCookie();
                  if (image.Equals(_tempCookieGifUrl)) {

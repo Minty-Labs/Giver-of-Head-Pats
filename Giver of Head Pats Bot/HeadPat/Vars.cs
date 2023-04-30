@@ -25,6 +25,6 @@ public static class Vars {
 
     public static readonly Config Config = Configuration.TheConfig;
     public static Process? ThisProcess { get; set; }
-    public static bool EnableGifs { get; set; } = true;
+    public static bool UseCookieApi { get; set; } = true;
     public const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0";
 }
