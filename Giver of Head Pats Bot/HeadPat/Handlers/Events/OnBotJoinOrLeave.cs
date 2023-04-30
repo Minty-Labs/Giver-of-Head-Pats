@@ -5,12 +5,13 @@ using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
 using HeadPats.Utils;
+using Serilog;
 
 namespace HeadPats.Handlers.Events; 
 
 public class OnBotJoinOrLeave {
     public OnBotJoinOrLeave(DiscordClient c) {
-        Logger.Log("Setting up OnBotJoinOrLeave Event Handler . . .");
+        Log.Information("Setting up OnBotJoinOrLeave Event Handler . . .");
         
         c.GuildCreated += OnJoinGuild;
         c.GuildDeleted += OnLeaveGuild;
@@ -45,7 +46,7 @@ public class OnBotJoinOrLeave {
                     HeadPatBlacklistedRoleId = 0,
                     PatCount = 0
                 };
-                Logger.Log("Added guild to database from OnJoinGuild");
+                Log.Information("Added guild to database from OnJoinGuild");
                 db.Guilds.Add(newGuild);
             }
         
@@ -57,13 +58,13 @@ public class OnBotJoinOrLeave {
                     CookieCount = 0,
                     IsUserBlacklisted = 0
                 };
-                Logger.Log("Added user to database from OnJoinGuild");
+                Log.Information("Added user to database from OnJoinGuild");
                 db.Users.Add(newUser);
             }
             
             await db.SaveChangesAsync();
         } catch (Exception ex) {
-            Logger.SendLog(ex);
+            await DSharpToConsole.SendErrorToLoggingChannelAsync(ex);
         }
     }
 
@@ -88,7 +89,7 @@ public class OnBotJoinOrLeave {
             }
             
         } catch (Exception ex) {
-            Logger.SendLog(ex);
+            await DSharpToConsole.SendErrorToLoggingChannelAsync(ex);
         }
     }
 }

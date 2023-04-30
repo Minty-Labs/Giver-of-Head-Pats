@@ -7,12 +7,13 @@ using HeadPats.Data;
 using HeadPats.Utils;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace HeadPats.Handlers.Events; 
 
 public class MessageCreated {
     public MessageCreated(DiscordClient c) {
-        Logger.Log("Setting up MessageCreated Event Handler . . .");
+        Log.Information("Setting up MessageCreated Event Handler . . .");
         
         c.MessageCreated += GetAndMaybeRespondToTrigger;
         c.MessageCreated += GetUserBotDm;

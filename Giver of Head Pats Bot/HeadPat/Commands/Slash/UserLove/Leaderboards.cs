@@ -5,6 +5,7 @@ using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Managers;
 using HeadPats.Utils;
+using Serilog;
 
 namespace HeadPats.Commands.Slash.UserLove; 
 
@@ -17,11 +18,11 @@ public class Leaderboards : ApplicationCommandModule {
 
         var guildPats = 0;
         try { guildPats = db.Guilds.AsQueryable().ToList().FirstOrDefault(g => g.GuildId == c.Guild.Id)!.PatCount; }
-        catch { Logger.Error("[TopPat] Guilds DataSet is Empty"); }
+        catch { Log.Error("[TopPat] Guilds DataSet is Empty"); }
 
         var globalPats = 0;
         try { globalPats = db.Overall.AsQueryable().ToList().First().PatCount; }
-        catch { Logger.Error("[TopPat] Server DataSet is Empty"); }
+        catch { Log.Error("[TopPat] Server DataSet is Empty"); }
 
         var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
 

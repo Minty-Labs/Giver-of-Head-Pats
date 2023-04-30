@@ -3,6 +3,7 @@ using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
+using Serilog;
 
 namespace HeadPats.Commands.ContextMenu.User; 
 
@@ -36,7 +37,7 @@ public class Love : ApplicationCommandModule {
                 CookieCount = 0,
                 IsUserBlacklisted = 0
             };
-            Logger.Log("Added user to database");
+            Log.Debug("Added user to database");
             db.Users.Add(newUser);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 
 namespace HeadPats.Data;
 
@@ -26,7 +27,7 @@ public static class BlacklistedCmdsGuilds {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}BlacklistedGuilds.json",
             JsonConvert.SerializeObject(BlacklistedGuilds, Formatting.Indented));
-        Logger.Log("Created JSON: BlacklistedGuilds");
+        Log.Debug("Created JSON: BlacklistedGuilds");
         Save();
     }
 
@@ -39,7 +40,7 @@ public static class BlacklistedCmdsGuilds {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}BlacklistedGuilds.json",
             JsonConvert.SerializeObject(BlacklistedGuilds, Formatting.Indented));
-        Logger.Log("Saved JSON: BlacklistedGuilds");
+        Log.Debug("Saved JSON: BlacklistedGuilds");
     }
     
     public static async Task AddBlacklist(DSharpPlus.SlashCommands.InteractionContext cc, string guildId, string commandsToBlock) {

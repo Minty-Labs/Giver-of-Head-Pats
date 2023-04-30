@@ -2,6 +2,7 @@
 using System.Text;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace HeadPats.Utils; 
 
@@ -157,7 +158,7 @@ public class UnsplashApiJson {
             return likeAction.StatusCode is HttpStatusCode.Created or HttpStatusCode.OK;
         }
         catch (Exception e) {
-            Logger.Error(e);
+            Log.Error("{0}", e);
             return false;
         }
     }
@@ -196,7 +197,7 @@ public class UnsplashApiJson {
             return likeAction.StatusCode is HttpStatusCode.NoContent or HttpStatusCode.OK;
         }
         catch (Exception e) {
-            Logger.Error(e);
+            Log.Error("{0}", e);
             return false;
         }
     }

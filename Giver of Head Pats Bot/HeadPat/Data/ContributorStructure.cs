@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using HeadPats.Managers;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace HeadPats.Data;
 
@@ -26,7 +28,7 @@ public class ContributorStructure {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Contributors.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created JSON: ContributorBase");
+        Log.Debug("Created JSON: ContributorBase");
         Save();
     }
 
@@ -39,14 +41,14 @@ public class ContributorStructure {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Contributors.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Saved JSON: ContributorBase");
+        Log.Debug("Saved JSON: ContributorBase");
     }
     
     private static bool DoesUserNameExist(string? name) => Base.Base.FirstOrDefault(n => n.UserName == name)?.UserName == name;
     
     public static void AddValue(string userName, string info) {
         if (DoesUserNameExist(userName)) {
-            Logger.Log("Removing duplicate user");
+            Log.Debug("Removing duplicate user");
             var itemToRemove = Base.Base.Single(u => string.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase));
             Base.Base.Remove(itemToRemove);
         }
@@ -72,7 +74,7 @@ public class ContributorStructure {
         catch (Exception e) {
             ErroredOnRemove = true;
             ErroredException = e;
-            Logger.SendLog(e);
+            DSharpToConsole.SendErrorToLoggingChannel(e);
         }
         Save();
     }

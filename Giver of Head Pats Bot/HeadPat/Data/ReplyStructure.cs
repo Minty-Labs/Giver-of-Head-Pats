@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using HeadPats.Managers;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace HeadPats.Data;
 
@@ -46,7 +48,7 @@ public static class ReplyStructure {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Created JSON: Replies");
+        Log.Debug("Created JSON: Replies");
         Save();
     }
 
@@ -59,7 +61,7 @@ public static class ReplyStructure {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}Responses.json",
             JsonConvert.SerializeObject(Base, Formatting.Indented));
-        Logger.Log("Saved JSON: Replies");
+        Log.Debug("Saved JSON: Replies");
     }
 
     public static string GetResponse(string? trigger, ulong guildId) => Base.Replies?.FirstOrDefault(x => x.Trigger == trigger && x.GuildId == guildId)?.Response ?? "{{NULL}}";
@@ -91,7 +93,7 @@ public static class ReplyStructure {
         bool deleteTriggerIfIsOnlyInMessage = false) {
         
         if (DoesTriggerExist(trigger, guildId)) {
-            Logger.Log("Removing duplicate trigger");
+            Log.Debug("Removing duplicate trigger");
             var itemToRemove = Base.Replies?.Single(t => string.Equals(t.Trigger, trigger, StringComparison.CurrentCultureIgnoreCase));
             if (itemToRemove != null) Base.Replies?.Remove(itemToRemove);
         }
@@ -122,7 +124,7 @@ public static class ReplyStructure {
         catch (Exception e) {
             ErroredOnRemove = true;
             ErroredException = e;
-            Logger.SendLog(e);
+            DSharpToConsole.SendErrorToLoggingChannel(e);
         }
         Save();
     }

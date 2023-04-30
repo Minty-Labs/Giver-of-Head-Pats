@@ -1,12 +1,12 @@
 using HarmonyLib;
-using Pastel;
+using Serilog;
 
 namespace HeadPats.Managers;
 
 public class MobileManager { // Thanks Dubya
     public static void CreateMobilePatch() {
         try {
-            Logger.Log("Attempting to patch Client as mobile");
+            Log.Debug("Attempting to patch Client as mobile");
             var harmony = new Harmony("mobilePatch"); 
             var mOriginal = AppDomain.CurrentDomain.GetAssemblies()
                 .Single(assembly => assembly.GetName().Name == "DSharpPlus")
@@ -15,10 +15,10 @@ public class MobileManager { // Thanks Dubya
                 ?.GetGetMethod();
             var mPostfix = new HarmonyMethod(AccessTools.Method(typeof(MobileManager), nameof(MobilePatch)));
             harmony.Patch(mOriginal, postfix: mPostfix);
-            Logger.Log("MobilePatch Success: You are on \"" + "Discord iOS".Pastel("00ff00") + "\"");
+            Log.Debug("MobilePatch Success: You are on \"" + "Discord iOS" + "\"");
         }
         catch (Exception e) {
-            Logger.Error($"Failed Mobile Patch\n{e}");
+            Log.Error("Failed Mobile Patch\n{0}", e);
         }
     }
         

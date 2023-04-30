@@ -3,6 +3,7 @@ using DSharpPlus.SlashCommands;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
+using Serilog;
 
 namespace HeadPats.Commands.Slash.UserLove;
 
@@ -45,8 +46,8 @@ public class LoveCommands : ApplicationCommandModule {
                  catch (Exception ex2) {
                      failed = true;
                      if (!Vars.IsDebug) return;
-                     Logger.SendLog(ex, true);
-                     Logger.SendLog(ex2, true);
+                     await DSharpToConsole.SendErrorToLoggingChannelAsync(ex);
+                     await DSharpToConsole.SendErrorToLoggingChannelAsync(ex2);
                      return;
                  }
              }
@@ -65,7 +66,7 @@ public class LoveCommands : ApplicationCommandModule {
                      CookieCount = 0,
                      IsUserBlacklisted = 0
                  };
-                 Logger.Log("Added user to database");
+                 Log.Debug("Added user to database");
                  db.Users.Add(newUser);
              }
          
@@ -134,7 +135,7 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
              UserControl.AddPatToUser(user.Id, special, true, c.Guild.Id);
              await c.CreateResponseAsync(e.Build());
-             Logger.Log($"Total Pat amount Given: {special}");
+             Log.Debug($"Total Pat amount Given: {special}");
          }
          
          [SlashCommand("hug", "Hug a specified user.")]
@@ -169,7 +170,7 @@ public class LoveCommands : ApplicationCommandModule {
                  start:
                  var image = Program.CookieClient!.GetHug();
                  if (image.Equals(_tempHugGifUrl)) {
-                     Logger.Log("Image is same as previous image");
+                     Log.Debug("Image is same as previous image");
                      goto start;
                  }
 
@@ -216,7 +217,7 @@ public class LoveCommands : ApplicationCommandModule {
                  start:
                  var image = Program.CookieClient!.GetHug();
                  if (image.Equals(_tempHugGifUrl)) {
-                     Logger.Log("Image is same as previous image");
+                     Log.Debug("Image is same as previous image");
                      goto start;
                  }
 
@@ -263,7 +264,7 @@ public class LoveCommands : ApplicationCommandModule {
                  start:
                  var image = Program.CookieClient!.GetKiss();
                  if (image.Equals(_tempKissGifUrl)) {
-                     Logger.Log("Image is same as previous image");
+                     Log.Debug("Image is same as previous image");
                      goto start;
                  }
 
@@ -310,7 +311,7 @@ public class LoveCommands : ApplicationCommandModule {
                  start:
                  var image = Program.CookieClient!.GetSlap();
                  if (image.Equals(_tempSlapGifUrl)) {
-                     Logger.Log("Image is same as previous image");
+                     Log.Debug("Image is same as previous image");
                      goto start;
                  }
 
@@ -357,7 +358,7 @@ public class LoveCommands : ApplicationCommandModule {
                  start:
                  var image = Program.CookieClient!.GetPoke();
                  if (image.Equals(_tempPokeGifUrl)) {
-                     Logger.Log("Image is same as previous image");
+                     Log.Debug("Image is same as previous image");
                      goto start;
                  }
 
@@ -405,7 +406,7 @@ public class LoveCommands : ApplicationCommandModule {
                  start:
                  var image = Program.CookieClient!.GetCookie();
                  if (image.Equals(_tempCookieGifUrl)) {
-                     Logger.Log("Image is same as previous image");
+                     Log.Debug("Image is same as previous image");
                      goto start;
                  }
 

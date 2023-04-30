@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
+using Serilog;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
@@ -56,7 +57,7 @@ public class BlacklistControl : BaseCommandModule {
                                 CookieCount = 0,
                                 IsUserBlacklisted = 1
                             };
-                            Logger.Log("Added user to database");
+                            Log.Debug("Added user to database");
                             db.Users.Add(newUser);
                             db.Users.Update(checkUser!);
                         }
@@ -87,7 +88,7 @@ public class BlacklistControl : BaseCommandModule {
                                 CookieCount = 0,
                                 IsUserBlacklisted = 0
                             };
-                            Logger.Log("Added user to database");
+                            Log.Debug("Added user to database");
                             db.Users.Add(newUser);
                             db.Users.Update(checkUser!);
                         }

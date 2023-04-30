@@ -5,6 +5,7 @@ using DSharpPlus.Entities;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
+using Serilog;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
@@ -53,7 +54,7 @@ public class UserControl : BaseCommandModule {
                 CookieCount = 0,
                 IsUserBlacklisted = 0
             };
-            Logger.Log("Added user to database from a force command");
+            Log.Debug("Added user to database from a force command");
             db.Users.Add(newUser);
             await c.RespondAsync("Done.");
         }

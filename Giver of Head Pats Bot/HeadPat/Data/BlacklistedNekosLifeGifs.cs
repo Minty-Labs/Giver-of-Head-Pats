@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using HeadPats.Managers;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace HeadPats.Data;
 
@@ -19,7 +20,7 @@ public class BlacklistedNekosLifeGifs {
         };
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}BlacklistedGifs.json",
             JsonConvert.SerializeObject(BlacklistedGifs, Formatting.Indented));
-        Logger.Log("Created JSON: BlacklistedGifs");
+        Log.Debug("Created JSON: BlacklistedGifs");
         Save();
     }
 
@@ -32,7 +33,7 @@ public class BlacklistedNekosLifeGifs {
     private static void Save() {
         File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}BlacklistedGifs.json",
             JsonConvert.SerializeObject(BlacklistedGifs, Formatting.Indented));
-        Logger.Log("Saved JSON: BlacklistedGifs");
+        Log.Debug("Saved JSON: BlacklistedGifs");
     }
     
     public static async Task AddBlacklist(DSharpPlus.SlashCommands.InteractionContext cc, string url) {

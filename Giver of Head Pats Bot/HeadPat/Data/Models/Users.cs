@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using Serilog;
 
 namespace HeadPats.Data.Models; 
 
@@ -33,7 +34,7 @@ public static class UserControl {
                 CookieCount = 0,
                 IsUserBlacklisted = 0
             };
-            Logger.Log("Added user to database");
+            Log.Debug("Added user to database");
             db.Users.Add(newUser);
         }
         else {
@@ -48,7 +49,7 @@ public static class UserControl {
                     PatCount = numberOfPats,
                     HeadPatBlacklistedRoleId = 0
                 };
-                Logger.Log("Added guild to database");
+                Log.Debug("Added guild to database");
                 db.Guilds.Add(newGuild);
             }
             else {
@@ -88,7 +89,7 @@ public static class UserControl {
                 PatCount = 0,
                 CookieCount = cookiesToAdd
             };
-            Logger.Log("Added user to database");
+            Log.Debug("Added user to database");
             db.Users.Add(newUser);
         }
         else {

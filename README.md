@@ -34,8 +34,13 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
     <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.5</b></li>
     <li>Nekos-Sharp <i>by BuilderB</i> <b>v3.5.0</b></li>
     <li>Newtonsoft.Json <i>by James Newton-King</i> <b>v13.0.2</b></li>
-    <li>Pastel <i>by silkfire</i> <b>v4.1.0</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
+    <li>Serilog by <b>v2.12.0</b>
+        <ul>
+            <li>Serilog.Sinks.Console <b>v4.1.0</b></li>
+            <li>Serilog.Sinks.File <b>v5.0.0</b></li>
+        </ul>
+    </li>
 </ul>
 
 <h2>Programs & Services Used</h2>

@@ -17,7 +17,7 @@ using fluxpoint_sharp;
 using HeadPats.Commands.ContextMenu;
 using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
-using Pastel;
+using Serilog;
 using TaskScheduler = HeadPats.Managers.TaskScheduler;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -33,17 +33,21 @@ public sealed class Program {
     private static void Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
         Console.Title = string.Format($"{Vars.Name} v{Vars.Version}");
+        Log.Debug($"{Vars.Name} Bot is starting . . .");
         new Program().MainAsync().GetAwaiter().GetResult();
     }
     
     private Program() {
-        Logger.ConsoleLogger();
-        Logger.Log("Elly is an adorable cute floof, I love her very very very much!~");
+        Log.Logger = 
+            new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"), rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+        Log.Information("Elly is an adorable cute floof, I love her very very very much!~");
     }
 
     private async Task MainAsync() {
-        Logger.Log("Bot is starting . . .");
-        
         if (!Vars.IsDebug)
             MobileManager.CreateMobilePatch();
         
@@ -55,8 +59,8 @@ public sealed class Program {
             Intents = DiscordIntents.All,
             AutoReconnect = true
         });
-            
-        Logger.ReplaceDSharpLogs(Client);
+        
+        DSharpToConsole.ReplaceDSharpLogs(Client);
 
         var serviceCollection = new ServiceCollection();
 
@@ -71,12 +75,34 @@ public sealed class Program {
         Commands.SetHelpFormatter<HelpFormatter>();
         
         LegacyCommandHandler.Register(Commands);
-        Commands.CommandExecuted += Commands_CommandExecuted;
-        Commands.CommandErrored += Commands_CommandErrored;
+        Commands.CommandExecuted += (sender, args) => {
+            Log.Information($"Command {args.Command.Name}, executed by {args.Context.User.Username}, " +
+                            $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name}");
+            return Task.CompletedTask;
+        };
+        Commands.CommandErrored += (sender, args) => {
+            // if (args.Context.Message.Content.StartsWith('-'))
+            //     return Task.CompletedTask;
+            
+            Log.Information($"Command {args.Command!.Name}, executed by {args.Context.User.Username}, " +
+                            $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}");
+            return Task.CompletedTask;
+        };
 
         SlashCommandHandler.Register(Slash);
         ContextMenuHandler.Register(Slash);
-        Slash.SlashCommandErrored += Slash_SlashCommandErrored;
+        Slash.SlashCommandExecuted += (sender, args) => {
+            Log.Information($"Slash Command {args.Context.CommandName}, executed by {args.Context.User.Username}, " +
+                            $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name}");
+            return Task.CompletedTask;
+        };
+        Slash.SlashCommandErrored += (sender, args) => {
+            var message = $"Slash Command {args.Context.CommandName}, executed by {args.Context.User.Username}, " +
+                          $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}";
+            Log.Information(message);
+            DSharpToConsole.SendErrorToLoggingChannel(message);
+            return Task.CompletedTask;
+        };
 
         Client.Ready += Client_Ready;
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
@@ -116,7 +142,6 @@ public sealed class Program {
         await Client.ConnectAsync();
 
         await Task.Delay(-1);
-        Logger.Stop();
     }
     
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
@@ -124,24 +149,22 @@ public sealed class Program {
     private static async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e) {
         Vars.StartTime = DateTime.Now;
         Vars.ThisProcess = Process.GetCurrentProcess();
-        Logger.Log("Welcome, " + "Lily".Pastel("9fffe3"));
-        Logger.Log("Bot Version                    = " + Vars.Version);
-        Logger.Log("Process ID                     = " + Vars.ThisProcess.Id);
-        Logger.Log("Build Date                     = " + Vars.BuildDate);
-        Logger.Log("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
-        Logger.Log("Token                          = " + OutputStringAsHidden(Vars.Config.Token!).Pastel("FBADBC"));
-        Logger.Log("Prefix (non-Slash)             = " + $"{Vars.Config.Prefix}".Pastel("FBADBC"));
-        Logger.Log("ActivityType                   = " + $"{Vars.Config.ActivityType}".Pastel("FBADBC"));
-        Logger.Log("Game                           = " + $"{Vars.Config.Game}".Pastel("FBADBC"));
-        Logger.Log("Streaming URL                  = " + $"{Vars.Config.StreamingUrl}".Pastel("FBADBC"));
-        Logger.Log("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}".Pastel("FBADBC"));
+        Log.Debug("Bot Version                    = " + Vars.Version);
+        Log.Debug("Process ID                     = " + Vars.ThisProcess.Id);
+        Log.Debug("Build Date                     = " + Vars.BuildDate);
+        Log.Debug("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
+        Log.Debug("Token                          = " + OutputStringAsHidden(Vars.Config.Token!));
+        Log.Debug("Prefix (non-Slash)             = " + $"{Vars.Config.Prefix}");
+        Log.Debug("ActivityType                   = " + $"{Vars.Config.ActivityType}");
+        Log.Debug("Game                           = " + $"{Vars.Config.Game}");
+        Log.Debug("Streaming URL                  = " + $"{Vars.Config.StreamingUrl}");
+        Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{Vars.Config.Game}",
             ActivityType = GetActivityType(Vars.Config.ActivityType!)
         }, Vars.IsDebug ? UserStatus.Idle : UserStatus.Online);
 
         Console.Title = string.Format($"{Vars.Name} v{Vars.Version} - {Vars.Config.Game}");
-        Logger.WriteSeparator("C75450");
 
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
@@ -166,24 +189,6 @@ public sealed class Program {
         TaskScheduler.StartStatusLoop();
         await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
-    }
-
-    private static Task Commands_CommandExecuted(CommandsNextExtension sender, CommandExecutionEventArgs e) {
-        Logger.CommandExecuted(e.Command.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name);
-        return Task.CompletedTask;
-    }
-
-    private static Task Commands_CommandErrored(CommandsNextExtension sender, CommandErrorEventArgs e) {
-        if (e.Command == null && e.Context.Member != null)
-            Logger.CommandNull(e.Context.Member.Username, e.Context.Message.Content);
-        else
-            Logger.CommandErrored(e.Command!.Name, e.Context.Message.Author.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Context.Message.Content, e.Exception);
-        return Task.CompletedTask;
-    }
-
-    private static Task Slash_SlashCommandErrored(SlashCommandsExtension sender, DSharpPlus.SlashCommands.EventArgs.SlashCommandErrorEventArgs e) {
-        Logger.SlashCommandErrored(e.Context.CommandName, e.Context.User.Username, e.Context.Channel.IsPrivate ? "Direct Messages" : e.Context.Guild.Name, e.Exception);
-        return Task.CompletedTask;
     }
     
     private static string OutputStringAsHidden(string s) {
