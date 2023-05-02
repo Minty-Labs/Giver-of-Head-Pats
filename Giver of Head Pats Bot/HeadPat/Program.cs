@@ -134,10 +134,11 @@ public sealed class Program {
             Timeout = TimeSpan.FromMinutes(2)
         });
         
-        ReplyStructure.CreateFile();
+        // ReplyStructure.CreateFile();
         // MelonLoaderBlacklist.ProtectStructure.CreateFile();
-        BlacklistedNekosLifeGifs.CreateFile();
-        BlacklistedCmdsGuilds.CreateFile();
+        // BlacklistedNekosLifeGifs.CreateFile();
+        // BlacklistedCmdsGuilds.CreateFile();
+        Configuration.Configuration.CreateFile();
             
         await Client.ConnectAsync();
 

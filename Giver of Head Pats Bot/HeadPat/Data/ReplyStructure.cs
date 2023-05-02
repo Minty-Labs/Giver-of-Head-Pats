@@ -10,23 +10,12 @@ public class ReplyBase {
 }
 
 public class Reply {
-    [JsonProperty("GuildID")]
-    public ulong GuildId { get; set; }
-    
-    [JsonProperty("Trigger")]
-    public string? Trigger { get; set; }
-    
-    [JsonProperty("Response")]
-    public string? Response { get; set; }
-    
-    [JsonProperty("RequireOnlyTriggerText")]
-    public bool OnlyTrigger { get; set; }
-    
-    [JsonProperty("DeleteTrigger")]
-    public bool DeleteTrigger { get; set; }
-    
-    [JsonProperty("Delete Trigger If Is Only In Message")]
-    public bool DeleteTriggerIfIsOnlyInMessage { get; set; }
+    [JsonProperty("GuildID")] public ulong GuildId { get; set; }
+    [JsonProperty("Trigger")] public string? Trigger { get; set; }
+    [JsonProperty("Response")] public string? Response { get; set; }
+    [JsonProperty("RequireOnlyTriggerText")] public bool OnlyTrigger { get; set; }
+    [JsonProperty("DeleteTrigger")] public bool DeleteTrigger { get; set; }
+    [JsonProperty("Delete Trigger If Is Only In Message")] public bool DeleteTriggerIfIsOnlyInMessage { get; set; }
 }
 
 public static class ReplyStructure {

@@ -2,7 +2,7 @@
 
 namespace HeadPats.Managers;
 
-public class Config {
+public class OldConfig {
     [JsonProperty("Token")] public string? Token { get; set; }
     
     [JsonProperty("OwnerID")] public ulong OwnerUserId { get; set; }
@@ -44,8 +44,8 @@ public class RotatingStatus {
     [JsonProperty("Game")] public string? Game;*/
 }
 
-public static class Configuration {
-    public static Config TheConfig { get; internal set; } = Load();
+public static class OldConfiguration {
+    public static OldConfig TheOldConfig { get; internal set; } = Load();
     public static bool IsRotatingStatusesEnabled;
 
     private static void CreateFile() {
@@ -62,7 +62,7 @@ public static class Configuration {
         //     Game = "all the cuties"
         // };
 
-        var conf = new Config {
+        var conf = new OldConfig {
             Token = "",
             OwnerUserId = 0,
             Prefix = "-",
@@ -87,15 +87,15 @@ public static class Configuration {
         Save();
     }
 
-    private static Config Load() {
+    private static OldConfig Load() {
         CreateFile();
-        var d = JsonConvert.DeserializeObject<Config>(File.ReadAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json"));
+        var d = JsonConvert.DeserializeObject<OldConfig>(File.ReadAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json"));
         // try { IsRotatingStatusesEnabled = d!.EnableRotation; } catch { /*silence*/ }
         return d ?? throw new Exception();
     }
     
     public static void Save() => File.WriteAllText($"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Config.json",
-        JsonConvert.SerializeObject(TheConfig, Formatting.Indented));
+        JsonConvert.SerializeObject(TheOldConfig, Formatting.Indented));
 
     // public static RotatingStatus[] Statuses() => TheConfig.RotatingStatuses!.ToArray();
 }

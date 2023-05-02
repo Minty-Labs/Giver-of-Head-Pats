@@ -149,7 +149,7 @@ public class BlacklistControl : BaseCommandModule {
                 break;
         }
         
-        Configuration.Save();
+        OldConfiguration.Save();
     }
 
 }

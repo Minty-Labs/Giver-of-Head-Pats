@@ -23,7 +23,7 @@ public static class Vars {
     public static readonly string InviteLink = $"https://discord.com/api/oauth2/authorize?client_id={ClientId}&permissions=1240977501264&scope=bot%20applications.commands";
     public const string SupportServer = "https://discord.gg/Qg9eVB34sq";
 
-    public static readonly Config Config = Configuration.TheConfig;
+    public static readonly OldConfig Config = OldConfiguration.TheOldConfig;
     public static Process? ThisProcess { get; set; }
     public static bool UseCookieApi { get; set; } = true;
     public const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0";

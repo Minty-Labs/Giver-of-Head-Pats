@@ -44,7 +44,7 @@ public class ConfigControl : BaseCommandModule {
         }
 
         await c.Message.DeleteAsync();
-        Configuration.Save();
+        OldConfiguration.Save();
     }
     
 }
