@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
@@ -19,10 +20,9 @@ public class LoveCommands : ApplicationCommandModule {
          public async Task Pat(InteractionContext c, [Option("user", "The user to pat", true)] DiscordUser user, 
              [Option("params", "Extra parameters (for the bot owner)")] string extraParams = "") {
              var canUseParams = c.User.Id == 167335587488071682;
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("pat"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("pat");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;
@@ -158,10 +158,9 @@ public class LoveCommands : ApplicationCommandModule {
          
          [SlashCommand("hug", "Hug a specified user.")]
          public async Task Hug(InteractionContext c, [Option("user", "The user to hug", true)] DiscordUser user) {
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("hug"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("hug");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;
@@ -218,10 +217,9 @@ public class LoveCommands : ApplicationCommandModule {
 
          [SlashCommand("Cuddle", "Cuddle a specified user.")]
          public async Task Cuddle(InteractionContext c, [Option("user", "The user to cuddle", true)] DiscordUser user) {
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("cuddle"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("cuddle");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;
@@ -278,10 +276,9 @@ public class LoveCommands : ApplicationCommandModule {
 
          [SlashCommand("kiss", "Kiss a specified user.")]
          public async Task Kiss(InteractionContext c, [Option("user", "The user to kiss", true)] DiscordUser user) {
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("kiss"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("kiss");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;
@@ -338,10 +335,9 @@ public class LoveCommands : ApplicationCommandModule {
 
          [SlashCommand("slap", "Slap a specified user.")]
          public async Task Slap(InteractionContext c, [Option("user", "The user to slap", true)] DiscordUser user) {
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("slap"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("slap");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;
@@ -398,10 +394,9 @@ public class LoveCommands : ApplicationCommandModule {
          
          [SlashCommand("Poke", "Poke a user.")]
          public async Task Poke(InteractionContext c, [Option("user", "The user to poke", true)] DiscordUser user) {
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("poke"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("poke");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;
@@ -458,10 +453,9 @@ public class LoveCommands : ApplicationCommandModule {
 
          [SlashCommand("Cookie", "Give a user a cookie.")]
          public async Task Cookie(InteractionContext c, [Option("user", "The user to give a cookie to", true)] DiscordUser user) {
-             var hasCommandBlacklist = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Any(g => g.Id.Equals(c.Guild.Id));
+             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
-                 var isThisCommandBlacklisted = BlacklistedCmdsGuilds.BlacklistedGuilds.Guilds!.Where(g => g.Id.Equals(c.Guild.Id))
-                     .ToList().FirstOrDefault()!.CommandsToBlock.Any(c => c.Equals("cookie"));
+                 var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("cookie");
                  if (isThisCommandBlacklisted) {
                      await c.CreateResponseAsync("This guild is not allowed to use this command. This was set by a bot developer.", true);
                      return;

@@ -2,6 +2,7 @@
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using HeadPats.Configuration;
 using HeadPats.Data;
 // using HeadPats.MelonLoaderBlacklist;
 using HeadPats.Utils;
@@ -45,7 +46,7 @@ public class MessageCreated {
         
         var author = e.Message.Author;
         DiscordChannel? serverChannelFromDm;
-        var supportGuild = await sender.GetGuildAsync(Vars.Config.SupportGuildId);
+        var supportGuild = await sender.GetGuildAsync(Vars.SupportServerId);
 
         if (!DmCategory!.IsCategory) return;
 
@@ -113,28 +114,30 @@ public class MessageCreated {
         var contents = e.Message.Content;
         if (e.Author.IsBot) return;
 
-        if (ReplyStructure.Base.Replies != null) {
-            foreach (var t in ReplyStructure.Base.Replies.Where(t => t.Trigger != null)) {
-                if (e.Channel.IsPrivate) return;
-                if (t.GuildId != e.Guild.Id) continue;
+        var guildSettings = Config.GuildSettings(e.Guild.Id);
+        
+        if (guildSettings is null)
+            return;
+        
+        foreach (var t in guildSettings.Replies!.Where(t => t.Trigger != null)) {
+            if (e.Channel.IsPrivate) return;
 
-                if (t.Trigger!.ToLower().Equals("salad") && e.Message.Content.Contains("hp!salad") && e.Guild.Id == 805663181170802719)
-                    break; // for the Minty Labs salad command
+            if (t.Trigger!.ToLower().Equals("salad") && e.Message.Content.Contains("hp!salad") && e.Guild.Id == 805663181170802719)
+                break; // for the Minty Labs salad command
                 
-                if (contents.Equals(t.Trigger) && t.OnlyTrigger) 
-                    await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+            if (contents.Equals(t.Trigger) && t.OnlyTrigger) 
+                await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
                 
-                else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
-                    await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+            else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
+                await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
                 
-                else if (t.Trigger != null && contents.Equals(t.Trigger) && !t.OnlyTrigger && t.DeleteTriggerIfIsOnlyInMessage) {
-                    await e.Message.DeleteAsync("Auto delete by bot response.");
-                    await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
-                }
-
-                if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
-                    await e.Message.DeleteAsync("Auto delete by bot response.");
+            else if (t.Trigger != null && contents.Equals(t.Trigger) && !t.OnlyTrigger && t.DeleteTriggerIfIsOnlyInMessage) {
+                await e.Message.DeleteAsync("Auto delete by bot response.");
+                await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
             }
+
+            if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
+                await e.Message.DeleteAsync("Auto delete by bot response.");
         }
     }
 

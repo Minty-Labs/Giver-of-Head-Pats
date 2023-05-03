@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -10,7 +11,7 @@ using Serilog;
 namespace HeadPats.Commands.Legacy.Owner; 
 
 public class UserControl : BaseCommandModule {
-    [Command("MultiKick"), Aliases("mk"), Description("Kicks multiple users at once"), RequireOwner]
+    [Command("MultiKick"), Aliases("mk"), Description("Kicks multiple users at once"), RequireOwner, RequirePermissions(Permissions.KickMembers)]
     public async Task MultiKick(CommandContext c, [Description("List of users separated by commas")] string userIds,
         [Description("Reason for kick"), RemainingText] string reason = "No reason provided.") {
         if (string.IsNullOrWhiteSpace(userIds)) {

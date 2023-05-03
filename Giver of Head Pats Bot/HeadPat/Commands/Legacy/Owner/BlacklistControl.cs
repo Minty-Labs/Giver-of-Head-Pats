@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
@@ -118,15 +119,15 @@ public class BlacklistControl : BaseCommandModule {
             case "url":
                 switch (action.ToLower()) {
                     case "add":
-                        Vars.Config.ApiMediaUrlBlacklist!.Add(value);
+                        Config.Base.Api.ApiMediaUrlBlacklist!.Add(value);
                         await c.RespondAsync($"Added {value} to url blacklist.");
                         break;
                     case "remove":
-                        Vars.Config.ApiMediaUrlBlacklist!.Remove(value);
+                        Config.Base.Api.ApiMediaUrlBlacklist!.Remove(value);
                         await c.RespondAsync($"Removed {value} from url blacklist.");
                         break;
                     case "list":
-                        await c.RespondAsync($"Url blacklist: {string.Join(", ", Vars.Config.ApiMediaUrlBlacklist!)}");
+                        await c.RespondAsync($"Url blacklist: {string.Join(", ", Config.Base.Api.ApiMediaUrlBlacklist!)}");
                         break;
                 }
 
@@ -134,22 +135,22 @@ public class BlacklistControl : BaseCommandModule {
             case "guild":
                 switch (action.ToLower()) {
                     case "add":
-                        Vars.Config.FullBlacklistOfGuilds!.Add(ulong.Parse(value));
+                        Config.Base.FullBlacklistOfGuilds!.Add(ulong.Parse(value));
                         await c.RespondAsync($"Added {value} to guild blacklist.");
                         break;
                     case "remove":
-                        Vars.Config.FullBlacklistOfGuilds!.Remove(ulong.Parse(value));
+                        Config.Base.FullBlacklistOfGuilds!.Remove(ulong.Parse(value));
                         await c.RespondAsync($"Removed {value} from guild blacklist.");
                         break;
                     case "list":
-                        await c.RespondAsync($"Guild blacklist: {string.Join(", ", Vars.Config.FullBlacklistOfGuilds!)}");
+                        await c.RespondAsync($"Guild blacklist: {string.Join(", ", Config.Base.FullBlacklistOfGuilds!)}");
                         break;
                 }
 
                 break;
         }
         
-        OldConfiguration.Save();
+        Config.Save();
     }
 
 }

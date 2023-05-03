@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
@@ -14,7 +15,7 @@ public class FunnyCommands : BaseCommandModule {
         [Description("Media Type (Image or GIF)")] string mediaType,
         [Description("Content Type / Endpoint (Do hp!nsfw <media> list)")] string contentType = "list") {
 
-        if (!ctx.Channel.IsNSFW) {
+        if (!ctx.Channel.IsNSFW) { // I know the RequireNsfw attribute does this, but I just want to sanity check it.
             await ctx.RespondAsync("You cannot run NSFW commands in a non-NSFW channel.").DeleteAfter(5);
             return;
         }
@@ -43,7 +44,7 @@ public class FunnyCommands : BaseCommandModule {
             }
         }
 
-        if (string.IsNullOrWhiteSpace(Vars.Config.FluxpointApiKey!)) {
+        if (string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!)) {
             await ctx.RespondAsync("The bot owner has not setup access to the API for this command; therefore, this command will not continue.");
             return;
         }

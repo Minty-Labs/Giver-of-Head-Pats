@@ -3,6 +3,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
+using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Utils;
 
@@ -27,7 +28,7 @@ public class ReplyApplication : ApplicationCommandModule {
                 return;
             }
             
-            ReplyStructure.AddValue(c.Guild.Id, trigger, response,
+            ReplyConfExtensions.AddValue(c.Guild.Id, trigger, response,
                 StringUtils.GetBooleanFromString(requireOnlyTriggerText),
                 StringUtils.GetBooleanFromString(deleteTrigger),
                 StringUtils.GetBooleanFromString(deleteTriggerIfIsOnlyInMessage));
@@ -43,20 +44,20 @@ public class ReplyApplication : ApplicationCommandModule {
                 await c.CreateResponseAsync("You do not have permission to use this command.");
                 return;
             }
-            ReplyStructure.RemoveValue(c.Guild.Id, trigger);
-            if (ReplyStructure.ErroredOnRemove) {
+            ReplyConfExtensions.RemoveValue(c.Guild.Id, trigger);
+            if (ReplyConfExtensions.ErroredOnRemove) {
                 await c.CreateResponseAsync("Either the provided trigger does not exist, or an error has occured.", true);
                 if (Vars.IsDebug)
-                    await c.CreateResponseAsync($"[Debug] Error: {ReplyStructure.ErroredException}", true);
+                    await c.CreateResponseAsync($"[Debug] Error: {ReplyConfExtensions.ErroredException}", true);
             }
             else await c.CreateResponseAsync($"Removed the trigger: {trigger}");
-            ReplyStructure.ErroredOnRemove = false;
+            ReplyConfExtensions.ErroredOnRemove = false;
         }
 
         [SlashCommand("List", "Lists the triggers for auto responses"), SlashRequirePermissions(Permissions.ManageMessages)]
         public async Task ListTriggers(InteractionContext c) {
             var legend = new StringBuilder();
-            var list = ReplyStructure.GetListOfReplies();
+            var list = Config.GuildSettings(c.Guild.Id)!.Replies!;
             var triggers = new StringBuilder();
             legend.AppendLine("Trigger");
             legend.AppendLine("Response");
@@ -67,11 +68,11 @@ public class ReplyApplication : ApplicationCommandModule {
 
             if (list != null) {
                 foreach (var t in list) {
-                    if (t.GuildId != c.Guild.Id) continue;
-                    var r = ReplyStructure.GetResponse(t.Trigger, c.Guild.Id);
-                    var i = ReplyStructure.GetInfo(t.Trigger, c.Guild.Id);
-                    var d = ReplyStructure.GetsDeleted(t.Trigger, c.Guild.Id);
-                    var a = ReplyStructure.GetsDeletedIfAlone(t.Trigger, c.Guild.Id);
+                    // if (t.GuildId != c.Guild.Id) continue;
+                    var r = ReplyConfExtensions.GetResponse(t.Trigger, c.Guild.Id);
+                    var i = ReplyConfExtensions.GetInfo(t.Trigger, c.Guild.Id);
+                    var d = ReplyConfExtensions.GetsDeleted(t.Trigger, c.Guild.Id);
+                    var a = ReplyConfExtensions.GetsDeletedIfAlone(t.Trigger, c.Guild.Id);
 
                     triggers.AppendLine(t.Trigger);
                     triggers.AppendLine(r);

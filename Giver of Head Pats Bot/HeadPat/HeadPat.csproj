@@ -11,7 +11,7 @@
     <Product>Giver of Head Pats Discord Bot</Product>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <ApplicationIcon>..\Media\HeadPat.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\Media\HeadPat.ico</ApplicationIcon>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -33,13 +33,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\Media\HeadPat.ico">
-      <Link>HeadPat.ico</Link>
-    </None>
+    <Folder Include="Data\Modules" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Modules" />
+    <None Include="..\..\Media\HeadPat.ico">
+      <Link>HeadPat.ico</Link>
+    </None>
   </ItemGroup>
 
 </Project>

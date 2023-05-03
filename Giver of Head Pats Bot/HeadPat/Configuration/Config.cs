@@ -4,24 +4,25 @@ using HeadPats.Utils;
 
 namespace HeadPats.Configuration; 
 
-public class Config {
+public class Base {
     [JsonPropertyName("Token")] public string? BotToken { get; set; }
     [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; set; } = "hp!";
     [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
     [JsonPropertyName("Game")] public string? Activity { get; set; }
     [JsonPropertyName("Streaming URL")] public string? StreamingUrl { get; set; }
     [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; set; }
-    [JsonPropertyName("Bot Logs Channel")] public ulong? BotLogsChannel { get; set; }
-    [JsonPropertyName("Error Logs Channel")] public ulong? ErrorLogsChannel { get; set; }
-    [JsonPropertyName("Direct Message Category ID")] public ulong? DmCategory { get; set; }
+    [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; set; }
+    [JsonPropertyName("Error Logs Channel")] public ulong ErrorLogsChannel { get; set; }
+    [JsonPropertyName("Direct Message Category ID")] public ulong DmCategory { get; set; }
     [JsonPropertyName("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; set; }
-    [JsonPropertyName("APIs")] public Api? Api { get; set; }
+    [JsonPropertyName("APIs")] public Api Api { get; set; }
     [JsonPropertyName("Contributors")] public List<Contributor>? Contributors { get; set; }
-    [JsonPropertyName("Guild Settings")] public GuildParams? GuildSettings { get; set; }
+    [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
+    [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
 }
 
 public class Api {
-    [JsonPropertyName("API Keys")] public ApiKeys? ApiKeys { get; set; }
+    [JsonPropertyName("API Keys")] public ApiKeys ApiKeys { get; set; }
     [JsonPropertyName("API Media URL Blacklist")] public List<string>? ApiMediaUrlBlacklist { get; set; }
 }
 
@@ -52,30 +53,42 @@ public class Reply {
     [JsonPropertyName("Delete Trigger If Is Only In Message")] public bool DeleteTriggerIfIsOnlyInMessage { get; set; }
 }
 
-public static class Configuration {
-    public static Config Config { get; internal set; } = Load();
+public class NameReplacement {
+    public int Key { get; set; }
+    public string? BeforeName { get; set; }
+    public string? Replacement { get; set; }
+}
+
+public static class Config {
+    public static Base Base { get; internal set; } = Load();
 
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
-
-        var reply = new Reply {
-            Trigger = StringUtils.GetRandomString(),
-            Response = StringUtils.GetRandomString(),
-            OnlyTrigger = false,
-            DeleteTrigger = false,
-            DeleteTriggerIfIsOnlyInMessage = false
+        
+        var nameReplacement = new NameReplacement {
+            Key = 0,
+            BeforeName = "MintLily",
+            Replacement = "Lily"
         };
+
+        // var reply = new Reply {
+        //     Trigger = StringUtils.GetRandomString(),
+        //     Response = StringUtils.GetRandomString(),
+        //     OnlyTrigger = false,
+        //     DeleteTrigger = false,
+        //     DeleteTriggerIfIsOnlyInMessage = false
+        // };
         
         var guildParams = new GuildParams {
             GuildName = "Your Guild Name",
             GuildId = 0,
             BlacklistedCommands = new List<string>(),
-            Replies = new List<Reply> {reply}
+            Replies = new List<Reply>()
         };
         
         var contributor = new Contributor {
-            UserName = "Your Name",
-            Info = "Your Info"
+            UserName = "MintLily",
+            Info = "Main/Lead Developer Bot Owner/Creator"
         };
 
         var apiKeys = new ApiKeys {
@@ -90,7 +103,7 @@ public static class Configuration {
             ApiMediaUrlBlacklist = new List<string>()
         };
 
-        var config = new Config {
+        var config = new Base {
             BotToken = "",
             Prefix = "hp!",
             ActivityType = "Playing",
@@ -103,17 +116,20 @@ public static class Configuration {
             FullBlacklistOfGuilds = new List<ulong>(),
             Api = api,
             Contributors = new List<Contributor> { contributor },
-            GuildSettings = guildParams
+            GuildSettings = new List<GuildParams> { guildParams },
+            NameReplacements = new List<NameReplacement> { nameReplacement }
         };
         
         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));
     }
     
-    private static Config Load() {
+    private static Base Load() {
         CreateFile();
-        return JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) ?? throw new Exception();
+        return JsonSerializer.Deserialize<Base>(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) ?? throw new Exception();
     }
     
     public static void Save() 
-        => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Config, new JsonSerializerOptions {WriteIndented = true}));
+        => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
+    
+    public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
 }

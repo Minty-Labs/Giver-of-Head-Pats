@@ -1,6 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using HeadPats.Managers;
+using HeadPats.Configuration;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
@@ -26,25 +26,25 @@ public class ConfigControl : BaseCommandModule {
 
         switch (type.ToLower()) {
             case "cookie":
-                Vars.Config.CookieClientApiKey = key;
+                Config.Base.Api.ApiKeys.CookieClientApiKey = key;
                 await c.RespondAsync("Set cookie API key.");
                 break;
             case "flux":
-                Vars.Config.FluxpointApiKey = key;
+                Config.Base.Api.ApiKeys.FluxpointApiKey = key;
                 await c.RespondAsync("Set flux API key.");
                 break;
             case "unsplash":
-                Vars.Config.UnsplashAccessKey = key;
+                Config.Base.Api.ApiKeys.UnsplashAccessKey = key;
                 await c.RespondAsync("Set unsplash API key.");
                 break;
             case "unsplashsecret":
-                Vars.Config.UnsplashSecretKey = key;
+                Config.Base.Api.ApiKeys.UnsplashSecretKey = key;
                 await c.RespondAsync("Set unsplash API secret.");
                 break;
         }
 
         await c.Message.DeleteAsync();
-        OldConfiguration.Save();
+        Config.Save();
     }
     
 }

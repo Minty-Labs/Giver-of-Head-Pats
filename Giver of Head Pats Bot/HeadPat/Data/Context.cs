@@ -13,6 +13,8 @@ public class Context : DbContext {
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         const string path = "Data/data.db";
+        if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Data")))
+            Directory.CreateDirectory("Data");
         optionsBuilder.UseSqlite($"Data Source={path}");
         optionsBuilder.EnableSensitiveDataLogging();
 

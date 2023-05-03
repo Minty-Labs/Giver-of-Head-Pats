@@ -2,13 +2,15 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using HeadPats.Handlers;
 using HeadPats.Managers;
+using Serilog;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
 public class BotControl : BaseCommandModule  {
 
-    [Command("ListGuilds"), Description("Lists all the guilds the bot is in"), RequireOwner]
+    [Command("ListGuilds"), Description("Lists all the guilds the bot is in"), RequireAnyOwner]
     public async Task ListGuilds(CommandContext c) {
         var guilds = c.Client.Guilds;
         var sb = new StringBuilder();
@@ -36,7 +38,7 @@ public class BotControl : BaseCommandModule  {
         await c.RespondAsync(f);
     }
     
-    [Command("LeaveGuild"), Description("Leaves a guild"), RequireOwner]
+    [Command("LeaveGuild"), Description("Leaves a guild"), RequireAnyOwner]
     public async Task LeaveGuild(CommandContext c, [Description("Guild ID to leave from")] string guildId) {
         if (string.IsNullOrWhiteSpace(guildId)) {
             await c.RespondAsync("Please provide a guild ID.").DeleteAfter(3);
@@ -50,10 +52,21 @@ public class BotControl : BaseCommandModule  {
         await c.RespondAsync($"Left the server: {guild.Name}");
     }
     
-    [Command("SwapApis"), Description("Swaps the API used for image commands"), RequireOwner]
+    [Command("SwapApis"), Description("Swaps the API used for image commands"), RequireAnyOwner]
     public async Task SwapApis(CommandContext c) {
         Vars.UseCookieApi = !Vars.UseCookieApi;
         await c.RespondAsync($"API changed to: {(Vars.UseCookieApi ? "Cookie" : "Fluxpoint")}");
+    }
+    
+    [Command("ShutDown"), Description("Shuts down the bot"), RequireAnyOwner]
+    public async Task ShutDown(CommandContext ctx) {
+        var m = await ctx.Channel.SendMessageAsync("Shutting down...");
+        await Task.Delay(TimeSpan.FromSeconds(2));
+        await ctx.Message.DeleteAsync();
+        await m.ModifyAsync("Completely shut down.");
+        await Log.CloseAndFlushAsync();
+        await ctx.Client.DisconnectAsync();
+        Environment.Exit(0);
     }
     
 }

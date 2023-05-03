@@ -9,7 +9,6 @@ using DSharpPlus.SlashCommands;
 using HeadPats.Cookie;
 using HeadPats.Data;
 using HeadPats.Data.Models;
-// using HeadPats.Data.Modules;
 using HeadPats.Handlers.Events;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -17,6 +16,7 @@ using fluxpoint_sharp;
 using HeadPats.Commands.ContextMenu;
 using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
+using HeadPats.Configuration;
 using Serilog;
 using TaskScheduler = HeadPats.Managers.TaskScheduler;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
@@ -48,13 +48,30 @@ public sealed class Program {
     }
 
     private async Task MainAsync() {
+        if (Vars.IsWindows) {
+            if (Vars.IsWindows && string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
+                Console.Title = $"{Vars.Name} | Enter your bot token";
+                Log.Information("Please enter your bot token:");
+                Config.Base.BotToken = Console.ReadLine()!.Trim();
+            }
+            else if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
+                Log.Error("Cannot proceed without a bot token. Please enter your bot token in the config.json file.");
+                await Log.CloseAndFlushAsync();
+                return;
+            }
+            Config.Save();
+        }
+        
+        if (Vars.IsWindows)
+            Console.Title = $"{Vars.Name} | Loading...";
+        
         if (!Vars.IsDebug)
             MobileManager.CreateMobilePatch();
-        
+
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
             MinimumLogLevel = Vars.IsDebug ? LogLevel.Debug : LogLevel.None,
-            Token = Vars.Config.Token,
+            Token = Config.Base.BotToken,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
             AutoReconnect = true
@@ -65,7 +82,7 @@ public sealed class Program {
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = Vars.IsDebug ? new [] { ".." } : new[] { Vars.Config.Prefix!.ToLower(), Vars.Config.Prefix },
+            StringPrefixes = Vars.IsDebug ? new [] { ".." } : new[] { Config.Base.Prefix.ToLower(), Config.Base.Prefix },
             EnableDefaultHelp = true
         };
 
@@ -107,11 +124,11 @@ public sealed class Program {
         Client.Ready += Client_Ready;
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
         
-        if (!string.IsNullOrWhiteSpace(Vars.Config.CookieClientApiKey!))
-            CookieClient = new CookieClient(Vars.Config.CookieClientApiKey!);
+        if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.CookieClientApiKey))
+            CookieClient = new CookieClient(Config.Base.Api.ApiKeys.CookieClientApiKey!);
         
-        if (!string.IsNullOrWhiteSpace(Vars.Config.FluxpointApiKey!))
-            FluxpointClient = new FluxpointClient(Vars.Name, Vars.Config.FluxpointApiKey!);
+        if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!))
+            FluxpointClient = new FluxpointClient(Vars.Name, Config.Base.Api.ApiKeys.FluxpointApiKey!);
         
         eventHandler.Complete();
 
@@ -138,7 +155,7 @@ public sealed class Program {
         // MelonLoaderBlacklist.ProtectStructure.CreateFile();
         // BlacklistedNekosLifeGifs.CreateFile();
         // BlacklistedCmdsGuilds.CreateFile();
-        Configuration.Configuration.CreateFile();
+        Config.CreateFile();
             
         await Client.ConnectAsync();
 
@@ -154,18 +171,23 @@ public sealed class Program {
         Log.Debug("Process ID                     = " + Vars.ThisProcess.Id);
         Log.Debug("Build Date                     = " + Vars.BuildDate);
         Log.Debug("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
-        Log.Debug("Token                          = " + OutputStringAsHidden(Vars.Config.Token!));
-        Log.Debug("Prefix (non-Slash)             = " + $"{Vars.Config.Prefix}");
-        Log.Debug("ActivityType                   = " + $"{Vars.Config.ActivityType}");
-        Log.Debug("Game                           = " + $"{Vars.Config.Game}");
-        Log.Debug("Streaming URL                  = " + $"{Vars.Config.StreamingUrl}");
+        Log.Debug("Token                          = " + OutputStringAsHidden(Config.Base.BotToken!));
+        Log.Debug("Prefix (non-Slash)             = " + $"{Config.Base.Prefix}");
+        Log.Debug("ActivityType                   = " + $"{Config.Base.ActivityType}");
+        Log.Debug("Game                           = " + $"{Config.Base.Activity}");
+        Log.Debug("Streaming URL                  = " + $"{Config.Base.StreamingUrl}");
         Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
         await Client!.UpdateStatusAsync(new DiscordActivity {
-            Name = $"{Vars.Config.Game}",
-            ActivityType = GetActivityType(Vars.Config.ActivityType!)
+            Name = $"{Config.Base.Activity}",
+            ActivityType = GetActivityType(Config.Base.ActivityType!)
         }, Vars.IsDebug ? UserStatus.Idle : UserStatus.Online);
 
-        Console.Title = string.Format($"{Vars.Name} v{Vars.Version} - {Vars.Config.Game}");
+        if (Vars.IsWindows) {
+            var temp1 = Config.Base.Activity!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.Activity!);
+            Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {sender.CurrentUser.Username}#{sender.CurrentUser.Discriminator} - " +
+                            $"Currently in {Client.Guilds.Count} Guilds - " +
+                            $"{Config.Base.ActivityType!} {(temp1 ? "unset" : Config.Base.Activity)}";
+        }
 
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
@@ -184,9 +206,9 @@ public sealed class Program {
             .AddField("DSharpPlus Version", Vars.DSharpVer)
             .Build();
         
-        GeneralLogChannel = await sender.GetChannelAsync(Vars.Config.GeneralLogChannelId);
-        ErrorLogChannel = await sender.GetChannelAsync(Vars.Config.ErrorLogChannelId);
-        MessageCreated.DmCategory = await sender.GetChannelAsync(Vars.Config.DmResponseCategoryId);
+        GeneralLogChannel = await sender.GetChannelAsync(Config.Base.BotLogsChannel);
+        ErrorLogChannel = await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
+        MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
         TaskScheduler.StartStatusLoop();
         await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);

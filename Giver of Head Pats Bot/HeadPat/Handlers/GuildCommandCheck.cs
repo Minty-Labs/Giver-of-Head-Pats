@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-// using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands;
+using HeadPats.Configuration;
 
 namespace HeadPats.Handlers;
 
@@ -12,14 +13,10 @@ public class LockCommandForOnlyLilysComfiCorner : CheckBaseAttribute {
     public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild.Id == 805663181170802719);
 }
 
-/*public class GuildCommandCheck {
-    public ulong GuildId { get; set; }
-    public bool Enabled { get; set; }
+public class RequireAnyOwner : CheckBaseAttribute {
+    public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(Config.Base.OwnerIds!.Contains(ctx.User.Id));
 }
 
-public class HasModerationModuleEnabled : SlashCheckBaseAttribute {
-    
-    public override Task<bool> ExecuteChecksAsync(InteractionContext c) {
-        return Task.FromResult(Program.GuildCommandCheckList.FirstOrDefault(t => c.Guild.Id == t.GuildId)!.Enabled);
-    }
-}*/
+public class SlashRequireAnyOwner : SlashCheckBaseAttribute {
+    public override Task<bool> ExecuteChecksAsync(InteractionContext c) => Task.FromResult(Config.Base.OwnerIds!.Contains(c.User.Id));
+}

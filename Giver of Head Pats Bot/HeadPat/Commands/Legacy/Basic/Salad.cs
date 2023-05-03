@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
+using HeadPats.Configuration;
 using HeadPats.Handlers;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -12,13 +13,13 @@ namespace HeadPats.Commands.Legacy.Basic;
 public class Salad : BaseCommandModule {
     [Command("Salad"), Description("Summon a picture of salad"), Cooldown(50, 3600, CooldownBucketType.Guild), LockCommandForOnlyLilysComfiCorner]
     public async Task SaladCommand(CommandContext c) {
-        if (string.IsNullOrWhiteSpace(Vars.Config.UnsplashAccessKey) || string.IsNullOrWhiteSpace(Vars.Config.UnsplashSecretKey)) {
+        if (string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.UnsplashAccessKey) || string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.UnsplashSecretKey)) {
             await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.").DeleteAfter(10);
             await c.Message.DeleteAsync();
             return;
         }
         
-        var unsplashApiUrl = $"https://api.unsplash.com/photos/random/?query=salad&count=1&client_id={Vars.Config.UnsplashAccessKey}";
+        var unsplashApiUrl = $"https://api.unsplash.com/photos/random/?query=salad&count=1&client_id={Config.Base.Api.ApiKeys.UnsplashAccessKey}";
         if (UnsplashApiJson.unsplashApi != null) UnsplashApiJson.unsplashApi.Clear();
         UnsplashApiJson.unsplashApi = null;
         var httpClient = new HttpClient();
