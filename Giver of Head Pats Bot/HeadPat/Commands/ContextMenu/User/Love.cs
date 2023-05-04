@@ -10,14 +10,14 @@ namespace HeadPats.Commands.ContextMenu.User;
 public class Love : ApplicationCommandModule {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
     public async Task Hug(ContextMenuContext ctx) {
-        var author = ctx.User.Username;
         var target = ctx.TargetMember;
+        var author = ctx.User;
         if (ctx.TargetMember.Id == Vars.ClientId)
-            await ctx.CreateResponseAsync($"I got hugs from {author.ReplaceTheNames()}?! Thankies~");
+            await ctx.CreateResponseAsync($"I got hugs from {author.Username.ReplaceName(ctx.User.Id)}?! Thankies~");
         else if (ctx.TargetMember.Id == ctx.User.Id)
             await ctx.CreateResponseAsync("You cant give yourself hugs, but I'll gladly give you some!");
         else 
-            await ctx.CreateResponseAsync($"{author.ReplaceTheNames()} hugged {target.ReplaceTheNamesWithTags()}!");
+            await ctx.CreateResponseAsync($"{author.Username.ReplaceName(author.Id)} hugged {target.Username.ReplaceName(target.Id)}!");
     }
 
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Pat")]
@@ -55,14 +55,14 @@ public class Love : ApplicationCommandModule {
             return;
         }
         
-        var author = c.User.Username;
         var target = c.TargetMember;
+        var author = c.User;
         if (c.TargetMember.IsBot)
             await c.CreateResponseAsync("You cannot give bots headpats.", true);
         else if (c.TargetMember.Id == c.User.Id)
             await c.CreateResponseAsync("You cannot give yourself headpats.", true);
         else 
-            await c.CreateResponseAsync($"{author.ReplaceTheNames()} patted {target.ReplaceTheNamesWithTags()}!");
+            await c.CreateResponseAsync($"{author.Username.ReplaceName(author.Id)} patted {target.Username.ReplaceName(target.Id)}!");
         UserControl.AddPatToUser(c.TargetUser.Id, 1, true, c.Guild.Id);
     }
 }

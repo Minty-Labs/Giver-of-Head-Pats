@@ -33,7 +33,7 @@ public class Leaderboards : ApplicationCommandModule {
             foreach (var u in newUserList) {
                 if (counter >= 51) continue;
                 if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
-                strings.AppendLine($"`{counter}.` {u.UsernameWithNumber.Split('#')[0]} - Total Pats: **{u.PatCount}**");
+                strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
                 counter++;
             }
 
@@ -47,11 +47,11 @@ public class Leaderboards : ApplicationCommandModule {
         foreach (var u in newUserList) {
             if (max >= 11) continue;
             if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
-            sb.AppendLine($"`{max}.` {u.UsernameWithNumber} - Total Pats: **{u.PatCount}**");
+            sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
             max++;
         }
 
-        var temp = sb.ToString().ReplaceTheNamesWithTags();
+        var temp = sb.ToString();
 
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Head Pat Leaderboard");
