@@ -50,7 +50,7 @@ public class UserControl : BaseCommandModule {
         if (checkUser is null) {
             var newUser = new Users {
                 UserId = discordUser.Id,
-                UsernameWithNumber = $"{discordUser.Username}#{discordUser.Discriminator}",
+                UsernameWithNumber = $"{discordUser.Username}",
                 PatCount = 0,
                 CookieCount = 0,
                 IsUserBlacklisted = 0

@@ -10,8 +10,8 @@ namespace HeadPats.Commands.ContextMenu.User;
 public class Love : ApplicationCommandModule {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Hug")]
     public async Task Hug(ContextMenuContext ctx) {
-        var target = ctx.TargetMember.Username + "#" + ctx.TargetMember.Discriminator;
         var author = ctx.User.Username;
+        var target = ctx.TargetMember;
         if (ctx.TargetMember.Id == Vars.ClientId)
             await ctx.CreateResponseAsync($"I got hugs from {author.ReplaceTheNames()}?! Thankies~");
         else if (ctx.TargetMember.Id == ctx.User.Id)
@@ -32,7 +32,7 @@ public class Love : ApplicationCommandModule {
         if (checkUser is null) {
             var newUser = new Users {
                 UserId = c.TargetUser.Id,
-                UsernameWithNumber = $"{c.TargetUser.Username}#{c.TargetUser.Discriminator}",
+                UsernameWithNumber = $"{c.TargetUser.Username}",
                 PatCount = 0,
                 CookieCount = 0,
                 IsUserBlacklisted = 0
@@ -55,8 +55,8 @@ public class Love : ApplicationCommandModule {
             return;
         }
         
-        var target = c.TargetMember.Username + "#" + c.TargetMember.Discriminator;
         var author = c.User.Username;
+        var target = c.TargetMember;
         if (c.TargetMember.IsBot)
             await c.CreateResponseAsync("You cannot give bots headpats.", true);
         else if (c.TargetMember.Id == c.User.Id)

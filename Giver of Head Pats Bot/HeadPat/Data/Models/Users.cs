@@ -29,7 +29,7 @@ public static class UserControl {
         if (checkUser == null) {
             var newUser = new Users {
                 UserId = userId,
-                UsernameWithNumber = $"{user?.Username}#{user?.Discriminator}",
+                UsernameWithNumber = $"{user?.Username}",
                 PatCount = numberOfPats,
                 CookieCount = 0,
                 IsUserBlacklisted = 0
@@ -85,7 +85,7 @@ public static class UserControl {
         if (checkUser == null) {
             var newUser = new Users {
                 UserId = userId,
-                UsernameWithNumber = $"{user?.Username}#{user?.Discriminator}",
+                UsernameWithNumber = $"{user?.Username}",
                 PatCount = 0,
                 CookieCount = cookiesToAdd
             };

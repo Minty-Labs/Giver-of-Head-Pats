@@ -3,7 +3,6 @@ using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
-using HeadPats.Managers;
 using Serilog;
 
 namespace HeadPats.Commands.Legacy.Owner; 
@@ -53,7 +52,7 @@ public class BlacklistControl : BaseCommandModule {
                         if (checkUser == null) {
                             var newUser = new Users {
                                 UserId = user.Id,
-                                UsernameWithNumber = $"{user.Username}#{user.Discriminator}",
+                                UsernameWithNumber = $"{user.Username}",
                                 PatCount = 0,
                                 CookieCount = 0,
                                 IsUserBlacklisted = 1
@@ -84,7 +83,7 @@ public class BlacklistControl : BaseCommandModule {
                         if (checkUser == null) {
                             var newUser = new Users {
                                 UserId = user.Id,
-                                UsernameWithNumber = $"{user.Username}#{user.Discriminator}",
+                                UsernameWithNumber = $"{user.Username}",
                                 PatCount = 0,
                                 CookieCount = 0,
                                 IsUserBlacklisted = 0
@@ -108,7 +107,7 @@ public class BlacklistControl : BaseCommandModule {
                         var userList = new List<string>();
 
                         foreach (var u in db.Users.AsQueryable())
-                            userList.Add($"{u.UsernameWithNumber} - {u.UserId} - {u.IsUserBlacklisted}");
+                            userList.Add($"{(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0] : u.UsernameWithNumber)} - {u.UserId} - {u.IsUserBlacklisted}");
                         
                         await c.RespondAsync($"User blacklist: {string.Join(", ", userList)}");
                         break;

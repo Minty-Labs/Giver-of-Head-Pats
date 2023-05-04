@@ -36,7 +36,7 @@ public class Admin : ApplicationCommandModule {
         var e = new DiscordEmbedBuilder();
         e.WithTimestamp(DateTime.Now);
         e.WithTitle("User Information");
-        e.WithDescription($"`{user.Username}#{user.Discriminator}` - {user.Id}");
+        e.WithDescription($"`{user.Username}` - {user.Id}");
         e.AddField("Created", $"{m.CreationTimestamp:F}", true);
         e.AddField("Join", $"{m.JoinedAt:F}", true);
 

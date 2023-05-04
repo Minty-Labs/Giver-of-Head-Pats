@@ -40,7 +40,7 @@ public class MessageCreated {
         var message = e.Message.Content;
         // format: userId-userName
 
-        if (message.ToString().Contains("hp!")) return;
+        if (message.Contains("hp!")) return;
         if (message.StartsWith("."))
             return;
         
@@ -52,7 +52,7 @@ public class MessageCreated {
 
         if (!DmCategory.Children.Any(c => c.Name.Contains(author.Id.ToString()))) {
             serverChannelFromDm = await supportGuild.CreateChannelAsync($"{author.Id}-{author.Username.ReplaceAll("[ǃ@#$%^`~&*()+=,./<>?;:'\"\\|{}]")}",
-                ChannelType.Text, DmCategory, $"DM from: {author.Username}#{author.Discriminator} ({author.Id})");
+                ChannelType.Text, DmCategory, $"DM from: {author.Username} ({author.Id})");
         }
         else 
             serverChannelFromDm = DmCategory.Children.Single(c => c.Name.Contains(author.Id.ToString()));

@@ -53,8 +53,8 @@ public class Reply {
 }
 
 public class NameReplacement {
-    public int Key { get; set; }
-    public string? BeforeName { get; set; }
+    [JsonPropertyName("User ID")] public ulong UserId { get; set; }
+    [JsonPropertyName("Before Name")] public string? BeforeName { get; set; }
     public string? Replacement { get; set; }
 }
 
@@ -65,7 +65,7 @@ public static class Config {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
         
         var nameReplacement = new NameReplacement {
-            Key = 0,
+            UserId = 0,
             BeforeName = "MintLily",
             Replacement = "Lily"
         };

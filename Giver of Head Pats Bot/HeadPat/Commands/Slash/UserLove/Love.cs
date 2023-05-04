@@ -62,7 +62,7 @@ public class LoveCommands : ApplicationCommandModule {
              if (checkUser is null) {
                  var newUser = new Users {
                      UserId = user.Id,
-                     UsernameWithNumber = $"{user.Username}#{user.Discriminator}",
+                     UsernameWithNumber = $"{user.Username}",
                      PatCount = 0,
                      CookieCount = 0,
                      IsUserBlacklisted = 0
