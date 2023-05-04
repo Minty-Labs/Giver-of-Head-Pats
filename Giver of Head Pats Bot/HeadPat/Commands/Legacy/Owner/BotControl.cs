@@ -38,7 +38,7 @@ public class BotControl : BaseCommandModule  {
         await c.RespondAsync(f);
     }
     
-    [Command("LeaveGuild"), Description("Leaves a guild"), RequireAnyOwner]
+    [Command("LeaveGuild"), Description("Leaves a guild"), RequireOwner]
     public async Task LeaveGuild(CommandContext c, [Description("Guild ID to leave from")] string guildId) {
         if (string.IsNullOrWhiteSpace(guildId)) {
             await c.RespondAsync("Please provide a guild ID.").DeleteAfter(3);

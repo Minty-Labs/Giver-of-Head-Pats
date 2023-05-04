@@ -163,6 +163,7 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
         <ul>
             <li>List Guilds</li>
             <li>Leave Guild</li>
+            <li>Shutdown</li>
         </ul>
     </li>
     <li>Configuration Control</li>

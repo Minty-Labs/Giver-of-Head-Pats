@@ -42,7 +42,8 @@ public sealed class Program {
             new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"), rollingInterval: RollingInterval.Day)
+                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 25, 
+                    rollOnFileSizeLimit: true, fileSizeLimitBytes: 1024000000L)
                 .CreateLogger();
         Log.Information("Elly is an adorable cute floof, I love her very very very much!~");
     }
@@ -70,7 +71,7 @@ public sealed class Program {
 
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
-            MinimumLogLevel = Vars.IsDebug ? LogLevel.Debug : LogLevel.None,
+            MinimumLogLevel = Vars.IsDebug || Vars.IsWindows ? LogLevel.Debug : LogLevel.None,
             Token = Config.Base.BotToken,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
@@ -151,10 +152,6 @@ public sealed class Program {
             Timeout = TimeSpan.FromMinutes(2)
         });
         
-        // ReplyStructure.CreateFile();
-        // MelonLoaderBlacklist.ProtectStructure.CreateFile();
-        // BlacklistedNekosLifeGifs.CreateFile();
-        // BlacklistedCmdsGuilds.CreateFile();
         Config.CreateFile();
             
         await Client.ConnectAsync();
@@ -180,11 +177,11 @@ public sealed class Program {
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{Config.Base.Activity}",
             ActivityType = GetActivityType(Config.Base.ActivityType!)
-        }, Vars.IsDebug ? UserStatus.Idle : UserStatus.Online);
+        }, Vars.IsDebug || Vars.IsWindows ? UserStatus.Idle : UserStatus.Online);
 
         if (Vars.IsWindows) {
             var temp1 = Config.Base.Activity!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.Activity!);
-            Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {sender.CurrentUser.Username}#{sender.CurrentUser.Discriminator} - " +
+            Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {sender.CurrentUser.Username} - " +
                             $"Currently in {Client.Guilds.Count} Guilds - " +
                             $"{Config.Base.ActivityType!} {(temp1 ? "unset" : Config.Base.Activity)}";
         }
@@ -193,11 +190,12 @@ public sealed class Program {
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
         
         var startEmbed = new DiscordEmbedBuilder {
-            Color = Vars.IsDebug ? DiscordColor.Yellow : DiscordColor.SpringGreen,
+            Color = Vars.IsDebug || Vars.IsWindows ? DiscordColor.Yellow : DiscordColor.SpringGreen,
             Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
                           $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given",
             Footer = new DiscordEmbedBuilder.EmbedFooter {
-                Text = $"v{Vars.Version}"
+                Text = $"v{Vars.Version}",
+                IconUrl = Client.CurrentUser.AvatarUrl
             },
             Timestamp = DateTime.Now
         }
@@ -238,7 +236,7 @@ public sealed class Program {
         };
     }
     
-    public static string GetActivityAsString(ActivityType type) {
+    /*public static string GetActivityAsString(ActivityType type) {
         return type switch {
             ActivityType.Playing => "playing",
             ActivityType.ListeningTo => "listening",
@@ -261,5 +259,5 @@ public sealed class Program {
             "invis" => UserStatus.Invisible,
             _ => UserStatus.Online
         };
-    }
+    }*/
 }

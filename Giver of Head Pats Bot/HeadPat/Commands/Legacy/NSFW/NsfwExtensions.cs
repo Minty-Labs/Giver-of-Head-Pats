@@ -32,7 +32,7 @@ public static class NsfwExtensions {
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            return (await image).file ?? "https://totallywholeso.me/assets/img/team/null.jpg";
+            return (await image).file ?? "https://i.mintlily.lgbt/null.jpg";
         }
 
         var gif = contentType.ToLower() switch {
@@ -58,6 +58,6 @@ public static class NsfwExtensions {
             _ => throw new ArgumentOutOfRangeException()
         };
         
-        return (await gif).file ?? "https://totallywholeso.me/assets/img/team/null.jpg";
+        return (await gif).file ?? "https://i.mintlily.lgbt/null.jpg";
     }
 }

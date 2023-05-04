@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Configuration;
+using static HeadPats.Managers.MessageTasks;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
@@ -45,6 +46,27 @@ public class ConfigControl : BaseCommandModule {
 
         await c.Message.DeleteAsync();
         Config.Save();
+    }
+
+    [Command("SetupGuildInfo"), Description("Sets up the new config with any missing guilds"), RequireOwner]
+    public async Task SetupGuilds(CommandContext c) {
+        var guilds = c.Client.Guilds.Values.ToList();
+        var count = 0;
+        foreach (var guild in guilds) {
+            if (Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == guild.Id)!.GuildId == guild.Id) continue;
+            var guildConfigItem = new GuildParams {
+                GuildName = guild.Name,
+                GuildId = guild.Id,
+                BlacklistedCommands = new List<string>(),
+                Replies = new List<Reply>()
+            };
+            Config.Base.GuildSettings!.Add(guildConfigItem);
+            Config.Save();
+            count++;
+            await Task.Delay(TimeSpan.FromSeconds(2));
+        }
+
+        await c.RespondAsync($"Added {count} guilds to the config.");
     }
     
 }
