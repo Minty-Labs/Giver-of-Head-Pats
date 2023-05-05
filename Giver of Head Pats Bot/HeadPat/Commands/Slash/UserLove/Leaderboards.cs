@@ -61,7 +61,52 @@ public class Leaderboards : ApplicationCommandModule {
             $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}**");
         e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         e.WithTimestamp(DateTime.Now);
-        // await c.CreateResponseAsync(e.Build());
+        await c.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(e.Build()));
+    }
+    
+    [SlashCommand("TopCookie", "Get the top cookie leaderboard")]
+    public async Task CookieLeaderboard(InteractionContext c,
+        [Option("KeyWords", "Key words (can be empty)")]
+        string? keyWords = "") {
+        await using var db = new Context();
+
+        var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.CookieCount);
+
+        if (keyWords!.ToLower().Equals("server")) {
+            var strings = new StringBuilder();
+            strings.AppendLine("Top 50 that are in this server.");
+            var counter = 1;
+            foreach (var u in newUserList) {
+                if (counter >= 51) continue;
+                if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
+                strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
+                counter++;
+            }
+
+            await c.CreateResponseAsync(strings.ToString());
+            return;
+        }
+
+        var max = 1;
+        var sb = new StringBuilder();
+
+        foreach (var u in newUserList) {
+            if (max >= 11) continue;
+            if (!c.Guild.Members.Keys.Contains(u.UserId)) continue;
+            sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
+            max++;
+        }
+
+        var temp = sb.ToString();
+
+        var e = new DiscordEmbedBuilder();
+        e.WithTitle("Cookie Leaderboard");
+        e.WithColor(Colors.GetRandomCookieColor());
+        e.WithFooter($"{Vars.Name} (v{Vars.Version})");
+        e.AddField("Current Server Stats",
+            $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}");
+        // e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
+        e.WithTimestamp(DateTime.Now);
         await c.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(e.Build()));
     }
 }
