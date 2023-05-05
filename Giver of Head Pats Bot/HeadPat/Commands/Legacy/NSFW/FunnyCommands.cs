@@ -10,7 +10,7 @@ namespace HeadPats.Commands.Legacy.NSFW;
 
 public class FunnyCommands : BaseCommandModule {
     
-    [Command("nsfw"), Description("NSFW Commands"), RequireNsfw, CanUseNsfwCommands, Hidden]
+    [Command("nsfw"), Description("NSFW Commands"), RequireNsfw, CanUseNsfwCommandsFromSpecificRoleName, Hidden, Cooldown(50, 300, CooldownBucketType.Guild)]
     public async Task Nsfw(CommandContext ctx, 
         [Description("Media Type (Image or GIF)")] string mediaType,
         [Description("Content Type / Endpoint (Do hp!nsfw <media> list)")] string contentType = "list") {
@@ -57,7 +57,7 @@ public class FunnyCommands : BaseCommandModule {
             var overall = new Overlord {
                 ApplicationId = Vars.ClientId,
                 PatCount = 0,
-                NsfwCommandsUsed = 0
+                NsfwCommandsUsed = 1
             };
             db.Overall.Add(overall);
         }
@@ -68,6 +68,9 @@ public class FunnyCommands : BaseCommandModule {
         await db.SaveChangesAsync();
 
         var embed = new DiscordEmbedBuilder {
+            Author = new DiscordEmbedBuilder.EmbedAuthor {
+                Name = $"A total of {check!.NsfwCommandsUsed} NSFW commands have been ran."
+            },
             Title = contentType,
             ImageUrl = await NsfwExtensions.GetImageUrlFromMediaType(mediaType, contentType, Program.FluxpointClient!),
             Footer = new DiscordEmbedBuilder.EmbedFooter {
