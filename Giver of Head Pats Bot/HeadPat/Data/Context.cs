@@ -12,22 +12,10 @@ public class Context : DbContext {
     public DbSet<Overlord> Overall { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        const string path = "Data/data.db";
+        var path = Path.Combine(Environment.CurrentDirectory, "Data", "data.db");
         if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Data")))
             Directory.CreateDirectory("Data");
         optionsBuilder.UseSqlite($"Data Source={path}");
         optionsBuilder.EnableSensitiveDataLogging();
-
     }
 }
-
-/*public class ModerationModuleContext : DbContext {
-    public ModerationModuleContext() => Database.EnsureCreated();
-    public DbSet<Moderation> Moderation { get; set; }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        const string path = "Data/moderation.db";
-        optionsBuilder.UseSqlite($"Data Source={path}");
-        optionsBuilder.EnableSensitiveDataLogging();
-    }
-}*/

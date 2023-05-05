@@ -26,8 +26,20 @@ public class Love : ApplicationCommandModule {
         var checkGuild = db.Guilds.AsQueryable()
             .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
         
+        bool addedGuild = false, addedUser = false;
+        if (checkGuild is null) {
+            var newGuild = new Guilds {
+                GuildId = c.Guild.Id,
+                HeadPatBlacklistedRoleId = 0,
+                PatCount = 0
+            };
+            Log.Information("Added guild to database from Context menu Pat Command");
+            db.Guilds.Add(newGuild);
+            addedGuild = true;
+        }
+        
         var checkUser = db.Users.AsQueryable()
-            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+            .Where(u => u.UserId.Equals(c.TargetUser.Id)).ToList().FirstOrDefault();
         
         if (checkUser is null) {
             var newUser = new Users {
@@ -37,9 +49,13 @@ public class Love : ApplicationCommandModule {
                 CookieCount = 0,
                 IsUserBlacklisted = 0
             };
-            Log.Debug("Added user to database");
+            Log.Debug("Added user to database from Context menu Pat Command");
             db.Users.Add(newUser);
+            addedUser = true;
         }
+        
+        if (addedUser || addedGuild)
+            await db.SaveChangesAsync();
 
         var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
 

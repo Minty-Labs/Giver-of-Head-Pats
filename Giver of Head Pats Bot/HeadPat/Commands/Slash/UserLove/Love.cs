@@ -32,32 +32,21 @@ public class LoveCommands : ApplicationCommandModule {
              await using var db = new Context();
              var checkGuild = db.Guilds.AsQueryable()
                  .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
+             
+             bool addedGuild = false, addedUser = false;
+             if (checkGuild is null) {
+                 var newGuild = new Guilds {
+                     GuildId = c.Guild.Id,
+                     HeadPatBlacklistedRoleId = 0,
+                     PatCount = 0
+                 };
+                 Log.Information("Added guild to database from Pat Command");
+                 db.Guilds.Add(newGuild);
+                    addedGuild = true;
+             }
          
              var checkUser = db.Users.AsQueryable()
-                 .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
-
-             bool isRoleBlackListed, failed = false;
-             try {
-                 isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId);
-             }
-             catch (Exception ex) {
-                 try {
-                     isRoleBlackListed = c.Member!.Roles.FirstOrDefault()!.Id == checkGuild!.HeadPatBlacklistedRoleId;
-                 }
-                 catch (Exception ex2) {
-                     failed = true;
-                     if (!Vars.IsDebug) return;
-                     await DSharpToConsole.SendErrorToLoggingChannelAsync(ex);
-                     await DSharpToConsole.SendErrorToLoggingChannelAsync(ex2);
-                     return;
-                 }
-             }
-             if (failed) return;
-
-             if (isRoleBlackListed) {
-                 await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
-                 return;
-             }
+                 .Where(u => u.UserId.Equals(user.Id)).ToList().FirstOrDefault();
 
              if (checkUser is null) {
                  var newUser = new Users {
@@ -67,14 +56,25 @@ public class LoveCommands : ApplicationCommandModule {
                      CookieCount = 0,
                      IsUserBlacklisted = 0
                  };
-                 Log.Debug("Added user to database");
+                 Log.Debug("Added user to database from Pat Command");
                  db.Users.Add(newUser);
+                 addedUser = true;
              }
+             
+             if (addedUser || addedGuild)
+                 await db.SaveChangesAsync();
          
              var isUserBlackListed = checkUser is not null && checkUser.IsUserBlacklisted == 1;
          
              if (isUserBlackListed) {
                  await c.CreateResponseAsync("You are not allowed to use this command. This was set by a bot developer.", true);
+                 return;
+             }
+             
+             var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId);
+
+             if (isRoleBlackListed) {
+                 await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
                  return;
              }
              
@@ -461,6 +461,41 @@ public class LoveCommands : ApplicationCommandModule {
                      return;
                  }
              }
+             
+             await using var db = new Context();
+             var checkGuild = db.Guilds.AsQueryable()
+                 .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
+             
+             bool addedGuild = false, addedUser = false;
+             if (checkGuild is null) {
+                 var newGuild = new Guilds {
+                     GuildId = c.Guild.Id,
+                     HeadPatBlacklistedRoleId = 0,
+                     PatCount = 0
+                 };
+                 Log.Information("Added guild to database from Pat Command");
+                 db.Guilds.Add(newGuild);
+                 addedGuild = true;
+             }
+         
+             var checkUser = db.Users.AsQueryable()
+                 .Where(u => u.UserId.Equals(user.Id)).ToList().FirstOrDefault();
+
+             if (checkUser is null) {
+                 var newUser = new Users {
+                     UserId = user.Id,
+                     UsernameWithNumber = $"{user.Username}",
+                     PatCount = 0,
+                     CookieCount = 0,
+                     IsUserBlacklisted = 0
+                 };
+                 Log.Debug("Added user to database from Pat Command");
+                 db.Users.Add(newUser);
+                 addedUser = true;
+             }
+             
+             if (addedUser || addedGuild)
+                 await db.SaveChangesAsync();
 
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You requested a cookie, so here you go!");
@@ -493,7 +528,7 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by CookieAPI");
              }
              
-             e.WithColor(Colors.HexToColor("825540"));
+             e.WithColor(Colors.GetRandomCookieColor());
              e.WithDescription($"{c.User.Mention} gave a cookie to {user.Mention}");
              await c.CreateResponseAsync(e.Build());
              UserControl.AddCookieToUser(user.Id, 1);
