@@ -2,7 +2,8 @@
 using System.Text;
 using DSharpPlus.Entities;
 using HeadPats.Configuration;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Serilog;
 
 namespace HeadPats.Utils; 
@@ -65,7 +66,7 @@ public class Social {
 }
 
 public class TopicSubmissions {
-    [JsonProperty("food-drink")]
+    [JsonPropertyName("food-drink")]
     public FoodDrink fooddrink { get; set; }
     public Health health { get; set; }
 }
@@ -133,7 +134,7 @@ public class UnsplashApi {
 public class UnsplashApiJson {
     public static List<UnsplashApi>? unsplashApi;
     //public static UnsplashApi_Download? DownloadImage;
-    public static void GetData(string data) => unsplashApi = JsonConvert.DeserializeObject<List<UnsplashApi>>(data);
+    public static void GetData(string data) => unsplashApi = JsonSerializer.Deserialize<List<UnsplashApi>>(data);
 
     //public static void DownloadImageMethod(string data) => DownloadImage = JsonConvert.DeserializeObject<UnsplashApi_Download>(data);
     

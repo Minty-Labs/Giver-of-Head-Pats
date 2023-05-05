@@ -24,12 +24,11 @@ public class Colors {
     public static DiscordColor HexToColor(string hexColor) {
         if (hexColor.IndexOf('#') != -1)
             hexColor = hexColor.Replace("#", "");
-        var num1 = int.Parse(hexColor.Substring(0, 2), NumberStyles.AllowHexSpecifier) / (double)byte.MaxValue;
+        var num1 = int.Parse(hexColor[..2], NumberStyles.AllowHexSpecifier) / (double)byte.MaxValue;
         var num2 = int.Parse(hexColor.Substring(2, 2), NumberStyles.AllowHexSpecifier) / (float)byte.MaxValue;
         var num3 = int.Parse(hexColor.Substring(4, 2), NumberStyles.AllowHexSpecifier) / (float)byte.MaxValue;
-        double num4 = num2;
-        double num5 = num3;
-        return new DiscordColor((float)num1, (float)num4, (float)num5);
+        
+        return new DiscordColor((float)num1, num2, num3);
     }
     
     public static string ColorToHex(Color baseColor, bool hash = false) {
@@ -38,5 +37,12 @@ public class Colors {
                      Convert.ToInt32(baseColor.B * byte.MaxValue).ToString("X2");
         if (hash) str = "#" + str;
         return str;
+    }
+
+    public static DiscordColor GetRandomCookieColor() {
+        var hexList = new List<string> {
+            "B9A685", "825540", "EFC36B", "DBA875", "DFC2A1", "D19E68", "9D7B57", "A65D3F", "ECA599", "372022", "B8413D"
+        };
+        return HexToColor(hexList[new Random().Next(hexList.Count)]);
     }
 }

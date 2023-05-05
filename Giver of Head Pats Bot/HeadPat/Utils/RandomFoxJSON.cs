@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace HeadPats.Utils; 
 
 public static class RandomFoxJson {
     public static FoxRoot? FoxData;
 
-    public static void GetData(string data) => FoxData = JsonConvert.DeserializeObject<FoxRoot>(data);
+    public static void GetData(string data) => FoxData = JsonSerializer.Deserialize<FoxRoot>(data);
 
     public static string? GetImage() => FoxData?.Image?.Replace("\\", "");
 
@@ -13,8 +14,8 @@ public static class RandomFoxJson {
 }
 
 public partial class FoxRoot {
-    [JsonProperty("image")]
+    [JsonPropertyName("image")]
     public string? Image { get; set; }
-    [JsonProperty("link")]
+    [JsonPropertyName("link")]
     public string? Link { get; set; }
 }
