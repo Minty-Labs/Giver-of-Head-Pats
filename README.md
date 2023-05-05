@@ -1,13 +1,12 @@
 <h1>Giver of Head Pats, <i>DSharpPlus (C#)</i></h1>
-<img src="https://i.mintlily.lgbt/HeadPatSharp.png" align="right" width="200" height="200" />
+<img src="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/raw/main/Media/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
-<a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
-created by <a href="https://mintlily.lgbt/">Lily</a>. <br>
-Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do.
-At the moment you can see what I can do by running the <code>hp!help</code> command. <br>
-I was recently rewritten from Discord.JS (Javascript) to DSharpPlus (C#). So if things seem broken or missing from the older version, don't worry, they'll be fixed
-or added in the near future.<br>
-I hope I will be the perfect caregiver for your guild.
+A <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
+created by <a href="https://mintlily.lgbt/">Lily</a> from <a href="https://mintylabs.dev/">Minty Labs</a>. <br>
+Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hugs, cookies, and more; as well as summon pictures of foxes, bunnies, nekos, memes and more. I can also have moderators make auto responses for me to automatically reply to.
+<br><br>
+At the moment you can see what I can do by running the <code>hp!help</code> command.<br>
+I am always expanding in what I can do and I hope I will be the perfect caregiver for your guild.
 </p>
 
 <h3>Bot Creator Information</h3>
@@ -16,6 +15,7 @@ Donate: <a href="https://ko-fi.com/MintLily" target="_blank">https://ko-fi.com/M
 Open-Source: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
 Add to Your Guild: <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot" target="_blank">Invite Link</a><br>
 Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the Discord Support Guild</a><br>
+Boost on <a href="" target="_blank">Top.gg</a>
 </p>
 
 <h2>Packages (Nuget)</h2>
@@ -32,7 +32,6 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
     <li>Lib.Harmony <i>by pardeike</i> <b>v2.2.2</b></li>
     <li>Microsoft.EntityFrameworkCore <b>v7.0.5</b></li>
     <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.5</b></li>
-    <li>Nekos-Sharp <i>by BuilderB</i> <b>v3.5.0</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
     <li>Serilog by <b>v2.12.0</b>
         <ul>
@@ -52,7 +51,7 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
             <li>dotPeek</li>
         </ul>
     </li>
-    <li>SublimeText - Build 4121</li>
+    <li>SublimeText</li>
     <li>Obsidian (Note Editor)</li>
     <li>Photoshop v23.1.1</li>
     <li>Discord *</li>
@@ -61,6 +60,8 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
         <ul>
             <li>RandomFox.ca</li>
             <li>Bunnies.io</li>
+            <li>Inspirobot.me</li>
+            <li>Reddit</li>
             <li>Unsplash</li>
             <li>CookieAPI</li>
             <li>Fluxpoint</li>
@@ -98,12 +99,14 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
         </ul>
     </li>
 </ul>
+
 <h3>Contributors</h3>
 <ul>
     <li>Add (BotOwner)</li>
     <li>Remove (BotOwner)</li>
     <li>List</li>
 </ul>
+
 <h3>Replies</h3>
 <p>(Moderator)</p>
 <ul>
@@ -111,12 +114,13 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
     <li>Remove</li>
     <li>List</li>
 </ul>
+
 <h3>User Love</h3>
 <ul>
     <li>Leaderboards
         <ul>
             <li>TopPat</li>
-            <li>(Coming Soon) TopCookie</li>
+            <li>TopCookie</li>
         </ul>
     </li>
     <li>Love [ <code>/user &lt;action&gt; &lt;@User&gt;</code> ]
@@ -150,12 +154,14 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
             <li>Stats</li>
         </ul>
     </li>
-    <li>Salad</li>
+    <li>Salad (Only Available in a private guild)</li>
 </ul>
+
 <h3>Admin</h3>
 <ul>
     <li>BlacklistRoleFromPatCommand - Prevent Roles from using the pat command</li>
 </ul>
+
 <h3>Owner</h3>
 <ul>
     <li>Blacklist Control</li>
@@ -166,7 +172,12 @@ Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the D
             <li>Shutdown</li>
         </ul>
     </li>
-    <li>Configuration Control</li>
+    <li>Configuration Control
+        <ul>
+            <li>SetAPIKey</li>
+            <li>ListNameReplacements</li>
+        </ul>
+    </li>
     <li>User Control
         <ul>
             <li>MultiKick</li>
