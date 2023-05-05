@@ -45,7 +45,7 @@ public class UserControl : BaseCommandModule {
         var discordUser = await c.Client.GetUserAsync(userId);
         
         var checkUser = db.Users.AsQueryable()
-            .Where(u => u.UserId.Equals(c.User.Id)).ToList().FirstOrDefault();
+            .Where(u => u.UserId.Equals(userId)).ToList().FirstOrDefault();
         
         if (checkUser is null) {
             var newUser = new Users {
@@ -69,8 +69,7 @@ public class UserControl : BaseCommandModule {
             await c.RespondAsync("Activity search field was empty").DeleteAfter(3);
             return;
         }
-        try
-        {
+        try {
             await c.Guild.RequestMembersAsync(presences: true);
             
             List<DiscordMember> users = 

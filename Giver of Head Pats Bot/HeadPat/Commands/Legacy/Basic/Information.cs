@@ -28,7 +28,7 @@ public class Information : BaseCommandModule {
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(Vars.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");
         e.AddField("Bot Versions Info", $"DSharpPlus: **v{Vars.DSharpVer}** \nBot: **v{Vars.Version}** \nBuild Date: {Vars.BuildTime:F} - <t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>");
-        e.AddField("APIs", "Unsplash\nCookie\nFluxpoint");
+        e.AddField("APIs", "RandomFox.ca\nBunnies.io\nInspirobot.me\nReddit\nUnsplash\nCookie\nFluxpoint");
 
         e.WithTimestamp(DateTime.Now);
         await c.RespondAsync(e.Build());

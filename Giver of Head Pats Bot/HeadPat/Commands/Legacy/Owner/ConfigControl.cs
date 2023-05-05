@@ -1,14 +1,15 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using System.Text;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Configuration;
-using static HeadPats.Managers.MessageTasks;
+using HeadPats.Handlers;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
 public class ConfigControl : BaseCommandModule {
     
     [Command("SetAPIKey"), Description("Set an API key to gain access to a selected API"), RequireOwner]
-    public async Task ApiKey(CommandContext c, [Description("(cookie|flux|unsplash|unsplashsecret)")] string type, [RemainingText, Description("API Access Key")] string key) {
+    public async Task ApiKey(CommandContext c, [Description("(cookie|flux|unsplash|unsplashsecret)")] string type = "", [RemainingText, Description("API Access Key")] string key = "") {
         // SetApiKey (cookie|flux|unsplash|unsplashsecret) (key)
         if (string.IsNullOrWhiteSpace(type)) {
             await c.RespondAsync("Please provide a type of API key to set.");
@@ -24,31 +25,33 @@ public class ConfigControl : BaseCommandModule {
             await c.RespondAsync("Please provide a key to set.");
             return;
         }
+        
+        await c.Message.DeleteAsync();
 
         switch (type.ToLower()) {
             case "cookie":
                 Config.Base.Api.ApiKeys.CookieClientApiKey = key;
-                await c.RespondAsync("Set cookie API key.");
+                await c.Client.SendMessageAsync(c.Channel, "Set cookie API key.");
                 break;
             case "flux":
                 Config.Base.Api.ApiKeys.FluxpointApiKey = key;
-                await c.RespondAsync("Set flux API key.");
+                await c.Client.SendMessageAsync(c.Channel, "Set flux API key.");
                 break;
             case "unsplash":
                 Config.Base.Api.ApiKeys.UnsplashAccessKey = key;
-                await c.RespondAsync("Set unsplash API key.");
+                await c.Client.SendMessageAsync(c.Channel, "Set unsplash API key.");
                 break;
             case "unsplashsecret":
                 Config.Base.Api.ApiKeys.UnsplashSecretKey = key;
-                await c.RespondAsync("Set unsplash API secret.");
+                await c.Client.SendMessageAsync(c.Channel, "Set unsplash API secret.");
                 break;
         }
 
-        await c.Message.DeleteAsync();
         Config.Save();
     }
 
-    [Command("SetupGuildInfo"), Description("Sets up the new config with any missing guilds"), RequireOwner]
+    // Not needed anymore, but I'll keep it here for reference
+    /*[Command("SetupGuildInfo"), Description("Sets up the new config with any missing guilds"), RequireOwner]
     public async Task SetupGuilds(CommandContext c) {
         var guilds = c.Client.Guilds.Values.ToList();
         var count = 0;
@@ -67,6 +70,65 @@ public class ConfigControl : BaseCommandModule {
         }
 
         await c.RespondAsync($"Added {count} guilds to the config.");
+    }*/
+
+    [Command("NameReplacement"), Description("Replaces a user's name with a custom name"), RequireAnyOwner]
+    public async Task NameReplacements(CommandContext c, [Description("(list|add|remove)")] string action = "", 
+        [Description("The User ID of the user to replace the name of")] string userId = "",
+        [Description("The New Name to replace the user's current User or Display Name"), RemainingText] string replacementName = "") {
+        if (string.IsNullOrWhiteSpace(action)) {
+            await c.RespondAsync("Please provide an action to perform. `(list|add|remove)`");
+            return;
+        }
+
+        var replacements = Config.Base.NameReplacements;
+        
+        if (action.ToLower().Equals("list")) {
+            var sb = new StringBuilder();
+            if (replacements != null) {
+                sb.AppendLine($"Count: {replacements.Count}");
+                foreach (var replacement in replacements) 
+                    sb.AppendLine($"({replacement.UserId}) **{replacement.BeforeName}** -> **{replacement.Replacement}**");
+            }
+
+            await c.RespondAsync(sb.ToString());
+            return;
+        }
+
+        if (!action.ToLower().Equals("list")) {
+            if (string.IsNullOrWhiteSpace(userId)) {
+                await c.RespondAsync("Please provide the user ID of the user.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(replacementName)) {
+                await c.RespondAsync("Please provide a replacement name.");
+                return;
+            }
+        }
+        
+        var userIdLong = ulong.Parse(userId);
+        var user = await c.Client.GetUserAsync(userIdLong);
+
+        switch (action.ToLower()) {
+            case "add": {
+                var replacement = new NameReplacement {
+                    UserId = userIdLong,
+                    BeforeName = user.Username,
+                    Replacement = replacementName
+                };
+                replacements!.Add(replacement);
+                await c.RespondAsync($"Added ({replacement.UserId}) **{replacement.BeforeName}** -> **{replacement.Replacement}**");
+                break;
+            }
+            case "remove": {
+                var item = replacements!.Single(r => r.UserId == userIdLong);
+                replacements!.Remove(item);
+                await c.RespondAsync($"Removed ({item.UserId}) **{item.BeforeName}** -> **{item.Replacement}**");
+                break;
+            }
+        }
+        
+        Config.Save();
     }
     
 }

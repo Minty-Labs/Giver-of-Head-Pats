@@ -49,19 +49,17 @@ public sealed class Program {
     }
 
     private async Task MainAsync() {
-        if (Vars.IsWindows) {
-            if (Vars.IsWindows && string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
-                Console.Title = $"{Vars.Name} | Enter your bot token";
-                Log.Information("Please enter your bot token:");
-                Config.Base.BotToken = Console.ReadLine()!.Trim();
-            }
-            else if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
-                Log.Error("Cannot proceed without a bot token. Please enter your bot token in the config.json file.");
-                await Log.CloseAndFlushAsync();
-                return;
-            }
-            Config.Save();
+        if (Vars.IsWindows && string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
+            Console.Title = $"{Vars.Name} | Enter your bot token";
+            Log.Information("Please enter your bot token:");
+            Config.Base.BotToken = Console.ReadLine()!.Trim();
         }
+        else if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
+            Log.Error("Cannot proceed without a bot token. Please enter your bot token in the Configuration.json file.");
+            await Log.CloseAndFlushAsync();
+            Environment.Exit(0);
+        }
+        Config.Save();
         
         if (Vars.IsWindows)
             Console.Title = $"{Vars.Name} | Loading...";
@@ -92,6 +90,8 @@ public sealed class Program {
         
         Commands.SetHelpFormatter<HelpFormatter>();
         
+        #region Legacy Commands
+        
         LegacyCommandHandler.Register(Commands);
         Commands.CommandExecuted += (sender, args) => {
             Log.Information($"Command {args.Command.Name}, executed by {args.Context.User.Username}, " +
@@ -106,6 +106,10 @@ public sealed class Program {
                             $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}");
             return Task.CompletedTask;
         };
+        
+        #endregion
+
+        #region Slash Commands
 
         SlashCommandHandler.Register(Slash);
         ContextMenuHandler.Register(Slash);
@@ -121,6 +125,8 @@ public sealed class Program {
             DSharpToConsole.SendErrorToLoggingChannel(message);
             return Task.CompletedTask;
         };
+
+        #endregion
 
         Client.Ready += Client_Ready;
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
@@ -176,14 +182,14 @@ public sealed class Program {
         Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{Config.Base.Activity}",
-            ActivityType = GetActivityType(Config.Base.ActivityType!)
+            ActivityType = GetActivityType(Config.Base.ActivityType)
         }, Vars.IsDebug || Vars.IsWindows ? UserStatus.Idle : UserStatus.Online);
 
         if (Vars.IsWindows) {
             var temp1 = Config.Base.Activity!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.Activity!);
             Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {sender.CurrentUser.Username} - " +
                             $"Currently in {Client.Guilds.Count} Guilds - " +
-                            $"{Config.Base.ActivityType!} {(temp1 ? "unset" : Config.Base.Activity)}";
+                            $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.Activity)}";
         }
 
         await using var db = new Context();
@@ -219,7 +225,7 @@ public sealed class Program {
         return temp ?? "***************";
     }
     
-    private static ActivityType GetActivityType(string type) {
+    public static ActivityType GetActivityType(string type) {
         return type.ToLower() switch {
             "playing" => ActivityType.Playing,
             "listening" => ActivityType.ListeningTo,

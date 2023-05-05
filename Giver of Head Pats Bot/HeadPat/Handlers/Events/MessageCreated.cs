@@ -3,11 +3,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HeadPats.Configuration;
-using HeadPats.Data;
-// using HeadPats.MelonLoaderBlacklist;
 using HeadPats.Utils;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
 using Serilog;
 
 namespace HeadPats.Handlers.Events; 
@@ -19,17 +15,7 @@ public class MessageCreated {
         c.MessageCreated += GetAndMaybeRespondToTrigger;
         c.MessageCreated += GetUserBotDm;
         c.MessageCreated += RespondToDmFromChannel;
-        // c.MessageCreated += LookForResetListCommandResponse;
-        // c.MessageCreated += HiddenMinecraftCommand;
     }
-
-    // private static async Task HiddenMinecraftCommand(DiscordClient sender, MessageCreateEventArgs e) {
-    //     if (e.Channel.IsPrivate) return;
-    //     if (e.Author.IsBot) return;
-    //     if (e.Message.Content.ToLower().StartsWith("hp!minecraft")) {
-    //         await e.Message.RespondAsync("Did you now the bot creator has a minecraft server?\nIP: `mintlily.lgbt` - Vanilla 1.19.x+");
-    //     }
-    // }
 
     internal static DiscordChannel? DmCategory { get; set; }
 
@@ -140,31 +126,4 @@ public class MessageCreated {
                 await e.Message.DeleteAsync("Auto delete by bot response.");
         }
     }
-
-    /*private static async Task LookForResetListCommandResponse(DiscordClient sender, MessageCreateEventArgs e) {
-        if (e.Channel.IsPrivate) return;
-        if (e.Author.IsBot) return;
-        if (!ProtectCommands.LookingForAnswer) return;
-        if (e.Author.Id == 167335587488071682 && e.Message.Content.ToLower().Contains('y')) { /* ID of Lily #1#
-            var path = BuildInfo.IsWindows ? 
-                $"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}Data{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json" :
-                $"{Path.DirectorySeparatorChar}MelonLoaderBlacklist{Path.DirectorySeparatorChar}Protection.json";
-            ProtectStructure.GetAllModsAsList()?.Clear();
-            ProtectStructure.GetAllAuthorsAsList()?.Clear();
-            ProtectStructure.GetAllPluginsAsList()?.Clear();
-            var users = ProtectStructure.GetListOfUsers();
-            
-            var protectBase = new BaseProtection {
-                Users = users,
-                ModNames = new List<string> { "___Test" },
-                PluginNames = new List<string> { "___Test" },
-                AuthorNames = new List<string> { "___Test" }
-            };
-            
-            await File.WriteAllTextAsync(path,  JsonConvert.SerializeObject(protectBase, Formatting.Indented));
-            
-            ProtectStructure.Save();
-            ProtectCommands.LookingForAnswer = false;
-        }
-    }*/
 }

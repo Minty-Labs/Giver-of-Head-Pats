@@ -9,12 +9,6 @@ public class Summon : ApplicationCommandModule {
     
     [SlashCommandGroup("Summon", "Summon a picture of various options")]
     public class SummonPicture : ApplicationCommandModule {
-        // [SlashCommand("Cat", "Cat pics are always nice")]
-        // public async Task Cat(ic c) {
-        //     var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Misc.Cat() : Program.NekoClient?.Misc_v3.Cat();
-        //
-        //     await BasicCmdUtils.OutputBaseCommand(c, "", neko?.Result.ImageUrl, "FFFF00", "nekos.life");
-        // }
 
         [SlashCommand("Bunny", "Bunnies are mega adorable")]
         public async Task Bunny(InteractionContext c) {
@@ -60,6 +54,7 @@ public class Summon : ApplicationCommandModule {
             var foxCount = await RandomFoxHtml.GetFoxCount();
 
             var e = new DiscordEmbedBuilder();
+            e.WithAuthor("Source", "https://randomfox.ca/");
             e.WithTitle($"{RandomFoxJson.GetImageNumber()} / {foxCount}");
             e.WithColor(Colors.HexToColor("AC5F25"));
             e.WithImageUrl(RandomFoxJson.GetImage());
@@ -69,11 +64,31 @@ public class Summon : ApplicationCommandModule {
             RandomFoxJson.FoxData = null;
         }
         
-        // [SlashCommand("Neko", "Summon a picture or GIF of a SFW neko")]
-        // public async Task Neko(ic c) {
-        //     var neko = new Random().Next(0, 1) == 1 ? Program.NekoClient?.Image.Neko() : Program.NekoClient?.Image.NekoGif();
-        //     await BasicCmdUtils.OutputBaseCommand(c, "Random Neko", neko?.Result.ImageUrl, "42F4A1", "Powered by nekos.life");
-        // }
+        [SlashCommand("Neko", "Summon a picture of a neko (SFW)")]
+        public async Task Neko(InteractionContext c) {
+            var embed = new DiscordEmbedBuilder {
+                Title = "Neko",
+                Color = Colors.Random,
+                Footer = new DiscordEmbedBuilder.EmbedFooter {
+                    Text = "Powered by FluxpointAPI"
+                },
+                ImageUrl = (await Program.FluxpointClient!.Sfw.GetNekoAsync()).file
+            };
+            await c.CreateResponseAsync(embed.Build());
+        }
+        
+        [SlashCommand("Cat", "Summon a picture of a cat")]
+        public async Task Cat(InteractionContext c) {
+            var embed = new DiscordEmbedBuilder {
+                Title = "Kitty",
+                Color = Colors.Random,
+                Footer = new DiscordEmbedBuilder.EmbedFooter {
+                    Text = "Powered by FluxpointAPI"
+                },
+                ImageUrl = (await Program.FluxpointClient!.Animal.GetCatAsync()).file
+            };
+            await c.CreateResponseAsync(embed.Build());
+        }
     }
     
     [SlashCommand("Meme", "Get a random meme from one of nine subreddits")]
@@ -113,6 +128,7 @@ public class Summon : ApplicationCommandModule {
         try {
             counter += 1;
             var e = new DiscordEmbedBuilder();
+            e.WithAuthor("Reddit", $"https://www.reddit.com/r/{subreddit}");
             e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&mdash;", "\u2014"));
             e.WithColor(Colors.Random);
             //e.WithUrl(TheData.GetPostUrl()); // It no likey
@@ -139,6 +155,7 @@ public class Summon : ApplicationCommandModule {
             return;
         }
         var e = new DiscordEmbedBuilder();
+        e.WithAuthor("InspiroBot", "https://inspirobot.me/");
         e.WithTitle("Got your image!");
         e.WithColor(Colors.Random);
         e.WithImageUrl(content);

@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.Entities;
+using HeadPats.Configuration;
 using HeadPats.Data;
 
 namespace HeadPats.Managers;
@@ -15,9 +16,9 @@ public static class TaskScheduler {
 
     public static void NormalDiscordActivity() {
         Program.Client!.UpdateStatusAsync(new DiscordActivity {
-            Name = "lots of cuties | hp!help",
-            ActivityType = ActivityType.Watching
-        }, UserStatus.Online).GetAwaiter().GetResult();;
+            Name = Config.Base.Activity!,
+            ActivityType = Program.GetActivityType(Config.Base.ActivityType)
+        }, UserStatus.Online).GetAwaiter().GetResult();
     }
 
     private static void LoopStatus() {
@@ -29,10 +30,11 @@ public static class TaskScheduler {
                 Name = $"{tempPatCount} head pats | hp!help",
                 ActivityType = ActivityType.Watching
             }, UserStatus.Online).GetAwaiter().GetResult();
-            // Logger.Log("Updated Status");
+            // Log.Debug("Updated Status");
             db.Dispose();
             
             Thread.Sleep(TimeSpan.FromMinutes(10));
         }
+        // ReSharper disable once FunctionNeverReturns
     }
 }
