@@ -1,6 +1,6 @@
 <h2>Giver of Head Pats Privacy Policy</h2>
 <div style="text-align: right">
-  <p>Updated: 2 December 2022</p>
+  <p>Updated: 7 May 2023</p>
 </div>
 <div>
   <p>
@@ -27,7 +27,8 @@
   </p>
 
   <ul>
-    <li>Your account Username and Discriminator <small>(the four numbers)</small></li>
+    <li>Your account Username and Discriminator <small>(the four numbers)</small> [~a]</li>
+    <li>Your Guild Name & ID</li>
   </ul>
   <br />
   Please read this policy carefully to understand our policies and practices regarding your information and how we treat it. If you do not agree with our policies and practices, your choice is not to use our website or bot. By accessing
@@ -36,12 +37,17 @@
 
   <h2>What, How, Why, When of Information We Collect</h2>
   <p>
-    <b>WHAT</b>:&nbsp; We only collect your account user name and the discriminator.
+    <b>WHAT</b>:&nbsp;<br>
+    [1] We only collect your account user name and the discriminator. [~a]<br>
+    [2] Your Guild Name & ID 
     <br />
-    <b>HOW</b>:&nbsp; When a user runs a command that may give you a "virtual" head pat.
+    <b>HOW</b>:&nbsp;<br>
+    [1] When a user runs a command that may give you a "virtual" head pat.<br>
+    [2] These are tracked for our built-in Role or Command restrictions/blacklising. As well as bot auto responses. 
     <br />
-    <b>WHY &amp; WHEN</b>:&nbsp; This information is used to show a "server/guild-only" head pat leaderboard. The information is only shown when a user run that leaderboard command. The information shown will only contain users in the
-    guild that command was ran in, as well as if a member was ever given a head pat.
+    <b>WHY &amp; WHEN</b>:&nbsp;<br>
+    [1] This information is used to show a "server/guild-only" head pat leaderboard. The information is only shown when a user run that leaderboard command. The information shown will only contain users in the guild that command was ran in, as well as if a member was ever given a head pat.<br>
+    [2] This information is needed to determine what data needs to be called for the necessary action(s). 
   </p>
   <h2>Changes to our Privacy Policy</h2>
   <p>
@@ -63,4 +69,7 @@
       </ul>
     </li>
   </ul>
+
+  <h2>Legend</h2>
+  <p><b>~a</b> - As per <a href="https://discord.com/blog/usernames" target="_blank">Discord&#39;s Username Changes Blogpost</a>, the discriminator will not be tracked or logged, once this update becomes live.</p>
 </div>
