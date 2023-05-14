@@ -14,7 +14,8 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 Donate: <a href="https://ko-fi.com/MintLily" target="_blank">https://ko-fi.com/MintLily</a><br>
 Open-Source: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
 Add to Your Guild: <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot" target="_blank">Invite Link</a><br>
-Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the Discord Support Guild</a>
+Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the Discord Support Guild</a><br>
+Boost on <a href="https://top.gg/bot/489144212911030304" target="_blank">Top.gg</a>
 </p>
 
 <h2>Packages (Nuget)</h2>
