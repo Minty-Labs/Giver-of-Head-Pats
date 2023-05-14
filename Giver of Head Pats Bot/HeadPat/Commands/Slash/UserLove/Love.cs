@@ -104,11 +104,11 @@ public class LoveCommands : ApplicationCommandModule {
              e.WithTitle(outputs[num]);
              
              // TODO: Add embed image from new CookieAPI once it is done
-             // Todo: Temp using FluxpointAPI
-             if (Vars.UseCookieApi) {
+             // Todo: Temp using Fluxpoint API
+             // if (Vars.UseCookieApi) {
                  // 
-             }
-             else {
+             // }
+             // else {
                  start2:
                  var image = (await Program.FluxpointClient!.Gifs.GetPatAsync()).file;
                  if (image.Equals(_tempPatGifUrl)) {
@@ -116,11 +116,11 @@ public class LoveCommands : ApplicationCommandModule {
                      goto start2;
                  }
 
-                 _tempHugGifUrl = image;
+                 _tempPatGifUrl = image;
                  
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by FluxpointAPI");
-             }
+                 e.WithFooter("Powered by Fluxpoint API");
+             // }
 
              var doingTheEllySpecial = false;
              
@@ -207,7 +207,7 @@ public class LoveCommands : ApplicationCommandModule {
                  _tempHugGifUrl = image;
                  
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by FluxpointAPI");
+                 e.WithFooter("Powered by Fluxpoint API");
              }
              
              e.WithColor(Colors.HexToColor("6F41B6"));
@@ -266,7 +266,7 @@ public class LoveCommands : ApplicationCommandModule {
                  _tempHugGifUrl = image;
                  
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by FluxpointAPI");
+                 e.WithFooter("Powered by Fluxpoint API");
              }
              
              e.WithColor(Colors.HexToColor("3498DB"));
@@ -325,7 +325,7 @@ public class LoveCommands : ApplicationCommandModule {
                  _tempKissGifUrl = image;
                  
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by FluxpointAPI");
+                 e.WithFooter("Powered by Fluxpoint API");
              }
              
              e.WithColor(Colors.HexToColor("F771A3"));
@@ -384,7 +384,7 @@ public class LoveCommands : ApplicationCommandModule {
                  _tempSlapGifUrl = image;
                  
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by FluxpointAPI");
+                 e.WithFooter("Powered by Fluxpoint API");
              }
 
              e.WithColor(Colors.HexToColor("E74C3C"));
@@ -443,7 +443,7 @@ public class LoveCommands : ApplicationCommandModule {
                  _tempPokeGifUrl = image;
                  
                  e.WithImageUrl(image);
-                 e.WithFooter("Powered by FluxpointAPI");
+                 e.WithFooter("Powered by Fluxpoint API");
              }
              
              e.WithColor(Colors.HexToColor("0E4730"));
