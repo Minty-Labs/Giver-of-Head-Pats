@@ -42,7 +42,7 @@ public static class UserControl {
             db.Users.Update(checkUser);
         }
 
-        if (addToGuild) {
+        if (addToGuild && guildToAddPatTo != 0) {
             if (checkGuild == null) {
                 var newGuild = new Guilds {
                     GuildId = guildToAddPatTo,

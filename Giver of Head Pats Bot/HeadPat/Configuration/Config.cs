@@ -18,6 +18,8 @@ public class Base {
     [JsonPropertyName("Contributors")] public List<Contributor>? Contributors { get; set; }
     [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
     [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
+    [JsonPropertyName("Daily Pat Notify Channel ID")] public ulong DailyPatNotifyChannelId { get; set; }
+    [JsonPropertyName("Daily Pats")] public List<DailyPat>? DailyPats { get; set; }
 }
 
 public class Api {
@@ -58,11 +60,23 @@ public class NameReplacement {
     public string? Replacement { get; set; }
 }
 
+public class DailyPat {
+    [JsonPropertyName("User ID")] public ulong UserId { get; set; }
+    [JsonPropertyName("User Name")] public string? UserName { get; set; }
+    [JsonPropertyName("Set Epoch Time")] public long SetEpochTime { get; set; }
+}
+
 public static class Config {
     public static Base Base { get; internal set; } = Load();
 
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
+        
+        var dailyPat = new DailyPat {
+            UserId = 0,
+            UserName = "MintLily",
+            SetEpochTime = 1682183220
+        };
         
         var nameReplacement = new NameReplacement {
             UserId = 0,
@@ -116,7 +130,9 @@ public static class Config {
             Api = api,
             Contributors = new List<Contributor> { contributor },
             GuildSettings = new List<GuildParams> { guildParams },
-            NameReplacements = new List<NameReplacement> { nameReplacement }
+            NameReplacements = new List<NameReplacement> { nameReplacement },
+            DailyPatNotifyChannelId = 805663182554136615,
+            DailyPats = new List<DailyPat> { dailyPat }
         };
         
         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));
