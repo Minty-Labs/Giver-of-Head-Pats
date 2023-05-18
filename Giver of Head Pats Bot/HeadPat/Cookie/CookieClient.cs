@@ -3,8 +3,8 @@
 namespace HeadPats.Cookie;
 
 public class CookieClient {
-    private const string BaseUrl = "https://cookie.ellyvr.dev/api/v1/";
-    private const string StaticUrl = "https://cookie.ellyvr.dev/images/";
+    private const string BaseUrl = "https://cookie.mintylabs.dev/api/v1/";
+    private const string StaticUrl = "https://cookie.mintylabs.dev/images/";
     public string? CookieApiKey { get; internal set; }
 
     public CookieClient(String key) => CookieApiKey = key;
