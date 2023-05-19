@@ -105,10 +105,20 @@ public class LoveCommands : ApplicationCommandModule {
              
              // TODO: Add embed image from new CookieAPI once it is done
              // Todo: Temp using Fluxpoint API
-             // if (Vars.UseCookieApi) {
-                 // 
-             // }
-             // else {
+             if (Vars.UseCookieApi) {
+                 start:
+                 var image = Program.CookieClient!.GetPat();
+                 if (image.Equals(_tempPatGifUrl)) {
+                     Log.Debug("Image is same as previous image");
+                     goto start;
+                 }
+
+                 _tempPatGifUrl = image;
+                 
+                 e.WithImageUrl(image);
+                 e.WithFooter("Powered by CookieAPI");
+             }
+             else {
                  start2:
                  var image = (await Program.FluxpointClient!.Gifs.GetPatAsync()).file;
                  if (image.Equals(_tempPatGifUrl)) {
@@ -120,7 +130,7 @@ public class LoveCommands : ApplicationCommandModule {
                  
                  e.WithImageUrl(image);
                  e.WithFooter("Powered by Fluxpoint API");
-             // }
+             }
 
              var doingTheEllySpecial = false;
              
@@ -158,6 +168,7 @@ public class LoveCommands : ApplicationCommandModule {
          
          [SlashCommand("hug", "Hug a specified user.")]
          public async Task Hug(InteractionContext c, [Option("user", "The user to hug", true)] DiscordUser user) {
+             try {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
                  var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("hug");
@@ -212,7 +223,13 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("6F41B6"));
              e.WithDescription($"{c.User.Mention} gave a hug to {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
+             e.Build();
+             await c.CreateResponseAsync(embed: e);
+             }
+             catch (Exception eeee)
+             {
+                 await DSharpToConsole.SendErrorToLoggingChannelAsync(eeee);
+             }
          }
 
          [SlashCommand("Cuddle", "Cuddle a specified user.")]

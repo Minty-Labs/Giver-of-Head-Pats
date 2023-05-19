@@ -50,4 +50,10 @@ public class CookieClient {
     /// </summary>
     /// <returns>URL as string of a Slap</returns>
     public string GetSlap() => $"{StaticUrl}slap/{MakeRequest($"{BaseUrl}images/slap").Path}";
+    
+    /// <summary>
+    /// Gets a URL to a random pat image or GIF
+    /// </summary>
+    /// <returns>URL as string of a Pat</returns>
+    public string GetPat() => $"{StaticUrl}pat/{MakeRequest($"{BaseUrl}images/pat").Path}";
 }
