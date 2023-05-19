@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -67,6 +68,23 @@ public class BotControl : BaseCommandModule  {
         await Log.CloseAndFlushAsync();
         await ctx.Client.DisconnectAsync();
         Environment.Exit(0);
+    }
+    
+    [Command("exec"), Description("Runs a linux command on the server"), RequireOwner]
+    public async Task Execute(CommandContext ctx, [Description("The command to run"), RemainingText] string command) {
+        var process = new Process {
+            StartInfo = new ProcessStartInfo {
+                FileName = "/bin/bash",
+                Arguments = $"-c \"{command}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
+        var output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
+        await ctx.RespondAsync(output);
     }
     
 }

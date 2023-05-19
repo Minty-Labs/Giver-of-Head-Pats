@@ -210,10 +210,10 @@ public sealed class Program {
             .AddField("DSharpPlus Version", Vars.DSharpVer)
             .Build();
         
-        GeneralLogChannel = await sender.GetChannelAsync(Config.Base.BotLogsChannel);
-        ErrorLogChannel = await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
+        GeneralLogChannel =         await sender.GetChannelAsync(Config.Base.BotLogsChannel);
+        ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
-        TaskScheduler.StartStatusLoop();
+        TaskScheduler.StartStatusLoop(); // Daily Pats and Status Loop
         await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
