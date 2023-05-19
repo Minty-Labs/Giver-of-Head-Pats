@@ -18,8 +18,6 @@ public class Base {
     [JsonPropertyName("Contributors")] public List<Contributor>? Contributors { get; set; }
     [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
     [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
-    [JsonPropertyName("Daily Pat Notify Channel ID")] public ulong DailyPatNotifyChannelId { get; set; }
-    [JsonPropertyName("Daily Pats")] public List<DailyPat>? DailyPats { get; set; }
 }
 
 public class Api {
@@ -41,9 +39,11 @@ public class Contributor {
 
 public class GuildParams {
     [JsonPropertyName("Guild Name")] public string? GuildName { get; set; }
-    [JsonPropertyName("Guild ID")] public ulong? GuildId { get; set; }
+    [JsonPropertyName("Guild ID")] public ulong GuildId { get; set; }
     [JsonPropertyName("Blacklisted Commands")] public List<string>? BlacklistedCommands { get; set; }
     public List<Reply>? Replies { get; set; }
+    public ulong DailyPatChannelId { get; set; }
+    public List<DailyPat>? DailyPats { get; set; }
 }
 
 public class Reply {
@@ -72,12 +72,6 @@ public static class Config {
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
         
-        var dailyPat = new DailyPat {
-            UserId = 0,
-            UserName = "MintLily",
-            SetEpochTime = 1682183220
-        };
-        
         var nameReplacement = new NameReplacement {
             UserId = 0,
             BeforeName = "MintLily",
@@ -96,7 +90,9 @@ public static class Config {
             GuildName = "Your Guild Name",
             GuildId = 0,
             BlacklistedCommands = new List<string>(),
-            Replies = new List<Reply>()
+            Replies = new List<Reply>(),
+            DailyPatChannelId = 0,
+            DailyPats = new List<DailyPat>()
         };
         
         var contributor = new Contributor {
@@ -130,9 +126,7 @@ public static class Config {
             Api = api,
             Contributors = new List<Contributor> { contributor },
             GuildSettings = new List<GuildParams> { guildParams },
-            NameReplacements = new List<NameReplacement> { nameReplacement },
-            DailyPatNotifyChannelId = 805663182554136615,
-            DailyPats = new List<DailyPat> { dailyPat }
+            NameReplacements = new List<NameReplacement> { nameReplacement }
         };
         
         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));

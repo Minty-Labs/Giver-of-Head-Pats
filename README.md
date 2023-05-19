@@ -113,6 +113,15 @@ Boost on <a href="https://top.gg/bot/489144212911030304" target="_blank">Top.gg<
     <li>List</li>
 </ul>
 
+<h3>DailyPat</h3>
+<p>(Moderator / Requires ManageGuild)</p>
+<ul>
+    <li>SetPatChannel</li>
+    <li>Add</li>
+    <li>Remove</li>
+    <li>List</li>
+</ul>
+
 <h3>User Love</h3>
 <ul>
     <li>Leaderboards

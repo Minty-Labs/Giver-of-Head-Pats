@@ -99,46 +99,4 @@ public class UserControl : BaseCommandModule {
             await c.RespondAsync($"```\n{ex.Message}\n```");
         }
     }
-    
-    private static bool _doesItExist(SnowflakeObject user) => Config.Base.DailyPats!.Any(u => u.UserId == user.Id); 
-    
-    [Command("SetDailyPat"), Aliases("sdp"), Description("Sets the daily pat to user"), RequireOwner]
-    public async Task SetDailyPat(CommandContext c, DiscordUser user, int manualSetEpochTime = 0) {
-        if (_doesItExist(user)) {
-            await c.RespondAsync("User already has a daily pat set.");
-            return;
-        }
-        
-        var dailyPat = new DailyPat {
-            UserId = user.Id,
-            UserName = user.Username,
-            SetEpochTime = manualSetEpochTime == 0 ? DateTimeOffset.UtcNow.ToUnixTimeSeconds() + 86400 : manualSetEpochTime + 86400
-        };
-        
-        Config.Base.DailyPats!.Add(dailyPat);
-        Config.Save();
-        await c.RespondAsync($"Set daily pat to {user.Username}.");
-    }
-    
-    [Command("RemoveDailyPat"), Aliases("rdp"), Description("Removes the daily pat from user"), RequireOwner]
-    public async Task RemoveDailyPat(CommandContext c, DiscordUser user) {
-        if (!_doesItExist(user)) {
-            await c.RespondAsync("User does not have a daily pat set.");
-            return;
-        }
-        
-        var dailyPat = Config.Base.DailyPats!.Single(u => u.UserId == user.Id);
-        Config.Base.DailyPats!.Remove(dailyPat);
-        Config.Save();
-        await c.RespondAsync($"Removed daily pat from {user.Username}.");
-    }
-    
-    [Command("ListDailyPats"), Aliases("ldp"), Description("Lists all daily pats"), RequireOwner]
-    public async Task ListDailyPats(CommandContext c) {
-        var sb = new StringBuilder();
-        foreach (var dailyPat in Config.Base.DailyPats!) {
-            sb.AppendLine($"{dailyPat.UserName.ReplaceName(dailyPat.UserId)} ({dailyPat.UserId}) - {dailyPat.SetEpochTime}");
-        }
-        await c.RespondAsync(sb.ToString());
-    }
 }
