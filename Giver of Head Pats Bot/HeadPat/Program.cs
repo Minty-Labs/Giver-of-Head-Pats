@@ -214,7 +214,7 @@ public sealed class Program {
         ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
         TaskScheduler.StartStatusLoop(); // Daily Pats and Status Loop
-        await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
+        // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
     

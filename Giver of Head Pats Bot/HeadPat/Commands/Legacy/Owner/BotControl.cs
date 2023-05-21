@@ -5,6 +5,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using HeadPats.Handlers;
 using HeadPats.Managers;
+using HeadPats.Utils;
 using Serilog;
 
 namespace HeadPats.Commands.Legacy.Owner; 
@@ -84,7 +85,10 @@ public class BotControl : BaseCommandModule  {
         process.Start();
         var output = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();
-        await ctx.RespondAsync(output);
+        
+        var weh = StringUtils.SplitMessage(output, 1900);
+        foreach (var chuck in weh)
+            await ctx.RespondAsync($"```\n{chuck}```");
     }
     
 }

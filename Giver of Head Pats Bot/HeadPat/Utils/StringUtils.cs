@@ -1,4 +1,6 @@
-﻿namespace HeadPats.Utils; 
+﻿using System.Text.RegularExpressions;
+
+namespace HeadPats.Utils; 
 
 public static class StringUtils {
     /// <summary>
@@ -70,5 +72,39 @@ public static class StringUtils {
         if (hasBackSlash)
             thisString = thisString.ReplaceAll("\\", "\\\\");
         return thisString;
+    }
+    
+    private static string VerifyString(object data, Type? error = null, string? errorMessage = null, bool allowEmpty = true) {
+        errorMessage ??= $"Expected a string, got {data} instead.";
+        error ??= typeof(Exception);
+
+        if (!(data is string)) throw (Exception)Activator.CreateInstance(error, errorMessage)!;
+        if (!allowEmpty && ((string)data).Length == 0) throw (Exception)Activator.CreateInstance(error, errorMessage)!;
+        return (string)data;
+    }
+
+    public static List<string> SplitMessage(string text, int maxLength = 2000, string charSeparator = "\n", string prepend = "", string append = "") {
+        text = VerifyString(text);
+
+        if (text.Length <= maxLength) return new List<string> { text };
+
+        var messages = new List<string>();
+        var msg = "";
+
+        var splitText = text.Split(new [] { charSeparator }, StringSplitOptions.None).ToList();
+
+        if (splitText.Any(elem => elem.Length > maxLength)) throw new Exception("SPLIT_MAX_LEN");
+
+        foreach (var chunk in splitText) {
+            if (!string.IsNullOrEmpty(msg) && (msg + charSeparator + chunk + append).Length > maxLength) {
+                messages.Add(msg + append);
+                msg = prepend;
+            }
+
+            msg += (string.IsNullOrEmpty(msg) || msg != prepend ? "" : charSeparator) + chunk;
+        }
+
+        messages.Add(msg);
+        return messages.Where(m => !string.IsNullOrEmpty(m)).ToList();
     }
 }
