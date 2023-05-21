@@ -20,7 +20,7 @@ Boost on <a href="https://top.gg/bot/489144212911030304" target="_blank">Top.gg<
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.4.0 (Stable)</b>
+    <li>DSharpPlus <b>v4.4.1 (Stable)</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
