@@ -3,7 +3,6 @@ using DSharpPlus.SlashCommands;
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
-using HeadPats.Managers;
 using HeadPats.Utils;
 using Serilog;
 
@@ -33,7 +32,6 @@ public class LoveCommands : ApplicationCommandModule {
              var checkGuild = db.Guilds.AsQueryable()
                  .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
              
-             bool addedGuild = false, addedUser = false;
              if (checkGuild is null) {
                  var newGuild = new Guilds {
                      GuildId = c.Guild.Id,
@@ -42,7 +40,6 @@ public class LoveCommands : ApplicationCommandModule {
                  };
                  Log.Information("Added guild to database from Pat Command");
                  db.Guilds.Add(newGuild);
-                    addedGuild = true;
              }
          
              var checkUser = db.Users.AsQueryable()
@@ -58,11 +55,10 @@ public class LoveCommands : ApplicationCommandModule {
                  };
                  Log.Debug("Added user to database from Pat Command");
                  db.Users.Add(newUser);
-                 addedUser = true;
              }
              
-             if (addedUser || addedGuild)
-                 await db.SaveChangesAsync();
+             // if (addedUser || addedGuild)
+             //     await db.SaveChangesAsync();
          
              var isUserBlackListed = checkUser is not null && checkUser.IsUserBlacklisted == 1;
          
@@ -94,7 +90,7 @@ public class LoveCommands : ApplicationCommandModule {
                  gaveToBot = true;
                  await Task.Delay(300);
              }
-             
+
              var e = new DiscordEmbedBuilder();
              var num = new Random().Next(0, 3);
              var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
@@ -103,11 +99,10 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithTitle(outputs[num]);
              
-             // TODO: Add embed image from new CookieAPI once it is done
-             // Todo: Temp using Fluxpoint API
              if (Vars.UseCookieApi) {
                  start:
                  var image = Program.CookieClient!.GetPat();
+                 // Log.Debug($"THE IMAGE IS: {image}");
                  if (image.Equals(_tempPatGifUrl)) {
                      Log.Debug("Image is same as previous image");
                      goto start;
@@ -132,7 +127,7 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by Fluxpoint API");
              }
 
-             var doingTheEllySpecial = false;
+             var doingTheCutieSpecial = false;
              
              switch (canUseParams) {
                  case true: {
@@ -143,9 +138,9 @@ public class LoveCommands : ApplicationCommandModule {
                          if (extraParams.Contains('%'))
                              special = int.Parse(extraParams.Split('%')[1]);
 
-                         if (extraParams.ToLower().Contains("elly")) {
+                         if (extraParams.ToLower().Contains("elly") || extraParams.ToLower().Contains("ahri")) {
                              special = 5;
-                             doingTheEllySpecial = true;
+                             doingTheCutieSpecial = true;
                          }
                      }
 
@@ -157,18 +152,18 @@ public class LoveCommands : ApplicationCommandModule {
              }
 
              e.WithColor(Colors.HexToColor("ffff00"));
-             if (doingTheEllySpecial)
+             if (doingTheCutieSpecial)
                  e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave **{special}** headpats to {user.Mention}");
              else 
                  e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
              UserControl.AddPatToUser(user.Id, special, true, c.Guild.Id);
-             await c.CreateResponseAsync(e.Build());
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
              Log.Debug($"Total Pat amount Given: {special}");
          }
          
          [SlashCommand("hug", "Hug a specified user.")]
          public async Task Hug(InteractionContext c, [Option("user", "The user to hug", true)] DiscordUser user) {
-             try {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
                  var isThisCommandBlacklisted = Config.GuildSettings(c.Guild.Id)!.BlacklistedCommands!.Contains("hug");
@@ -224,12 +219,8 @@ public class LoveCommands : ApplicationCommandModule {
              e.WithColor(Colors.HexToColor("6F41B6"));
              e.WithDescription($"{c.User.Mention} gave a hug to {user.Mention}");
              e.Build();
-             await c.CreateResponseAsync(embed: e);
-             }
-             catch (Exception eeee)
-             {
-                 await DSharpToConsole.SendErrorToLoggingChannelAsync(eeee);
-             }
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
          }
 
          [SlashCommand("Cuddle", "Cuddle a specified user.")]
@@ -288,7 +279,8 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("3498DB"));
              e.WithDescription($"{c.User.Mention} gave cuddles to {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
          }
 
          [SlashCommand("kiss", "Kiss a specified user.")]
@@ -347,7 +339,8 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("F771A3"));
              e.WithDescription($"{c.User.Mention} gave kisses to {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
          }
 
          [SlashCommand("slap", "Slap a specified user.")]
@@ -406,7 +399,8 @@ public class LoveCommands : ApplicationCommandModule {
 
              e.WithColor(Colors.HexToColor("E74C3C"));
              e.WithDescription($"{c.User.Mention} slapped {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
          }
          
          [SlashCommand("Poke", "Poke a user.")]
@@ -465,7 +459,8 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("0E4730"));
              e.WithDescription($"{c.User.Mention} poked {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
          }
 
          [SlashCommand("Cookie", "Give a user a cookie.")]
@@ -483,7 +478,6 @@ public class LoveCommands : ApplicationCommandModule {
              var checkGuild = db.Guilds.AsQueryable()
                  .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
              
-             bool addedGuild = false, addedUser = false;
              if (checkGuild is null) {
                  var newGuild = new Guilds {
                      GuildId = c.Guild.Id,
@@ -492,7 +486,6 @@ public class LoveCommands : ApplicationCommandModule {
                  };
                  Log.Information("Added guild to database from Pat Command");
                  db.Guilds.Add(newGuild);
-                 addedGuild = true;
              }
          
              var checkUser = db.Users.AsQueryable()
@@ -508,11 +501,10 @@ public class LoveCommands : ApplicationCommandModule {
                  };
                  Log.Debug("Added user to database from Pat Command");
                  db.Users.Add(newUser);
-                 addedUser = true;
              }
              
-             if (addedUser || addedGuild)
-                 await db.SaveChangesAsync();
+             // if (addedUser || addedGuild)
+             //     await db.SaveChangesAsync();
 
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You requested a cookie, so here you go!");
@@ -547,7 +539,8 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.GetRandomCookieColor());
              e.WithDescription($"{c.User.Mention} gave a cookie to {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
+             // await c.CreateResponseAsync(e.Build());
+             await c.Channel.SendMessageAsync(e.Build());
              UserControl.AddCookieToUser(user.Id, 1);
          }
      }
