@@ -1,21 +1,32 @@
-<h1>Giver of Head Pats, <i>DSharpPlus (C#)</i></h1>
-<img src="https://git.ellyvr.dev/Lily/giver-of-head-pats/-/raw/main/Media/HeadPatSharp.png" align="right" width="200" height="200" />
+<h1>Giver of Head Pats, Discord Bot</h1>
+<img src="https://raw.githubusercontent.com/Minty-Labs/Giver-of-Head-Pats/main/Media/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
 A <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
 created by <a href="https://mintlily.lgbt/">Lily</a> from <a href="https://mintylabs.dev/">Minty Labs</a>. <br>
-Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hugs, cookies, and more; as well as summon pictures of foxes, bunnies, nekos, memes and more. I can also have moderators make auto responses for me to automatically reply to.
+Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hugs, cookies, and more; leaderboards for pats and cookies; as well as summon pictures of foxes, bunnies, nekos, memes and more. I can also have moderators make auto responses for me to automatically reply to.
 <br><br>
 At the moment you can see what I can do by running the <code>hp!help</code> command.<br>
 I am always expanding in what I can do and I hope I will be the perfect caregiver for your guild.
 </p>
 
-<h3>Bot Creator Information</h3>
-<p>
-Donate: <a href="https://ko-fi.com/MintLily" target="_blank">https://ko-fi.com/MintLily</a><br>
-Open-Source: <a href="https://git.ellyvr.dev/Lily/giver-of-head-pat" target="_blank">https://git.ellyvr.dev/Lily/giver-of-head-pat</a><br>
-Add to Your Guild: <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot" target="_blank">Invite Link</a><br>
-Need Support? <a href="https://discord.gg/Qg9eVB34sq" target="_blank">Join the Discord Support Guild</a><br>
-Boost on <a href="https://top.gg/bot/489144212911030304" target="_blank">Top.gg</a>
+<br><br><br><br>
+<!-- Just Extra Space -->
+
+<p align="center">
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.5.4&color=389980&style=for-the-badge" />
+    <!-- Elly Cute -->
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=21%20May%202023&color=389980&style=for-the-badge" />
+    <!-- Ahriana Cute -->
+    <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
+    <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
+    <br><br>
+    <a href=""><img src="https://img.shields.io/static/v1?label=Need%20Support%3F&message=Join%20the%20support%20server&color=7289DA&style=for-the-badge" /></a>
+    <br>
+    <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot"><img src="https://img.shields.io/static/v1?label=Would%20you%20like%20the%20bot%3F&message=Invite%20to%20your%20server&color=9fffe3&style=for-the-badge" /></a>
+    <br>
+    <a href="https://ko-fi.com/MintLily"><img src="https://img.shields.io/static/v1?label=Donate&message=Support%20the%20Author&color=0D8AC8&style=for-the-badge" /></a>
+    <br>
+    <a href="https://top.gg/bot/489144212911030304"><img src="https://img.shields.io/static/v1?label=Boost%20on&message=Top.gg&color=FF3366&style=for-the-badge" /></a>
 </p>
 
 <h2>Packages (Nuget)</h2>
@@ -196,11 +207,11 @@ Boost on <a href="https://top.gg/bot/489144212911030304" target="_blank">Top.gg<
 
 <h2>Developers</h2>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/7/avatar.png" height="35px" align=center /> &nbsp;
-    <a href="https://git.ellyvr.dev/Lily">Lily</a> (Main, Lead, Owner, Creator)<br>
+    Lily (Main, Lead, Owner, Creator) | <a href="https://git.ellyvr.dev/Lily">GitLab</a> - <a href="https://github.com/MintLily">GitHub</a><br>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/2/avatar.png" height="35px" align=center /> &nbsp;
-    <a href="https://git.ellyvr.dev/Elly">Elly</a> (Supporting)<br>
+    Elly (Supporting) | <a href="https://git.ellyvr.dev/Elly">GitLab</a> - <a href="https://github.com/EllyVR">GitHub</a><br>
 <img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/16/avatar.png" height="35px" align=center /> &nbsp;
-    <a href="https://www.patreon.com/scorespy">Ahriana</a> (CookieAPI Dev)
+    Ahriana (CookieAPI Dev) | <a href="https://git.ellyvr.dev/Ahriana">GitLab</a> - <a href="https://github.com/Ahriana">GitHub</a> - <a href="https://www.patreon.com/scorespy">Patreon</a><br>
 
 <h3>Featured Programs</h3>
 <a href="https://jb.gg/OpenSourceSupport" target="_blank">
