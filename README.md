@@ -206,12 +206,14 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 </ul>
 
 <h2>Developers</h2>
-<img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/7/avatar.png" height="35px" align=center /> &nbsp;
-    Lily (Main, Lead, Owner, Creator) | <a href="https://git.ellyvr.dev/Lily">GitLab</a> - <a href="https://github.com/MintLily">GitHub</a><br>
-<img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/2/avatar.png" height="35px" align=center /> &nbsp;
-    Elly (Supporting) | <a href="https://git.ellyvr.dev/Elly">GitLab</a> - <a href="https://github.com/EllyVR">GitHub</a><br>
-<img src="https://git.ellyvr.dev/uploads/-/system/user/avatar/16/avatar.png" height="35px" align=center /> &nbsp;
-    Ahriana (CookieAPI Dev) | <a href="https://git.ellyvr.dev/Ahriana">GitLab</a> - <a href="https://github.com/Ahriana">GitHub</a> - <a href="https://www.patreon.com/scorespy">Patreon</a><br>
+<img src="https://avatars.githubusercontent.com/u/22991790?v=4" height="35px" align=center /> &nbsp;
+<b>Lily</b> (Main, Lead, Owner, Creator) <a href="https://github.com/MintLily">GitHub</a><br>
+
+<img src="https://avatars.githubusercontent.com/u/86266174?v=4" height="35px" align=center /> &nbsp;
+<b>Elly</b> (Supporting) <a href="https://github.com/EllyVR">GitHub</a><br>
+
+<img src="https://avatars.githubusercontent.com/u/28003629?v=4" height="35px" align=center /> &nbsp;
+<b>Ahriana</b> (CookieAPI Dev) <a href="https://github.com/Ahriana">GitHub</a> - <a href="https://www.patreon.com/scorespy">Patreon</a><br>
 
 <h3>Featured Programs</h3>
 <a href="https://jb.gg/OpenSourceSupport" target="_blank">
