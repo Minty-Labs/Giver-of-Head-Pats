@@ -44,6 +44,7 @@ public class GuildParams {
     public List<Reply>? Replies { get; set; }
     public ulong DailyPatChannelId { get; set; }
     public List<DailyPat>? DailyPats { get; set; }
+    [JsonPropertyName("IRL Quotes")] public IrlQuotes IrlQuotes { get; set; }
 }
 
 public class Reply {
@@ -63,6 +64,12 @@ public class NameReplacement {
 public class DailyPat {
     [JsonPropertyName("User ID")] public ulong UserId { get; set; }
     [JsonPropertyName("User Name")] public string? UserName { get; set; }
+    [JsonPropertyName("Set Epoch Time")] public long SetEpochTime { get; set; }
+}
+
+public class IrlQuotes {
+    public bool Enabled { get; set; }
+    [JsonPropertyName("Channel ID")] public ulong ChannelId { get; set; }
     [JsonPropertyName("Set Epoch Time")] public long SetEpochTime { get; set; }
 }
 

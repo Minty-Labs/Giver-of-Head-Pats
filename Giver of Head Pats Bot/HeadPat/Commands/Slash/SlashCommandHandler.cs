@@ -9,7 +9,11 @@ namespace HeadPats.Commands.Slash;
 public static class SlashCommandHandler {
     public static void Register(SlashCommandsExtension s) {
         s.RegisterCommands<HeadPats.Commands.Slash.Admin.Admin>();
-        Log.Information("[Commands.Slash] Admin Registered");
+        Log.Information("[Commands.Slash.Admin] Admin Registered");
+        s.RegisterCommands<Admin.DailyPatCmds>();
+        Log.Information("[Commands.Slash.Admin] DailyPatCmds Registered");
+        s.RegisterCommands<Admin.IrlQuoteCmds>();
+        Log.Information("[Commands.Slash.Admin] IrlQuoteCmds Registered");
 
         s.RegisterCommands<Color>();
         Log.Information("[Commands.Slash] Color Registered");
@@ -24,6 +28,6 @@ public static class SlashCommandHandler {
         s.RegisterCommands<Leaderboards>();
         Log.Information("[Commands.Slash] Leaderboards Registered");
         s.RegisterCommands<LoveCommands>();
-        Log.Information("[Commands.Slash] Love Registered");
+        Log.Information("[Commands.Slash] LoveCommands Registered");
     }
 }

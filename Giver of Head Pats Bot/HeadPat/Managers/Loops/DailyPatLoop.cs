@@ -4,16 +4,15 @@ using HeadPats.Data;
 using HeadPats.Utils;
 using Serilog;
 
-namespace HeadPats.Managers; 
+namespace HeadPats.Managers.Loops; 
 
-public static class DailyPatManager {
-    public static void StartDailyPats(Context db) {
+public static class DailyPatLoop {
+    public static void DoDailyPat(Context db, long currentEpoch) {
         foreach (var guild in Config.Base.GuildSettings!) {
             if (guild.DailyPats is null) continue;
                 
             var guildSettings = Config.GuildSettings(guild.GuildId);
             var updated = false;
-            var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 
             if (guild.DailyPatChannelId is 0)
                 continue;
