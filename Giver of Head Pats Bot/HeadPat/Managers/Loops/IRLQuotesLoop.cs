@@ -13,7 +13,8 @@ public static class IrlQuotesLoop {
         var quote = quotes[new Random().Next(quotes.Length)];
 
         foreach (var guildParam in Config.Base.GuildSettings!) {
-            if (!guildParam.IrlQuotes.Enabled) break;
+            if (!guildParam.IrlQuotes.Enabled) continue;
+            if (guildParam.IrlQuotes.ChannelId is 0) continue;
             if (guildParam.IrlQuotes.SetEpochTime > currentEpoch)
                 continue;
             
