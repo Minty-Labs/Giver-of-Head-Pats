@@ -399,11 +399,11 @@ public class LoveCommands : ApplicationCommandModule {
 
              e.WithColor(Colors.HexToColor("E74C3C"));
              e.WithDescription($"{c.User.Mention} slapped {user.Mention}");
-             // await c.CreateResponseAsync(e.Build());
-             await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync(e.Build());
+             // await c.Channel.SendMessageAsync(e.Build());
          }
          
-         [SlashCommand("Poke", "Poke a user.")]
+         [SlashCommand("Poke", "Poke or boop a user.")]
          public async Task Poke(InteractionContext c, [Option("user", "The user to poke", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {

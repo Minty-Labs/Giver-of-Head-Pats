@@ -1,16 +1,16 @@
 ﻿using DSharpPlus;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
-using HeadPats.Data;
 using HeadPats.Managers;
 using Serilog;
 
 namespace HeadPats.Commands.Slash.Contributors; 
 
 public class Contributors : ApplicationCommandModule {
-    [SlashCommandGroup("Contributor", "Contributor Commands")]
+    [SlashCommandGroup("Contributor", "Contributor Commands"), Hidden]
     public class Contributor : ApplicationCommandModule {
         [SlashCommand("Add", "Adds a Contributor to the list", false), SlashRequireOwner]
         public async Task AddContributor(InteractionContext c, [Option("UserName", "Username or alias name to add", true)] string userName,

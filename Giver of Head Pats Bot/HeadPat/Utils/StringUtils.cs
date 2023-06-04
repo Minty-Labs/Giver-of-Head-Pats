@@ -4,6 +4,19 @@ namespace HeadPats.Utils;
 
 public static class StringUtils {
     /// <summary>
+    /// Replaces each character in a string with an asterisk
+    /// </summary>
+    /// <param name="thisString"></param>
+    /// <returns>Each character as an asterisk</returns>
+    public static string Redact(this string? thisString) {
+        var temp = "";
+        // for (var i = 0; i < s.Length; i++)
+        //     temp += "*";
+        temp = thisString!.ToCharArray().Aggregate(temp, (current, empty) => current + "*");
+        return temp ?? "***************";
+    }
+    
+    /// <summary>
     /// Replaces all of the old characters (as char) to anything of your choosing.
     /// </summary>
     /// <param name="theStringToBeEdited">this</param>
@@ -83,6 +96,16 @@ public static class StringUtils {
         return (string)data;
     }
 
+    /// <summary>
+    /// Safely splits a string into multiple messages.
+    /// </summary>
+    /// <param name="text">Main message text</param>
+    /// <param name="maxLength">Length to where you want the text to split at</param>
+    /// <param name="charSeparator">char separator</param>
+    /// <param name="prepend">Text to add before the next message</param>
+    /// <param name="append">Text to add after the first and all new split messages</param>
+    /// <returns>List of strings to be used in a for or foreach loop to send messages</returns>
+    /// <exception cref="Exception">Provided string was empty, nothing to split</exception>
     public static List<string> SplitMessage(string text, int maxLength = 2000, string charSeparator = "\n", string prepend = "", string append = "") {
         text = VerifyString(text);
 

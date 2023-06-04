@@ -18,7 +18,6 @@ using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
 using HeadPats.Configuration;
 using Serilog;
-using TaskScheduler = HeadPats.Managers.TaskScheduler;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace HeadPats;
@@ -174,7 +173,7 @@ public sealed class Program {
         Log.Debug("Process ID                     = " + Vars.ThisProcess.Id);
         Log.Debug("Build Date                     = " + Vars.BuildDate);
         Log.Debug("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
-        Log.Debug("Token                          = " + OutputStringAsHidden(Config.Base.BotToken!));
+        Log.Debug("Token                          = " + Config.Base.BotToken!.Redact());
         Log.Debug("Prefix (non-Slash)             = " + $"{Config.Base.Prefix}");
         Log.Debug("ActivityType                   = " + $"{Config.Base.ActivityType}");
         Log.Debug("Game                           = " + $"{Config.Base.Activity}");
@@ -213,19 +212,12 @@ public sealed class Program {
         GeneralLogChannel =         await sender.GetChannelAsync(Config.Base.BotLogsChannel);
         ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
-        TaskScheduler.StartStatusLoop(); // Daily Pats and Status Loop
+        LoopingTaskScheduler.StartLoop();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
     
-    private static string OutputStringAsHidden(string s) {
-        string? temp = null;
-        for (var i = 0; i < s.Length; i++)
-            temp += "*";
-        return temp ?? "***************";
-    }
-    
-    public static ActivityType GetActivityType(string type) {
+    private static ActivityType GetActivityType(string type) {
         return type.ToLower() switch {
             "playing" => ActivityType.Playing,
             "listening" => ActivityType.ListeningTo,
@@ -241,29 +233,4 @@ public sealed class Program {
             _ => ActivityType.Custom
         };
     }
-    
-    /*public static string GetActivityAsString(ActivityType type) {
-        return type switch {
-            ActivityType.Playing => "playing",
-            ActivityType.ListeningTo => "listening",
-            ActivityType.Watching => "watching",
-            ActivityType.Streaming => "streaming",
-            ActivityType.Competing => "competing",
-            ActivityType.Custom => "other",
-            _ => ""
-        };
-    }
-
-    public static UserStatus GetUserStatus(string status) {
-        return status.ToLower() switch {
-            "online" => UserStatus.Online,
-            "idle" => UserStatus.Idle,
-            "donotdisturb" => UserStatus.DoNotDisturb,
-            "dnd" => UserStatus.DoNotDisturb,
-            "offline" => UserStatus.Offline,
-            "invisible" => UserStatus.Invisible,
-            "invis" => UserStatus.Invisible,
-            _ => UserStatus.Online
-        };
-    }*/
 }
