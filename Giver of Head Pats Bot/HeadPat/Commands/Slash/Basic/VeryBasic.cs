@@ -14,16 +14,16 @@ public class VeryBasic : ApplicationCommandModule {
                           $"At the moment you can see what I can do by running the `{Config.Base.Prefix}help` command.\n" +
                           "I was recently rewritten from Javascript to C#. So if things seem broken or missing from the older version, don't worry, they'll be fixed " +
                           "or added in the near future.\nI hope I will be the perfect caregiver for your guild.");
-        e.AddField("Bot Creator Information", "Website: https://mintlily.lgbt/ \n" +
+        e.AddField("Bot Creator Information", "Website: https://mintylabs.dev/gohp \n" +
                                               "Donate: https://ko-fi.com/MintLily \n" +
-                                              "Open-Source: https://git.ellyvr.dev/Lily/giver-of-head-pats \n" +
+                                              "Open-Source: https://github.com/Minty-Labs/Giver-of-Head-Pats \n" +
                                               $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
                                               $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
                                               "Privacy Policy: [Link](https://mintlily.lgbt/gohp/privacy)");
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(Vars.ClientId, true);
         e.WithThumbnail(u.AvatarUrl);
-        e.WithAuthor("MintLily#0001", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily_Art_Headshot_pfp_x1024.png");
+        e.WithAuthor("MintLily#0001", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily.png");
         await c.CreateResponseAsync(e.Build());
     }
 
