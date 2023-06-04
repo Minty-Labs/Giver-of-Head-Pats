@@ -53,18 +53,26 @@ public class OnBotJoinOrLeave {
         }
 
         if (Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Guild.Id) is null) {
+            var irlQuotes = new IrlQuotes {
+                Enabled = false,
+                ChannelId = 0,
+                SetEpochTime = 0
+            };
+            
             var guildParams = new GuildParams {
                 GuildName = e.Guild.Name,
                 GuildId = e.Guild.Id,
                 BlacklistedCommands = new List<string>(),
-                Replies = new List<Reply>()
+                Replies = new List<Reply>(),
+                DailyPatChannelId = 0,
+                DailyPats = new List<DailyPat>(),
+                IrlQuotes = irlQuotes
             };
         
             Config.Base.GuildSettings!.Add(guildParams);
             Config.Save();
         }
-        
-        
+
         try {
             await using var db = new Context();
             

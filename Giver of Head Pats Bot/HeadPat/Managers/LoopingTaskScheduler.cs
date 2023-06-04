@@ -7,6 +7,7 @@ public static class LoopingTaskScheduler {
     public static void StartLoop() => new Thread(Loop).Start();
     
     private static void Loop() {
+        var rnd = new Random();
         while (true) {
             using var db = new Context();
             var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -29,7 +30,7 @@ public static class LoopingTaskScheduler {
             
             // IRL Quotes
             try {
-                IrlQuotesLoop.SendQuote(currentEpoch);
+                IrlQuotesLoop.SendQuote(currentEpoch, rnd);
             }
             catch (Exception err) {
                 DSharpToConsole.SendErrorToLoggingChannel($"IRL Quotes:\n{err}");
