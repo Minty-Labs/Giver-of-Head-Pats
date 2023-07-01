@@ -5,6 +5,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
+using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Managers;
 
 namespace HeadPats.Commands.Slash.Admin; 
@@ -14,7 +15,7 @@ public class DailyPatCmds : ApplicationCommandModule {
     [SlashCommandGroup("DailyPat", "Daily pat commands"), Hidden]
     public class DailyPats : ApplicationCommandModule {
         
-        [SlashCommand("setpatchannel", "Sets the channel where daily pats are sent", false), SlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("setpatchannel", "Sets the channel where daily pats are sent", false), CustomSlashRequirePermissions(Permissions.ManageGuild)]
         public async Task SetDailyPatChannel(InteractionContext c, 
             [Option("Channel", "Channel to set as the daily pat channel")] DiscordChannel? channel,
             [Option("ChannelID", "Channel to set as the daily pat channel")] string channelId = "") {
@@ -51,7 +52,7 @@ public class DailyPatCmds : ApplicationCommandModule {
         
         private static bool _doesItExist(SnowflakeObject user, ulong guildId) => Config.GuildSettings(guildId)!.DailyPats!.Any(u => u.UserId == user.Id); 
     
-        [SlashCommand("add", "Sets the daily pat to user"), SlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("add", "Sets the daily pat to user"), CustomSlashRequirePermissions(Permissions.ManageGuild)]
         public async Task SetDailyPat(InteractionContext c, 
             [Option("Member", "The mentioned member to receive daily pats")] SnowflakeObject user,
             [Option("ManualEpochTime", "Manually Set an Epoch time; if empty, defaults to NOW")] long manualSetEpochTime = 0) {
@@ -75,7 +76,7 @@ public class DailyPatCmds : ApplicationCommandModule {
             await c.CreateResponseAsync($"Set daily pat to {member.Username}.");
         }
     
-        [SlashCommand("remove", "Removes the daily pat from user"), SlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("remove", "Removes the daily pat from user"), CustomSlashRequirePermissions(Permissions.ManageGuild)]
         public async Task RemoveDailyPat(InteractionContext c, [Option("Member", "The mentioned member to remove")] SnowflakeObject user) {
             if (!_doesItExist(user, c.Guild.Id)) {
                 await c.CreateResponseAsync("User does not have a daily pat set.", ephemeral: true);
@@ -90,7 +91,7 @@ public class DailyPatCmds : ApplicationCommandModule {
             await c.CreateResponseAsync($"Removed daily pat from {member.Username}.");
         }
     
-        [SlashCommand("list", "Lists all daily pats"), SlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("list", "Lists all daily pats"), CustomSlashRequirePermissions(Permissions.ManageGuild)]
         public async Task ListDailyPats(InteractionContext c) {
             var sb = new StringBuilder();
             var guildSettings = Config.GuildSettings(c.Guild.Id);

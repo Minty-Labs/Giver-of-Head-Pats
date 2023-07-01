@@ -4,13 +4,14 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
+using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Utils;
 
 namespace HeadPats.Commands.Slash.Admin; 
 
 public class Admin : ApplicationCommandModule {
 
-    [SlashCommand("UserInfo", "Displays information about a user", false), SlashRequirePermissions(Permissions.ManageMessages), Hidden]
+    [SlashCommand("UserInfo", "Displays information about a user", false), CustomSlashRequirePermissions(Permissions.ManageMessages), Hidden]
     public async Task UserInfo(InteractionContext c,
         
         [Option("User", "User to get info about")] DiscordUser? user,

@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
+using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Managers;
 using Serilog;
 
@@ -12,7 +13,7 @@ namespace HeadPats.Commands.Slash.Contributors;
 public class Contributors : ApplicationCommandModule {
     [SlashCommandGroup("Contributor", "Contributor Commands"), Hidden]
     public class Contributor : ApplicationCommandModule {
-        [SlashCommand("Add", "Adds a Contributor to the list", false), SlashRequireOwner]
+        [SlashCommand("Add", "Adds a Contributor to the list", false), CustomSlashRequireOwner]
         public async Task AddContributor(InteractionContext c, [Option("UserName", "Username or alias name to add", true)] string userName,
             [Option("Info", "Information about what they did (you can use <br>)", true)] string info) {
             var doesUserNameExist = Config.Base.Contributors!.FirstOrDefault(n => n.UserName == userName)?.UserName == userName;
@@ -32,7 +33,7 @@ public class Contributors : ApplicationCommandModule {
             await c.CreateResponseAsync("Added and saved Contributor Info!", true);
         }
 
-        [SlashCommand("Remove", "Removes a Contributor from the list", false), SlashRequireOwner]
+        [SlashCommand("Remove", "Removes a Contributor from the list", false), CustomSlashRequireOwner]
         public async Task RemoveContributor(InteractionContext c, [Option("UserName", "Username or alias name to remove", true)] string userName) {
             var doesUserNameExist = Config.Base.Contributors!.FirstOrDefault(n => n.UserName == userName)?.UserName == userName;
             

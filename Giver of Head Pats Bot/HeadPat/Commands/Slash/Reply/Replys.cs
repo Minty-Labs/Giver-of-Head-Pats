@@ -5,6 +5,7 @@ using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
 using HeadPats.Data;
+using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Utils;
 
 namespace HeadPats.Commands.Slash.Reply;
@@ -13,7 +14,7 @@ public class ReplyApplication : ApplicationCommandModule {
 
     [SlashCommandGroup("Reply", "Self-creating simple trigger-based command message outputs", false)]
     public class Replies : ApplicationCommandModule {
-        [SlashCommand("add", "Adds an auto response for the server", false), SlashRequireUserPermissions(Permissions.ManageMessages)]
+        [SlashCommand("add", "Adds an auto response for the server", false), CustomSlashRequirePermissions(Permissions.ManageMessages)]
         public async Task AddReply(InteractionContext c,
             [Option("Trigger", "Word or phrase as the trigger", true)] string trigger,
             [Option("Response", "Response from trigger (add '<br>' for new lines)", true)] string response,
@@ -36,7 +37,7 @@ public class ReplyApplication : ApplicationCommandModule {
             await c.CreateResponseAsync("Trigger saved!");
         }
     
-        [SlashCommand("Remove", "Removes a trigger response by the provided trigger", false), SlashRequireUserPermissions(Permissions.ManageMessages)]
+        [SlashCommand("Remove", "Removes a trigger response by the provided trigger", false), CustomSlashRequirePermissions(Permissions.ManageMessages)]
         public async Task RemoveReply(InteractionContext c,
             [Option("Trigger", "Enter the trigger word or phrase exactly", true)]
             string trigger) {
@@ -54,7 +55,7 @@ public class ReplyApplication : ApplicationCommandModule {
             ReplyConfExtensions.ErroredOnRemove = false;
         }
 
-        [SlashCommand("List", "Lists the triggers for auto responses"), SlashRequirePermissions(Permissions.ManageMessages)]
+        [SlashCommand("List", "Lists the triggers for auto responses"), CustomSlashRequirePermissions(Permissions.ManageMessages)]
         public async Task ListTriggers(InteractionContext c) {
             var legend = new StringBuilder();
             var list = Config.GuildSettings(c.Guild.Id)!.Replies!;
