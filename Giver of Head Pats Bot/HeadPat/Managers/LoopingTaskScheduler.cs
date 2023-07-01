@@ -4,7 +4,11 @@ using HeadPats.Managers.Loops;
 namespace HeadPats.Managers; 
 
 public static class LoopingTaskScheduler {
-    public static void StartLoop() => new Thread(Loop).Start();
+    public static void StartLoop() {
+        DailyPatLoop.DailyPatted = new Dictionary<ulong, bool>();
+        // DailyPatLoop.PreviousPatUrl = new Dictionary<ulong, string>();
+        new Thread(Loop).Start();
+    }
     
     private static void Loop() {
         var rnd = new Random();
