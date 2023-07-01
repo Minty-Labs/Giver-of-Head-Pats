@@ -9,24 +9,29 @@
     <RootNamespace>HeadPats</RootNamespace>
     <Company>Mintly Labs</Company>
     <Product>Giver of Head Pats Discord Bot</Product>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>2023.7.1.0</AssemblyVersion>
+    <FileVersion>2023.7.1.0</FileVersion>
     <ApplicationIcon>..\..\Media\HeadPat.ico</ApplicationIcon>
     <LangVersion>latest</LangVersion>
+    <PackageId>Giver of Head Pats</PackageId>
+    <Version>2023.7.1</Version>
+    <Title>Giver of Head Pats</Title>
+    <Authors>MintLily, EllyVR, AhrianaDev</Authors>
+    <Copyright>Minty Labs 2023</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ColorHelper" Version="1.8.1" />
-    <PackageReference Include="DSharpPlus" Version="4.4.1" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.4.1" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.4.1" />
-    <PackageReference Include="DSharpPlus.Rest" Version="4.4.1" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.4.1" />
-    <PackageReference Include="fluxpoint-sharp" Version="3.0.1" />
+    <PackageReference Include="DSharpPlus" Version="4.4.2" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.4.2" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.4.2" />
+    <PackageReference Include="DSharpPlus.Rest" Version="4.4.2" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="4.4.2" />
+    <PackageReference Include="fluxpoint-sharp" Version="3.0.2" />
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.5" />
-    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.8" />
+    <PackageReference Include="Serilog" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>

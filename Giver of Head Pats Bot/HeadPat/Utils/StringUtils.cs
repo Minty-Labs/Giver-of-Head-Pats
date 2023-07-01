@@ -29,17 +29,86 @@ public static class StringUtils {
     /// <summary>
     /// Returns a bool if the inputted string is "true" or not
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns>boolean (true|false)</returns>
-    public static bool GetBooleanFromString(string input) => input.ToLower().Equals("true");
+    /// <param name="input">this</param>
+    /// <returns>Boolean indicating if the inputted string is "true" or not</returns>
+    public static bool AsBool(this string input) => input.ToLower().Equals("true");
     
+    /// <summary>
+    /// Returns a bool if the inputted string is "true" or "false"
+    /// </summary>
+    /// <param name="boolean">this</param>
+    /// <returns>"true" or "false"</returns>
+    public static string AsString(this bool boolean) => boolean ? "true" : "false";
+    
+    /// <summary>
+    /// Trys to parse string data as a double
+    /// </summary>
+    /// <param name="str">this</param>
+    /// <returns>double</returns>
+    public static double AsDouble(this string? str) => double.Parse(str!);
+    
+    /// <summary>
+    /// Trys to parse string data as an integer
+    /// </summary>
+    /// <param name="str">this</param>
+    /// <returns>integer</returns>
+    public static int AsInt(this string? str) => int.Parse(str!);
+
+    /// <summary>
+    /// Checks if the string contains multiple values
+    /// </summary>
+    /// <param name="str1">this</param>
+    /// <param name="strs">As many strings as you want to compare to the target string</param>
+    /// <returns>Boolean indicating that any and all of your specified strings are contained in the target string (this)</returns>
+    public static bool ContainsMultiple(this string str1, params string[] strs) => strs.Any(str1.Contains);
+
+    /// <summary>
+    /// Checks if the string is equal to multiple values
+    /// </summary>
+    /// <param name="str1">this</param>
+    /// <param name="strs">As many strings as you want to compare to the target string</param>
+    /// <returns>Boolean whether the multiple strings are equal to each other (or the same) as the target string (this)</returns>
+    public static bool EqualsMultiple(this string str1, params string[] strs) => strs.Any(str1.Equals);
+
+    /// <summary>
+    /// Checks if the string is not equal to a value
+    /// </summary>
+    /// <param name="string1">this</param>
+    /// <param name="string2">String to compare to the target</param>
+    /// <returns>Boolean whether the two string are equal to each other (or the same)</returns>
+    public static bool NotEquals(this string string1, string string2) => string1 != string2;
+
+    /// <summary>
+    /// Checks to see if the left number is equals the right number
+    /// </summary>
+    /// <param name="num1">this</param>
+    /// <param name="num2">number to compare with the target number</param>
+    /// <returns>Boolean whether the two numbers are equal to each other</returns>
+    public static bool Is(this int num1, int num2) => num1 == num2;
+
+    /// <summary>
+    /// Checks to see if the left number is not equals the right number
+    /// </summary>
+    /// <param name="num1">this</param>
+    /// <param name="num2">number to compare with the target number</param>
+    /// <returns>Boolean whether the two numbers are not equal to each other</returns>
+    public static bool IsNot(this int num1, int num2) => num1 != num2;
+
     /// <summary>
     /// Returns a random string of a specified length
     /// </summary>
-    /// <param name="length">Length of string</param>
-    /// <returns>random string of characters and numbers</returns>
-    public static string GetRandomString(int length = 15) => new (Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz", length)
+    /// <param name="length">Target length of randomized string</param>
+    /// <returns>Random string of alpha-numeric characters</returns>
+    public static string GetRandomString(int length = 15) => 
+        new (Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz", length)
         .Select(s => s[new Random().Next(s.Length)]).ToArray());
+    
+    /// <summary>
+    /// Returns a bool to see if the ulong is zero
+    /// </summary>
+    /// <param name="ulong">this ulong</param>
+    /// <returns>true or false</returns>
+    public static bool IsZero(this ulong @ulong) => @ulong is 0;
 
     /// <summary>
     /// Checks if the string contains the given string, if it does, it replaces it with your given string.

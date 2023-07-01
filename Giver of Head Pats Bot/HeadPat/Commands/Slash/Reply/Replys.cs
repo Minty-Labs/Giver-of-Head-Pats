@@ -30,9 +30,9 @@ public class ReplyApplication : ApplicationCommandModule {
             }
             
             ReplyConfExtensions.AddValue(c.Guild.Id, trigger, response,
-                StringUtils.GetBooleanFromString(requireOnlyTriggerText),
-                StringUtils.GetBooleanFromString(deleteTrigger),
-                StringUtils.GetBooleanFromString(deleteTriggerIfIsOnlyInMessage));
+                requireOnlyTriggerText.AsBool(),
+                deleteTrigger.AsBool(),
+                deleteTriggerIfIsOnlyInMessage.AsBool());
             
             await c.CreateResponseAsync("Trigger saved!");
         }

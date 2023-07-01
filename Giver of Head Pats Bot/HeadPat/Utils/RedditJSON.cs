@@ -16,7 +16,7 @@ public static class TheData {
         return dataOver18 != null && (bool)dataOver18;
     }
 
-    public static string[] MemeSubreddits = { "memes", "me_irl", "dankmemes", "comedyheaven", "historymemes", "memes", "me_irl", "comedyheaven", "historymemes" };
+    public static string[] MemeSubreddits = { "memes", "me_irl", "dankmemes", "comedyheaven", "historymemes" };
 }
 
 public partial class Welcome4

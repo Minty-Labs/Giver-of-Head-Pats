@@ -44,7 +44,7 @@ public sealed class Program {
                 .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 25, 
                     rollOnFileSizeLimit: true, fileSizeLimitBytes: 1024000000L)
                 .CreateLogger();
-        Log.Information("Elly is an adorable cute floof, I love her very very very much!~");
+        Log.Information("Elly and Ahri are adorable cute floofs, I love them very very very much!~");
     }
 
     private async Task MainAsync() {
@@ -213,6 +213,7 @@ public sealed class Program {
         ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
         LoopingTaskScheduler.StartLoop();
+        Handlers.Events.BangerEventListener.OnStartup();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
