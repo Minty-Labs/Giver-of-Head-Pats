@@ -55,17 +55,17 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Programs & Services Used</h2>
 <ul>
-    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.1.1+
+    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.1.3+
         <ul>
             <li>Rider</li>
             <li>dotPeek</li>
         </ul>
     </li>
-    <li>SublimeText</li>
+    <li>Sublime Text</li>
     <li>Visual Studio Code</li>
     <li>Photoshop</li>
     <li>Discord *</li>
-    <li>Spotify / Plex(amp) *</li>
+    <li>Spotify / Plex(amp) / Tidal*</li>
     <li>APIs
         <ul>
             <li>RandomFox.ca</li>
