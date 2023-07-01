@@ -18,6 +18,7 @@ public class Base {
     [JsonPropertyName("Contributors")] public List<Contributor>? Contributors { get; set; }
     [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
     [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
+    [JsonPropertyName("Banger System")] public Banger? Banger { get; set; }
 }
 
 public class Api {
@@ -73,11 +74,37 @@ public class IrlQuotes {
     [JsonPropertyName("Set Epoch Time")] public long SetEpochTime { get; set; }
 }
 
+public class Banger {
+    public bool Enabled { get; set; }
+    [JsonPropertyName("Guild ID")] public ulong GuildId { get; set; }
+    [JsonPropertyName("Channel ID")] public ulong ChannelId { get; set; }
+    [JsonPropertyName("Whitelisted Music URLs")] public List<string>? WhitelistedUrls { get; set; }
+    [JsonPropertyName("Whitelisted Music File Extensions")] public List<string>? WhitelistedFileExtensions { get; set; }
+    [JsonPropertyName("URL Error Response Message")] public string? UrlErrorResponseMessage { get; set; }
+    [JsonPropertyName("File Error Response Message")] public string? FileErrorResponseMessage { get; set; }
+}
+
 public static class Config {
     public static Base Base { get; internal set; } = Load();
 
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
+
+        var banger = new Banger {
+            Enabled = false,
+            GuildId = 0,
+            ChannelId = 0,
+            WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
+            WhitelistedFileExtensions = new List<string> { "mp3", "flac", "wav", "ogg", "m4a", "alac", "aac", "aiff", "wma" },
+            UrlErrorResponseMessage = "This URL is not whitelisted.",
+            FileErrorResponseMessage = "This file type is not whitelisted."
+        };
+
+        var irlq = new IrlQuotes {
+            Enabled = false,
+            ChannelId = 0,
+            SetEpochTime = 0
+        };
         
         var nameReplacement = new NameReplacement {
             UserId = 0,
@@ -99,7 +126,8 @@ public static class Config {
             BlacklistedCommands = new List<string>(),
             Replies = new List<Reply>(),
             DailyPatChannelId = 0,
-            DailyPats = new List<DailyPat>()
+            DailyPats = new List<DailyPat>(),
+            IrlQuotes = irlq
         };
         
         var contributor = new Contributor {
@@ -133,7 +161,8 @@ public static class Config {
             Api = api,
             Contributors = new List<Contributor> { contributor },
             GuildSettings = new List<GuildParams> { guildParams },
-            NameReplacements = new List<NameReplacement> { nameReplacement }
+            NameReplacements = new List<NameReplacement> { nameReplacement },
+            Banger = banger
         };
         
         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));

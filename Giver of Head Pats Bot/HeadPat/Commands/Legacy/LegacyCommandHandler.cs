@@ -18,6 +18,11 @@ public static class LegacyCommandHandler {
         c.RegisterCommands<FunnyCommands>();
         Log.Information("[Commands.Legacy] NSFW Registered");
         
+        c.RegisterCommands<Commission.Banger.BangerAdmin>();
+        Log.Information("[Commands.Legacy.Commission.Banger] BangerAdmin Registered");
+        c.RegisterCommands<Commission.Banger.BangerAnyone>();
+        Log.Information("[Commands.Legacy.Commission.Banger] BangerAnyone Registered");
+        
         c.RegisterCommands<BlacklistControl>();
         Log.Information("[Commands.Legacy.Owner] BlacklistControl Registered");
         c.RegisterCommands<BotControl>();
