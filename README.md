@@ -13,9 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.5.4&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.7.1&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=21%20May%202023&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=1%20July%202023&color=389980&style=for-the-badge" />
     <!-- Ahriana Cute -->
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
@@ -31,7 +31,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.4.1 (Stable)</b>
+    <li>DSharpPlus <b>v4.4.2 (Stable)</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -41,15 +41,16 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         </ul>
     </li>
     <li>Lib.Harmony <i>by pardeike</i> <b>v2.2.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.5</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.5</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.8</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.8</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
-    <li>Serilog by <b>v2.12.0</b>
+    <li>Serilog by <b>v3.0.1</b>
         <ul>
             <li>Serilog.Sinks.Console <b>v4.1.0</b></li>
             <li>Serilog.Sinks.File <b>v5.0.0</b></li>
         </ul>
     </li>
+    <li>fluxpoint-sharp <i>by Builderb</i> <b>v3.0.2</b></li>
 </ul>
 
 <h2>Programs & Services Used</h2>
@@ -61,8 +62,8 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         </ul>
     </li>
     <li>SublimeText</li>
-    <li>Obsidian (Note Editor)</li>
-    <li>Photoshop v23.1.1</li>
+    <li>Visual Studio Code</li>
+    <li>Photoshop</li>
     <li>Discord *</li>
     <li>Spotify / Plex(amp) *</li>
     <li>APIs
@@ -72,6 +73,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
             <li>Inspirobot.me</li>
             <li>Reddit</li>
             <li>Unsplash</li>
+            <li>DevMiner.xyz</li>
             <li>CookieAPI</li>
             <li>Fluxpoint</li>
         </ul>
@@ -201,6 +203,26 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
             <li>MultiKick</li>
             <li>ForceAddUserToDatabase</li>
             <li>GetUserPresence</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Commissioned Section</h2>
+<h3>Banger</h3>
+<p>These <i>(legacy)</i> commands only work in the commisioner's Discord server.</p>
+<ul>
+    <li>Anyone
+        <ul>
+            <li>ListBangerValues</li>
+        </ul>
+    </li>
+    <li>Admin
+        <ul>
+            <li>ToggleBanger</li>
+            <li>SetBangerChannel</li>
+            <li>ChangeBangerUrlErrorMessage</li>
+            <li>ChangeBangerExtErrorMessage</li>
+            <li>SetBangerValues</li>
         </ul>
     </li>
 </ul>
