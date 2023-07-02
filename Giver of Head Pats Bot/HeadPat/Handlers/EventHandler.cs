@@ -11,6 +11,7 @@ internal class EventHandler {
         
         var mc = new MessageCreated(c);
         var jl = new OnBotJoinOrLeave(c);
+        var bl = new BangerEventListener(c);
         _complete = true;
     }
 

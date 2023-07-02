@@ -3,6 +3,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HeadPats.Configuration;
+using HeadPats.Managers;
 using Serilog;
 
 namespace HeadPats.Handlers.Events; 
@@ -48,6 +49,7 @@ public class BangerEventListener {
     }
 
     private static async Task WatchForBangerChannel(DiscordClient sender, MessageCreateEventArgs args) {
+        if (args.Channel.IsPrivate) return;
         if (args.Author.Id == 875251523641294869) return; // Penny can talk in channel just fine
         if (!Config.Base.Banger.Enabled) return;
         if (args.Guild.Id != Config.Base.Banger.GuildId) return;
@@ -57,17 +59,18 @@ public class BangerEventListener {
         
         var messageContent = args.Message.Content;
         var attachments = args.Message.Attachments;
+        var stickers = args.Message.Stickers;
 
-        if (string.IsNullOrEmpty(messageContent) && attachments.Count != 0) {
+        if (string.IsNullOrEmpty(messageContent) && (attachments.Count != 0 || stickers.Count != 0)) {
             var extGood = IsFileExtWhitelisted(attachments[0].FileName.Split('.').Last(), WhitelistedFileExtensions!);
             if (extGood) return;
-            await args.Message.RespondAsync(new DiscordMessageBuilder().WithReply(args.Message.Id, true).WithContent(Config.Base.Banger.FileErrorResponseMessage));
+            await args.Message.RespondAsync(new DiscordMessageBuilder().WithReply(args.Message.Id, true).WithContent(Config.Base.Banger.FileErrorResponseMessage)).DeleteAfter(5);
             await args.Message.DeleteAsync();
         }
         
         var urlGood = IsUrlWhitelisted(messageContent, WhitelistedUrls!);
         if (urlGood) return;
-        await args.Message.RespondAsync(new DiscordMessageBuilder().WithReply(args.Message.Id, true).WithContent(Config.Base.Banger.UrlErrorResponseMessage));
+        await args.Message.RespondAsync(new DiscordMessageBuilder().WithReply(args.Message.Id, true).WithContent(Config.Base.Banger.UrlErrorResponseMessage)).DeleteAfter(5);
         await args.Message.DeleteAsync();
     }
 }
