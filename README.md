@@ -13,7 +13,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.7.1&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.7.2&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
     <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=1%20July%202023&color=389980&style=for-the-badge" />
     <!-- Ahriana Cute -->
