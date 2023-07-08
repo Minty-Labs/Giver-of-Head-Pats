@@ -92,6 +92,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <h3>Basic</h3>
 <ul>
     <li>Color</li>
+    <li>Gradient</li>
     <li>Summon
         <ul>
             <li>Bunny</li>
