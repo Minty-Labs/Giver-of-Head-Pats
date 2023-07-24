@@ -64,7 +64,7 @@
     <li>
       Discord
       <ul>
-        <li>Direct Message: <code>MintLily#0001</code></li>
+        <li>Direct Message: <code>mintlily</code></li>
         <li>Server Invite: <code>https://discord.gg/Qg9eVB34sq</code></li>
       </ul>
     </li>
