@@ -17,14 +17,15 @@ public class Admin : ApplicationCommandModule {
         [Option("User", "User to get info about")] DiscordUser? user,
         [Option("UserID", "User ID to get info about")] string userId = "") {
 ;
-        var staticCmdUser = 
-            user is not null && !string.IsNullOrWhiteSpace(userId) ? 
-            user : 
-            await c.Client.GetUserAsync(ulong.Parse(userId.Replace("<@", "").Replace(">", "")), true);
+        // var staticCmdUser = 
+        //     user is not null && !string.IsNullOrWhiteSpace(userId) ? 
+        //     user : 
+        //     await c.Client.GetUserAsync(ulong.Parse(userId.Replace("<@", "").Replace(">", "")), true);
         
         DiscordMember m;
         try {
             m = await c.Guild.GetMemberAsync(user!.Id);
+            // m = user is null && !string.IsNullOrWhiteSpace(userId) ? (DiscordMember) staticCmdUser : await c.Guild.GetMemberAsync(user!.Id);
         }
         catch {
             await c.CreateResponseAsync("User is not in the server, I cannot provide any information about them.");

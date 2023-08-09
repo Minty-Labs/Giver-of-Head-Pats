@@ -19,11 +19,11 @@ public class VeryBasic : ApplicationCommandModule {
                                               "Open-Source: https://github.com/Minty-Labs/Giver-of-Head-Pats \n" +
                                               $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
                                               $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
-                                              "Privacy Policy: [Link](https://mintlily.lgbt/gohp/privacy)");
+                                              "Privacy Policy: [Link](https://mintylabs.dev/gohp/privacy-policy)");
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(Vars.ClientId, true);
         e.WithThumbnail(u.AvatarUrl);
-        e.WithAuthor("MintLily#0001", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily.png");
+        e.WithAuthor("MintLily", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily.png");
         await c.CreateResponseAsync(e.Build());
     }
 
