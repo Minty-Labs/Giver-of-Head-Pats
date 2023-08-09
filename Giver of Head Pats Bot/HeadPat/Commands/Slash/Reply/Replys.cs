@@ -23,11 +23,6 @@ public class ReplyApplication : ApplicationCommandModule {
             [Choice("false", "false")] [Choice("true", "true")]
             [Option("DeleteTrigger", "Auto Remove the trigger text message?")] string deleteTrigger = "false",
             [Option("delTrigIfOnly", "Deletes trigger message if type alone and is the only text in message")] string deleteTriggerIfIsOnlyInMessage = "false") {
-        
-            if (c.Member.Permissions != Permissions.ManageMessages) {
-                await c.CreateResponseAsync("You do not have permission to use this command.");
-                return;
-            }
             
             ReplyConfExtensions.AddValue(c.Guild.Id, trigger, response,
                 requireOnlyTriggerText.AsBool(),
@@ -41,10 +36,6 @@ public class ReplyApplication : ApplicationCommandModule {
         public async Task RemoveReply(InteractionContext c,
             [Option("Trigger", "Enter the trigger word or phrase exactly", true)]
             string trigger) {
-            if (c.Member.Permissions != Permissions.ManageMessages) {
-                await c.CreateResponseAsync("You do not have permission to use this command.");
-                return;
-            }
             ReplyConfExtensions.RemoveValue(c.Guild.Id, trigger);
             if (ReplyConfExtensions.ErroredOnRemove) {
                 await c.CreateResponseAsync("Either the provided trigger does not exist, or an error has occured.", true);
