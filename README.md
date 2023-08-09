@@ -13,9 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.7.4&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.8.1&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=24%20July%202023&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=9%20August%202023&color=389980&style=for-the-badge" />
     <!-- Ahriana Cute -->
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
