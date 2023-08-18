@@ -11,7 +11,7 @@ public static class DSharpToConsole {
         client.ClientErrored += DiscordOnClientErrored;
         client.SocketErrored += OnSocketErrored;
         // client.Heartbeated += OnHeartbeated;
-        client.Resumed += OnResumed;
+        client.SessionResumed += OnResumed;
         client.Zombied += OnZombied;
         client.SocketClosed += OnSocketClosed;
         // client.SocketOpened += OnSocketOpened;
@@ -34,7 +34,7 @@ public static class DSharpToConsole {
         return Task.CompletedTask;
     }
     
-    private static Task OnResumed(DiscordClient client, ReadyEventArgs args) {
+    private static Task OnResumed(DiscordClient client, SessionReadyEventArgs args) {
         if (Vars.IsDebug)
             Log.Information("[DSharp] Resumed Client");
         return Task.CompletedTask;

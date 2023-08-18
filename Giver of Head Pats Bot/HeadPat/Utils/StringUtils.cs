@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using DSharpPlus.Entities;
 
 namespace HeadPats.Utils; 
 
@@ -198,5 +199,46 @@ public static class StringUtils {
 
         messages.Add(msg);
         return messages.Where(m => !string.IsNullOrEmpty(m)).ToList();
+    }
+    
+    
+    /// <summary>
+    /// Get Discord ActivityType from string
+    /// </summary>
+    /// <param name="type">activity as string</param>
+    /// <returns>DSharpPlus.Entities.ActivityType</returns>
+    public static ActivityType GetActivityType(string type) {
+        return type.ToLower() switch {
+            "playing" => ActivityType.Playing,
+            "listening" => ActivityType.ListeningTo,
+            "watching" => ActivityType.Watching,
+            "streaming" => ActivityType.Streaming,
+            "competing" => ActivityType.Competing,
+            "play" => ActivityType.Playing,
+            "listen" => ActivityType.ListeningTo,
+            "watch" => ActivityType.Watching,
+            "stream" => ActivityType.Streaming,
+            "other" => ActivityType.Custom,
+            "compete" => ActivityType.Competing,
+            "custom" => ActivityType.Custom,
+            _ => ActivityType.Custom
+        };
+    }
+    
+    /// <summary>
+    /// Get Discord UserStatus from string
+    /// </summary>
+    /// <param name="status">status as string</param>
+    /// <returns>DSharpPlus.Entities.UserStatus</returns>
+    public static UserStatus GetUserStatus(string status) {
+        return status.ToLower() switch {
+            "online" => UserStatus.Online,
+            "idle" => UserStatus.Idle,
+            "dnd" => UserStatus.DoNotDisturb,
+            "do_not_disturb" => UserStatus.DoNotDisturb,
+            "invisible" => UserStatus.Invisible,
+            "offline" => UserStatus.Invisible,
+            _ => UserStatus.Online
+        };
     }
 }

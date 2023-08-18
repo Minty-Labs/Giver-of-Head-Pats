@@ -1,7 +1,7 @@
 <h1>Giver of Head Pats, Discord Bot</h1>
 <img src="https://raw.githubusercontent.com/Minty-Labs/Giver-of-Head-Pats/main/Media/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
-A <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank">dotNET 6</a> rewrite of a Discord Bot, 
+A <a href="https://dotnet.microsoft.com/en-us/download/dotnet/7.0" target="_blank">dotNET 7</a> rewrite of a Discord Bot, 
 created by <a href="https://mintlily.lgbt/">Lily</a> from <a href="https://mintylabs.dev/">Minty Labs</a>. <br>
 Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hugs, cookies, and more; leaderboards for pats and cookies; as well as summon pictures of foxes, bunnies, nekos, memes and more. I can also have moderators make auto responses for me to automatically reply to.
 <br><br>

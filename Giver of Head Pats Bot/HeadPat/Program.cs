@@ -127,7 +127,7 @@ public sealed class Program {
 
         #endregion
 
-        Client.Ready += Client_Ready;
+        Client.SessionCreated += Client_Ready;
         var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.CookieClientApiKey))
@@ -166,7 +166,7 @@ public sealed class Program {
     
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 
-    private static async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e) {
+    private static async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.SessionReadyEventArgs e) {
         Vars.StartTime = DateTime.Now;
         Vars.ThisProcess = Process.GetCurrentProcess();
         Log.Debug("Bot Version                    = " + Vars.Version);
@@ -181,7 +181,7 @@ public sealed class Program {
         Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
         await Client!.UpdateStatusAsync(new DiscordActivity {
             Name = $"{Config.Base.Activity}",
-            ActivityType = GetActivityType(Config.Base.ActivityType)
+            ActivityType = StringUtils.GetActivityType(Config.Base.ActivityType)
         }, Vars.IsDebug || Vars.IsWindows ? UserStatus.Idle : UserStatus.Online);
 
         if (Vars.IsWindows) {
@@ -216,22 +216,5 @@ public sealed class Program {
         Handlers.Events.BangerEventListener.OnStartup();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
-    }
-    
-    private static ActivityType GetActivityType(string type) {
-        return type.ToLower() switch {
-            "playing" => ActivityType.Playing,
-            "listening" => ActivityType.ListeningTo,
-            "watching" => ActivityType.Watching,
-            "streaming" => ActivityType.Streaming,
-            "competing" => ActivityType.Competing,
-            "play" => ActivityType.Playing,
-            "listen" => ActivityType.ListeningTo,
-            "watch" => ActivityType.Watching,
-            "stream" => ActivityType.Streaming,
-            "other" => ActivityType.Custom,
-            "compete" => ActivityType.Competing,
-            _ => ActivityType.Custom
-        };
     }
 }
