@@ -13,10 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.8.1&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.8.2&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=9%20August%202023&color=389980&style=for-the-badge" />
-    <!-- Ahriana Cute -->
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=17%20August%202023&color=389980&style=for-the-badge" />
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
     <br><br>
@@ -31,7 +30,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v4.4.2 (Stable)</b>
+    <li>DSharpPlus <b>v5.0.0-01690 (Nightly)</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -41,8 +40,8 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         </ul>
     </li>
     <li>Lib.Harmony <i>by pardeike</i> <b>v2.2.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.9</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.9</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.10</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.10</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
     <li>Serilog by <b>v3.0.1</b>
         <ul>
@@ -191,6 +190,8 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
             <li>List Guilds</li>
             <li>Leave Guild</li>
             <li>Shutdown</li>
+            <li>UpdateActivity</li>
+            <li>UserStatus</li>
         </ul>
     </li>
     <li>Configuration Control
@@ -236,7 +237,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <b>Elly</b> (Supporting) <a href="https://github.com/EllyVR">GitHub</a><br>
 
 <img src="https://avatars.githubusercontent.com/u/28003629?v=4" height="35px" align=center /> &nbsp;
-<b>Ahriana</b> (CookieAPI Dev) <a href="https://github.com/Ahriana">GitHub</a> - <a href="https://www.patreon.com/scorespy">Patreon</a><br>
+<b>Ahriana</b> (CookieAPI Dev) <a href="https://github.com/Ahriana">GitHub</a><br>
 
 <h3>Featured Programs</h3>
 <a href="https://jb.gg/OpenSourceSupport" target="_blank">

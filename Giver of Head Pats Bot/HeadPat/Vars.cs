@@ -3,7 +3,7 @@
 namespace HeadPats; 
 
 public static class Vars {
-    public const string DSharpVer = "4.4.2-stable";
+    public const string DSharpVer = "5.0.0-nightly-01690";
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
 #if DEBUG
@@ -12,8 +12,8 @@ public static class Vars {
     public static readonly DateTime BuildTime = DateTime.Now;
     public const bool IsDebug = true;
 #else
-    public const string Version = "2023.8.1"; // Year.Month.Revision
-    public static readonly DateTime BuildTime = new(2023, 8, 9, 16, 58, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "2023.8.2"; // Year.Month.Revision
+    public static readonly DateTime BuildTime = new(2023, 8, 17, 19, 48, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
 #endif
     public static string BuildDate { get; } = $"{BuildTime:F}";
