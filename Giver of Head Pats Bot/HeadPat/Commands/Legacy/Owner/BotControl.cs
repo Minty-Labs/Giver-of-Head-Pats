@@ -3,6 +3,7 @@ using System.Text;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using HeadPats.Configuration;
 using HeadPats.Handlers;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -89,6 +90,36 @@ public class BotControl : BaseCommandModule  {
         var weh = StringUtils.SplitMessage(output, 1900);
         foreach (var chuck in weh)
             await ctx.RespondAsync($"```\n{chuck}```");
+    }
+
+    [Command("UpdateActivity"), Description("Updates the bot's activity"), RequireOwner]
+    public async Task UpdateStatus(CommandContext ctx, 
+        [Description("Activity Type (Playing|Watching|etc)")] string activity = "", [RemainingText, Description("save?")] string saveIt = "") {
+        if (string.IsNullOrWhiteSpace(activity)) {
+            await ctx.RespondAsync("Please provide an activity type.");
+            return;
+        }
+        var activityType = StringUtils.GetActivityType(activity);
+        var discordActivity = new DiscordActivity(ctx.Client.CurrentUser.Presence.Activity.Name, activityType);
+        await ctx.Client.UpdateStatusAsync(discordActivity, UserStatus.Online);
+        var msgText = $"Updated activity to: {discordActivity.ActivityType}";
+        var msg = await ctx.RespondAsync(msgText);
+        if (!string.IsNullOrWhiteSpace(saveIt)) {
+            Config.Base.ActivityType = activityType.ToString();
+            Config.Save();
+            await msg.ModifyAsync(msgText + "\n(Saved to config)");
+        }
+    }
+    
+    [Command("UserStatus"), Description("Updates the bot's user status"), RequireOwner]
+    public async Task UpdateUserStatus(CommandContext ctx, [Description("User Status (Online|Idle|etc)")] string status = "") {
+        if (string.IsNullOrWhiteSpace(status)) {
+            await ctx.RespondAsync("Please provide a user status.");
+            return;
+        }
+        var userStatus = StringUtils.GetUserStatus(status);
+        await ctx.Client.UpdateStatusAsync(ctx.Client.CurrentUser.Presence.Activity, userStatus);
+        await ctx.RespondAsync($"Updated user status to: {userStatus}");
     }
     
 }
