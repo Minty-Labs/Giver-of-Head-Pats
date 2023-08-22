@@ -100,8 +100,8 @@ public class BotControl : BaseCommandModule  {
             return;
         }
         var activityType = StringUtils.GetActivityType(activity);
-        var discordActivity = new DiscordActivity(ctx.Client.CurrentUser.Presence.Activity.Name, activityType);
-        await ctx.Client.UpdateStatusAsync(discordActivity, UserStatus.Online);
+        var discordActivity = new DiscordActivity(Config.Base.ActivityText!, activityType);
+        await ctx.Client.UpdateStatusAsync(discordActivity, StringUtils.GetUserStatus(Config.Base.UserStatus));
         var msgText = $"Updated activity to: {discordActivity.ActivityType}";
         var msg = await ctx.RespondAsync(msgText);
         if (!string.IsNullOrWhiteSpace(saveIt)) {
@@ -112,14 +112,21 @@ public class BotControl : BaseCommandModule  {
     }
     
     [Command("UserStatus"), Description("Updates the bot's user status"), RequireOwner]
-    public async Task UpdateUserStatus(CommandContext ctx, [Description("User Status (Online|Idle|etc)")] string status = "") {
+    public async Task UpdateUserStatus(CommandContext ctx,
+        [Description("User Status (Online|Idle|etc)")] string status = "", [RemainingText, Description("save?")] string saveIt = "") {
         if (string.IsNullOrWhiteSpace(status)) {
             await ctx.RespondAsync("Please provide a user status.");
             return;
         }
         var userStatus = StringUtils.GetUserStatus(status);
         await ctx.Client.UpdateStatusAsync(ctx.Client.CurrentUser.Presence.Activity, userStatus);
-        await ctx.RespondAsync($"Updated user status to: {userStatus}");
+        var msgText = $"Updated user status to: {userStatus}";
+        var msg = await ctx.RespondAsync(msgText);
+        if (!string.IsNullOrWhiteSpace(saveIt)) {
+            Config.Base.UserStatus = status;
+            Config.Save();
+            await msg.ModifyAsync(msgText + "\n(Saved to config)");
+        }
     }
     
 }
