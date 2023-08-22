@@ -28,7 +28,7 @@
     <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01690" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01690" />
     <PackageReference Include="fluxpoint-sharp" Version="3.0.2" />
-    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.0-prerelease.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
     <PackageReference Include="Serilog" Version="3.0.1" />

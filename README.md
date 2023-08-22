@@ -13,9 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.8.2&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.8.3&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=17%20August%202023&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=22%20August%202023&color=389980&style=for-the-badge" />
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
     <br><br>
@@ -39,7 +39,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
             <li>SlashCommands</li>
         </ul>
     </li>
-    <li>Lib.Harmony <i>by pardeike</i> <b>v2.2.2</b></li>
+    <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.0-prerelease2</b></li>
     <li>Microsoft.EntityFrameworkCore <b>v7.0.10</b></li>
     <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.10</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
@@ -180,6 +180,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <h3>Admin</h3>
 <ul>
     <li>BlacklistRoleFromPatCommand - Prevent Roles from using the pat command</li>
+    <li>UserInfo - Gets information about a user</li>
 </ul>
 
 <h3>Owner</h3>
