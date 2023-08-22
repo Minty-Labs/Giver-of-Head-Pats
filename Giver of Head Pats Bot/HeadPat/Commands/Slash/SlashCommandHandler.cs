@@ -8,8 +8,8 @@ namespace HeadPats.Commands.Slash;
 
 public static class SlashCommandHandler {
     public static void Register(SlashCommandsExtension s) {
-        s.RegisterCommands<HeadPats.Commands.Slash.Admin.Admin>();
-        Log.Information("[Commands.Slash.Admin] Admin Registered");
+        // s.RegisterCommands<HeadPats.Commands.Slash.Admin.Admin>();
+        // Log.Information("[Commands.Slash.Admin] Admin Registered");
         s.RegisterCommands<Admin.DailyPatCmds>();
         Log.Information("[Commands.Slash.Admin] DailyPatCmds Registered");
         s.RegisterCommands<Admin.IrlQuoteCmds>();
