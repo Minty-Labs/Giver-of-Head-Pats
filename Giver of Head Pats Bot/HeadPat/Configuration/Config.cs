@@ -7,8 +7,9 @@ public class Base {
     [JsonPropertyName("Token")] public string? BotToken { get; set; }
     [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; set; } = "hp!";
     [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
-    [JsonPropertyName("Game")] public string? Activity { get; set; }
+    [JsonPropertyName("Game")] public string? ActivityText { get; set; }
     [JsonPropertyName("Streaming URL")] public string? StreamingUrl { get; set; }
+    [JsonPropertyName("Online Status")] public string UserStatus { get; set; } = "Online";
     [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; set; }
     [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; set; }
     [JsonPropertyName("Error Logs Channel")] public ulong ErrorLogsChannel { get; set; }
@@ -94,7 +95,7 @@ public static class Config {
             Enabled = false,
             GuildId = 0,
             ChannelId = 0,
-            WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
+            WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "www.youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
             WhitelistedFileExtensions = new List<string> { "mp3", "flac", "wav", "ogg", "m4a", "alac", "aac", "aiff", "wma" },
             UrlErrorResponseMessage = "This URL is not whitelisted.",
             FileErrorResponseMessage = "This file type is not whitelisted."
@@ -151,8 +152,9 @@ public static class Config {
             BotToken = "",
             Prefix = "hp!",
             ActivityType = "Playing",
-            Activity = "with Headpats",
+            ActivityText = "with Headpats",
             StreamingUrl = "",
+            UserStatus = "Online",
             OwnerIds = new List<ulong>(),
             BotLogsChannel = 0,
             ErrorLogsChannel = 0,

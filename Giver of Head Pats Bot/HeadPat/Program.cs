@@ -44,7 +44,7 @@ public sealed class Program {
                 .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 25, 
                     rollOnFileSizeLimit: true, fileSizeLimitBytes: 1024000000L)
                 .CreateLogger();
-        Log.Information("Elly and Ahri are adorable cute floofs, I love them very very very much!~");
+        Log.Information("Elly is an adorable cute floof, I love her very very very much!~");
     }
 
     private async Task MainAsync() {
@@ -176,19 +176,20 @@ public sealed class Program {
         Log.Debug("Token                          = " + Config.Base.BotToken!.Redact());
         Log.Debug("Prefix (non-Slash)             = " + $"{Config.Base.Prefix}");
         Log.Debug("ActivityType                   = " + $"{Config.Base.ActivityType}");
-        Log.Debug("Game                           = " + $"{Config.Base.Activity}");
+        Log.Debug("Game                           = " + $"{Config.Base.ActivityText}");
         Log.Debug("Streaming URL                  = " + $"{Config.Base.StreamingUrl}");
+        Log.Debug("Online Status                  = " + $"{Config.Base.UserStatus}");
         Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
         await Client!.UpdateStatusAsync(new DiscordActivity {
-            Name = $"{Config.Base.Activity}",
-            ActivityType = StringUtils.GetActivityType(Config.Base.ActivityType)
-        }, Vars.IsDebug || Vars.IsWindows ? UserStatus.Idle : UserStatus.Online);
+            Name = Config.Base.ActivityText!,
+            ActivityType = ActivityType.Custom
+        }, Vars.IsDebug || Vars.IsWindows ? UserStatus.Idle : StringUtils.GetUserStatus(Config.Base.UserStatus));
 
         if (Vars.IsWindows) {
-            var temp1 = Config.Base.Activity!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.Activity!);
+            var temp1 = Config.Base.ActivityText!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.ActivityText!);
             Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {sender.CurrentUser.Username} - " +
                             $"Currently in {Client.Guilds.Count} Guilds - " +
-                            $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.Activity)}";
+                            $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.ActivityText)}";
         }
 
         await using var db = new Context();
@@ -213,7 +214,7 @@ public sealed class Program {
         ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
         MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
         LoopingTaskScheduler.StartLoop();
-        Handlers.Events.BangerEventListener.OnStartup();
+        BangerEventListener.OnStartup();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }

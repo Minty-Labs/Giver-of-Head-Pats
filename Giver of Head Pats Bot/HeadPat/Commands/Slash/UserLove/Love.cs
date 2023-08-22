@@ -12,10 +12,10 @@ public class LoveCommands : ApplicationCommandModule {
     
     private static string? _tempPatGifUrl, _tempHugGifUrl, _tempSlapGifUrl, _tempCookieGifUrl, _tempPokeGifUrl, _tempKissGifUrl;
 
-    private static string GetRandomCuteMessage(string action) {
-        var list = new List<string> { "You're cute!", "You're adorable!", "You're loved!", $"You're deserve {action} yourself ya know." };
-        return list[new Random().Next(0, list.Count)];
-    }
+    // private static string GetRandomCuteMessage(string action) {
+    //     var list = new List<string> { "You're cute!", "You're adorable!", "You're loved!", $"You're deserve {action} yourself ya know." };
+    //     return list[new Random().Next(0, list.Count)];
+    // }
 
      [SlashCommandGroup("user", "User Actions")]
      public class LoveUser : ApplicationCommandModule {
@@ -162,10 +162,11 @@ public class LoveCommands : ApplicationCommandModule {
              else 
                  e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
              UserControl.AddPatToUser(user.Id, special, true, c.Guild.Id);
-             await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("head pats"), true);
-             await c.Channel.SendMessageAsync(e.Build());
+             // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("head pats"), true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
              Log.Debug($"Total Pat amount Given: {special}");
-             await Task.FromResult(true);
+             // await Task.FromResult(true);
          }
          
          [SlashCommand("hug", "Hug a specified user.")]
@@ -225,9 +226,10 @@ public class LoveCommands : ApplicationCommandModule {
              e.WithColor(Colors.HexToColor("6F41B6"));
              e.WithDescription($"{c.User.Mention} gave a hug to {user.Mention}");
              e.Build();
-             await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("hugs"), true);
-             await c.Channel.SendMessageAsync(e.Build());
-             await Task.FromResult(true);
+             // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("hugs"), true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
+             // await Task.FromResult(true);
          }
 
          [SlashCommand("Cuddle", "Cuddle a specified user.")]
@@ -286,9 +288,10 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("3498DB"));
              e.WithDescription($"{c.User.Mention} gave cuddles to {user.Mention}");
-             await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("cuddles"), true);
-             await c.Channel.SendMessageAsync(e.Build());
-             await Task.FromResult(true);
+             // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("cuddles"), true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
+             // await Task.FromResult(true);
          }
 
          [SlashCommand("kiss", "Kiss a specified user.")]
@@ -347,9 +350,10 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("F771A3"));
              e.WithDescription($"{c.User.Mention} gave kisses to {user.Mention}");
-             await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("kisses"), true);
-             await c.Channel.SendMessageAsync(e.Build());
-             await Task.FromResult(true);
+             // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("kisses"), true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
+             // await Task.FromResult(true);
          }
 
          [SlashCommand("slap", "Slap a specified user.")]
@@ -408,9 +412,10 @@ public class LoveCommands : ApplicationCommandModule {
 
              e.WithColor(Colors.HexToColor("E74C3C"));
              e.WithDescription($"{c.User.Mention} slapped {user.Mention}");
-             await c.CreateResponseAsync(e.Build());
-             await c.CreateResponseAsync(/*e.Build()*/"Did you know, this message is a bug?", true);
-             await Task.FromResult(true);
+             // await c.CreateResponseAsync(/*e.Build()*/"Did you know, this message is a bug?", true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
+             // await Task.FromResult(true);
          }
          
          [SlashCommand("Poke", "Poke or boop a user.")]
@@ -469,9 +474,10 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.HexToColor("0E4730"));
              e.WithDescription($"{c.User.Mention} poked {user.Mention}");
-             await c.CreateResponseAsync(/*e.Build()*/"Did you know, this message is a bug?", true);
-             await c.Channel.SendMessageAsync(e.Build());
-             await Task.FromResult(true);
+             // await c.CreateResponseAsync(/*e.Build()*/"Did you know, this message is a bug?", true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
+             // await Task.FromResult(true);
          }
 
          [SlashCommand("Cookie", "Give a user a cookie.")]
@@ -550,10 +556,11 @@ public class LoveCommands : ApplicationCommandModule {
              
              e.WithColor(Colors.GetRandomCookieColor());
              e.WithDescription($"{c.User.Mention} gave a cookie to {user.Mention}");
-             await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("cokkies"), true);
-             await c.Channel.SendMessageAsync(e.Build());
+             // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("cokkies"), true);
+             // await c.Channel.SendMessageAsync(e.Build());
+             await c.CreateResponseAsync( e.Build());
              UserControl.AddCookieToUser(user.Id, 1);
-             await Task.FromResult(true);
+             // await Task.FromResult(true);
          }
      }
 }

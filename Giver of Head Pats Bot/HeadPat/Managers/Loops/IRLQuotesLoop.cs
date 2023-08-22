@@ -85,7 +85,7 @@ public static class IrlQuotesLoop {
             
             channel!.SendMessageAsync(embed).GetAwaiter().GetResult();
             
-            guildParam.IrlQuotes.SetEpochTime += 86400;
+            guildParam.IrlQuotes.SetEpochTime += 86400; // 24 hours
             updated = true;
         }
         
