@@ -17,12 +17,12 @@ public static class LoopingTaskScheduler {
             var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             
             // Status
-            try {
+            /*try {
                 StatusLoop.Update(db);
             }
             catch (Exception err) {
                 DSharpToConsole.SendErrorToLoggingChannel($"Status:\n{err}");
-            }
+            }*/
             
             // Daily Pats
             try {
