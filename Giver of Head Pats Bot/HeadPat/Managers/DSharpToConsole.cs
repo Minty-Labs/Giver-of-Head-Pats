@@ -62,10 +62,10 @@ public static class DSharpToConsole {
             "GUILD_AUDIT_LOG_ENTRY_CREATE" or
             "GUILD_AUDIT_LOG_ENTRY_UPDATE" or
             "GUILD_AUDIT_LOG_ENTRY_DELETE") {
-            Console.WriteLine($"[DSharp] Unknown event, {args.EventName}, has ran. Not going in Serilog");
-            if (args.Json.Contains("communication_disabled_until")) {
-                
-            }
+            // Console.WriteLine($"[DSharp] Unknown event, {args.EventName}, has ran. Not going in Serilog");
+            // if (args.Json.Contains("communication_disabled_until")) {
+            //     
+            // }
             return Task.CompletedTask;
         }
         
@@ -95,7 +95,7 @@ public static class DSharpToConsole {
         }.Build();
     }
 
-    public static async Task SendErrorToLoggingChannelAsync(object message) => await Program.Client!.SendMessageAsync(Program.ErrorLogChannel, ErrorEmbed(message));
+    public static async Task SendErrorToLoggingChannelAsync(object message) => await Program.Client!.SendMessageAsync(Program.ErrorLogChannel!, ErrorEmbed(message)!);
 
-    public static void SendErrorToLoggingChannel(object message) => Program.Client!.SendMessageAsync(Program.ErrorLogChannel, ErrorEmbed(message)).GetAwaiter().GetResult();
+    public static void SendErrorToLoggingChannel(object message) => Program.Client!.SendMessageAsync(Program.ErrorLogChannel!, ErrorEmbed(message)!).GetAwaiter().GetResult();
 }

@@ -8,7 +8,6 @@ public class Base {
     [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; set; } = "hp!";
     [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
     [JsonPropertyName("Game")] public string? ActivityText { get; set; }
-    [JsonPropertyName("Streaming URL")] public string? StreamingUrl { get; set; }
     [JsonPropertyName("Online Status")] public string UserStatus { get; set; } = "Online";
     [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; set; }
     [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; set; }
@@ -153,7 +152,6 @@ public static class Config {
             Prefix = "hp!",
             ActivityType = "Playing",
             ActivityText = "with Headpats",
-            StreamingUrl = "",
             UserStatus = "Online",
             OwnerIds = new List<ulong>(),
             BotLogsChannel = 0,

@@ -158,9 +158,7 @@ public sealed class Program {
         });
         
         Config.CreateFile();
-            
         await Client.ConnectAsync();
-
         await Task.Delay(-1);
     }
     
@@ -177,7 +175,6 @@ public sealed class Program {
         Log.Debug("Prefix (non-Slash)             = " + $"{Config.Base.Prefix}");
         Log.Debug("ActivityType                   = " + $"{Config.Base.ActivityType}");
         Log.Debug("Game                           = " + $"{Config.Base.ActivityText}");
-        Log.Debug("Streaming URL                  = " + $"{Config.Base.StreamingUrl}");
         Log.Debug("Online Status                  = " + $"{Config.Base.UserStatus}");
         Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
 
