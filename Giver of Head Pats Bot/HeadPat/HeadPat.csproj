@@ -22,11 +22,11 @@
 
   <ItemGroup>
     <PackageReference Include="ColorHelper" Version="1.8.1" />
-    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01690" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01690" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="5.0.0-nightly-01690" />
-    <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01690" />
-    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01690" />
+    <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01694" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01694" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="5.0.0-nightly-01694" />
+    <PackageReference Include="DSharpPlus.Rest" Version="5.0.0-nightly-01694" />
+    <PackageReference Include="DSharpPlus.SlashCommands" Version="5.0.0-nightly-01694" />
     <PackageReference Include="fluxpoint-sharp" Version="3.0.2" />
     <PackageReference Include="Lib.Harmony" Version="2.3.0-prerelease.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
