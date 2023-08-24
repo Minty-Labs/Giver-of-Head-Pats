@@ -180,15 +180,11 @@ public sealed class Program {
         Log.Debug("Streaming URL                  = " + $"{Config.Base.StreamingUrl}");
         Log.Debug("Online Status                  = " + $"{Config.Base.UserStatus}");
         Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
-        await Client!.UpdateStatusAsync(new DiscordActivity {
-            Name = Config.Base.ActivityText!,
-            ActivityType = ActivityType.Custom
-        }, Vars.IsDebug || Vars.IsWindows ? UserStatus.Idle : StringUtils.GetUserStatus(Config.Base.UserStatus));
 
         if (Vars.IsWindows) {
             var temp1 = Config.Base.ActivityText!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.ActivityText!);
             Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {sender.CurrentUser.Username} - " +
-                            $"Currently in {Client.Guilds.Count} Guilds - " +
+                            $"Currently in {Client!.Guilds.Count} Guilds - " +
                             $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.ActivityText)}";
         }
 
@@ -201,7 +197,7 @@ public sealed class Program {
                           $"Currently in {sender.Guilds.Count} Guilds with {tempPatCount} total head pats given",
             Footer = new DiscordEmbedBuilder.EmbedFooter {
                 Text = $"v{Vars.Version}",
-                IconUrl = Client.CurrentUser.AvatarUrl
+                IconUrl = Client!.CurrentUser.AvatarUrl ?? "https://i.mintlily.lgbt/null.jpg"
             },
             Timestamp = DateTime.Now
         }

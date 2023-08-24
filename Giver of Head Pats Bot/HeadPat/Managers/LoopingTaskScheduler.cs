@@ -8,6 +8,22 @@ public static class LoopingTaskScheduler {
         DailyPatLoop.DailyPatted = new Dictionary<ulong, bool>();
         // DailyPatLoop.PreviousPatUrl = new Dictionary<ulong, string>();
         new Thread(Loop).Start();
+        new Thread(LoopAsync).Start();
+    }
+
+    private static async void LoopAsync() {
+        while (true) {
+            await using var db = new Context();
+            try {
+                await StatusLoop.Update(db);
+            }
+            catch (Exception err) {
+                await DSharpToConsole.SendErrorToLoggingChannelAsync($"Status:\n{err}");
+            }
+            
+            Thread.Sleep(TimeSpan.FromMinutes(10));
+        }
+        // ReSharper disable once FunctionNeverReturns
     }
     
     private static void Loop() {
