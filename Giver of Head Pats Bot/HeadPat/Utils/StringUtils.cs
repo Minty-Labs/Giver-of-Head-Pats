@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
 namespace HeadPats.Utils; 
 
@@ -10,7 +9,7 @@ public static class StringUtils {
     /// <param name="thisString"></param>
     /// <returns>Each character as an asterisk</returns>
     public static string Redact(this string? thisString) {
-        var temp = "";
+        string? temp = null;
         // for (var i = 0; i < s.Length; i++)
         //     temp += "*";
         temp = thisString!.ToCharArray().Aggregate(temp, (current, empty) => current + "*");

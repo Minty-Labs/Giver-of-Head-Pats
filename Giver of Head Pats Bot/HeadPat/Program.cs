@@ -17,6 +17,7 @@ using HeadPats.Commands.ContextMenu;
 using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
 using HeadPats.Configuration;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -101,7 +102,7 @@ public sealed class Program {
             // if (args.Context.Message.Content.StartsWith('-'))
             //     return Task.CompletedTask;
             
-            Log.Information($"Command {args.Command!.Name}, executed by {args.Context.User.Username}, " +
+            Log.Information($"Command {(args.Command != null ? args.Command.Name : "Unknown Command")}, executed by {args.Context.User.Username}, " +
                             $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}");
             return Task.CompletedTask;
         };

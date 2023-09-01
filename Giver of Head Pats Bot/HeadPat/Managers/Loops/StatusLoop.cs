@@ -15,7 +15,7 @@ public static class StatusLoop {
         if (tempPatCount == _tempPatCount) return;
         if (Program.Client == null) return;
         
-        var discordActivity = new DiscordActivity($"{tempPatCount} head pats given | hp!help", StringUtils.GetActivityType(Config.Base.ActivityType));
+        var discordActivity = new DiscordActivity(Vars.IsDebug ? "Currently in DEV Mode" : $"{tempPatCount} head pats given | hp!help", StringUtils.GetActivityType(Config.Base.ActivityType));
         await Program.Client.UpdateStatusAsync(discordActivity, StringUtils.GetUserStatus(Config.Base.UserStatus));
         // Log.Debug("Updated Status");
     }
