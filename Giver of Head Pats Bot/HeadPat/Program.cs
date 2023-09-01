@@ -209,6 +209,7 @@ public sealed class Program {
         LoopingTaskScheduler.StartLoop();
         BangerEventListener.OnStartup();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
+        Config.FixPersonalizedMemberData(); // This will be removed in the future
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
 }

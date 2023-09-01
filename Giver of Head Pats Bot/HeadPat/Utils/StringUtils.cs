@@ -241,4 +241,17 @@ public static class StringUtils {
             _ => UserStatus.Online
         };
     }
+    
+    /// <summary>
+    /// Get a specified number of characters from the left side of a string
+    /// </summary>
+    /// <param name="input">this string</param>
+    /// <param name="length">how many characters you want to get</param>
+    /// <returns></returns>
+    public static string Left(this string input, int length) => (input.Length < length) ? input : input[..length];
+
+    public static string ValidateHexColor(this string input) {
+        char[] allowedChars = { 'a', 'b', 'c', 'd', 'e', 'f', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        return new string(input.ToLower().ToCharArray().Where(c => allowedChars.Contains(c)).ToArray());;
+    }
 }

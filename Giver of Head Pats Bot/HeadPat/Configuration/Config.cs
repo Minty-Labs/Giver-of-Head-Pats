@@ -9,6 +9,12 @@ public static class Config {
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
 
+        var personalization = new PersonalizedMember {
+            Enabled = false,
+            ChannelId = 0,
+            Members = new List<Member>()
+        };
+
         var banger = new Banger {
             Enabled = false,
             GuildId = 0,
@@ -81,7 +87,8 @@ public static class Config {
             Contributors = new List<BotContributor> { contributor },
             GuildSettings = new List<GuildParams> { guildParams },
             NameReplacements = new List<NameReplacement> { nameReplacement },
-            Banger = banger
+            Banger = banger,
+            PersonalizedMember = personalization
         };
         
         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));
@@ -96,4 +103,15 @@ public static class Config {
         => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
     
     public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
+
+    public static void FixPersonalizedMemberData() {
+        if (Base.PersonalizedMember is not null) return;
+        var personalization = new PersonalizedMember {
+            Enabled = false,
+            ChannelId = 0,
+            Members = new List<Member>()
+        };
+        Base.PersonalizedMember = personalization;
+        Save();
+    }
 }

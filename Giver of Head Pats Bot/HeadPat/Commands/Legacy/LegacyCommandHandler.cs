@@ -23,6 +23,11 @@ public static class LegacyCommandHandler {
         c.RegisterCommands<Commission.Banger.BangerAnyone>();
         Log.Information("[Commands.Legacy.Commission.Banger] BangerAnyone Registered");
         
+        c.RegisterCommands<Commission.PersonalizedMembers.PersonalizationAdmin>();
+        Log.Information("[Commands.Legacy.Commission.PersonalizedMembers] PersonalizationAdmin Registered");
+        c.RegisterCommands<Commission.PersonalizedMembers.PersonalizationAnyone>();
+        Log.Information("[Commands.Legacy.Commission.PersonalizedMembers] PersonalizationAnyone Registered");
+        
         c.RegisterCommands<BlacklistControl>();
         Log.Information("[Commands.Legacy.Owner] BlacklistControl Registered");
         c.RegisterCommands<BotControl>();
