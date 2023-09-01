@@ -1,6 +1,7 @@
 ﻿using HeadPats.Configuration;
 using HeadPats.Managers;
 using Serilog;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Commands.Slash.Reply; 
 
@@ -18,7 +19,7 @@ public class ReplyConfExtensions {
             if (itemToRemove != null) Config.GuildSettings(guildId)!.Replies!.Remove(itemToRemove);
         }
 
-        var item = new Configuration.Reply {
+        var item = new HeadPats.Configuration.Classes.Reply {
             Trigger = trigger,
             Response = response,
             OnlyTrigger = requireOnlyTriggerText,

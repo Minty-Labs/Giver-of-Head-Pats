@@ -1,88 +1,7 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Configuration; 
-
-public class Base {
-    [JsonPropertyName("Token")] public string? BotToken { get; set; }
-    [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; set; } = "hp!";
-    [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
-    [JsonPropertyName("Game")] public string? ActivityText { get; set; }
-    [JsonPropertyName("Online Status")] public string UserStatus { get; set; } = "Online";
-    [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; set; }
-    [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; set; }
-    [JsonPropertyName("Error Logs Channel")] public ulong ErrorLogsChannel { get; set; }
-    [JsonPropertyName("Direct Message Category ID")] public ulong DmCategory { get; set; }
-    [JsonPropertyName("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; set; }
-    [JsonPropertyName("APIs")] public Api Api { get; set; }
-    [JsonPropertyName("Contributors")] public List<Contributor>? Contributors { get; set; }
-    [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
-    [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
-    [JsonPropertyName("Banger System")] public Banger? Banger { get; set; }
-}
-
-public class Api {
-    [JsonPropertyName("API Keys")] public ApiKeys ApiKeys { get; set; }
-    [JsonPropertyName("API Media URL Blacklist")] public List<string>? ApiMediaUrlBlacklist { get; set; }
-}
-
-public class ApiKeys {
-    [JsonPropertyName("Unsplash Access Key")] public string? UnsplashAccessKey { get; set; }
-    [JsonPropertyName("Unsplash Secret Key")] public string? UnsplashSecretKey { get; set; }
-    [JsonPropertyName("CookieAPI Key")] public string? CookieClientApiKey { get; set; }
-    [JsonPropertyName("FluxpointAPI Key")] public string? FluxpointApiKey { get; set; }
-}
-
-public class Contributor {
-    public string? UserName { get; set; }
-    public string? Info { get; set; }
-}
-
-public class GuildParams {
-    [JsonPropertyName("Guild Name")] public string? GuildName { get; set; }
-    [JsonPropertyName("Guild ID")] public ulong GuildId { get; set; }
-    [JsonPropertyName("Blacklisted Commands")] public List<string>? BlacklistedCommands { get; set; }
-    public List<Reply>? Replies { get; set; }
-    public ulong DailyPatChannelId { get; set; }
-    public List<DailyPat>? DailyPats { get; set; }
-    [JsonPropertyName("IRL Quotes")] public IrlQuotes IrlQuotes { get; set; }
-}
-
-public class Reply {
-    public string? Trigger { get; set; }
-    public string? Response { get; set; }
-    [JsonPropertyName("Require Only Trigger Text")] public bool OnlyTrigger { get; set; }
-    [JsonPropertyName("Delete Trigger")] public bool DeleteTrigger { get; set; }
-    [JsonPropertyName("Delete Trigger If Is Only In Message")] public bool DeleteTriggerIfIsOnlyInMessage { get; set; }
-}
-
-public class NameReplacement {
-    [JsonPropertyName("User ID")] public ulong UserId { get; set; }
-    [JsonPropertyName("Before Name")] public string? BeforeName { get; set; }
-    public string? Replacement { get; set; }
-}
-
-public class DailyPat {
-    [JsonPropertyName("User ID")] public ulong UserId { get; set; }
-    [JsonPropertyName("User Name")] public string? UserName { get; set; }
-    [JsonPropertyName("Set Epoch Time")] public long SetEpochTime { get; set; }
-}
-
-public class IrlQuotes {
-    public bool Enabled { get; set; }
-    [JsonPropertyName("Channel ID")] public ulong ChannelId { get; set; }
-    [JsonPropertyName("Set Epoch Time")] public long SetEpochTime { get; set; }
-}
-
-public class Banger {
-    public bool Enabled { get; set; }
-    [JsonPropertyName("Guild ID")] public ulong GuildId { get; set; }
-    [JsonPropertyName("Channel ID")] public ulong ChannelId { get; set; }
-    [JsonPropertyName("Whitelisted Music URLs")] public List<string>? WhitelistedUrls { get; set; }
-    [JsonPropertyName("Whitelisted Music File Extensions")] public List<string>? WhitelistedFileExtensions { get; set; }
-    [JsonPropertyName("URL Error Response Message")] public string? UrlErrorResponseMessage { get; set; }
-    [JsonPropertyName("File Error Response Message")] public string? FileErrorResponseMessage { get; set; }
-}
 
 public static class Config {
     public static Base Base { get; internal set; } = Load();
@@ -130,7 +49,7 @@ public static class Config {
             IrlQuotes = irlq
         };
         
-        var contributor = new Contributor {
+        var contributor = new BotContributor {
             UserName = "MintLily",
             Info = "Main/Lead Developer Bot Owner/Creator"
         };
@@ -159,7 +78,7 @@ public static class Config {
             DmCategory = 0,
             FullBlacklistOfGuilds = new List<ulong>(),
             Api = api,
-            Contributors = new List<Contributor> { contributor },
+            Contributors = new List<BotContributor> { contributor },
             GuildSettings = new List<GuildParams> { guildParams },
             NameReplacements = new List<NameReplacement> { nameReplacement },
             Banger = banger

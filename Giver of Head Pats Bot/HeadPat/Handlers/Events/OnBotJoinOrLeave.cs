@@ -7,6 +7,7 @@ using HeadPats.Data.Models;
 using HeadPats.Managers;
 using HeadPats.Utils;
 using Serilog;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Handlers.Events; 
 

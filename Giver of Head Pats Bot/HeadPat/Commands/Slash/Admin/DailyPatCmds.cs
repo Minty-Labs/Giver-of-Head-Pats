@@ -3,10 +3,10 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
 using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Managers;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Commands.Slash.Admin; 
 

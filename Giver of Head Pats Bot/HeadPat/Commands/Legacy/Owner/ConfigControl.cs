@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Configuration;
 using HeadPats.Handlers;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 

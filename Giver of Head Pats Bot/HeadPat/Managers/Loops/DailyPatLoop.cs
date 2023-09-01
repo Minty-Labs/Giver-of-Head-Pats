@@ -55,7 +55,7 @@ public static class DailyPatLoop {
                 
                 channel.SendMessageAsync(embed).GetAwaiter().GetResult();
                 
-                Data.Models.UserControl.AddPatToUser(user.UserId, 1, false);
+                UserControl.AddPatToUser(user.UserId, 1, false);
                 user.SetEpochTime += 86400;
                 updated = true;
                 DailyPatted.TryAdd(dbUser.UserId, updated);

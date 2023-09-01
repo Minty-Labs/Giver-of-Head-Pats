@@ -5,6 +5,7 @@ using DSharpPlus.EventArgs;
 using HeadPats.Configuration;
 using HeadPats.Managers;
 using Serilog;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Handlers.Events; 
 

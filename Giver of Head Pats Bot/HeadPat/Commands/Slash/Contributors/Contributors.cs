@@ -2,11 +2,11 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
 using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Managers;
 using Serilog;
+using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Commands.Slash.Contributors; 
 
@@ -24,7 +24,7 @@ public class Contributors : ApplicationCommandModule {
                 Config.Base.Contributors!.Remove(itemToRemove);
             }
 
-            var item = new Configuration.Contributor {
+            var item = new BotContributor {
                 UserName = userName,
                 Info = info
             };
