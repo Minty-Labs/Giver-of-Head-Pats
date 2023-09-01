@@ -8,7 +8,7 @@ namespace HeadPats.Commands.Legacy.Commission.Banger;
 
 public class BangerAnyone : BaseCommandModule {
     
-    [Command("ListBangerValues"), Description("Lists the current values for the banger system"), InPennysServerAnyone]
+    [Command("ListBangerValues"), Description("Lists the current values for the banger system"), LockCommandForPennysGuild]
     public async Task ListBangerValues(CommandContext ctx) {
         var sb = new StringBuilder();
         sb.AppendLine("```");

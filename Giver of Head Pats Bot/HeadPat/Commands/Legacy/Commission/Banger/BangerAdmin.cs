@@ -10,7 +10,7 @@ namespace HeadPats.Commands.Legacy.Commission.Banger;
 
 public class BangerAdmin : BaseCommandModule {
 
-    [Command("ToggleBanger"), Description("Toggles the banger feature on or off"), InPennysServerAdmin]
+    [Command("ToggleBanger"), Description("Toggles the banger feature on or off"), LockCommandForPennysGuildAdmin]
     public async Task ToggleBanger(CommandContext ctx, [Description("(Optional) Set Bool")] string? boolSet = "") {
         Config.Base.Banger.Enabled = !Config.Base.Banger.Enabled;
         Config.Save();
@@ -26,7 +26,7 @@ public class BangerAdmin : BaseCommandModule {
         await ctx.RespondAsync($"Bangers are now **{(Config.Base.Banger.Enabled ? "enabled" : "disabled")}**.");
     }
 
-    [Command("SetBangerChannel"), Aliases("BangerChannel", "sbc"), Description("Sets the channel to only accept bangers."), InPennysServerAdmin]
+    [Command("SetBangerChannel"), Aliases("BangerChannel", "sbc"), Description("Sets the channel to only accept bangers."), LockCommandForPennysGuildAdmin]
     public async Task SetBangerChannel(CommandContext ctx, [Description("Destination Discord Channel (mention)")] DiscordChannel? channel) {
         channel ??= ctx.Channel;
         if (Config.Base.Banger.GuildId == 0)
@@ -36,7 +36,7 @@ public class BangerAdmin : BaseCommandModule {
         await ctx.RespondAsync($"Set Banger channel to {channel.Mention}.");
     }
 
-    [Command("ChangeBangerUrlErrorMessage"), Aliases("changeurlerror", "cue", "cuem", "cbue", "cbuem"), Description("Changes the error message for when a non-whitelisted URL is posted."), InPennysServerAdmin]
+    [Command("ChangeBangerUrlErrorMessage"), Aliases("changeurlerror", "cue", "cuem", "cbue", "cbuem"), Description("Changes the error message for when a non-whitelisted URL is posted."), LockCommandForPennysGuildAdmin]
     public static async Task ChangeBangerUrlErrorMessage(CommandContext ctx, [Description("Admin defined error message"), RemainingText] string? text = "") {
         var newText = string.IsNullOrWhiteSpace(text) ? "This URL is not whitelisted." : text;
         Config.Base.Banger.UrlErrorResponseMessage = newText;
@@ -44,7 +44,7 @@ public class BangerAdmin : BaseCommandModule {
         await ctx.RespondAsync($"Set Banger URL Error Message to: {newText}");
     }
     
-    [Command("ChangeBangerExtErrorMessage"), Aliases("changeexterror", "cee", "ceem", "cbee", "cbeem"), Description("Changes the error message for when a non-whitelisted file extension is posted."), InPennysServerAdmin]
+    [Command("ChangeBangerExtErrorMessage"), Aliases("changeexterror", "cee", "ceem", "cbee", "cbeem"), Description("Changes the error message for when a non-whitelisted file extension is posted."), LockCommandForPennysGuildAdmin]
     public static async Task ChangeBangerExtErrorMessage(CommandContext ctx, [Description("Admin defined error message"), RemainingText] string? text = "") {
         var newText = string.IsNullOrWhiteSpace(text) ? "This file extension is not whitelisted." : text;
         Config.Base.Banger.FileErrorResponseMessage = newText;
@@ -54,7 +54,7 @@ public class BangerAdmin : BaseCommandModule {
     
     private static bool _doesItExist(string value, IEnumerable<string> list) => list.Any(x => x.Equals(value, StringComparison.OrdinalIgnoreCase)); 
 
-    [Command("SetBangerValue"), Description("Sets various values to the banger system (SetBangerValue help)"), InPennysServerAdmin]
+    [Command("SetBangerValue"), Description("Sets various values to the banger system (SetBangerValue help)"), LockCommandForPennysGuildAdmin]
     public async Task SetBangerValue(CommandContext ctx, 
         [Description("Type (help | url | ext)")] string? arg1 = "",
         [Description("Action (list | add | remove)")] string? arg2 = "",
