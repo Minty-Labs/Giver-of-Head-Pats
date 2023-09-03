@@ -78,7 +78,7 @@ public class ConfigControl : BaseCommandModule {
         [Description("The User ID of the user to replace the name of")] string userId = "",
         [Description("The New Name to replace the user's current User or Display Name"), RemainingText] string replacementName = "") {
         if (string.IsNullOrWhiteSpace(action)) {
-            await c.RespondAsync("Please provide an action to perform. `(list|add|remove)`");
+            await c.RespondAsync("Please provide an action to perform. `(list|add|update|remove)`");
             return;
         }
 
@@ -119,6 +119,13 @@ public class ConfigControl : BaseCommandModule {
                 };
                 replacements!.Add(replacement);
                 await c.RespondAsync($"Added ({replacement.UserId}) **{replacement.BeforeName}** -> **{replacement.Replacement}**");
+                break;
+            }
+            case "update": {
+                var item = replacements!.Single(r => r.UserId == userIdLong);
+                var tempName = item.Replacement;
+                item.Replacement = replacementName;
+                await c.RespondAsync($"Updated ({item.UserId}) **{tempName}** -> **{item.Replacement}**");
                 break;
             }
             case "remove": {
