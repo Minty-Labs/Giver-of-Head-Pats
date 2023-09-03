@@ -17,7 +17,7 @@ using HeadPats.Commands.ContextMenu;
 using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
 using HeadPats.Configuration;
-using Microsoft.Extensions.Configuration;
+using HeadPats.Configuration.Classes;
 using Serilog;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -210,7 +210,7 @@ public sealed class Program {
         LoopingTaskScheduler.StartLoop();
         BangerEventListener.OnStartup();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
-        Config.FixPersonalizedMemberData(); // This will be removed in the future
+        PersonalizedMemberLogic.SetLogicData();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
 }

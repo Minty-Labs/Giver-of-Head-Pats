@@ -12,6 +12,7 @@ public static class Config {
         var personalization = new PersonalizedMember {
             Enabled = false,
             ChannelId = 0,
+            ResetTimer = 30,
             Members = new List<Member>()
         };
 
@@ -103,15 +104,4 @@ public static class Config {
         => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
     
     public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
-
-    public static void FixPersonalizedMemberData() {
-        if (Base.PersonalizedMember is not null) return;
-        var personalization = new PersonalizedMember {
-            Enabled = false,
-            ChannelId = 0,
-            Members = new List<Member>()
-        };
-        Base.PersonalizedMember = personalization;
-        Save();
-    }
 }

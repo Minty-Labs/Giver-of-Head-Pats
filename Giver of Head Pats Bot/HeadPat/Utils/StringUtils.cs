@@ -253,4 +253,11 @@ public static class StringUtils {
         char[] allowedChars = { 'a', 'b', 'c', 'd', 'e', 'f', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         return new string(input.ToLower().ToCharArray().Where(c => allowedChars.Contains(c)).ToArray());;
     }
+    
+    /// <summary>
+    /// Remove all letters from a string and casts it to an integer
+    /// </summary>
+    /// <param name="input">this string</param>
+    /// <returns>integer</returns>
+    public static int? RemoveAllLetters(this string input) => int.Parse(input.Where(char.IsDigit).Aggregate(string.Empty, (current, c) => current + c));
 }

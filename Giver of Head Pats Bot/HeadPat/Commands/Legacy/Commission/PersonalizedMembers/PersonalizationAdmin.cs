@@ -1,10 +1,10 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using HeadPats.Configuration;
+using HeadPats.Configuration.Classes;
 using HeadPats.Handlers;
-using Serilog;
+using HeadPats.Utils;
 
 namespace HeadPats.Commands.Legacy.Commission.PersonalizedMembers; 
 
@@ -61,6 +61,20 @@ public class PersonalizationAdmin : BaseCommandModule {
         Config.Save();
         var discordMember = await ctx.Guild.GetMemberAsync(user.Id);
         await ctx.RespondAsync($"Removed {discordMember.DisplayName}'s personalized role.");
+    }
+
+    [Command("RoleSetTimer"), Description("Sets the artificial cooldown for the role command."), LockCommandForLilysComfyCornerAdmin]
+    public async Task SetRoleTimer(CommandContext ctx, string number = "") {
+        if (string.IsNullOrWhiteSpace(number)) {
+            await ctx.RespondAsync($"The current timer is set to {PersonalizedMemberLogic.ResetTimer}. Please specify a number to change it.");
+            return;
+        }
+
+        var newNumber = number.RemoveAllLetters() ?? 30;
+        Config.Base.PersonalizedMember.ResetTimer = newNumber;
+        PersonalizedMemberLogic.ResetTimer = newNumber;
+        Config.Save();
+        await ctx.RespondAsync($"Set the modification timer to {newNumber} seconds.");
     }
     
 }
