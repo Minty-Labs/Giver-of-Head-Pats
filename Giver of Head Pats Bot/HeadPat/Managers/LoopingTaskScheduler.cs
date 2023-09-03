@@ -14,11 +14,22 @@ public static class LoopingTaskScheduler {
     private static async void LoopAsync() {
         while (true) {
             await using var db = new Context();
+            var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            
+            // Status
             try {
                 await StatusLoop.Update(db);
             }
             catch (Exception err) {
                 await DSharpToConsole.SendErrorToLoggingChannelAsync($"Status:\n{err}");
+            }
+            
+            // Daily Pats
+            try {
+                await DailyPatLoop.DoDailyPat(db, currentEpoch);
+            }
+            catch (Exception err) {
+                await DSharpToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
             }
             
             Thread.Sleep(TimeSpan.FromMinutes(10));
@@ -31,22 +42,6 @@ public static class LoopingTaskScheduler {
         while (true) {
             using var db = new Context();
             var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            
-            // Status
-            /*try {
-                StatusLoop.Update(db);
-            }
-            catch (Exception err) {
-                DSharpToConsole.SendErrorToLoggingChannel($"Status:\n{err}");
-            }*/
-            
-            // Daily Pats
-            try {
-                DailyPatLoop.DoDailyPat(db, currentEpoch);
-            }
-            catch (Exception err) {
-                DSharpToConsole.SendErrorToLoggingChannel($"Daily Pats:\n{err}");
-            }
             
             // IRL Quotes
             try {

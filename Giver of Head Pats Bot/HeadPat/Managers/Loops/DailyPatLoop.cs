@@ -9,7 +9,7 @@ public static class DailyPatLoop {
     public static Dictionary<ulong, bool> DailyPatted;
     // public static Dictionary<ulong, string> PreviousPatUrl;
 
-    public static void DoDailyPat(Context db, long currentEpoch) {
+    public static async Task DoDailyPat(Context db, long currentEpoch) {
         foreach (var guild in Config.Base.GuildSettings!) {
             if (guild.DailyPats is null) continue;
                 
@@ -19,7 +19,7 @@ public static class DailyPatLoop {
             if (guild.DailyPatChannelId is 0)
                 continue;
                 
-            var channel = Program.Client!.GetChannelAsync(guild.DailyPatChannelId).GetAwaiter().GetResult();
+            var channel = await Program.Client!.GetChannelAsync(guild.DailyPatChannelId);
             Users? tempUser = null;
             
             if (guildSettings!.DailyPats is null)
@@ -36,12 +36,13 @@ public static class DailyPatLoop {
                 tempUser = dbUser;
                 var userPatCount = dbUser.PatCount;
 
-                // getPatUrl:
-                var patUrl = Vars.UseCookieApi ? Program.CookieClient!.GetPat() : Program.FluxpointClient!.Gifs.GetPatAsync().GetAwaiter().GetResult().file;
-                // if (PreviousPatUrl.TryGetValue(guild.GuildId, out patUrl))
-                //     goto getPatUrl;
-                // PreviousPatUrl.Remove(guild.GuildId);
-                // PreviousPatUrl.Add(guild.GuildId, patUrl!);
+                string patUrl;
+                if  (Vars.UseCookieApi)
+                    patUrl = Program.CookieClient!.GetPat();
+                else {
+                    var flux = await Program.FluxpointClient!.Gifs.GetPatAsync();
+                    patUrl = flux.file;
+                }
                 
                 var embed = new DiscordEmbedBuilder {
                     Title = "Daily Pats!",
@@ -53,7 +54,7 @@ public static class DailyPatLoop {
                     }
                 }.Build();
                 
-                channel.SendMessageAsync(embed).GetAwaiter().GetResult();
+                await channel.SendMessageAsync(embed);
                 
                 UserControl.AddPatToUser(user.UserId, 1, false);
                 user.SetEpochTime += 86400;
