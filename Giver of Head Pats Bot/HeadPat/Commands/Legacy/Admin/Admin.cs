@@ -5,13 +5,13 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using HeadPats.Data;
 using HeadPats.Data.Models;
+using HeadPats.Handlers;
 using HeadPats.Utils;
 
 namespace HeadPats.Commands.Legacy.Admin; 
 
 public class Admin : BaseCommandModule {
-    [Command("BlacklistRoleFromPatCommand"), Description("Blacklists a role from the pat command")]
-    [RequirePermissions(Permissions.ManageRoles & Permissions.ManageMessages)]
+    [Command("BlacklistRoleFromPatCommand"), Description("Blacklists a role from the pat command"), RequirePermissions(Permissions.ManageRoles & Permissions.ManageMessages), DisallowDirectMessage]
     public async Task BlacklistRoleFromPatCommand(CommandContext c, [Description("Role to blacklist")] DiscordRole role,
         [Description("add|remove")] string value) {
 
@@ -47,17 +47,17 @@ public class Admin : BaseCommandModule {
         await c.RespondAsync("The role is no longer blacklisted from the pat command.");
     }
 
-    [Command("userinfo"), Priority(0), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages)]
+    [Command("userinfo"), Priority(0), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages), DisallowDirectMessage]
     public async Task UserInfo(CommandContext ctx, [Description("User ID")] string userId = "") {
         await UserInfoExt.DoUserIntoAction(ctx, 1, userId);
     }
     
-    [Command("userinfo"), Priority(1), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages)]
-    public async Task UserInfo(CommandContext ctx, [Description("Member")] DiscordMember user) {
-        await UserInfoExt.DoUserIntoAction(ctx, 3, member: user);
+    [Command("userinfo"), Priority(1), Description("Gets information about a member"), RequirePermissions(Permissions.ManageMessages), DisallowDirectMessage]
+    public async Task UserInfo(CommandContext ctx, [Description("Member")] DiscordMember member) {
+        await UserInfoExt.DoUserIntoAction(ctx, 3, member: member);
     }
     
-    [Command("userinfo"), Priority(2), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages)]
+    [Command("userinfo"), Priority(2), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages), DisallowDirectMessage]
     public async Task UserInfo(CommandContext ctx, [Description("User")] DiscordUser user) {
         await UserInfoExt.DoUserIntoAction(ctx, 2, user: user);
     }
@@ -65,8 +65,8 @@ public class Admin : BaseCommandModule {
 
 public static class UserInfoExt {
     public static async Task DoUserIntoAction(CommandContext ctx, int userInfoType, string userId = "", DiscordUser? user = null, DiscordMember? member = null) {
-        DiscordUser? u = null;
-        DiscordMember? m = null;
+        DiscordUser? tempUser = null;
+        DiscordMember? tempMember = null;
         
         switch (userInfoType) {
             case 1:
@@ -78,7 +78,7 @@ public static class UserInfoExt {
                 var ul = ulong.Parse(userId.Replace("<@", "").Replace(">", ""));
                 
                 try {
-                    u = await ctx.Client.GetUserAsync(ul, true);
+                    tempUser = await ctx.Client.GetUserAsync(ul, true);
                 }
                 catch {
                     await ctx.RespondAsync("The provided member is invalid. Did you put a message ID there instead?");
@@ -86,7 +86,7 @@ public static class UserInfoExt {
                 }
                 
                 try {
-                    m = await ctx.Guild.GetMemberAsync(ul);
+                    tempMember = await ctx.Guild.GetMemberAsync(ul);
                 }
                 catch {
                     await ctx.RespondAsync("User is not in the server, I cannot provide any information about them.");
@@ -94,30 +94,30 @@ public static class UserInfoExt {
                 }
                 break;
             case 2:
-                u = user;
+                tempUser = user;
                 break;
             case 3:
-                m = member;
+                tempMember = member;
                 break;
         }
         
         var embed = new DiscordEmbedBuilder {
             Title = "User Information",
-            Description = $"{m.DisplayName} ({u.Username}) - {u.Id}",
-            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail {Url = u.GetAvatarUrl(ImageFormat.Auto)},
+            Description = $"{tempMember.DisplayName} ({tempUser.Username}) - {tempUser.Id}",
+            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail {Url = tempUser.GetAvatarUrl(ImageFormat.Auto)},
             Color = Colors.HexToColor("F771A3")
         }
-            .AddField("Created", $"{m.CreationTimestamp:F}", true)
-            .AddField("Joined", $"{m.JoinedAt:F} (<t:{m.JoinedAt.GetSecondsFromUnixTime()}:R>)", true);
+            .AddField("Created", $"{tempMember.CreationTimestamp:F}", true)
+            .AddField("Joined", $"{tempMember.JoinedAt:F} (<t:{tempMember.JoinedAt.GetSecondsFromUnixTime()}:R>)", true);
 
         var sb = new StringBuilder();
-        foreach (var r in m.Roles)
+        foreach (var r in tempMember.Roles)
             sb.AppendLine($"{r.Emoji ?? ""}{r.Name}");
 
         if (string.IsNullOrWhiteSpace(sb.ToString()))
             embed.AddField("Roles (0)", "None");
         else
-            embed.AddField($"Roles ({m.Roles.Count()})", sb.ToString());
+            embed.AddField($"Roles ({tempMember.Roles.Count()})", sb.ToString());
         
         await ctx.RespondAsync(embed.Build());
     }

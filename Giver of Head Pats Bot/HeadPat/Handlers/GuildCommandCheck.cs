@@ -27,6 +27,14 @@ public class LockCommandForPennysGuild : CheckBaseAttribute {
     public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild.Id == 977705960544014407);
 }
 
+public class DisallowDirectMessage : CheckBaseAttribute {
+    public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) {
+        var result = ctx.Channel.IsPrivate == false;
+        var msg = ctx.RespondAsync("This command cannot be used in a direct message.").GetAwaiter().GetResult();
+        Task.Delay(TimeSpan.FromSeconds(5)).ContinueWith(t => msg.DeleteAsync());
+        return Task.FromResult(result);
+    }
+}
 
 
 

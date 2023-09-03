@@ -18,7 +18,7 @@ public class PersonalizationAdmin : BaseCommandModule {
         await ctx.RespondAsync($"Personalized Roles are now {(result ? "enabled" : "disabled")}.");
     }
     
-    [Command("RoleSetChannel"), Description("Sets the channel where users can use the personalization commands."), LockCommandForLilysComfyCornerAdmin]
+    [Command("RoleSetChannel"), Description("Sets the channel where users can use the personalization commands."), LockCommandForLilysComfyCornerAdmin, DisallowDirectMessage]
     public async Task SetPersonalizationChannel(CommandContext ctx, [Description("Destination Discord Channel (mention)")] DiscordChannel? channel) {
         channel ??= ctx.Channel;
         Config.Base.PersonalizedMember.ChannelId = channel.Id;
@@ -26,7 +26,7 @@ public class PersonalizationAdmin : BaseCommandModule {
         await ctx.RespondAsync($"Set the personalization channel to {channel.Mention}.");
     }
     
-    [Command("RoleResetTimer"), Description("Resets the artificial cooldown for the role command."), LockCommandForLilysComfyCornerAdmin]
+    [Command("RoleResetTimer"), Description("Resets the artificial cooldown for the role command."), LockCommandForLilysComfyCornerAdmin, DisallowDirectMessage]
     public async Task ResetRoleTimer(CommandContext ctx, [Description("Target user (mention)")] DiscordUser? user = null) {
         if (user is null) {
             await ctx.RespondAsync("Please specify a user.");
@@ -43,7 +43,7 @@ public class PersonalizationAdmin : BaseCommandModule {
         await ctx.RespondAsync($"Reset the modification timer for {discordMember.DisplayName}.");
     }
 
-    [Command("RoleRemoveAdmin"), Description("Removes a personalized role from a user."), LockCommandForLilysComfyCornerAdmin]
+    [Command("RoleRemoveAdmin"), Description("Removes a personalized role from a user."), LockCommandForLilysComfyCornerAdmin, DisallowDirectMessage]
     public async Task RemovePersonalRole(CommandContext ctx, [Description("Target user (mention)")] DiscordUser? user = null) {
         if (user is null) {
             await ctx.RespondAsync("Please specify a user.");

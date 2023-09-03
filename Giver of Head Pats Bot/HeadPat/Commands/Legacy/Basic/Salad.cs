@@ -11,7 +11,7 @@ using HeadPats.Utils;
 namespace HeadPats.Commands.Legacy.Basic; 
 
 public class Salad : BaseCommandModule {
-    [Command("Salad"), Description("Summon a picture of salad"), Cooldown(50, 3600, CooldownBucketType.Guild), LockCommandForLilysComfyCorner]
+    [Command("Salad"), Description("Summon a picture of salad"), Cooldown(50, 3600, CooldownBucketType.Guild), LockCommandForLilysComfyCorner, DisallowDirectMessage]
     public async Task SaladCommand(CommandContext c) {
         if (string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.UnsplashAccessKey) || string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.UnsplashSecretKey)) {
             await c.RespondAsync("The bot owner has not set up the Unsplash API keys yet. Therefore, this command cannot be used at the moment.").DeleteAfter(10);
