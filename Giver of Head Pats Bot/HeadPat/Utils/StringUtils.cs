@@ -246,9 +246,14 @@ public static class StringUtils {
     /// </summary>
     /// <param name="input">this string</param>
     /// <param name="length">how many characters you want to get</param>
-    /// <returns></returns>
+    /// <returns>Returns the left most specified characters</returns>
     public static string Left(this string input, int length) => (input.Length < length) ? input : input[..length];
 
+    /// <summary>
+    /// Only accepts letters and numbers used for hex colors
+    /// </summary>
+    /// <param name="input">this string</param>
+    /// <returns>string with only letters and numbers used for hex color codes</returns>
     public static string ValidateHexColor(this string input) {
         char[] allowedChars = { 'a', 'b', 'c', 'd', 'e', 'f', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         return new string(input.ToLower().ToCharArray().Where(c => allowedChars.Contains(c)).ToArray());;
