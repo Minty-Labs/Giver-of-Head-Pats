@@ -10,26 +10,27 @@ namespace HeadPats.Commands.Legacy.Commission.PersonalizedMembers;
 
 public class PersonalizationAnyone : BaseCommandModule {
     
-    private static bool _IsInChannel(CommandContext ctx) => ctx.Channel.Id == Config.Base.PersonalizedMember.ChannelId;
+    private static bool _IsInChannel(CommandContext ctx, ulong guildId) => ctx.Channel.Id == Config.PersonalizedMember(guildId).ChannelId;
 
-    [Command("RoleCreate"), Description("Create a personalized role for this server"), Aliases("RoleAdd", "RoleMake", "mkrole"), LockCommandForLilysComfyCorner, DisallowDirectMessage]
+    [Command("RoleCreate"), Description("Create a personalized role for this server"), Aliases("RoleAdd", "RoleMake", "mkrole"), LockCommandForLilysOrPennysGuild]
     public async Task CreateRole(CommandContext ctx) {
-        if (!Config.Base.PersonalizedMember.Enabled) {
+        var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+        if (!personalData.Enabled) {
             var msg = await ctx.RespondAsync("Personalized Roles is not enabled.");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
             return;
         }
-        if (!_IsInChannel(ctx)) {
-            var msg = await ctx.RespondAsync($"You can only use this command in <#{Config.Base.PersonalizedMember.ChannelId}>");
+        if (!_IsInChannel(ctx, ctx.Guild.Id)) {
+            var msg = await ctx.RespondAsync($"You can only use this command in <#{personalData.ChannelId}>");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
             return;
         }
         var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var personalizedMember = Config.Base.PersonalizedMember.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
+        var personalizedMember = personalData.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
         if (personalizedMember is null) {
             var memberRole = await ctx.Guild.CreateRoleAsync(name: ctx.User.Username, reason: "Personalized Member - User");
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -40,9 +41,13 @@ public class PersonalizationAnyone : BaseCommandModule {
                 colorHex = "",
                 epochTime = currentEpoch
             };
-            Config.Base.PersonalizedMember.Members!.Add(personalizedMemberData);
+            personalData.Members!.Add(personalizedMemberData);
             Config.Save();
-            await ctx.Member!.GrantRoleAsync(memberRole, "Personalized Member - User");
+            await ctx.Member!.GrantRoleAsync(memberRole, "Personalized Member - User: " + ctx.User.Username);
+            if (personalData.DefaultRoleId != 0) {
+                var defaultRole = ctx.Guild.GetRole(personalData.DefaultRoleId);
+                await ctx.Member!.RevokeRoleAsync(defaultRole, "Personalized Member - User: " + ctx.User.Username);
+            }
             await ctx.RespondAsync("Successfully created your personalized member role.");
             return;
         }
@@ -50,17 +55,18 @@ public class PersonalizationAnyone : BaseCommandModule {
         await ctx.RespondAsync("You already have a personalized role.");
     }
 
-    [Command("RoleColor"), Description("Add or update the color of your personalized role for this server"), Aliases("RoleColour"), LockCommandForLilysComfyCorner, DisallowDirectMessage]
+    [Command("RoleColor"), Description("Add or update the color of your personalized role for this server"), Aliases("RoleColour"), LockCommandForLilysOrPennysGuild]
     public async Task ColorRole(CommandContext ctx, [Description("Color value as HEX (#rrggbb)")] string colorHex = "") {
-        if (!Config.Base.PersonalizedMember.Enabled) {
+        var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+        if (!personalData.Enabled) {
             var msg = await ctx.RespondAsync("Personalized Roles is not enabled.");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
             return;
         }
-        if (!_IsInChannel(ctx)) {
-            var msg = await ctx.RespondAsync($"You can only use this command in <#{Config.Base.PersonalizedMember.ChannelId}>");
+        if (!_IsInChannel(ctx, ctx.Guild.Id)) {
+            var msg = await ctx.RespondAsync($"You can only use this command in <#{personalData.ChannelId}>");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
@@ -72,13 +78,13 @@ public class PersonalizationAnyone : BaseCommandModule {
             return;
         }
         var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var personalizedMember = Config.Base.PersonalizedMember.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
+        var personalizedMember = personalData.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
         if (personalizedMember is null) {
             await ctx.RespondAsync($"You need to create a personalized role first.\nRun the following command to create one:\n`{Config.Base.Prefix}rolecreate`");
             return;
         }
-        if (personalizedMember!.epochTime + 60 > currentEpoch) {
-            await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + 60 - currentEpoch} seconds before you can use this command again.");
+        if (personalizedMember!.epochTime + personalData.ResetTimer > currentEpoch) {
+            await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + personalData.ResetTimer - currentEpoch} seconds before you can use this command again.");
             return;
         }
         var memberRole = ctx.Guild.GetRole(personalizedMember.roleId);
@@ -89,21 +95,22 @@ public class PersonalizationAnyone : BaseCommandModule {
         }
         personalizedMember.colorHex = newColorString;
         Config.Save();
-        await memberRole!.ModifyAsync(color: Colors.HexToColor(newColorString), reason: "Personalized Member - User");
+        await memberRole!.ModifyAsync(color: Colors.HexToColor(newColorString), reason: "Personalized Member - User: " + ctx.User.Username);
         await ctx.RespondAsync("Successfully updated your personalized member role color.");
     }
     
-    [Command("RoleName"), Description("Update the name of your personalized role for this server"), LockCommandForLilysComfyCorner, DisallowDirectMessage]
+    [Command("RoleName"), Description("Update the name of your personalized role for this server"), LockCommandForLilysOrPennysGuild]
     public async Task NameRole(CommandContext ctx, [Description("Desired Role Name (15 characters)"), RemainingText] string name = "") {
-        if (!Config.Base.PersonalizedMember.Enabled) {
+        var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+        if (!personalData.Enabled) {
             var msg = await ctx.RespondAsync("Personalized Roles is not enabled.");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
             return;
         }
-        if (!_IsInChannel(ctx)) {
-            var msg = await ctx.RespondAsync($"You can only use this command in <#{Config.Base.PersonalizedMember.ChannelId}>");
+        if (!_IsInChannel(ctx, ctx.Guild.Id)) {
+            var msg = await ctx.RespondAsync($"You can only use this command in <#{personalData.ChannelId}>");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
@@ -117,13 +124,13 @@ public class PersonalizationAnyone : BaseCommandModule {
             await ctx.RespondAsync("Name string is longer than 15 characters, only the first 15 will be used.").DeleteAfter(5);
         }
         var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var personalizedMember = Config.Base.PersonalizedMember.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
+        var personalizedMember = personalData.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
         if (personalizedMember is null) {
             await ctx.RespondAsync($"You need to create a personalized role first.\nRun the following command to create one:\n`{Config.Base.Prefix}rolecreate`");
             return;
         }
-        if (personalizedMember.epochTime + PersonalizedMemberLogic.ResetTimer > currentEpoch) {
-            await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + PersonalizedMemberLogic.ResetTimer - currentEpoch} seconds before you can use this command again.");
+        if (personalizedMember.epochTime + personalData.ResetTimer > currentEpoch) {
+            await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + personalData.ResetTimer - currentEpoch} seconds before you can use this command again.");
             return;
         }
         var newRoleName = name.Left(15).Trim();
@@ -134,41 +141,46 @@ public class PersonalizationAnyone : BaseCommandModule {
         var memberRole = ctx.Guild.GetRole(personalizedMember.roleId);
         personalizedMember.roleName = newRoleName;
         Config.Save();
-        await memberRole!.ModifyAsync(name: newRoleName, reason: "Personalized Member - User");
+        await memberRole!.ModifyAsync(name: newRoleName, reason: "Personalized Member - User: " + ctx.User.Username);
         await ctx.RespondAsync("Successfully updated your personalized member role name.");
     }
     
     // TODO: (Only if people abuse the current feature set) public static Dictionary<ulong, bool> RoleRemovalConfirmation = new Dictionary<ulong, bool>();
-    [Command("RoleRemove"), Description("Remove your personalized role for this server"), Aliases("RoleDel", "RoleDelete", "rolerm"), LockCommandForLilysComfyCorner, DisallowDirectMessage]
+    [Command("RoleRemove"), Description("Remove your personalized role for this server"), Aliases("RoleDel", "RoleDelete", "rolerm"), LockCommandForLilysOrPennysGuild]
     public async Task RemoveRole(CommandContext ctx) {
-        if (!Config.Base.PersonalizedMember.Enabled) {
+        var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+        if (!personalData.Enabled) {
             var msg = await ctx.RespondAsync("Personalized Roles is not enabled.");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
             return;
         }
-        if (!_IsInChannel(ctx)) {
-            var msg = await ctx.RespondAsync($"You can only use this command in <#{Config.Base.PersonalizedMember.ChannelId}>");
+        if (!_IsInChannel(ctx, ctx.Guild.Id)) {
+            var msg = await ctx.RespondAsync($"You can only use this command in <#{personalData.ChannelId}>");
             await Task.Delay(TimeSpan.FromSeconds(5));
             await msg.DeleteAsync();
             await ctx.Message.DeleteAsync();
             return;
         }
         var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var personalizedMember = Config.Base.PersonalizedMember.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
+        var personalizedMember = personalData.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
         if (personalizedMember is null) {
             await ctx.RespondAsync($"You need to create a personalized role first.\nRun the following command to create one:\n`{Config.Base.Prefix}rolecreate`");
             return;
         }
-        if (personalizedMember.epochTime + PersonalizedMemberLogic.ResetTimer > currentEpoch) {
-            await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + PersonalizedMemberLogic.ResetTimer - currentEpoch} seconds before you can use this command again.");
+        if (personalizedMember.epochTime + personalData.ResetTimer > currentEpoch) {
+            await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + personalData.ResetTimer - currentEpoch} seconds before you can use this command again.");
             return;
         }
         var memberRole = ctx.Guild.GetRole(personalizedMember!.roleId);
-        await memberRole!.DeleteAsync(reason: "Personalized Member - User");
-        Config.Base.PersonalizedMember.Members!.Remove(personalizedMember);
+        await memberRole!.DeleteAsync(reason: "Personalized Member - User: " + ctx.User.Username);
+        personalData.Members!.Remove(personalizedMember);
         Config.Save();
+        if (personalData.DefaultRoleId != 0) {
+            var defaultRole = ctx.Guild.GetRole(personalData.DefaultRoleId);
+            await ctx.Member!.GrantRoleAsync(defaultRole, "Personalized Member - User: " + ctx.User.Username);
+        }
         await ctx.RespondAsync("Successfully removed your personalized member role.");
     }
     

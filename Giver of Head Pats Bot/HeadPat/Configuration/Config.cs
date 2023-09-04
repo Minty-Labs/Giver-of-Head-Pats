@@ -9,10 +9,21 @@ public static class Config {
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
 
-        var personalization = new PersonalizedMember {
+        var personalizationLily = new PersonalizedMember {
             Enabled = false,
+            GuildId = 0,
             ChannelId = 0,
             ResetTimer = 30,
+            DefaultRoleId = 0,
+            Members = new List<Member>()
+        };
+        
+        var personalizationPenny = new PersonalizedMember {
+            Enabled = false,
+            GuildId = 0,
+            ChannelId = 0,
+            ResetTimer = 30,
+            DefaultRoleId = 0,
             Members = new List<Member>()
         };
 
@@ -89,7 +100,8 @@ public static class Config {
             GuildSettings = new List<GuildParams> { guildParams },
             NameReplacements = new List<NameReplacement> { nameReplacement },
             Banger = banger,
-            PersonalizedMember = personalization
+            PersonalizedMemberLily = personalizationLily,
+            PersonalizedMemberPenny = personalizationPenny
         };
         
         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));
@@ -104,4 +116,6 @@ public static class Config {
         => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
     
     public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
+    
+    public static PersonalizedMember PersonalizedMember(ulong guildId) => Base.PersonalizedMemberLily.GuildId == guildId ? Base.PersonalizedMemberLily : Base.PersonalizedMemberPenny;
 }

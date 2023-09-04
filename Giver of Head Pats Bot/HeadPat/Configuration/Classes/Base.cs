@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using HeadPats.Commands.Slash.Contributors;
+
 namespace HeadPats.Configuration.Classes;
 
 public class Base {
@@ -18,5 +18,6 @@ public class Base {
     [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
     [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
     [JsonPropertyName("Banger System")] public Banger? Banger { get; set; }
-    [JsonPropertyName("Personalized Members")] public PersonalizedMember PersonalizedMember { get; set; }
+    [JsonPropertyName("Personalized Members")] public PersonalizedMember PersonalizedMemberLily { get; set; }
+    [JsonPropertyName("Personalized Members for Penny")] public PersonalizedMember PersonalizedMemberPenny { get; set; }
 }
