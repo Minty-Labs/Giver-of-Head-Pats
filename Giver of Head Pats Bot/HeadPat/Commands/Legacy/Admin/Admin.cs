@@ -11,7 +11,7 @@ using HeadPats.Utils;
 namespace HeadPats.Commands.Legacy.Admin; 
 
 public class Admin : BaseCommandModule {
-    [Command("BlacklistRoleFromPatCommand"), Description("Blacklists a role from the pat command"), RequirePermissions(Permissions.ManageRoles & Permissions.ManageMessages), DisallowDirectMessage]
+    [Command("BlacklistRoleFromPatCommand"), Description("Blacklists a role from the pat command"), RequirePermissions(Permissions.ManageRoles & Permissions.ManageMessages)]
     public async Task BlacklistRoleFromPatCommand(CommandContext c, [Description("Role to blacklist")] DiscordRole role,
         [Description("add|remove")] string value) {
 
@@ -47,17 +47,17 @@ public class Admin : BaseCommandModule {
         await c.RespondAsync("The role is no longer blacklisted from the pat command.");
     }
 
-    [Command("userinfo"), Priority(0), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages), DisallowDirectMessage]
+    [Command("userinfo"), Priority(0), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(CommandContext ctx, [Description("User ID")] string userId = "") {
         await UserInfoExt.DoUserIntoAction(ctx, 1, userId);
     }
     
-    [Command("userinfo"), Priority(1), Description("Gets information about a member"), RequirePermissions(Permissions.ManageMessages), DisallowDirectMessage]
+    [Command("userinfo"), Priority(1), Description("Gets information about a member"), RequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(CommandContext ctx, [Description("Member")] DiscordMember member) {
         await UserInfoExt.DoUserIntoAction(ctx, 3, member: member);
     }
     
-    [Command("userinfo"), Priority(2), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages), DisallowDirectMessage]
+    [Command("userinfo"), Priority(2), Description("Gets information about a user"), RequirePermissions(Permissions.ManageMessages)]
     public async Task UserInfo(CommandContext ctx, [Description("User")] DiscordUser user) {
         await UserInfoExt.DoUserIntoAction(ctx, 2, user: user);
     }
