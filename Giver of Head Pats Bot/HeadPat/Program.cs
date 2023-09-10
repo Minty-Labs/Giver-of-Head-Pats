@@ -120,7 +120,9 @@ public sealed class Program {
         };
         Slash.SlashCommandErrored += (sender, args) => {
             var message = $"Slash Command {args.Context.CommandName}, executed by {args.Context.User.Username}, " +
-                          $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}";
+                          $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with:\n" +
+                          $"Message:\n{args.Exception.Message}\n" +
+                          $"StackTrace:\n{args.Exception.StackTrace}";
             Log.Information(message);
             DSharpToConsole.SendErrorToLoggingChannel(message);
             return Task.CompletedTask;
