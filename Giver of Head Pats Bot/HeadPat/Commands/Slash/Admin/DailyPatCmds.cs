@@ -15,7 +15,7 @@ public class DailyPatCmds : ApplicationCommandModule {
     [SlashCommandGroup("DailyPat", "Daily pat commands"), Hidden]
     public class DailyPats : ApplicationCommandModule {
         
-        [SlashCommand("setpatchannel", "Sets the channel where daily pats are sent", false), CustomSlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("setpatchannel", "Sets the channel where daily pats are sent", false), SlashRequireGuildOwner]
         public async Task SetDailyPatChannel(InteractionContext c, 
             [Option("Channel", "Channel to set as the daily pat channel")] DiscordChannel? channel,
             [Option("ChannelID", "Channel to set as the daily pat channel")] string channelId = "") {
@@ -52,7 +52,7 @@ public class DailyPatCmds : ApplicationCommandModule {
         
         private static bool _doesItExist(SnowflakeObject user, ulong guildId) => Config.GuildSettings(guildId)!.DailyPats!.Any(u => u.UserId == user.Id); 
     
-        [SlashCommand("add", "Sets the daily pat to user"), CustomSlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("add", "Sets the daily pat to user"), SlashRequireGuildOwner(true)]
         public async Task SetDailyPat(InteractionContext c, 
             [Option("Member", "The mentioned member to receive daily pats")] SnowflakeObject user,
             [Option("ManualEpochTime", "Manually Set an Epoch time; if empty, defaults to NOW")] long manualSetEpochTime = 0) {
@@ -76,7 +76,7 @@ public class DailyPatCmds : ApplicationCommandModule {
             await c.CreateResponseAsync($"Set daily pat to {member.Username}.");
         }
     
-        [SlashCommand("remove", "Removes the daily pat from user"), CustomSlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("remove", "Removes the daily pat from user"), SlashRequireGuildOwner]
         public async Task RemoveDailyPat(InteractionContext c, [Option("Member", "The mentioned member to remove")] SnowflakeObject user) {
             if (!_doesItExist(user, c.Guild.Id)) {
                 await c.CreateResponseAsync("User does not have a daily pat set.", ephemeral: true);
@@ -91,12 +91,13 @@ public class DailyPatCmds : ApplicationCommandModule {
             await c.CreateResponseAsync($"Removed daily pat from {member.Username}.");
         }
     
-        [SlashCommand("list", "Lists all daily pats"), CustomSlashRequirePermissions(Permissions.ManageGuild)]
+        [SlashCommand("list", "Lists all daily pats"), SlashRequireGuildOwner]
         public async Task ListDailyPats(InteractionContext c) {
             var sb = new StringBuilder();
+            sb.AppendLine("`UserName (ID) - Next Pat Time`");
             var guildSettings = Config.GuildSettings(c.Guild.Id);
             foreach (var dailyPat in guildSettings!.DailyPats!) {
-                sb.AppendLine($"{dailyPat.UserName.ReplaceName(dailyPat.UserId)} ({dailyPat.UserId}) - {dailyPat.SetEpochTime}");
+                sb.AppendLine($"{dailyPat.UserName.ReplaceName(dailyPat.UserId)} ({dailyPat.UserId}) - <t:{dailyPat.SetEpochTime}:>");
             }
             await c.CreateResponseAsync(sb.ToString());
         }

@@ -33,11 +33,3 @@ public class LockCommandForLilysOrPennysGuild : CheckBaseAttribute {
 public class LockCommandForLilysOrPennysGuildAdmin : CheckBaseAttribute {
     public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help) => Task.FromResult(ctx.Guild.Id is 977705960544014407 or 805663181170802719 && ctx.User.Id is 875251523641294869 or 167335587488071682);
 }
-
-
-
-
- /* ================= SLASH ================= */
-public class SlashRequireAnyOwner : SlashCheckBaseAttribute {
-    public override Task<bool> ExecuteChecksAsync(InteractionContext c) => Task.FromResult(Config.Base.OwnerIds!.Contains(c.User.Id));
-}
