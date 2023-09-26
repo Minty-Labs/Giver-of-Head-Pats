@@ -95,7 +95,7 @@ public class Summon : ApplicationCommandModule {
     public async Task Meme(InteractionContext c) {
         var counter = 0;
         start:
-        var subreddit = TheData.MemeSubreddits[new Random().Next(0, 8)];
+        var subreddit = TheData.MemeSubreddits[new Random().Next(0, 4)];
 
         TheData.RedditData = null;
         var httpClient = new HttpClient();
@@ -129,7 +129,7 @@ public class Summon : ApplicationCommandModule {
             counter += 1;
             var e = new DiscordEmbedBuilder();
             e.WithAuthor("Reddit", $"https://www.reddit.com/r/{subreddit}");
-            e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&mdash;", "\u2014"));
+            e.WithTitle(TheData.GetTitle()?.Replace("&amp;", "&").Replace("&ndash;", "\u2013").Replace("&mdash;", "\u2014") ?? string.Empty);
             e.WithColor(Colors.Random);
             //e.WithUrl(TheData.GetPostUrl()); // It no likey
             e.WithImageUrl(image);

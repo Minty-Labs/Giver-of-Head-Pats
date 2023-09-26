@@ -5,8 +5,8 @@ using Serilog;
 namespace HeadPats.Data.Models; 
 
 public class Users {
-    [Key] public ulong UserId { get; set; }
-    public string UsernameWithNumber { get; set; }
+    [Key] public required ulong UserId { get; set; }
+    public required string UsernameWithNumber { get; set; }
     public int PatCount { get; set; }
     public int CookieCount { get; set; }
     public int IsUserBlacklisted { get; set; }
@@ -65,7 +65,6 @@ public static class UserControl {
                 NsfwCommandsUsed = 0
             };
             db.Overall.Add(overall);
-            db.SaveChanges();
         }
         else {
             checkOverall.PatCount += numberOfPats;

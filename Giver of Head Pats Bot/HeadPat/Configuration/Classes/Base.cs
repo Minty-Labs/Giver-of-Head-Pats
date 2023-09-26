@@ -8,6 +8,7 @@ public class Base {
     [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
     [JsonPropertyName("Game")] public string? ActivityText { get; set; }
     [JsonPropertyName("Online Status")] public string UserStatus { get; set; } = "Online";
+    [JsonPropertyName("Rotating Status")] public RotatingStatus RotatingStatus { get; set; }
     [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; set; }
     [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; set; }
     [JsonPropertyName("Error Logs Channel")] public ulong ErrorLogsChannel { get; set; }

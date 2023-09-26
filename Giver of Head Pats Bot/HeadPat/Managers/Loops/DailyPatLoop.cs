@@ -2,15 +2,20 @@
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
+using HeadPats.Utils;
+using Serilog;
 
 namespace HeadPats.Managers.Loops; 
 
 public static class DailyPatLoop {
-    public static Dictionary<ulong, bool> DailyPatted;
+    public static Dictionary<ulong, bool> DailyPatted = new ();
     // public static Dictionary<ulong, string> PreviousPatUrl;
 
     public static async Task DoDailyPat(Context db, long currentEpoch) {
-        foreach (var guild in Config.Base.GuildSettings!) {
+        var configGuildSettings = Config.Base.GuildSettings;
+        if (configGuildSettings is null) return;
+        
+        foreach (var guild in configGuildSettings) {
             if (guild.DailyPats is null) continue;
                 
             var guildSettings = Config.GuildSettings(guild.GuildId);
@@ -18,8 +23,16 @@ public static class DailyPatLoop {
                 
             if (guild.DailyPatChannelId is 0)
                 continue;
+            
+            var discordGuild = await Program.Client!.GetGuildAsync(guild.GuildId);
                 
-            var channel = await Program.Client!.GetChannelAsync(guild.DailyPatChannelId);
+            // var channel = await Program.Client!.GetChannelAsync(guild.DailyPatChannelId);
+            discordGuild.Channels.TryGetValue(guild.DailyPatChannelId, out var channel);
+            if (channel is null) {
+                Log.Debug("Target pat channel {chanId} not found, skipping", guild.DailyPatChannelId);
+                continue;
+            }
+            
             Users? tempUser = null;
             
             if (guildSettings!.DailyPats is null)
@@ -28,11 +41,18 @@ public static class DailyPatLoop {
             foreach (var user in guildSettings.DailyPats) {
                 if (user.SetEpochTime > currentEpoch)
                     continue;
-                if (channel is null)
+                
+                Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
+                discordGuild.Members.TryGetValue(user.UserId, out var guildUser);
+                if (guildUser is null) {
+                    Log.Debug("User not found in guild, skipping");
                     continue;
+                }
+                
                 var dbUser = db.Users.AsQueryable().ToList().FirstOrDefault(u => u.UserId.Equals(user.UserId))!;
-                if (DailyPatted.ContainsKey(dbUser.UserId) && DailyPatted[dbUser.UserId])
+                if (DailyPatted.TryGetValue(dbUser.UserId, out var value) && value)
                     continue;
+                
                 tempUser = dbUser;
                 var userPatCount = dbUser.PatCount;
 

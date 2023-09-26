@@ -10,6 +10,7 @@ public static class StatusLoop {
     private static int _tempPatCount;
     
     public static async Task Update(Context db) {
+        if (Config.Base.RotatingStatus.Enabled) return;
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
 
         if (tempPatCount == _tempPatCount) return;

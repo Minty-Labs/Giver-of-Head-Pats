@@ -26,7 +26,6 @@ public class Love : ApplicationCommandModule {
         var checkGuild = db.Guilds.AsQueryable()
             .Where(u => u.GuildId.Equals(c.Guild.Id)).ToList().FirstOrDefault();
         
-        bool addedGuild = false, addedUser = false;
         if (checkGuild is null) {
             var newGuild = new Guilds {
                 GuildId = c.Guild.Id,
@@ -35,7 +34,6 @@ public class Love : ApplicationCommandModule {
             };
             Log.Information("Added guild to database from Context menu Pat Command");
             db.Guilds.Add(newGuild);
-            addedGuild = true;
         }
         
         var checkUser = db.Users.AsQueryable()
@@ -51,11 +49,7 @@ public class Love : ApplicationCommandModule {
             };
             Log.Debug("Added user to database from Context menu Pat Command");
             db.Users.Add(newUser);
-            addedUser = true;
         }
-        
-        if (addedUser || addedGuild)
-            await db.SaveChangesAsync();
 
         var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId && checkGuild.HeadPatBlacklistedRoleId != 0);
 

@@ -143,8 +143,8 @@ public class LoveCommands : ApplicationCommandModule {
                          if (extraParams.Contains('%'))
                              special = int.Parse(extraParams.Split('%')[1]);
 
-                         if (extraParams.ToLower().Contains("elly") || extraParams.ToLower().Contains("ahri")) {
-                             special = 5;
+                         if (extraParams.ToLower().Contains("elly")) {
+                             special += 5;
                              doingTheCutieSpecial = true;
                          }
                      }

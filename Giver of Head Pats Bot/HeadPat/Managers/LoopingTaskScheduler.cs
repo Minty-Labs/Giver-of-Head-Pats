@@ -11,6 +11,8 @@ public static class LoopingTaskScheduler {
         new Thread(LoopAsync).Start();
     }
 
+    private static int _numberOfErrored;
+
     private static async void LoopAsync() {
         while (true) {
             await using var db = new Context();
@@ -29,7 +31,17 @@ public static class LoopingTaskScheduler {
                 await DailyPatLoop.DoDailyPat(db, currentEpoch);
             }
             catch (Exception err) {
+                if (_numberOfErrored >= 5) return;
                 await DSharpToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
+                _numberOfErrored++;
+            }
+            
+            // Rotating Status
+            try {
+                await RotatingStatus.Update(db);
+            }
+            catch (Exception err) {
+                await DSharpToConsole.SendErrorToLoggingChannelAsync($"Rotating Status:\n{err}");
             }
             
             Thread.Sleep(TimeSpan.FromMinutes(10));

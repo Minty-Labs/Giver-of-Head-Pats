@@ -84,6 +84,7 @@ public static class DSharpToConsole {
             return null; // Break if contains
         // if (finalMessage.Contains("Bad request: 400") && finalMessage.Contains("CreateWebhookAsync"))
         //     forceSendNormalMessage = true;
+        Log.Error("{0}", message);
 
         return new DiscordEmbedBuilder {
             Color = Colors.HexToColor("FF2525"),
