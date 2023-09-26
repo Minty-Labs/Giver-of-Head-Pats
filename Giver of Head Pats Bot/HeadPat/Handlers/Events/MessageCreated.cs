@@ -3,18 +3,19 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HeadPats.Configuration;
+using HeadPats.Modules;
 using HeadPats.Utils;
-using Serilog;
 
 namespace HeadPats.Handlers.Events; 
 
-public class MessageCreated {
-    public MessageCreated(DiscordClient c) {
-        Log.Information("Setting up MessageCreated Event Handler . . .");
-        
-        c.MessageCreated += GetAndMaybeRespondToTrigger;
-        c.MessageCreated += GetUserBotDm;
-        c.MessageCreated += RespondToDmFromChannel;
+public class MessageCreated : EventModule {
+    protected override string EventName => "MessageCreated";
+    protected override string Description => "Handles the MessageCreated event.";
+    
+    public override void Initialize(DiscordClient client) {
+        client.MessageCreated += GetAndMaybeRespondToTrigger;
+        client.MessageCreated += GetUserBotDm;
+        client.MessageCreated += RespondToDmFromChannel;
     }
 
     internal static DiscordChannel? DmCategory { get; set; }

@@ -4,16 +4,17 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HeadPats.Configuration;
 using HeadPats.Managers;
-using Serilog;
 using HeadPats.Configuration.Classes;
+using HeadPats.Modules;
 
 namespace HeadPats.Handlers.Events; 
 
-public class BangerEventListener {
-    public BangerEventListener(DiscordClient c) {
-        Log.Information("Setting up MessageCreated Event Handler . . .");
-        
-        c.MessageCreated += WatchForBangerChannel;
+public class BangerEventListener : EventModule {
+    protected override string EventName => "MessageCreated";
+    protected override string Description => "Handles the MessageCreated event.";
+
+    public override void Initialize(DiscordClient client) {
+        client.MessageCreated += WatchForBangerChannel;
     }
 
     public static List<string>? WhitelistedUrls;

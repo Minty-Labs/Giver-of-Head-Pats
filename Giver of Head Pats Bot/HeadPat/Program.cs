@@ -18,6 +18,7 @@ using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
 using HeadPats.Configuration;
 using HeadPats.Configuration.Classes;
+using HeadPats.Modules;
 using Serilog;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -29,6 +30,8 @@ public sealed class Program {
     public static SlashCommandsExtension? Slash { get; set; }
     public static FluxpointClient? FluxpointClient { get; set; }
     public static CookieClient? CookieClient { get; set; }
+    
+    private static List<EventModule> _eventModules = new();
     
     private static void Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
@@ -131,15 +134,17 @@ public sealed class Program {
         #endregion
 
         Client.SessionCreated += Client_Ready;
-        var eventHandler = new Handlers.EventHandler(Client); // Setup Command Handler
+        _eventModules.Add(new BangerEventListener());
+        _eventModules.Add(new OnBotJoinOrLeave());
+        _eventModules.Add(new OnBotJoinOrLeave());
+        _eventModules.Add(new OnMemberLeave());
+        _eventModules.ForEach(module => module.Initialize(Client));
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.CookieClientApiKey))
             CookieClient = new CookieClient(Config.Base.Api.ApiKeys.CookieClientApiKey!);
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!))
             FluxpointClient = new FluxpointClient(Vars.Name, Config.Base.Api.ApiKeys.FluxpointApiKey!);
-        
-        eventHandler.Complete();
 
         await using var db = new Context();
         var check = db.Overall.AsQueryable()

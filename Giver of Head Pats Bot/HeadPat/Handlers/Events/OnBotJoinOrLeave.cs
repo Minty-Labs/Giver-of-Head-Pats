@@ -8,15 +8,17 @@ using HeadPats.Managers;
 using HeadPats.Utils;
 using Serilog;
 using HeadPats.Configuration.Classes;
+using HeadPats.Modules;
 
 namespace HeadPats.Handlers.Events; 
 
-public class OnBotJoinOrLeave {
-    public OnBotJoinOrLeave(DiscordClient c) {
-        Log.Information("Setting up OnBotJoinOrLeave Event Handler . . .");
-        
-        c.GuildDeleted += OnLeaveGuild;
-        c.GuildCreated += OnJoinGuild;
+public class OnBotJoinOrLeave : EventModule {
+    protected override string EventName => "OnBotJoinOrLeave";
+    protected override string Description => "Handles the OnBotJoinOrLeave event.";
+
+    public override void Initialize(DiscordClient client) {
+        client.GuildDeleted += OnLeaveGuild;
+        client.GuildCreated += OnJoinGuild;
     }
 
     private static async Task OnLeaveGuild(DiscordClient sender, GuildDeleteEventArgs e) {
@@ -32,6 +34,16 @@ public class OnBotJoinOrLeave {
         em.WithFooter($"Total servers: {sender.Guilds.Count}");
 
         await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
+        
+        var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Guild.Id);
+        guildSettings!.DailyPatChannelId = 0;
+        var dailyPats = guildSettings?.DailyPats;
+        dailyPats?.Clear();
+        var irlQuotes = guildSettings?.IrlQuotes;
+        irlQuotes!.Enabled = false;
+        irlQuotes.ChannelId = 0;
+        Log.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Guild.Id);
+        Config.Save();
     }
 
     private static async Task OnJoinGuild(DiscordClient sender, GuildCreateEventArgs e) {
