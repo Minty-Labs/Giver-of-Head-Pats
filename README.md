@@ -199,6 +199,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         <ul>
             <li>SetAPIKey</li>
             <li>ListNameReplacements</li>
+            <li>RotatingStatus</li>
         </ul>
     </li>
     <li>User Control

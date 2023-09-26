@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using HeadPats.Configuration;
 using HeadPats.Handlers;
 using HeadPats.Configuration.Classes;
+using HeadPats.Data;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
@@ -132,6 +133,102 @@ public class ConfigControl : BaseCommandModule {
                 var item = replacements!.Single(r => r.UserId == userIdLong);
                 replacements!.Remove(item);
                 await c.RespondAsync($"Removed ({item.UserId}) **{item.BeforeName}** -> **{item.Replacement}**");
+                break;
+            }
+        }
+        
+        Config.Save();
+    }
+    
+    [Command("rotatingstatus"), Description("Controls the rotating status"), RequireOwner]
+    public async Task RotatingStatus(CommandContext c, [Description("(enable|disable|list|next)")] string preAction = "", [Description("(ActivityType UserStatus ActivityText)"), RemainingText] string action = "") {
+        if (string.IsNullOrWhiteSpace(preAction)) {
+            await c.RespondAsync("Please provide an action to perform. `(enable|disable|list|skip|next)`");
+            return;
+        }
+
+        switch (preAction.ToLower()) {
+            case "enable":
+                Config.Base.RotatingStatus.Enabled = true;
+                await c.RespondAsync("Enabled rotating status.");
+                Config.Save();
+                return;
+            case "disable":
+                Config.Base.RotatingStatus.Enabled = false;
+                await c.RespondAsync("Disabled rotating status.");
+                Config.Save();
+                return;
+            case "list":
+                var sb = new StringBuilder();
+                sb.AppendLine(string.Join("\n", Config.Base.RotatingStatus.Statuses.Select((x, i) => $"[{i} - {x.ActivityType} - {x.UserStatus}] {x.ActivityText}")));
+                await c.RespondAsync(sb.ToString());
+                return;
+            case "bopit":
+            case "skip":
+            case "next": {
+                await using var db = new Context();
+                await Managers.Loops.RotatingStatus.Update(db);
+                await c.RespondAsync("Skipped to next status.");
+                return;
+            }
+        }
+        
+        if (string.IsNullOrWhiteSpace(action)) {
+            await c.RespondAsync(
+                "Please provide an action to perform. `(add|remove|modify)`\n" +
+                "Add: `rotatingstatus add (ActivityType|ActivityText|UserStatus)`\n" +
+                "Remove: `rotatingstatus remove (StatusID)`\n" +
+                "Modify: `rotatingstatus modify (StatusID) (ActivityType|ActivityText|UserStatus)`");
+            return;
+        }
+        
+        var actionSplit = action.Split(" ");
+        var actionType = actionSplit[0];
+        var actionValue = actionSplit[1];
+        
+        switch (actionType.ToLower()) {
+            case "add": {
+                var actionValueSplit = actionValue.Split("`");
+                var activityType = actionValueSplit[0];
+                var userStatus = actionValueSplit[1];
+                var activityText = actionValueSplit[2];
+                var status = new Status {
+                    Id = Config.Base.RotatingStatus.Statuses.Count + 1,
+                    ActivityText = activityText,
+                    ActivityType = activityType,
+                    UserStatus = userStatus
+                };
+                Config.Base.RotatingStatus.Statuses.Add(status);
+                await c.RespondAsync($"Added [{status.Id} - {status.ActivityType} - {status.UserStatus}] {status.ActivityText}");
+                break;
+            }
+            case "remove": {
+                var status = Config.Base.RotatingStatus.Statuses.Single(s => s.Id == int.Parse(actionValue));
+                await c.RespondAsync($"Removed [{status.Id} - {status.ActivityType} - {status.UserStatus}] {status.ActivityText}");
+                Config.Base.RotatingStatus.Statuses.Remove(status);
+                break;
+            }
+            case "modify": {
+                var modifyActionSplit = actionValue.Split(" ");
+                var id = modifyActionSplit[0];
+                var modifyActionNewValues = modifyActionSplit[1];
+                var modifyActionNewValuesSplit = modifyActionNewValues.Split("|");
+                var activityType = modifyActionNewValuesSplit[0];
+                var userStatus = modifyActionNewValuesSplit[1];
+                var activityText = modifyActionNewValuesSplit[2];
+                
+                var status = Config.Base.RotatingStatus.Statuses.Single(s => s.Id == int.Parse(id));
+                var tempActivityText = status.ActivityText;
+                var tempActivityType = status.ActivityType;
+                var tempUserStatus = status.UserStatus;
+                status.ActivityText = activityText;
+                status.ActivityType = activityType;
+                status.UserStatus = userStatus;
+                await c.RespondAsync(
+                    $"Old\n" +
+                    $"[{status.Id} - {tempActivityType} - {tempUserStatus}] {tempActivityText}\n" +
+                    $"New:\n" +
+                    $"[{status.Id} - {status.ActivityType} - {status.UserStatus}] {status.ActivityText}");
                 break;
             }
         }

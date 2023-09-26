@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using DSharpPlus.Entities;
 using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Configuration; 
@@ -8,6 +9,18 @@ public static class Config {
 
     public static void CreateFile() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
+        
+        var rotatingStatus = new RotatingStatus {
+            Enabled = false,
+            Statuses = new List<Status> {
+                new() {
+                    Id = 0,
+                    ActivityText = "for 5 years",
+                    ActivityType = "Playing",
+                    UserStatus = "Online"
+                }
+            }
+        };
 
         var personalizationLily = new PersonalizedMember {
             Enabled = false,
@@ -90,6 +103,7 @@ public static class Config {
             ActivityType = "Playing",
             ActivityText = "with Headpats",
             UserStatus = "Online",
+            RotatingStatus = rotatingStatus,
             OwnerIds = new List<ulong>(),
             BotLogsChannel = 0,
             ErrorLogsChannel = 0,
