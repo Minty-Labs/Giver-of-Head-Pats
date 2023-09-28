@@ -135,7 +135,7 @@ public sealed class Program {
 
         Client.SessionCreated += SessionCreated;
         _eventModules.Add(new BangerEventListener());
-        _eventModules.Add(new OnBotJoinOrLeave());
+        _eventModules.Add(new MessageCreated());
         _eventModules.Add(new OnBotJoinOrLeave());
         _eventModules.Add(new OnMemberLeave());
         _eventModules.ForEach(module => module.Initialize(Client));
