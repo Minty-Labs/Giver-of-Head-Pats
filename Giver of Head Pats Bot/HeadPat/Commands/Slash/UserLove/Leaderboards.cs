@@ -25,14 +25,13 @@ public class Leaderboards : ApplicationCommandModule {
         catch { Log.Error("[TopPat] Server DataSet is Empty"); }
 
         var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
-        
-        // ReSharper disable once PossibleLossOfFraction
-        float patPercentage = guildPats / globalPats * 100;
+
+        var patPercentage = globalPats == 0 ? 0 : (float) guildPats / globalPats * 100;
 
         if (keyWords!.ToLower().Equals("server")) {
             var strings = new StringBuilder();
             strings.AppendLine($"Top 50 that are in this server.\n" +
-                               $"- Server Pats: **{guildPats}** ({patPercentage}% of global)\n" +
+                               $"- Server Pats: **{guildPats}** ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)\n" +
                                $"- Global Pats: **{globalPats}**");
             var counter = 1;
             foreach (var u in newUserList) {
@@ -63,7 +62,7 @@ public class Leaderboards : ApplicationCommandModule {
         e.WithColor(Colors.HexToColor("DFFFDD"));
         e.WithFooter($"Synced across all servers • {Vars.Name} (v{Vars.Version})");
         e.AddField("Current Server Stats",
-            $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}** ({patPercentage}% of global)");
+            $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}** ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)");
         e.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         e.WithTimestamp(DateTime.Now);
         await c.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(e.Build()));
