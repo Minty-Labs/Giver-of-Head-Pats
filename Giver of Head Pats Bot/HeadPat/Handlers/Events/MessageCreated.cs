@@ -10,7 +10,7 @@ namespace HeadPats.Handlers.Events;
 
 public class MessageCreated : EventModule {
     protected override string EventName => "MessageCreated";
-    protected override string Description => "Handles the MessageCreated event.";
+    protected override string Description => "Handles the Bot DMs & Message Trigger events.";
     
     public override void Initialize(DiscordClient client) {
         client.MessageCreated += GetAndMaybeRespondToTrigger;
@@ -19,6 +19,10 @@ public class MessageCreated : EventModule {
     }
 
     internal static DiscordChannel? DmCategory { get; set; }
+
+    public override async Task OnSessionCreatedTask() {
+        DmCategory = await Program.Client!.GetChannelAsync(Config.Base.DmCategory);
+    }
 
     private static async Task GetUserBotDm(DiscordClient sender, MessageCreateEventArgs e) {
         if (!e.Channel.IsPrivate) return;

@@ -265,4 +265,13 @@ public static class StringUtils {
     /// <param name="input">this string</param>
     /// <returns>integer</returns>
     public static int? RemoveAllLetters(this string input) => int.Parse(input.Where(char.IsDigit).Aggregate(string.Empty, (current, c) => current + c));
+
+    public static string Sanitize(this string input) {
+        input = input.Replace("\\", "");
+        input = input.Replace("`", "");
+        input = input.Replace("|", "");
+        input = input.Replace("%", "");
+
+        return input;
+    }
 }

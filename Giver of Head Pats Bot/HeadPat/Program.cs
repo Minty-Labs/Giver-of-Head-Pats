@@ -133,7 +133,7 @@ public sealed class Program {
 
         #endregion
 
-        Client.SessionCreated += Client_Ready;
+        Client.SessionCreated += SessionCreated;
         _eventModules.Add(new BangerEventListener());
         _eventModules.Add(new OnBotJoinOrLeave());
         _eventModules.Add(new OnBotJoinOrLeave());
@@ -172,7 +172,7 @@ public sealed class Program {
     
     internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 
-    private static async Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.SessionReadyEventArgs e) {
+    private static async Task SessionCreated(DiscordClient sender, DSharpPlus.EventArgs.SessionReadyEventArgs e) {
         Vars.StartTime = DateTime.Now;
         Vars.ThisProcess = Process.GetCurrentProcess();
         Log.Debug("Bot Version                    = " + Vars.Version);
@@ -213,11 +213,14 @@ public sealed class Program {
         
         GeneralLogChannel =         await sender.GetChannelAsync(Config.Base.BotLogsChannel);
         ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
-        MessageCreated.DmCategory = await sender.GetChannelAsync(Config.Base.DmCategory);
+        if (_eventModules.Count != 0) {
+            foreach (var module in _eventModules) {
+                await module.OnSessionCreatedTask();
+                module.OnSessionCreated();
+            }
+        }
         LoopingTaskScheduler.StartLoop();
-        BangerEventListener.OnStartup();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
-        PersonalizedMemberLogic.SetLogicData();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
 }

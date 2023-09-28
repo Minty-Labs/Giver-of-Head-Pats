@@ -18,37 +18,3 @@ public class Member {
     [JsonPropertyName("Color Hex")] public string colorHex { get; set; }
     [JsonPropertyName("Last Updated")] public long epochTime { get; set; }
 }
-
-public static class PersonalizedMemberLogic {
-    private static void FixPersonalizedMemberData() {
-        if (Config.Base.PersonalizedMemberLily is null) {
-            var personalization = new PersonalizedMember {
-                Enabled = false,
-                GuildId = 0,
-                ChannelId = 0,
-                ResetTimer = 30,
-                DefaultRoleId = 0,
-                Members = new List<Member>()
-            };
-            Config.Base.PersonalizedMemberLily = personalization;
-        }
-
-        if (Config.Base.PersonalizedMemberPenny is null) {
-            var personalization = new PersonalizedMember {
-                Enabled = false,
-                GuildId = 0,
-                ChannelId = 0,
-                ResetTimer = 30,
-                DefaultRoleId = 0,
-                Members = new List<Member>()
-            };
-            Config.Base.PersonalizedMemberPenny = personalization;
-        }
-        Config.Save();
-    }
-
-    public static void SetLogicData() {
-        FixPersonalizedMemberData(); // This will be removed in the future
-        // ResetTimer = Config.Base.PersonalizedMemberLily.ResetTimer;
-    }
-}

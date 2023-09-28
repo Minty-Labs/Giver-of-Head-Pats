@@ -14,7 +14,7 @@ namespace HeadPats.Handlers.Events;
 
 public class OnBotJoinOrLeave : EventModule {
     protected override string EventName => "OnBotJoinOrLeave";
-    protected override string Description => "Handles the OnBotJoinOrLeave event.";
+    protected override string Description => "Handles On Bot Join and Leave events.";
 
     public override void Initialize(DiscordClient client) {
         client.GuildDeleted += OnLeaveGuild;

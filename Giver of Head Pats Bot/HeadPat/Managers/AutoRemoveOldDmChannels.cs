@@ -1,4 +1,4 @@
-﻿using HeadPats.Handlers.Events;
+﻿/*using HeadPats.Handlers.Events;
 
 namespace HeadPats.Managers; 
 
@@ -13,4 +13,4 @@ public static class AutoRemoveOldDmChannels {
                 channel.DeleteAsync().GetAwaiter().GetResult();
         }
     }
-}
+}*/

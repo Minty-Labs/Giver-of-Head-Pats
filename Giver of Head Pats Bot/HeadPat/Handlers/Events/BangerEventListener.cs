@@ -10,8 +10,8 @@ using HeadPats.Modules;
 namespace HeadPats.Handlers.Events; 
 
 public class BangerEventListener : EventModule {
-    protected override string EventName => "MessageCreated";
-    protected override string Description => "Handles the MessageCreated event.";
+    protected override string EventName => "Banger";
+    protected override string Description => "Handles the Banger events.";
 
     public override void Initialize(DiscordClient client) {
         client.MessageCreated += WatchForBangerChannel;
@@ -20,13 +20,13 @@ public class BangerEventListener : EventModule {
     public static List<string>? WhitelistedUrls;
     public static List<string>? WhitelistedFileExtensions;
 
-    public static void OnStartup() {
+    public override void OnSessionCreated() {
         if (Config.Base.Banger is null) {
             var banger = new Banger {
                 Enabled = false,
                 GuildId = 0,
                 ChannelId = 0,
-                WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
+                WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "youtube.com", "music.youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
                 WhitelistedFileExtensions = new List<string> { "mp3", "flac", "wav", "ogg", "m4a", "alac", "aac", "aiff", "wma" },
                 UrlErrorResponseMessage = "This URL is not whitelisted.",
                 FileErrorResponseMessage = "This file type is not whitelisted."
@@ -39,16 +39,13 @@ public class BangerEventListener : EventModule {
     }
 
     private static bool IsUrlWhitelisted(string url, ICollection<string> list) {
-        if (list == null) throw new ArgumentNullException(nameof(list));
         if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
         var domain = uri.Host;
-        return list.Contains(domain);
+        return list?.Contains(domain) ?? throw new ArgumentNullException(nameof(list));
     }
     
-    private static bool IsFileExtWhitelisted(string extension, ICollection<string> list) {
-        if (list == null) throw new ArgumentNullException(nameof(list));
-        return list.Contains(extension);
-    }
+    private static bool IsFileExtWhitelisted(string extension, ICollection<string> list) 
+        => list?.Contains(extension) ?? throw new ArgumentNullException(nameof(list));
 
     private static async Task WatchForBangerChannel(DiscordClient sender, MessageCreateEventArgs args) {
         if (args.Channel.IsPrivate) return;

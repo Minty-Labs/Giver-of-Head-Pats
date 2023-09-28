@@ -13,4 +13,6 @@ public class EventModule {
     }
     
     public virtual void Initialize(DiscordClient client) { }
+    public virtual void OnSessionCreated() { }
+    public virtual async Task OnSessionCreatedTask() { }
 }

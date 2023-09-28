@@ -133,7 +133,7 @@ public class PersonalizationAnyone : BaseCommandModule {
             await ctx.RespondAsync($"You need to wait {personalizedMember.epochTime + personalData.ResetTimer - currentEpoch} seconds before you can use this command again.");
             return;
         }
-        var newRoleName = name.Left(15).Trim();
+        var newRoleName = name.Sanitize().Left(15).Trim();
         if (personalizedMember.roleName == newRoleName) {
             await ctx.RespondAsync("Your personalized member role name is already set to that.");
             return;
