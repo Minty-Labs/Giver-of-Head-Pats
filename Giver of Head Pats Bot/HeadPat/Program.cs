@@ -17,7 +17,6 @@ using HeadPats.Commands.ContextMenu;
 using HeadPats.Commands.Legacy;
 using HeadPats.Commands.Slash;
 using HeadPats.Configuration;
-using HeadPats.Configuration.Classes;
 using HeadPats.Modules;
 using Serilog;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
@@ -219,6 +218,7 @@ public sealed class Program {
                 module.OnSessionCreated();
             }
         }
+        else await sender.SendMessageAsync(ErrorLogChannel, "No Event Modules were found or loaded!!");
         LoopingTaskScheduler.StartLoop();
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
