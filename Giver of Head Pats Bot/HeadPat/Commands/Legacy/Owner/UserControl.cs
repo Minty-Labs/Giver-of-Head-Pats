@@ -3,7 +3,6 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
@@ -12,7 +11,9 @@ using Serilog;
 namespace HeadPats.Commands.Legacy.Owner; 
 
 public class UserControl : BaseCommandModule {
-    [Command("MultiKick"), Aliases("mk"), Description("Kicks multiple users at once"), RequireOwner, RequirePermissions(Permissions.KickMembers)]
+    
+    // Not needed anymore, will never use, but here for reference [Will be live as of 2023.10.1]
+    /*[Command("MultiKick"), Aliases("mk"), Description("Kicks multiple users at once"), RequireOwner, RequirePermissions(Permissions.KickMembers)]
     public async Task MultiKick(CommandContext c, [Description("List of users separated by commas")] string userIds,
         [Description("Reason for kick"), RemainingText] string reason = "No reason provided.") {
         if (string.IsNullOrWhiteSpace(userIds)) {
@@ -37,7 +38,7 @@ public class UserControl : BaseCommandModule {
         
         await c.RespondAsync($"Finished kicking {num} users.");
         await message.ModifyAsync($"Kicked users: {string.Join(", ", usernameList)}");
-    }
+    }*/
     
     [Command("ForceAddUserToDatabase"), Aliases("fautd"), RequireOwner]
     public async Task ForceAddUserToDatabase(CommandContext c, [RemainingText] string userIdStr) {
@@ -64,7 +65,8 @@ public class UserControl : BaseCommandModule {
         await db.SaveChangesAsync();
     }
     
-    [Command("GetUserPresence"), Aliases("gup"), Description("Gets users with the given presence"), RequireOwner]
+    // Not needed anymore, will never use, but here for reference [Will be live as of 2023.10.1]
+    /*[Command("GetUserPresence"), Aliases("gup"), Description("Gets users with the given presence"), RequireOwner]
     public async Task GetPresence(CommandContext c, [RemainingText, Description("Text to search presences with")] string activity) {
         if (string.IsNullOrWhiteSpace(activity)) {
             await c.RespondAsync("Activity search field was empty").DeleteAfter(3);
@@ -98,5 +100,5 @@ public class UserControl : BaseCommandModule {
         catch (Exception ex) {
             await c.RespondAsync($"```\n{ex.Message}\n```");
         }
-    }
+    }*/
 }
