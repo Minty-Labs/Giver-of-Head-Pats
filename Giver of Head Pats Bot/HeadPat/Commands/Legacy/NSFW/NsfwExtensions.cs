@@ -1,4 +1,4 @@
-﻿namespace HeadPats.Commands.Legacy.NSFW; 
+﻿/*namespace HeadPats.Commands.Legacy.NSFW; 
 
 public static class NsfwExtensions {
     public static async Task<string> GetImageUrlFromMediaType(string mediaType, string contentType, fluxpoint_sharp.FluxpointClient fluxpointClient) {
@@ -60,4 +60,4 @@ public static class NsfwExtensions {
         
         return (await gif).file ?? "https://i.mintlily.lgbt/null.jpg";
     }
-}
+}*/

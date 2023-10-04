@@ -1,6 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using HeadPats.Commands.Legacy.Basic;
-using HeadPats.Commands.Legacy.NSFW;
+// using HeadPats.Commands.Legacy.NSFW;
 using HeadPats.Commands.Legacy.Owner;
 using Serilog;
 
@@ -15,8 +15,8 @@ public static class LegacyCommandHandler {
         Log.Information("[Commands.Legacy] Information Registered");
         c.RegisterCommands<Salad>();
         Log.Information("[Commands.Legacy] Salad Registered");
-        c.RegisterCommands<FunnyCommands>();
-        Log.Information("[Commands.Legacy] NSFW Registered");
+        // c.RegisterCommands<FunnyCommands>();
+        // Log.Information("[Commands.Legacy] NSFW Registered");
         
         c.RegisterCommands<Commission.Banger.BangerAdmin>();
         Log.Information("[Commands.Legacy.Commission.Banger] BangerAdmin Registered");

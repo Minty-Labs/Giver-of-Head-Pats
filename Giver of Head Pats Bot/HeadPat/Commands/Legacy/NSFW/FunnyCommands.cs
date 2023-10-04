@@ -1,4 +1,4 @@
-﻿using DSharpPlus.CommandsNext;
+﻿/*using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using HeadPats.Configuration;
@@ -81,4 +81,4 @@ public class FunnyCommands : BaseCommandModule {
         await ctx.RespondAsync(embed);
     }
     
-}
+}*/
