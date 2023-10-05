@@ -1,4 +1,5 @@
 ﻿using ColorHelper;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Utils;
@@ -10,7 +11,7 @@ public class Color : ApplicationCommandModule {
     private const string BaseUrl = "https://c.devminer.xyz/256/256";
     
 
-    [SlashCommand("Color", "Shows you the color from the given input")]
+    [SlashCommand("Color", "Shows you the color from the given input"), Cooldown(50, 3600, CooldownBucketType.Guild)]
     public async Task GiveColor(InteractionContext c,
         [Choice("HEX", "hex")]
         [Choice("RGB", "rgb")]
@@ -99,7 +100,7 @@ public class Color : ApplicationCommandModule {
         await c.CreateResponseAsync(embed.Build());
     }
 
-    [SlashCommand("Gradient", "Shows you the gradient from the given input")]
+    [SlashCommand("Gradient", "Shows you the gradient from the given input"), Cooldown(50, 3600, CooldownBucketType.Guild)]
     public async Task GiveGradient(InteractionContext c,
         [Choice("HEX", "hex")]
         [Choice("RGB", "rgb")]

@@ -10,7 +10,7 @@ public class Information : BaseCommandModule {
     [Command("ping"), Description("Shows bot's latency from you <-> discord <-> you.")]
     public async Task Ping(CommandContext c) => await c.RespondAsync($":ping_pong: Pong > {c.Client.Ping}ms");
     
-    [Command("stats"), Description("Shows the bot status including server status and bot stats")]
+    [Command("stats"), Description("Shows the bot status including server status and bot stats"), Cooldown(20, 1800, CooldownBucketType.Guild)]
     public async Task Stats(CommandContext c) {
         var ram = GC.GetTotalMemory(false) / 1024 / 1024;
         var tempNow = DateTime.Now;

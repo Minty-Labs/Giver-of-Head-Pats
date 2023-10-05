@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using DSharpPlus;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -12,7 +13,7 @@ namespace HeadPats.Commands.Slash.Reply;
 
 public class ReplyApplication : ApplicationCommandModule {
 
-    [SlashCommandGroup("Reply", "Self-creating simple trigger-based command message outputs", false)]
+    [SlashCommandGroup("Reply", "Self-creating simple trigger-based command message outputs", false), Cooldown(10, 3600, CooldownBucketType.Guild)]
     public class Replies : ApplicationCommandModule {
         [SlashCommand("add", "Adds an auto response for the server", false), CustomSlashRequirePermissions(Permissions.ManageMessages)]
         public async Task AddReply(InteractionContext c,
@@ -38,9 +39,7 @@ public class ReplyApplication : ApplicationCommandModule {
             string trigger) {
             ReplyConfExtensions.RemoveValue(c.Guild.Id, trigger);
             if (ReplyConfExtensions.ErroredOnRemove) {
-                await c.CreateResponseAsync("Either the provided trigger does not exist, or an error has occured.", true);
-                if (Vars.IsDebug)
-                    await c.CreateResponseAsync($"[Debug] Error: {ReplyConfExtensions.ErroredException}", true);
+                await c.CreateResponseAsync($"Either the provided trigger does not exist, or an error has occured.{(Vars.IsDebug ? $"\n[Debug] Error: {ReplyConfExtensions.ErroredException}" : "")}", true);
             }
             else await c.CreateResponseAsync($"Removed the trigger: {trigger}");
             ReplyConfExtensions.ErroredOnRemove = false;

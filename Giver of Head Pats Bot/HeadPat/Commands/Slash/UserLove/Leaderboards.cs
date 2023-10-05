@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using DSharpPlus;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Data;
@@ -10,7 +11,7 @@ using Serilog;
 namespace HeadPats.Commands.Slash.UserLove; 
 
 public class Leaderboards : ApplicationCommandModule {
-    [SlashCommand("TopPat", "Get the top pat leaderboard")]
+    [SlashCommand("TopPat", "Get the top pat leaderboard"), Cooldown(10, 1800, CooldownBucketType.Guild)]
     public async Task PatLeaderboard(InteractionContext c,
         [Option("KeyWords", "Key words (can be empty)")]
         string? keyWords = "") {
@@ -59,7 +60,7 @@ public class Leaderboards : ApplicationCommandModule {
 
         var e = new DiscordEmbedBuilder();
         e.WithTitle("Head Pat Leaderboard");
-        e.WithColor(Colors.HexToColor("DFFFDD"));
+        e.WithColor(Colors.Random);
         e.WithFooter($"Synced across all servers • {Vars.Name} (v{Vars.Version})");
         e.AddField("Current Server Stats",
             $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}** ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)");
@@ -68,7 +69,7 @@ public class Leaderboards : ApplicationCommandModule {
         await c.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(e.Build()));
     }
     
-    [SlashCommand("TopCookie", "Get the top cookie leaderboard")]
+    [SlashCommand("TopCookie", "Get the top cookie leaderboard"), Cooldown(10, 1800, CooldownBucketType.Guild)]
     public async Task CookieLeaderboard(InteractionContext c,
         [Option("KeyWords", "Key words (can be empty)")]
         string? keyWords = "") {

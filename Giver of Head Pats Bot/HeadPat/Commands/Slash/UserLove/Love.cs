@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -20,7 +21,7 @@ public class LoveCommands : ApplicationCommandModule {
      [SlashCommandGroup("user", "User Actions")]
      public class LoveUser : ApplicationCommandModule {
      
-         [SlashCommand("pat", "Pat a specified user.")]
+         [SlashCommand("pat", "Pat a specified user."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Pat(InteractionContext c, [Option("user", "The user to pat", true)] DiscordUser user, 
              [Option("params", "Extra parameters (for the bot owner)")] string extraParams = "") {
              var canUseParams = c.User.Id == 167335587488071682;
@@ -169,7 +170,7 @@ public class LoveCommands : ApplicationCommandModule {
              // await Task.FromResult(true);
          }
          
-         [SlashCommand("hug", "Hug a specified user.")]
+         [SlashCommand("hug", "Hug a specified user."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Hug(InteractionContext c, [Option("user", "The user to hug", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
@@ -232,7 +233,7 @@ public class LoveCommands : ApplicationCommandModule {
              // await Task.FromResult(true);
          }
 
-         [SlashCommand("Cuddle", "Cuddle a specified user.")]
+         [SlashCommand("Cuddle", "Cuddle a specified user."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Cuddle(InteractionContext c, [Option("user", "The user to cuddle", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
@@ -294,7 +295,7 @@ public class LoveCommands : ApplicationCommandModule {
              // await Task.FromResult(true);
          }
 
-         [SlashCommand("kiss", "Kiss a specified user.")]
+         [SlashCommand("kiss", "Kiss a specified user."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Kiss(InteractionContext c, [Option("user", "The user to kiss", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
@@ -356,7 +357,7 @@ public class LoveCommands : ApplicationCommandModule {
              // await Task.FromResult(true);
          }
 
-         [SlashCommand("slap", "Slap a specified user.")]
+         [SlashCommand("slap", "Slap a specified user."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Slap(InteractionContext c, [Option("user", "The user to slap", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
@@ -418,7 +419,7 @@ public class LoveCommands : ApplicationCommandModule {
              // await Task.FromResult(true);
          }
          
-         [SlashCommand("Poke", "Poke or boop a user.")]
+         [SlashCommand("Poke", "Poke or boop a user."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Poke(InteractionContext c, [Option("user", "The user to poke", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {
@@ -480,7 +481,7 @@ public class LoveCommands : ApplicationCommandModule {
              // await Task.FromResult(true);
          }
 
-         [SlashCommand("Cookie", "Give a user a cookie.")]
+         [SlashCommand("Cookie", "Give a user a cookie."), Cooldown(20, 1800, CooldownBucketType.Guild)]
          public async Task Cookie(InteractionContext c, [Option("user", "The user to give a cookie to", true)] DiscordUser user) {
              var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(c.Guild.Id);
              if (hasCommandBlacklist) {

@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Utils;
@@ -10,7 +11,7 @@ public class Summon : ApplicationCommandModule {
     [SlashCommandGroup("Summon", "Summon a picture of various options")]
     public class SummonPicture : ApplicationCommandModule {
 
-        [SlashCommand("Bunny", "Bunnies are mega adorable")]
+        [SlashCommand("Bunny", "Bunnies are mega adorable"), Cooldown(50, 3600, CooldownBucketType.Guild)]
         public async Task Bunny(InteractionContext c) {
             start:
             var httpClient = new HttpClient();
@@ -43,7 +44,7 @@ public class Summon : ApplicationCommandModule {
             // BunnyJson.BunnyData = null;
         }
 
-        [SlashCommand("Fox", "Foxes are cute")]
+        [SlashCommand("Fox", "Foxes are cute"), Cooldown(50, 3600, CooldownBucketType.Guild)]
         public async Task Fox(InteractionContext c) {
             RandomFoxJson.FoxData = null;
             var httpClient = new HttpClient();
@@ -64,7 +65,7 @@ public class Summon : ApplicationCommandModule {
             RandomFoxJson.FoxData = null;
         }
         
-        [SlashCommand("Neko", "Summon a picture of a neko (SFW)")]
+        [SlashCommand("Neko", "Summon a picture of a neko (SFW)"), Cooldown(50, 3600, CooldownBucketType.Guild)]
         public async Task Neko(InteractionContext c) {
             var embed = new DiscordEmbedBuilder {
                 Title = "Neko",
@@ -77,7 +78,7 @@ public class Summon : ApplicationCommandModule {
             await c.CreateResponseAsync(embed.Build());
         }
         
-        [SlashCommand("Cat", "Summon a picture of a cat")]
+        [SlashCommand("Cat", "Summon a picture of a cat"), Cooldown(50, 3600, CooldownBucketType.Guild)]
         public async Task Cat(InteractionContext c) {
             var embed = new DiscordEmbedBuilder {
                 Title = "Kitty",
@@ -91,7 +92,7 @@ public class Summon : ApplicationCommandModule {
         }
     }
     
-    [SlashCommand("Meme", "Get a random meme from one of nine subreddits")]
+    [SlashCommand("Meme", "Get a random meme from one of nine subreddits"), Cooldown(50, 3600, CooldownBucketType.Guild)]
     public async Task Meme(InteractionContext c) {
         var counter = 0;
         start:
@@ -145,7 +146,7 @@ public class Summon : ApplicationCommandModule {
         TheData.RedditData = null;
     }
 
-    [SlashCommand("InspiroBot", "Lets an AI create an inspirational quote with image")]
+    [SlashCommand("InspiroBot", "Lets an AI create an inspirational quote with image"), Cooldown(50, 3600, CooldownBucketType.Guild)]
     public async Task InspiroBot(InteractionContext c) {
         var httpClient = new HttpClient();
         var content = await httpClient.GetStringAsync("https://inspirobot.me/api?generate=true&oy=vey"); // out puts an image URL link
