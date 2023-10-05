@@ -157,7 +157,11 @@ public class LoveCommands : ApplicationCommandModule {
                      return;
              }
 
-             e.WithColor(Colors.HexToColor("ffff00"));
+             var topRoleColorTargetUser = c.Member!.Roles.MaxBy(x => x.Position)?.Color;
+             var topRoleColorBot = c.Guild.CurrentMember.Roles.MaxBy(x => x.Position)?.Color;
+             var defaultColor = Colors.HexToColor("ffff00");
+             
+             e.WithColor((topRoleColorTargetUser ?? (topRoleColorBot ?? defaultColor)));
              if (doingTheCutieSpecial)
                  e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{c.User.Mention} gave **{special}** headpats to {user.Mention}");
              else 
@@ -224,7 +228,11 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by Fluxpoint API");
              }
              
-             e.WithColor(Colors.HexToColor("6F41B6"));
+             var topRoleColorTargetUser = c.Member!.Roles.MaxBy(x => x.Position)?.Color;
+             var topRoleColorBot = c.Guild.CurrentMember.Roles.MaxBy(x => x.Position)?.Color;
+             var defaultColor = Colors.HexToColor("6F41B6");
+             
+             e.WithColor((topRoleColorTargetUser ?? (topRoleColorBot ?? defaultColor)));
              e.WithDescription($"{c.User.Mention} gave a hug to {user.Mention}");
              e.Build();
              // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("hugs"), true);
@@ -287,7 +295,11 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by Fluxpoint API");
              }
              
-             e.WithColor(Colors.HexToColor("3498DB"));
+             var topRoleColorTargetUser = c.Member!.Roles.MaxBy(x => x.Position)?.Color;
+             var topRoleColorBot = c.Guild.CurrentMember.Roles.MaxBy(x => x.Position)?.Color;
+             var defaultColor = Colors.HexToColor("3498DB");
+             
+             e.WithColor((topRoleColorTargetUser ?? (topRoleColorBot ?? defaultColor)));
              e.WithDescription($"{c.User.Mention} gave cuddles to {user.Mention}");
              // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("cuddles"), true);
              // await c.Channel.SendMessageAsync(e.Build());
@@ -349,7 +361,11 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by Fluxpoint API");
              }
              
-             e.WithColor(Colors.HexToColor("F771A3"));
+             var topRoleColorTargetUser = c.Member!.Roles.MaxBy(x => x.Position)?.Color;
+             var topRoleColorBot = c.Guild.CurrentMember.Roles.MaxBy(x => x.Position)?.Color;
+             var defaultColor = Colors.HexToColor("F771A3");
+             
+             e.WithColor((topRoleColorTargetUser ?? (topRoleColorBot ?? defaultColor)));
              e.WithDescription($"{c.User.Mention} gave kisses to {user.Mention}");
              // await c.CreateResponseAsync(/*e.Build()*/"This showing up is a bug, so lets make the most of it:\n" + GetRandomCuteMessage("kisses"), true);
              // await c.Channel.SendMessageAsync(e.Build());
@@ -411,7 +427,11 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by Fluxpoint API");
              }
 
-             e.WithColor(Colors.HexToColor("E74C3C"));
+             var topRoleColorTargetUser = c.Member!.Roles.MaxBy(x => x.Position)?.Color;
+             var topRoleColorBot = c.Guild.CurrentMember.Roles.MaxBy(x => x.Position)?.Color;
+             var defaultColor = Colors.HexToColor("E74C3C");
+             
+             e.WithColor((topRoleColorTargetUser ?? (topRoleColorBot ?? defaultColor)));
              e.WithDescription($"{c.User.Mention} slapped {user.Mention}");
              // await c.CreateResponseAsync(/*e.Build()*/"Did you know, this message is a bug?", true);
              // await c.Channel.SendMessageAsync(e.Build());
@@ -473,7 +493,11 @@ public class LoveCommands : ApplicationCommandModule {
                  e.WithFooter("Powered by Fluxpoint API");
              }
              
-             e.WithColor(Colors.HexToColor("0E4730"));
+             var topRoleColorTargetUser = c.Member!.Roles.MaxBy(x => x.Position)?.Color;
+             var topRoleColorBot = c.Guild.CurrentMember.Roles.MaxBy(x => x.Position)?.Color;
+             var defaultColor = Colors.HexToColor("0E4730");
+             
+             e.WithColor((topRoleColorTargetUser ?? (topRoleColorBot ?? defaultColor)));
              e.WithDescription($"{c.User.Mention} poked {user.Mention}");
              // await c.CreateResponseAsync(/*e.Build()*/"Did you know, this message is a bug?", true);
              // await c.Channel.SendMessageAsync(e.Build());
