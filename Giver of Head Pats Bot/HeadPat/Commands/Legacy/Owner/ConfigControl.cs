@@ -236,4 +236,18 @@ public class ConfigControl : BaseCommandModule {
         Config.Save();
     }
     
+    [Command("CleanGuildsFromConfig"), Description("Cleans the guilds from the config that are not in the guilds list"), RequireOwner]
+    public async Task CleanGuildsFromConfig(CommandContext c) {
+        var guilds = c.Client.Guilds.Values.ToList();
+        var configGuildSettings = Config.Base.GuildSettings!;
+        var sb = new StringBuilder();
+        
+        foreach (var guild in configGuildSettings.Where(guild => guilds.All(g => g.Id != guild.GuildId))) {
+            configGuildSettings.Remove(guild);
+            sb.AppendLine($"Removed {guild.GuildName} ({guild.GuildId}) from the config.");
+        }
+
+        await c.RespondAsync(sb.ToString());
+    }
+    
 }

@@ -39,7 +39,7 @@ public static class DailyPatLoop {
                 continue;
                 
             foreach (var user in guildSettings.DailyPats) {
-                if (user.SetEpochTime > currentEpoch)
+                if (user.SetEpochTime >= currentEpoch)
                     continue;
                 
                 Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);

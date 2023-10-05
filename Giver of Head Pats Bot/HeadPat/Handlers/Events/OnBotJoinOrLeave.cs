@@ -36,12 +36,17 @@ public class OnBotJoinOrLeave : EventModule {
         await sender.SendMessageAsync(Program.GeneralLogChannel, em.Build());
         
         var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Guild.Id);
-        guildSettings!.DailyPatChannelId = 0;
-        var dailyPats = guildSettings?.DailyPats;
+        if (guildSettings is null) {
+            Log.Error("Guild Settings for guild {guildId} is null, cannot delete data.", e.Guild.Id);
+            return;
+        }
+        guildSettings.DailyPatChannelId = 0;
+        var dailyPats = guildSettings.DailyPats;
         dailyPats?.Clear();
-        var irlQuotes = guildSettings?.IrlQuotes;
+        var irlQuotes = guildSettings.IrlQuotes;
         irlQuotes!.Enabled = false;
         irlQuotes.ChannelId = 0;
+        guildSettings.DataDeletionTime = DateTimeOffset.Now.AddDays(28).ToUnixTimeSeconds();
         Log.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Guild.Id);
         Config.Save();
     }
@@ -52,7 +57,7 @@ public class OnBotJoinOrLeave : EventModule {
         em.WithDescription($"Joined server: `{e.Guild.Name}` ({e.Guild.Id})");
         try { em.AddField("Created", $"{e.Guild.CreationTimestamp:F}", true); } catch { em.AddField("Joined", "unknown", true); }
         try { em.AddField("Joined", $"{e.Guild.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
-        em.AddField("Members", e.Guild.MemberCount.ToString(), true);
+        em.AddField("Members", $"{e.Guild.MemberCount - 1}", true); // -1 to exclude the bot
         em.AddField("Description", e.Guild.Description ?? "None");
         em.AddField("Owner", $"{e.Guild.Owner.Username} ({e.Guild.Owner.Id})");
         em.WithThumbnail(e.Guild!.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
@@ -65,7 +70,8 @@ public class OnBotJoinOrLeave : EventModule {
             return;
         }
 
-        if (Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Guild.Id) is null) {
+        var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Guild.Id);
+        if (guildSettings is null) {
             var irlQuotes = new IrlQuotes {
                 Enabled = false,
                 ChannelId = 0,
@@ -79,12 +85,14 @@ public class OnBotJoinOrLeave : EventModule {
                 Replies = new List<Reply>(),
                 DailyPatChannelId = 0,
                 DailyPats = new List<DailyPat>(),
-                IrlQuotes = irlQuotes
+                IrlQuotes = irlQuotes,
+                DataDeletionTime = 0
             };
-        
+
             Config.Base.GuildSettings!.Add(guildParams);
-            Config.Save();
         }
+        else guildSettings.DataDeletionTime = 0;
+        Config.Save();
 
         try {
             await using var db = new Context();

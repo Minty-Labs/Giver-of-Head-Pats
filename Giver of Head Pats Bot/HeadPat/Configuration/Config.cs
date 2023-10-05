@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using DSharpPlus.Entities;
 using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Configuration; 
@@ -77,7 +76,8 @@ public static class Config {
             Replies = new List<Reply>(),
             DailyPatChannelId = 0,
             DailyPats = new List<DailyPat>(),
-            IrlQuotes = irlq
+            IrlQuotes = irlq,
+            DataDeletionTime = 0
         };
         
         var contributor = new BotContributor {

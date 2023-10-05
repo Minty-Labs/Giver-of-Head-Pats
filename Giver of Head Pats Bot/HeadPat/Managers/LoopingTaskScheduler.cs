@@ -62,6 +62,14 @@ public static class LoopingTaskScheduler {
             catch (Exception err) {
                 DSharpToConsole.SendErrorToLoggingChannel($"IRL Quotes:\n{err}");
             }
+            
+            // Data Deletion
+            try {
+                DataDeletionFinderLoop.FindDataDeletion(db, currentEpoch);
+            }
+            catch (Exception err) {
+                DSharpToConsole.SendErrorToLoggingChannel($"Data Deletion:\n{err}");
+            }
 
             Thread.Sleep(TimeSpan.FromMinutes(10));
         }

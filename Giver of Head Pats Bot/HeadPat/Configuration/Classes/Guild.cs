@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using HeadPats.Commands.Slash.Contributors;
 namespace HeadPats.Configuration.Classes;
 
 public class GuildParams {
@@ -10,4 +9,5 @@ public class GuildParams {
     public ulong DailyPatChannelId { get; set; }
     public List<DailyPat>? DailyPats { get; set; }
     [JsonPropertyName("IRL Quotes")] public IrlQuotes IrlQuotes { get; set; }
+    [JsonPropertyName("Data Deletion Time")] public long DataDeletionTime { get; set; }
 }

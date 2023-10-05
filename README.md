@@ -200,6 +200,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
             <li>SetAPIKey</li>
             <li>ListNameReplacements</li>
             <li>RotatingStatus</li>
+            <li>CleanGuildsFromConfig</li>
         </ul>
     </li>
     <li>User Control
