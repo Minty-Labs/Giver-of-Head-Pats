@@ -1,6 +1,6 @@
 <h2>Giver of Head Pats Privacy Policy</h2>
 <div style="text-align: right">
-  <p>Updated: 7 May 2023</p>
+  <p>Updated: 5 October 2023</p>
 </div>
 <div>
   <p>
@@ -49,6 +49,11 @@
     [1] This information is used to show a "server/guild-only" head pat leaderboard. The information is only shown when a user run that leaderboard command. The information shown will only contain users in the guild that command was ran in, as well as if a member was ever given a head pat.<br>
     [2] This information is needed to determine what data needs to be called for the necessary action(s). 
   </p>
+  <h2>Data Deletion</h2>
+  <p>
+    - Upon the bot leaving a guild, all guild data will be removed 28 days later. If the bot rejoins the guild, that timer will be reset.<br>
+    - User data can be requested to be removed upon request. The user must contact the bot developer [below] if the user wants their data removed. The user must provide proof of that account ownership.
+  </p>
   <h2>Changes to our Privacy Policy</h2>
   <p>
     It is our policy to post any changes we make to our privacy policy on this page. If we make material changes to how we treat our users’ personal information, we will notify you through a notice on the website bot page. The date the
@@ -60,7 +65,7 @@
   </p>
 
   <ul>
-    <li><a href="mailto:admin@mintlily.lgbt?subject=GoHP%20Privacy%20Policy%20Contact%20Info%20Clicked">Email</a></li>
+    <li><a href="mailto:contact@mintylabs.dev?subject=GoHP%20Privacy%20Policy%20Contact%20Info%20Clicked">Email</a></li>
     <li>
       Discord
       <ul>
@@ -69,7 +74,4 @@
       </ul>
     </li>
   </ul>
-
-  <h2>Legend</h2>
-  <p><b>~a</b> - As per <a href="https://discord.com/blog/usernames" target="_blank">Discord&#39;s Username Changes Blogpost</a>, the discriminator will not be tracked or logged, once this update becomes live.</p>
 </div>
