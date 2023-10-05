@@ -80,7 +80,8 @@ public static class DSharpToConsole {
         var finalMessage = (messageToString!.Length > 2000 ? messageToString[..1990] + "..." : messageToString) ?? "Error, no message could be displayed. This should not happen.";
         // var forceSendNormalMessage = false;
         
-        if (finalMessage.Contains("Unauthorized: 403") && finalMessage.Contains("DiscordApiClient"))
+        if ((finalMessage.Contains("Unauthorized: 403") && finalMessage.Contains("DiscordApiClient")) || 
+            (finalMessage.Contains("Slash Command dailypat,") && finalMessage.Contains("SlashCommandsExtension.RunPreexecutionChecksAsync")))
             return null; // Break if contains
         // if (finalMessage.Contains("Bad request: 400") && finalMessage.Contains("CreateWebhookAsync"))
         //     forceSendNormalMessage = true;

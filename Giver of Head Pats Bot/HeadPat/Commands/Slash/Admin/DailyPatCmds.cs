@@ -62,6 +62,11 @@ public class DailyPatCmds : ApplicationCommandModule {
                 return;
             }
 
+            if (user is DiscordRole) {
+                await c.CreateResponseAsync("You cannot set a daily pat to a role; it must be a DiscordMember", ephemeral: true);
+                return;
+            }
+
             var member = (DiscordMember)user;
         
             var dailyPat = new DailyPat {
