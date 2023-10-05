@@ -19,7 +19,8 @@ public class VeryBasic : ApplicationCommandModule {
                                               "Open-Source: https://github.com/Minty-Labs/Giver-of-Head-Pats \n" +
                                               $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
                                               $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
-                                              "Privacy Policy: [Link](https://mintylabs.dev/gohp/privacy-policy)");
+                                              "Privacy Policy: [Link](https://mintylabs.dev/gohp/privacy-policy) \n" +
+                                              "Terms of Service: [Link](https://mintylabs.dev/gohp/terms) \n");
         e.WithTimestamp(DateTime.Now);
         var u = await c.Client.GetUserAsync(Vars.ClientId, true);
         e.WithThumbnail(u.AvatarUrl);
