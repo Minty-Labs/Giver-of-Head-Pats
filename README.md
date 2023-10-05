@@ -30,7 +30,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v5.0.0-01766 (Nightly)</b>
+    <li>DSharpPlus <b>v5.0.0-01815 (Nightly)</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
