@@ -78,12 +78,13 @@ public class MessageCreated : EventModule {
         var m = e.Message;
         DiscordMember? member = null;
         try {
-            foreach (var g in sender.Guilds.Values) {
+            /*foreach (var g in sender.Guilds.Values) {
                 foreach (var u in await g.GetAllMembersAsync()) {
                     if (u.Id != originalAuthorId) continue;
                     member = u;
                 }
-            }
+            }*/
+            member = await e.Guild.GetMemberAsync(originalAuthorId);
         }
         catch {
             await e.Channel.SendMessageAsync("I cannot send a message to this user, I do not share a guild with them.");
@@ -93,7 +94,7 @@ public class MessageCreated : EventModule {
         var channel = await member!.CreateDmChannelAsync();
 
         try {
-            await sender.SendMessageAsync(channel, m?.Content);
+            if (m?.Content != null) await sender.SendMessageAsync(channel, m.Content);
         }
         catch {
             // Respond if DMs are closed
