@@ -30,7 +30,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v5.0.0-01815 (Nightly)</b>
+    <li>DSharpPlus <b>v5.0.0-01839 (Nightly)</b>
         <ul>
             <li>Base</li>
             <li>CommandsNext</li>
@@ -40,8 +40,8 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         </ul>
     </li>
     <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.0-prerelease.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.11</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.11</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.12</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.12</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
     <li>Serilog by <b>v3.0.1</b>
         <ul>
