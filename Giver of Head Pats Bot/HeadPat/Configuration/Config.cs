@@ -3,10 +3,13 @@ using HeadPats.Configuration.Classes;
 
 namespace HeadPats.Configuration; 
 
-public static class Config {
+public static class Config {// : BasicModule {
+    // protected override string ModuleName => "Configuration";
+    // protected override string ModuleDescription => "Handles the configuration of the bot.";
+    
     public static Base Base { get; internal set; } = Load();
 
-    public static void CreateFile() {
+    private static /*public override*/ void Initialize() {
         if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
         
         var rotatingStatus = new RotatingStatus {
@@ -43,7 +46,7 @@ public static class Config {
             Enabled = false,
             GuildId = 0,
             ChannelId = 0,
-            WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "www.youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
+            WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "www.youtube.com", "music.youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
             WhitelistedFileExtensions = new List<string> { "mp3", "flac", "wav", "ogg", "m4a", "alac", "aac", "aiff", "wma" },
             UrlErrorResponseMessage = "This URL is not whitelisted.",
             FileErrorResponseMessage = "This file type is not whitelisted."
@@ -122,7 +125,7 @@ public static class Config {
     }
     
     private static Base Load() {
-        CreateFile();
+        Initialize();
         return JsonSerializer.Deserialize<Base>(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) ?? throw new Exception();
     }
     

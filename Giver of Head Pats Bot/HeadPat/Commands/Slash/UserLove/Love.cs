@@ -73,12 +73,12 @@ public class LoveCommands : ApplicationCommandModule {
                  return;
              }
              
-             var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId);
-
-             if (isRoleBlackListed) {
-                 await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
-                 return;
-             }
+             // var isRoleBlackListed = c.Member!.Roles.Any(x => x.Id == checkGuild!.HeadPatBlacklistedRoleId);
+             //
+             // if (isRoleBlackListed) {
+             //     await c.CreateResponseAsync("This role is not allowed to use this command. This was set by a server administrator.", true);
+             //     return;
+             // }
              
              if (user.Id == c.User.Id) {
                  await c.CreateResponseAsync("You cannot give yourself headpats.", true);

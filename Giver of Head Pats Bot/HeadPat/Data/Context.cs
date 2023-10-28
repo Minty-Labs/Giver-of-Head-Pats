@@ -4,7 +4,7 @@ using HeadPats.Handlers;
 
 namespace HeadPats.Data;
 
-public class Context : DbContext {
+public sealed class Context : DbContext {
     public Context() => Database.EnsureCreated();
     
     public DbSet<Users> Users { get; set; }

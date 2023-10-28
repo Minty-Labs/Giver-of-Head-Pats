@@ -3,9 +3,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
 using HeadPats.Configuration;
-using HeadPats.Data;
 using HeadPats.Handlers.CommandAttributes;
 using HeadPats.Utils;
 

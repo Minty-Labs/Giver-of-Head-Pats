@@ -5,6 +5,7 @@ using HeadPats.Configuration;
 using HeadPats.Handlers;
 using HeadPats.Configuration.Classes;
 using HeadPats.Data;
+using HeadPats.Managers.Loops;
 
 namespace HeadPats.Commands.Legacy.Owner; 
 
@@ -248,6 +249,28 @@ public class ConfigControl : BaseCommandModule {
         }
 
         await c.RespondAsync(sb.ToString());
+    }
+    
+    [Command("RemovePatChannelFromNullGuilds"), Description("Removes pats from guilds that no longer exist"), RequireOwner]
+    public async Task RemovePatsFromNullGuilds(CommandContext c, string channelId = "") {
+        if (string.IsNullOrWhiteSpace(channelId)) {
+            await c.RespondAsync("Please provide a guild ID to remove pats from.");
+            return;
+        }
+
+        if (DailyPatLoop.FailedPatChannels.Count == 0) {
+            await c.RespondAsync("There are no failed pat channels to remove.");
+            return;
+        }
+        
+        var configGuilds = Config.Base.GuildSettings!;
+        var sb = new StringBuilder();
+        foreach (var guild in DailyPatLoop.FailedPatChannels.Select(channel => configGuilds.First(g => g.DailyPatChannelId == channel))) {
+            guild.DailyPatChannelId = 0;
+            sb.AppendLine($"Removed {guild.GuildName} ({guild.GuildId}) from the config.");
+        }
+        await c.RespondAsync(sb.ToString());
+        Config.Save();
     }
     
 }

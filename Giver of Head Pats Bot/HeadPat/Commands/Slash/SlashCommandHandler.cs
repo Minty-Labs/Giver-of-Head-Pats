@@ -1,5 +1,7 @@
 ﻿using DSharpPlus.SlashCommands;
 using HeadPats.Commands.Slash.Basic;
+using HeadPats.Commands.Slash.Commission.Banger;
+using HeadPats.Commands.Slash.Commission.PersonalizedMembers;
 using HeadPats.Commands.Slash.Reply;
 using HeadPats.Commands.Slash.UserLove;
 using Serilog;
@@ -7,7 +9,7 @@ using Serilog;
 namespace HeadPats.Commands.Slash; 
 
 public static class SlashCommandHandler {
-    public static void Register(SlashCommandsExtension s) {
+    public static void RegisterSlashCommands(SlashCommandsExtension s) {
         // s.RegisterCommands<HeadPats.Commands.Slash.Admin.Admin>();
         // Log.Information("[Commands.Slash.Admin] Admin Registered");
         s.RegisterCommands<Admin.DailyPatCmds>();
@@ -29,5 +31,9 @@ public static class SlashCommandHandler {
         Log.Information("[Commands.Slash] Leaderboards Registered");
         s.RegisterCommands<LoveCommands>();
         Log.Information("[Commands.Slash] LoveCommands Registered");
+        // s.RegisterCommands<BangerClass.Banger>();
+        // Log.Information("[Commands.Slash] Banger Registered");
+        // s.RegisterCommands<Personalization.PersonalizedMembers>();
+        // Log.Information("[Commands.Slash] PersonalizedMembers Registered");
     }
 }

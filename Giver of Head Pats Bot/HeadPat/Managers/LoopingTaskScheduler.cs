@@ -1,10 +1,14 @@
 ﻿using HeadPats.Data;
 using HeadPats.Managers.Loops;
+using HeadPats.Modules;
 
 namespace HeadPats.Managers; 
 
-public static class LoopingTaskScheduler {
-    public static void StartLoop() {
+public class LoopingTaskScheduler : BasicModule {
+    protected override string ModuleName => "Looping Task Scheduler";
+    protected override string ModuleDescription => "Runs looping tasks";
+
+    public override void Initialize() {
         DailyPatLoop.DailyPatted = new Dictionary<ulong, bool>();
         // DailyPatLoop.PreviousPatUrl = new Dictionary<ulong, string>();
         new Thread(Loop).Start();
@@ -17,6 +21,7 @@ public static class LoopingTaskScheduler {
         while (true) {
             await using var db = new Context();
             var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            Thread.Sleep(TimeSpan.FromSeconds(30));
             
             // Status
             try {

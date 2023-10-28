@@ -1,10 +1,14 @@
 using HarmonyLib;
+using HeadPats.Modules;
 using Serilog;
 
 namespace HeadPats.Managers;
 
-public class MobileManager { // Thanks Dubya
-    public static void CreateMobilePatch() {
+public static class MobileManager/* : BasicModule*/ { // Thanks Dubya
+    // protected override string ModuleName => "MobileManager";
+    // protected override string ModuleDescription => "Patches the client to be mobile";
+    
+    public /*override*/ static void Initialize() {
         try {
             Log.Debug("Attempting to patch Client as mobile");
             var harmony = new Harmony("mobilePatch"); 

@@ -7,14 +7,14 @@ using Serilog;
 namespace HeadPats.Commands.Legacy; 
 
 public static class LegacyCommandHandler {
-    public static void Register(CommandsNextExtension c) {
+    public static void RegisterLegacyCommands(CommandsNextExtension c) {
         c.RegisterCommands<HeadPats.Commands.Legacy.Admin.Admin>();
         Log.Information("[Commands.Legacy] Admin Registered");
         
         c.RegisterCommands<Information>();
         Log.Information("[Commands.Legacy] Information Registered");
-        c.RegisterCommands<Salad>();
-        Log.Information("[Commands.Legacy] Salad Registered");
+        // c.RegisterCommands<Salad>();
+        // Log.Information("[Commands.Legacy] Salad Registered");
         // c.RegisterCommands<FunnyCommands>();
         // Log.Information("[Commands.Legacy] NSFW Registered");
         

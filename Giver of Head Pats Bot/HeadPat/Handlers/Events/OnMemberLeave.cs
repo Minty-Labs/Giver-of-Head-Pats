@@ -17,11 +17,16 @@ public class OnMemberLeave : EventModule {
     private static Task OnGuildMemberRemoved(DiscordClient sender, GuildMemberRemoveEventArgs args) {
         var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == args.Guild.Id);
         if (guildSettings is not null && guildSettings.DailyPatChannelId == 0) return Task.CompletedTask;
-        var pattedUser = guildSettings!.DailyPats!.FirstOrDefault(x => x.UserId == args.Member.Id);
-        if (pattedUser is null) return Task.CompletedTask;
-        guildSettings.DailyPats!.Remove(pattedUser);
-        Config.Save();
-        Log.Information("Removed {User} from the daily pats list for {GuildName} ({GuildId}), because they left the guild.", args.Member.Id, args.Guild.Name, args.Guild.Id);
+        try {
+            var pattedUser = guildSettings!.DailyPats!.FirstOrDefault(x => x.UserId == args.Member.Id);
+            if (pattedUser == null) return Task.CompletedTask;
+            guildSettings.DailyPats!.Remove(pattedUser);
+            Config.Save();
+            Log.Information("Removed {User} from the daily pats list for {GuildName} ({GuildId}), because they left the guild.", args.Member.Id, args.Guild.Name, args.Guild.Id);
+        }
+        catch {
+            // ignored
+        }
         return Task.CompletedTask;
     }
 }

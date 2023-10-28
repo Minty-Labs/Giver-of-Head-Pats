@@ -37,10 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Modules" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\..\Media\HeadPat.ico">
       <Link>HeadPat.ico</Link>
     </None>

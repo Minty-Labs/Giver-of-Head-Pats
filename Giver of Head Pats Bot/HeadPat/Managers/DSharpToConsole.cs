@@ -1,13 +1,17 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using HeadPats.Modules;
 using HeadPats.Utils;
 using Serilog;
 
 namespace HeadPats.Managers; 
 
-public static class DSharpToConsole {
-    public static void ReplaceDSharpLogs(DiscordClient client) {
+public class DSharpToConsole : BasicModule {
+    protected override string ModuleName => "DSharpToConsole";
+    protected override string ModuleDescription => "Replaces DSharpPlus logs with Serilog";
+    
+    public override void InitializeClient(DiscordClient client) {
         client.ClientErrored += DiscordOnClientErrored;
         client.SocketErrored += OnSocketErrored;
         // client.Heartbeated += OnHeartbeated;
@@ -81,7 +85,9 @@ public static class DSharpToConsole {
         // var forceSendNormalMessage = false;
         
         if ((finalMessage.Contains("Unauthorized: 403") && finalMessage.Contains("DiscordApiClient")) || 
-            (finalMessage.Contains("Slash Command dailypat,") && finalMessage.Contains("SlashCommandsExtension.RunPreexecutionChecksAsync")))
+            (finalMessage.Contains("Slash Command dailypat,") && finalMessage.Contains("SlashCommandsExtension.RunPreexecutionChecksAsync")) ||
+            (finalMessage.Contains("banger") && finalMessage.Contains("BadRequest") && finalMessage.Contains("ExecuteRequestAsync") && finalMessage.Contains("TRequest")) ||
+            (finalMessage.Contains("personalization") && finalMessage.Contains("BadRequest") && finalMessage.Contains("ExecuteRequestAsync") && finalMessage.Contains("TRequest")))
             return null; // Break if contains
         // if (finalMessage.Contains("Bad request: 400") && finalMessage.Contains("CreateWebhookAsync"))
         //     forceSendNormalMessage = true;

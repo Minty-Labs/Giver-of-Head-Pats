@@ -9,7 +9,6 @@ namespace HeadPats.Commands.Slash.Basic;
 
 public class Color : ApplicationCommandModule {
     private const string BaseUrl = "https://c.devminer.xyz/256/256";
-    
 
     [SlashCommand("Color", "Shows you the color from the given input"), Cooldown(50, 3600, CooldownBucketType.Guild)]
     public async Task GiveColor(InteractionContext c,

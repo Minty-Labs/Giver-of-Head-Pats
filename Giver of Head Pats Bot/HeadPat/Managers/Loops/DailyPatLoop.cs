@@ -9,9 +9,11 @@ namespace HeadPats.Managers.Loops;
 
 public static class DailyPatLoop {
     public static Dictionary<ulong, bool> DailyPatted = new ();
+    public static List<ulong> FailedPatChannels = new ();
     // public static Dictionary<ulong, string> PreviousPatUrl;
 
     public static async Task DoDailyPat(Context db, long currentEpoch) {
+        if (Vars.IsDebug) return;
         var configGuildSettings = Config.Base.GuildSettings;
         if (configGuildSettings is null) return;
         
@@ -29,6 +31,7 @@ public static class DailyPatLoop {
             // var channel = await Program.Client!.GetChannelAsync(guild.DailyPatChannelId);
             discordGuild.Channels.TryGetValue(guild.DailyPatChannelId, out var channel);
             if (channel is null) {
+                FailedPatChannels.Add(guild.DailyPatChannelId);
                 Log.Debug("Target pat channel {chanId} not found, skipping", guild.DailyPatChannelId);
                 continue;
             }
@@ -43,7 +46,8 @@ public static class DailyPatLoop {
                     continue;
                 
                 Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
-                discordGuild.Members.TryGetValue(user.UserId, out var guildUser);
+                var guildUser = await discordGuild.GetMemberAsync(user.UserId);
+                // discordGuild.Members.TryGetValue(user.UserId, out var guildUser);
                 if (guildUser is null) {
                     Log.Debug("User not found in guild, skipping");
                     continue;

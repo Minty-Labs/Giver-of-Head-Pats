@@ -1,4 +1,4 @@
-﻿using DSharpPlus;
+﻿/*using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
@@ -45,7 +45,7 @@ public class Salad : BaseCommandModule {
         var http = new HttpClient();
         var dlContent = await http.GetStringAsync(url);
         UnsplashApiJson.DownloadImageMethod(dlContent);
-        http.Dispose();*/
+        http.Dispose();#1#
 
         var saladEmbed = new DiscordEmbedBuilder {
             Title = "I got you a salad!",
@@ -93,7 +93,7 @@ public class Salad : BaseCommandModule {
             await message.ModifyAsync(newBuilder);
             await Task.Delay(900);
         }
-        else if (args.Result.Id == "like_image" && !likedOnce/* && isOriginalCmdAuthor*/) {
+        else if (args.Result.Id == "like_image" && !likedOnce/* && isOriginalCmdAuthor#1#) {
             likedOnce = true;
             var liked = UnsplashApiJson.LikeImage(imageId);
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -112,9 +112,9 @@ public class Salad : BaseCommandModule {
             await Task.Delay(900);
         }
         else {
-            await c.RespondAsync("Image was already liked."/*"Only the original command author can like the image."*/).DeleteAfter(10);
+            await c.RespondAsync("Image was already liked."/*"Only the original command author can like the image."#1#).DeleteAfter(10);
             goto start;
         }
         await Task.Delay(450);
     }
-}
+}*/

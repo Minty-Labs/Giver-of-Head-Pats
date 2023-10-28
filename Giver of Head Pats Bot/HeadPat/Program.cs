@@ -31,6 +31,10 @@ public sealed class Program {
     public static CookieClient? CookieClient { get; set; }
     
     private static List<EventModule> _eventModules = new();
+    private static List<BasicModule> _basicModules = new();
+    
+    internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
+    public static bool FirstTimeRun;
     
     private static void Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
@@ -51,70 +55,86 @@ public sealed class Program {
     }
 
     private async Task MainAsync() {
+        var configNeedsSaving = false;
+        var tempToken = string.Empty;
         if (Vars.IsWindows && string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
             Console.Title = $"{Vars.Name} | Enter your bot token";
             Log.Information("Please enter your bot token:");
-            Config.Base.BotToken = Console.ReadLine()!.Trim();
+            tempToken = Console.ReadLine()!.Trim();
+            configNeedsSaving = true;
         }
         else if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
             Log.Error("Cannot proceed without a bot token. Please enter your bot token in the Configuration.json file.");
             await Log.CloseAndFlushAsync();
             Environment.Exit(0);
         }
-        Config.Save();
         
         if (Vars.IsWindows)
             Console.Title = $"{Vars.Name} | Loading...";
         
-        if (!Vars.IsDebug)
-            MobileManager.CreateMobilePatch();
+        _basicModules.Add(new DSharpToConsole());
+        // _basicModules.Add(new Config());
+        _basicModules.Add(new LoopingTaskScheduler());
+        if (!Vars.IsDebug) {
+            // _basicModules.Add(new MobileManager());
+            MobileManager.Initialize();
+        }
 
         Client = new DiscordClient(new DiscordConfiguration {
             MessageCacheSize = 100,
             MinimumLogLevel = Vars.IsDebug || Vars.IsWindows ? LogLevel.Debug : LogLevel.None,
             Token = Config.Base.BotToken,
             TokenType = TokenType.Bot,
-            Intents = DiscordIntents.All,
+            Intents = DiscordIntents.Guilds,// | DiscordIntents.MessageContents | DiscordIntents.DirectMessages,
             AutoReconnect = true
         });
         
-        DSharpToConsole.ReplaceDSharpLogs(Client);
+        if (configNeedsSaving) {
+            Config.Base.BotToken = tempToken;
+            Config.Save();
+        }
 
         var serviceCollection = new ServiceCollection();
 
         var commandsNextConfiguration = new CommandsNextConfiguration {
-            StringPrefixes = Vars.IsDebug ? new [] { ".." } : new[] { Config.Base.Prefix.ToLower(), Config.Base.Prefix },
-            EnableDefaultHelp = true
+            // StringPrefixes = Vars.IsDebug ? new [] { ".." } : new[] { Config.Base.Prefix.ToLower(), Config.Base.Prefix },
+            EnableMentionPrefix = true,
+            EnableDefaultHelp = false
         };
 
         Commands = Client.UseCommandsNext(commandsNextConfiguration);
         Slash = Client.UseSlashCommands();
         
-        Commands.SetHelpFormatter<HelpFormatter>();
+        // Commands.SetHelpFormatter<HelpFormatter>();
+
+        foreach (var module in _basicModules) {
+            module.Initialize();
+            module.InitializeClient(Client);
+        }
+        
+        GeneralLogChannel = await Client.GetChannelAsync(Config.Base.BotLogsChannel);
+        ErrorLogChannel =   await Client.GetChannelAsync(Config.Base.ErrorLogsChannel);
         
         #region Legacy Commands
         
-        LegacyCommandHandler.Register(Commands);
-        Commands.CommandExecuted += (sender, args) => {
-            Log.Information($"Command {args.Command.Name}, executed by {args.Context.User.Username}, " +
-                            $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name}");
-            return Task.CompletedTask;
-        };
-        Commands.CommandErrored += (sender, args) => {
-            // if (args.Context.Message.Content.StartsWith('-'))
-            //     return Task.CompletedTask;
-            
-            Log.Information($"Command {(args.Command != null ? args.Command.Name : "Unknown Command")}, executed by {args.Context.User.Username}, " +
-                            $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}");
-            return Task.CompletedTask;
-        };
+        // LegacyCommandHandler.RegisterLegacyCommands(Commands);
+        // Commands.CommandExecuted += (sender, args) => {
+        //     Log.Information($"Command {args.Command.Name}, executed by {args.Context.User.Username}, " +
+        //                     $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name}");
+        //     return Task.CompletedTask;
+        // };
+        // Commands.CommandErrored += (sender, args) => {
+        //     Log.Information($"Command {(args.Command != null ? args.Command.Name : "Unknown Command")}, executed by {args.Context.User.Username}, " +
+        //                     $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name} failed with\n{args.Exception.Message}");
+        //     return Task.CompletedTask;
+        // };
         
         #endregion
 
         #region Slash Commands
-
-        SlashCommandHandler.Register(Slash);
-        ContextMenuHandler.Register(Slash);
+        
+        SlashCommandHandler.RegisterSlashCommands(Slash);
+        ContextMenuHandler.RegisterSlashCommands(Slash);
         Slash.SlashCommandExecuted += (sender, args) => {
             Log.Information($"Slash Command {args.Context.CommandName}, executed by {args.Context.User.Username}, " +
                             $"in #{args.Context.Channel.Name}, in the guild {args.Context.Guild.Name}");
@@ -164,26 +184,23 @@ public sealed class Program {
             Timeout = TimeSpan.FromMinutes(2)
         });
         
-        Config.CreateFile();
         await Client.ConnectAsync();
         await Task.Delay(-1);
     }
-    
-    internal static DiscordChannel? GeneralLogChannel, ErrorLogChannel;
 
     private static async Task SessionCreated(DiscordClient sender, DSharpPlus.EventArgs.SessionReadyEventArgs e) {
         Vars.StartTime = DateTime.Now;
         Vars.ThisProcess = Process.GetCurrentProcess();
-        Log.Debug("Bot Version                    = " + Vars.Version);
-        Log.Debug("Process ID                     = " + Vars.ThisProcess.Id);
-        Log.Debug("Build Date                     = " + Vars.BuildDate);
-        Log.Debug("Current OS                     = " + (Vars.IsWindows ? "Windows" : "Linux"));
-        Log.Debug("Token                          = " + Config.Base.BotToken!.Redact());
-        Log.Debug("Prefix (non-Slash)             = " + $"{Config.Base.Prefix}");
-        Log.Debug("ActivityType                   = " + $"{Config.Base.ActivityType}");
-        Log.Debug("Game                           = " + $"{Config.Base.ActivityText}");
-        Log.Debug("Online Status                  = " + $"{Config.Base.UserStatus}");
-        Log.Debug("Number of Commands (non-Slash) = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count}");
+        Log.Debug("Bot Version        = " + Vars.Version);
+        Log.Debug("Process ID         = " + Vars.ThisProcess.Id);
+        Log.Debug("Build Date         = " + Vars.BuildDate);
+        Log.Debug("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
+        Log.Debug("Token              = " + Config.Base.BotToken!.Redact());
+        Log.Debug("Legacy Prefix      = " + $"{Config.Base.Prefix}");
+        Log.Debug("ActivityType       = " + $"{Config.Base.ActivityType}");
+        Log.Debug("Game               = " + $"{Config.Base.ActivityText}");
+        Log.Debug("Online Status      = " + $"{Config.Base.UserStatus}");
+        Log.Debug("Number of Commands = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count} (:salute: thanks Discord)");
 
         if (Vars.IsWindows) {
             var temp1 = Config.Base.ActivityText!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.ActivityText!);
@@ -210,16 +227,14 @@ public sealed class Program {
             .AddField("DSharpPlus Version", Vars.DSharpVer)
             .Build();
         
-        GeneralLogChannel =         await sender.GetChannelAsync(Config.Base.BotLogsChannel);
-        ErrorLogChannel =           await sender.GetChannelAsync(Config.Base.ErrorLogsChannel);
         if (_eventModules.Count != 0) {
             foreach (var module in _eventModules) {
                 await module.OnSessionCreatedTask();
                 module.OnSessionCreated();
             }
         }
-        else await sender.SendMessageAsync(ErrorLogChannel, "No Event Modules were found or loaded!!");
-        LoopingTaskScheduler.StartLoop();
+        else await DSharpToConsole.SendErrorToLoggingChannelAsync("No Event Modules were found or loaded!!");
+        FirstTimeRun = true;
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
     }
