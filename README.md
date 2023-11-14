@@ -13,9 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.10.4&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.11.1&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=17%20October%202023&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=13%20November%202023&color=389980&style=for-the-badge" />
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
     <br><br>
@@ -43,9 +43,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     <li>Microsoft.EntityFrameworkCore <b>v7.0.12</b></li>
     <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.12</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
-    <li>Serilog by <b>v3.0.1</b>
+    <li>Serilog by <b>v3.1.1</b>
         <ul>
-            <li>Serilog.Sinks.Console <b>v4.1.0</b></li>
+            <li>Serilog.Sinks.Console <b>v5.0.0</b></li>
             <li>Serilog.Sinks.File <b>v5.0.0</b></li>
         </ul>
     </li>
@@ -165,7 +165,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     <li>Pat</li>
 </ul>
 
-<h2>Legacy Commands</h2>
+<h2>Legacy Commands (REMOVED Commands)</h2>
 <h3>Basic</h3>
 <ul>
     <li>Information
@@ -210,7 +210,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     </li>
 </ul>
 
-<h2>Commissioned Section</h2>
+<h2>Commissioned Section (REMOVED Commands)</h2>
 <h3>Banger</h3>
 <p>These <i>(legacy)</i> commands only work in the commissioner's Discord server.</p>
 <ul>
