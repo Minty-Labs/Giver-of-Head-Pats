@@ -222,8 +222,8 @@ public sealed class Program {
             },
             Timestamp = DateTime.Now
         }
-            .AddField("Build Time", $"{Vars.BuildTime:F}\n<t:{Vars.BuildTime.GetSecondsFromUnixTime()}:R>")
-            .AddField("Start Time", $"{DateTime.Now:F}\n<t:{DateTime.Now.GetSecondsFromUnixTime()}:R>")
+            .AddField("Build Time", $"<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:F>\n<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:R>")
+            .AddField("Start Time", $"<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:F>\n<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:R>")
             .AddField("DSharpPlus Version", Vars.DSharpVer)
             .Build();
         

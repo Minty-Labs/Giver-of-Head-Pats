@@ -108,7 +108,7 @@ public static class UserInfoExt {
             Color = Colors.HexToColor("F771A3")
         }
             .AddField("Created", $"{tempMember.CreationTimestamp:F}", true)
-            .AddField("Joined", $"{tempMember.JoinedAt:F} (<t:{tempMember.JoinedAt.GetSecondsFromUnixTime()}:R>)", true);
+            .AddField("Joined", $"{tempMember.JoinedAt:F} (<t:{tempMember.JoinedAt.UtcDateTime.GetSecondsFromUnixTime()}:R>)", true);
 
         var sb = new StringBuilder();
         foreach (var r in tempMember.Roles)
