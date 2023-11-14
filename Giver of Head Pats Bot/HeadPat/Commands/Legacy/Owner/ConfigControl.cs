@@ -251,7 +251,7 @@ public class ConfigControl : BaseCommandModule {
         await c.RespondAsync(sb.ToString());
     }
     
-    [Command("RemovePatChannelFromNullGuilds"), Description("Removes pats from guilds that no longer exist"), RequireOwner]
+    /*[Command("RemovePatChannelFromNullGuilds"), Description("Removes pats from guilds that no longer exist"), RequireOwner]
     public async Task RemovePatsFromNullGuilds(CommandContext c, string channelId = "") {
         if (string.IsNullOrWhiteSpace(channelId)) {
             await c.RespondAsync("Please provide a guild ID to remove pats from.");
@@ -271,6 +271,6 @@ public class ConfigControl : BaseCommandModule {
         }
         await c.RespondAsync(sb.ToString());
         Config.Save();
-    }
+    }*/
     
 }

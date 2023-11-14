@@ -115,7 +115,6 @@ public class Personalization : ApplicationCommandModule {
         
         [SlashCommand("createrole", "Creates a role for you"), SlashBangerCommand(false)]
         public async Task CreateRole(InteractionContext ctx, 
-            [Option("RoleName", "Name of the role to create", true)] string roleName,
             [Option("Color", "Color of the role to create", true)] string colorHex) {
             var personalData = Config.PersonalizedMember(ctx.Guild.Id);
             if (!personalData.Enabled) {
