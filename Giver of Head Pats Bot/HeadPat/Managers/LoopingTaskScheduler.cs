@@ -32,14 +32,14 @@ public class LoopingTaskScheduler : BasicModule {
             }
             
             // Daily Pats
-            try {
-                await DailyPatLoop.DoDailyPat(db, currentEpoch);
-            }
-            catch (Exception err) {
-                if (_numberOfErrored >= 5) return;
-                await DSharpToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
-                _numberOfErrored++;
-            }
+            // try {
+            //     await DailyPatLoop.DoDailyPat(db, currentEpoch);
+            // }
+            // catch (Exception err) {
+            //     if (_numberOfErrored >= 5) return;
+            //     await DSharpToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
+            //     _numberOfErrored++;
+            // }
             
             // Rotating Status
             try {

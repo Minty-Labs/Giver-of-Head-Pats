@@ -9,10 +9,11 @@ namespace HeadPats.Managers.Loops;
 
 public static class DailyPatLoop {
     public static Dictionary<ulong, bool> DailyPatted = new ();
-    public static List<ulong> FailedPatChannels = new ();
+    // public static List<ulong> FailedPatChannels = new ();
     // public static Dictionary<ulong, string> PreviousPatUrl;
 
     public static async Task DoDailyPat(Context db, long currentEpoch) {
+        return;
         if (Vars.IsDebug) return;
         var configGuildSettings = Config.Base.GuildSettings;
         if (configGuildSettings is null) return;
@@ -31,7 +32,7 @@ public static class DailyPatLoop {
             // var channel = await Program.Client!.GetChannelAsync(guild.DailyPatChannelId);
             discordGuild.Channels.TryGetValue(guild.DailyPatChannelId, out var channel);
             if (channel is null) {
-                FailedPatChannels.Add(guild.DailyPatChannelId);
+                // FailedPatChannels.Add(guild.DailyPatChannelId);
                 Log.Debug("Target pat channel {chanId} not found, skipping", guild.DailyPatChannelId);
                 continue;
             }
@@ -44,14 +45,24 @@ public static class DailyPatLoop {
             foreach (var user in guildSettings.DailyPats) {
                 if (user.SetEpochTime >= currentEpoch)
                     continue;
+
+                bool stepOneFail = false, stepTwoFail = false;
                 
                 Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
-                var guildUser = await discordGuild.GetMemberAsync(user.UserId);
-                // discordGuild.Members.TryGetValue(user.UserId, out var guildUser);
-                if (guildUser is null) {
+                await discordGuild.GetMemberAsync(user.UserId);
+                try {
+                    await discordGuild.GetMemberAsync(user.UserId);
+                }
+                catch {
+                    stepOneFail = true;
                     Log.Debug("User not found in guild, skipping");
                     continue;
                 }
+                // discordGuild.Members.TryGetValue(user.UserId, out var guildUser);
+                // if (guildUser is null) {
+                //     Log.Debug("User not found in guild, skipping");
+                //     continue;
+                // }
                 
                 var dbUser = db.Users.AsQueryable().ToList().FirstOrDefault(u => u.UserId.Equals(user.UserId))!;
                 if (DailyPatted.TryGetValue(dbUser.UserId, out var value) && value)
@@ -77,8 +88,23 @@ public static class DailyPatLoop {
                         Text = $"Powered by {(Vars.UseCookieApi ? "CookieAPI" : "Fluxpoint API")}"
                     }
                 }.Build();
+
+                try {
+                    await channel.SendMessageAsync(embed);
+                }
+                catch {
+                    stepTwoFail = true;
+                    Log.Debug("Failed to send message to channel, skipping");
+                    continue;
+                }
                 
-                await channel.SendMessageAsync(embed);
+                if (stepOneFail && stepTwoFail) {
+                    guildSettings.DailyPats.Remove(user);
+                    guildSettings.DailyPatChannelId = 0;
+                    Config.Save();
+                    Log.Debug("User and/or channel not found in target guild, removing from config");
+                    continue;
+                }
                 
                 UserControl.AddPatToUser(user.UserId, 1, false);
                 user.SetEpochTime += 86400;
