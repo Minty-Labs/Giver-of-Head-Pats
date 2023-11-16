@@ -8,7 +8,7 @@ public static class Vars {
     public const ulong ClientId = 489144212911030304;
     
     public const string Version = "2023.11.2" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
-    public static readonly DateTime BuildTime = IsDebug ? DateTime.Now : new(2023, 11, 15, 22, 10, 00); // (year, month, day, hour, min, sec)
+    public static readonly DateTime BuildTime = IsDebug ? DateTime.Now : new(2023, 11, 15, 23, 04, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
     public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime { get; set; }
