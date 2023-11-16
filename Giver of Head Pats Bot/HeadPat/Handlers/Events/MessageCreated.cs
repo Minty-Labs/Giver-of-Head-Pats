@@ -13,7 +13,7 @@ public class MessageCreated : EventModule {
     protected override string Description => "Handles the Bot DMs & Message Trigger events.";
     
     public override void Initialize(DiscordClient client) {
-        client.MessageCreated += GetAndMaybeRespondToTrigger;
+        // client.MessageCreated += GetAndMaybeRespondToTrigger;
         client.MessageCreated += GetUserBotDm;
         client.MessageCreated += RespondToDmFromChannel;
     }
@@ -102,34 +102,34 @@ public class MessageCreated : EventModule {
         }
     }
 
-    private static async Task GetAndMaybeRespondToTrigger(DiscordClient sender, MessageCreateEventArgs e) {
-        var contents = e.Message.Content;
-        if (e.Author.IsBot) return;
-
-        var guildSettings = Config.GuildSettings(e.Guild.Id);
-        
-        if (guildSettings is null)
-            return;
-        
-        foreach (var t in guildSettings.Replies!.Where(t => t.Trigger != null)) {
-            if (e.Channel.IsPrivate) return;
-
-            if (t.Trigger!.ToLower().Equals("salad") && e.Message.Content.Contains("hp!salad") && e.Guild.Id == 805663181170802719)
-                break; // for the Minty Labs salad command
-                
-            if (contents.Equals(t.Trigger) && t.OnlyTrigger) 
-                await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
-                
-            else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
-                await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
-                
-            else if (t.Trigger != null && contents.Equals(t.Trigger) && !t.OnlyTrigger && t.DeleteTriggerIfIsOnlyInMessage) {
-                await e.Message.DeleteAsync("Auto delete by bot response.");
-                await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
-            }
-
-            if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
-                await e.Message.DeleteAsync("Auto delete by bot response.");
-        }
-    }
+    // private static async Task GetAndMaybeRespondToTrigger(DiscordClient sender, MessageCreateEventArgs e) {
+    //     var contents = e.Message.Content;
+    //     if (e.Author.IsBot) return;
+    //
+    //     var guildSettings = Config.GuildSettings(e.Guild.Id);
+    //     
+    //     if (guildSettings is null)
+    //         return;
+    //     
+    //     foreach (var t in guildSettings.Replies!.Where(t => t.Trigger != null)) {
+    //         if (e.Channel.IsPrivate) return;
+    //
+    //         if (t.Trigger!.ToLower().Equals("salad") && e.Message.Content.Contains("hp!salad") && e.Guild.Id == 805663181170802719)
+    //             break; // for the Minty Labs salad command
+    //             
+    //         if (contents.Equals(t.Trigger) && t.OnlyTrigger) 
+    //             await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+    //             
+    //         else if (t.Trigger != null && contents.Contains(t.Trigger) && !t.OnlyTrigger) 
+    //             await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+    //             
+    //         else if (t.Trigger != null && contents.Equals(t.Trigger) && !t.OnlyTrigger && t.DeleteTriggerIfIsOnlyInMessage) {
+    //             await e.Message.DeleteAsync("Auto delete by bot response.");
+    //             await sender.SendMessageAsync(e.Channel, t.Response?.Replace("<br>", "\n"));
+    //         }
+    //
+    //         if (contents.Equals(t.Trigger?.ToLower()) && t.DeleteTrigger)
+    //             await e.Message.DeleteAsync("Auto delete by bot response.");
+    //     }
+    // }
 }
