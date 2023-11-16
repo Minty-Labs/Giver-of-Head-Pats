@@ -14,108 +14,12 @@ public class Personalization : ApplicationCommandModule {
     [SlashCommandGroup("Personalization", "Personalization commands", false), SlashBangerCommand(false)]
     public class PersonalizedMembers : ApplicationCommandModule {
         
-        #region Admin
-        
-        [SlashCommand("toggle", "(Admin) Toggles the Personalized Member system"), SlashBangerCommand(true)]
-        public async Task TogglePersonalizedMember(InteractionContext ctx, 
-            [Option("Enabled", "Enable or disable the Personalized Member system"),
-             Choice("true", "true"), Choice("false", "false")] string enabled) {
-            var result = enabled.ToLower().Contains('t');
-            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
-            personalData.Enabled = result;
-            Config.Save();
-            await ctx.CreateResponseAsync($"Personalized Roles are now {(result ? "enabled" : "disabled")}.");
-        }
-        
-        [SlashCommand("setchannel", "(Admin) Sets the channel where users can use the personalization commands"), SlashBangerCommand(true)]
-        public async Task SetPersonalizationChannel(InteractionContext ctx, 
-            [Option("Destination", "Destination Discord Channel (mention)", true)] DiscordChannel channel) {
-            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
-            personalData.ChannelId = channel.Id;
-            Config.Save();
-            await ctx.CreateResponseAsync($"Set the personalization channel to {channel.Mention}.");
-        }
-        
-        [SlashCommand("setdefaultrole", "(Admin) Sets the default role for users to be granted when they remove their personalized role"), SlashBangerCommand(true)]
-        public async Task SetDefaultRole(InteractionContext ctx, 
-            [Option("Role", "Role to set as default", true)] DiscordRole role) {
-            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
-            personalData.DefaultRoleId = role.Id;
-            Config.Save();
-            await ctx.CreateResponseAsync($"Set the default role to {role.Mention}.");
-        }
-        
-        [SlashCommand("setresettime", "(Admin) Sets the artificial cooldown for the role command"), SlashBangerCommand(true)]
-        public async Task SetResetTime(InteractionContext ctx, 
-            [Option("Time", "Time in seconds", true)] string time) {
-            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
-            personalData.ResetTimer = time.AsInt();
-            Config.Save();
-            await ctx.CreateResponseAsync($"Set the reset time to {time} seconds.");
-        }
-        
-        [SlashCommand("addroleto", "(Admin) Adds a personalized role to a user"), SlashBangerCommand(true)]
-        public async Task AddRoleTo(InteractionContext ctx, 
-            [Option("User", "Target user (mention)", true)] DiscordUser user,
-            [Option("Role", "Role to add (ID)", true)] string roleId) {
-            if (string.IsNullOrWhiteSpace(roleId)) {
-                await ctx.CreateResponseAsync("Please specify a role ID.", true);
-                return;
-            }
-            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
-            var ulongRoleId = ulong.Parse(roleId);
-            var role = ctx.Guild.GetRole(ulongRoleId);
-            if (role is null) {
-                await ctx.CreateResponseAsync("The role does not exist is guild.", true);
-                return;
-            }
-            if (personalData.Members!.Any(x => x.roleId == ulongRoleId)) {
-                await ctx.CreateResponseAsync("The role is already in the system, it cannot be one more than one person.");
-                return;
-            }
-            personalData.Members!.Add(new Member {
-                userId = user.Id,
-                roleId = ulongRoleId,
-                roleName = role.Name,
-                colorHex = role.Color.ToString().ValidateHexColor().ToLower(),
-                epochTime = 1002
-            });
-            Config.Save();
-            var discordMember = await ctx.Guild.GetMemberAsync(user.Id);
-            await ctx.CreateResponseAsync($"Added **{role.Name}** to the personalized system for **{discordMember.DisplayName}**.");
-        }
-        
-        [SlashCommand("removefrom", "(Admin) Removes a personalized role from a user"), SlashBangerCommand(true)]
-        public async Task RemoveFrom(InteractionContext ctx, 
-            [Option("User", "Target user (mention)", true)] DiscordUser user) {
-            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
-    
-            var memberData = personalData.Members!.FirstOrDefault(x => x.userId == user.Id);
-            if (memberData is null) {
-                await ctx.CreateResponseAsync("User data does not exist.", true);
-                return;
-            }
-            var memberRole = ctx.Guild.GetRole(memberData.roleId);
-            await memberRole.DeleteAsync(reason: "Personalized Member - Admin: " + ctx.User.Username);
-            personalData.Members!.Remove(memberData);
-            Config.Save();
-            var discordMember = await ctx.Guild.GetMemberAsync(user.Id);
-            if (personalData.DefaultRoleId != 0) {
-                var defaultRole = ctx.Guild.GetRole(personalData.DefaultRoleId);
-                await discordMember.GrantRoleAsync(defaultRole, "Personalized Member - Admin: " + ctx.User.Username);
-            }
-            await ctx.CreateResponseAsync($"Removed {discordMember.DisplayName}'s personalized role.");
-        }
-        
-        #endregion
-        
         #region Anyone
         
         private static bool _IsInChannel(BaseContext ctx, ulong guildId) => ctx.Channel.Id == Config.PersonalizedMember(guildId).ChannelId;
         
         [SlashCommand("createrole", "Creates a role for you"), SlashBangerCommand(false)]
-        public async Task CreateRole(InteractionContext ctx, 
-            [Option("Color", "Color of the role to create", true)] string colorHex) {
+        public async Task CreateRole(InteractionContext ctx) {
             var personalData = Config.PersonalizedMember(ctx.Guild.Id);
             if (!personalData.Enabled) {
                 await ctx.CreateResponseAsync("Personalized Roles is not enabled.", true);
@@ -129,13 +33,12 @@ public class Personalization : ApplicationCommandModule {
             var personalizedMember = personalData.Members!.FirstOrDefault(x => x.userId == ctx.User.Id);
             if (personalizedMember is null) {
                 var memberRole = await ctx.Guild.CreateRoleAsync(name: ctx.User.Username, reason: "Personalized Member - User");
-                var newColorString = colorHex.ValidateHexColor().Left(6);
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 var personalizedMemberData = new Member {
                     userId = ctx.User.Id,
                     roleId = memberRole.Id,
                     roleName = ctx.User.Username.Left(15).Trim(),
-                    colorHex = newColorString,
+                    colorHex = "C4C9CE",
                     epochTime = currentEpoch
                 };
                 personalData.Members!.Add(personalizedMemberData);
@@ -145,7 +48,7 @@ public class Personalization : ApplicationCommandModule {
                     var defaultRole = ctx.Guild.GetRole(personalData.DefaultRoleId);
                     await ctx.Member!.RevokeRoleAsync(defaultRole, "Personalized Member - User: " + ctx.User.Username);
                 }
-                await ctx.CreateResponseAsync("Successfully created your personalized member role.");
+                await ctx.CreateResponseAsync("Successfully created your personalized member role. Change your role name and color with `/Personalization UpdateName` & `/Personalization UpdateColor`");
                 return;
             }
 
@@ -262,6 +165,106 @@ public class Personalization : ApplicationCommandModule {
             Config.Save();
             await memberRole!.ModifyAsync(name: newRoleName, reason: "Personalized Member - User: " + ctx.User.Username);
             await ctx.CreateResponseAsync("Successfully updated your personalized member role name.");
+        }
+        
+        #endregion
+        
+    }
+
+    [SlashCommandGroup("PersonalizationAdmin", "Admin Personalization commands", false), SlashBangerCommand(true)]
+    public class PersonalizedAdmin : ApplicationCommandModule {
+        
+        #region Admin
+        
+        [SlashCommand("toggle", "(Admin) Toggles the Personalized Member system"), SlashBangerCommand(true)]
+        public async Task TogglePersonalizedMember(InteractionContext ctx, 
+            [Option("Enabled", "Enable or disable the Personalized Member system"),
+             Choice("true", "true"), Choice("false", "false")] string enabled) {
+            var result = enabled.ToLower().Contains('t');
+            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+            personalData.Enabled = result;
+            Config.Save();
+            await ctx.CreateResponseAsync($"Personalized Roles are now {(result ? "enabled" : "disabled")}.");
+        }
+        
+        [SlashCommand("setchannel", "(Admin) Sets the channel where users can use the personalization commands"), SlashBangerCommand(true)]
+        public async Task SetPersonalizationChannel(InteractionContext ctx, 
+            [Option("Destination", "Destination Discord Channel (mention)", true)] DiscordChannel channel) {
+            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+            personalData.ChannelId = channel.Id;
+            Config.Save();
+            await ctx.CreateResponseAsync($"Set the personalization channel to {channel.Mention}.");
+        }
+        
+        [SlashCommand("setdefaultrole", "(Admin) Sets the default role for users to be granted when they remove their personalized role"), SlashBangerCommand(true)]
+        public async Task SetDefaultRole(InteractionContext ctx, 
+            [Option("Role", "Role to set as default", true)] DiscordRole role) {
+            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+            personalData.DefaultRoleId = role.Id;
+            Config.Save();
+            await ctx.CreateResponseAsync($"Set the default role to {role.Mention}.");
+        }
+        
+        [SlashCommand("setresettime", "(Admin) Sets the artificial cooldown for the role command"), SlashBangerCommand(true)]
+        public async Task SetResetTime(InteractionContext ctx, 
+            [Option("Time", "Time in seconds", true)] string time) {
+            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+            personalData.ResetTimer = time.AsInt();
+            Config.Save();
+            await ctx.CreateResponseAsync($"Set the reset time to {time} seconds.");
+        }
+        
+        [SlashCommand("addroleto", "(Admin) Adds a personalized role to a user"), SlashBangerCommand(true)]
+        public async Task AddRoleTo(InteractionContext ctx, 
+            [Option("User", "Target user (mention)", true)] DiscordUser user,
+            [Option("Role", "Role to add (ID)", true)] string roleId) {
+            if (string.IsNullOrWhiteSpace(roleId)) {
+                await ctx.CreateResponseAsync("Please specify a role ID.", true);
+                return;
+            }
+            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+            var ulongRoleId = ulong.Parse(roleId);
+            var role = ctx.Guild.GetRole(ulongRoleId);
+            if (role is null) {
+                await ctx.CreateResponseAsync("The role does not exist is guild.", true);
+                return;
+            }
+            if (personalData.Members!.Any(x => x.roleId == ulongRoleId)) {
+                await ctx.CreateResponseAsync("The role is already in the system, it cannot be one more than one person.");
+                return;
+            }
+            personalData.Members!.Add(new Member {
+                userId = user.Id,
+                roleId = ulongRoleId,
+                roleName = role.Name,
+                colorHex = role.Color.ToString().ValidateHexColor().ToLower(),
+                epochTime = 1002
+            });
+            Config.Save();
+            var discordMember = await ctx.Guild.GetMemberAsync(user.Id);
+            await ctx.CreateResponseAsync($"Added **{role.Name}** to the personalized system for **{discordMember.DisplayName}**.");
+        }
+        
+        [SlashCommand("removefrom", "(Admin) Removes a personalized role from a user"), SlashBangerCommand(true)]
+        public async Task RemoveFrom(InteractionContext ctx, 
+            [Option("User", "Target user (mention)", true)] DiscordUser user) {
+            var personalData = Config.PersonalizedMember(ctx.Guild.Id);
+    
+            var memberData = personalData.Members!.FirstOrDefault(x => x.userId == user.Id);
+            if (memberData is null) {
+                await ctx.CreateResponseAsync("User data does not exist.", true);
+                return;
+            }
+            var memberRole = ctx.Guild.GetRole(memberData.roleId);
+            await memberRole.DeleteAsync(reason: "Personalized Member - Admin: " + ctx.User.Username);
+            personalData.Members!.Remove(memberData);
+            Config.Save();
+            var discordMember = await ctx.Guild.GetMemberAsync(user.Id);
+            if (personalData.DefaultRoleId != 0) {
+                var defaultRole = ctx.Guild.GetRole(personalData.DefaultRoleId);
+                await discordMember.GrantRoleAsync(defaultRole, "Personalized Member - Admin: " + ctx.User.Username);
+            }
+            await ctx.CreateResponseAsync($"Removed {discordMember.DisplayName}'s personalized role.");
         }
         
         #endregion

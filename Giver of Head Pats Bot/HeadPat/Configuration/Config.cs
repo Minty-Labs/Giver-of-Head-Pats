@@ -76,7 +76,7 @@ public static class Config {// : BasicModule {
             GuildName = "Your Guild Name",
             GuildId = 0,
             BlacklistedCommands = new List<string>(),
-            Replies = new List<Reply>(),
+            // Replies = new List<Reply>(),
             DailyPatChannelId = 0,
             DailyPats = new List<DailyPat>(),
             IrlQuotes = irlq,

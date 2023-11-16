@@ -23,7 +23,7 @@ public class Information : BaseCommandModule {
         e.WithTitle($"{Vars.Name} Stats");
         e.WithColor(DiscordColor.Teal);
 
-        e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count}", true);
+        // e.AddField("Number of Commands", $"{Program.Commands?.RegisteredCommands.Count + Program.Slash?.RegisteredCommands.Count}", true);
         e.AddField("Ping", $"{c.Client.Ping}ms", true);
         e.AddField("Usage", $"Currently using **{ram}MB** of RAM\nRunning on **{(Vars.IsWindows ? "Windows" : "Linux")}**", true);
         e.AddField("Current Uptime", $"{days} Days : {hours} Hours : {minutes} Minutes : {seconds} Seconds");

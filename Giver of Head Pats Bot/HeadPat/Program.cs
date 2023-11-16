@@ -25,7 +25,7 @@ namespace HeadPats;
 
 public sealed class Program {
     public static DiscordClient? Client { get; set; }
-    public static CommandsNextExtension? Commands { get; set; }
+    // public static CommandsNextExtension? Commands { get; set; }
     public static SlashCommandsExtension? Slash { get; set; }
     public static FluxpointClient? FluxpointClient { get; set; }
     public static CookieClient? CookieClient { get; set; }
@@ -102,7 +102,7 @@ public sealed class Program {
             EnableDefaultHelp = false
         };
 
-        Commands = Client.UseCommandsNext(commandsNextConfiguration);
+        // Commands = Client.UseCommandsNext(commandsNextConfiguration);
         Slash = Client.UseSlashCommands();
         
         // Commands.SetHelpFormatter<HelpFormatter>();
@@ -200,7 +200,7 @@ public sealed class Program {
         Log.Debug("ActivityType       = " + $"{Config.Base.ActivityType}");
         Log.Debug("Game               = " + $"{Config.Base.ActivityText}");
         Log.Debug("Online Status      = " + $"{Config.Base.UserStatus}");
-        Log.Debug("Number of Commands = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count} (:salute: thanks Discord)");
+        // Log.Debug("Number of Commands = " + $"{Commands?.RegisteredCommands.Count + Slash?.RegisteredCommands.Count} (:salute: thanks Discord)");
 
         if (Vars.IsWindows) {
             var temp1 = Config.Base.ActivityText!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.ActivityText!);

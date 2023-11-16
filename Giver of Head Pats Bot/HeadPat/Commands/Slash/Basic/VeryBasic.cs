@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using HeadPats.Configuration;
 using HeadPats.Utils;
@@ -24,7 +25,20 @@ public class VeryBasic : ApplicationCommandModule {
         var u = await c.Client.GetUserAsync(Vars.ClientId, true);
         e.WithThumbnail(u.AvatarUrl);
         e.WithAuthor("MintLily", "https://mintlily.lgbt/", "https://mintlily.lgbt/assets/img/Lily.png");
-        await c.CreateResponseAsync(e.Build());
+        var bot = await c.Client.GetUserAsync(Vars.ClientId);
+        var embed = new DiscordEmbedBuilder {
+            Title = "Contributors",
+            Description = "These are the Contributors of this bot's project, as I must give credit where its due.",
+            Color = DiscordColor.Aquamarine,
+            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail { Url = bot.GetAvatarUrl(ImageFormat.Auto) },
+            Footer = new DiscordEmbedBuilder.EmbedFooter { Text = $"{Vars.Name} (v{Vars.Version}) | {Vars.BuildDate}" }
+        };
+        foreach (var co in Config.Base.Contributors!)
+            embed.AddField(co.UserName, co.Info!.Replace("<br>", "\n"));
+        var builder = new DiscordMessageBuilder();
+        builder.AddEmbed(e.Build());
+        builder.AddEmbed(embed.Build());
+        await c.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(builder));
     }
 
     [SlashCommand("Support", "Get the support server invite link")]
