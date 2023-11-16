@@ -9,7 +9,6 @@ public class LoopingTaskScheduler : BasicModule {
     protected override string ModuleDescription => "Runs looping tasks";
 
     public override void Initialize() {
-        DailyPatLoop.DailyPatted = new Dictionary<ulong, bool>();
         // DailyPatLoop.PreviousPatUrl = new Dictionary<ulong, string>();
         new Thread(Loop).Start();
         new Thread(LoopAsync).Start();
@@ -32,14 +31,14 @@ public class LoopingTaskScheduler : BasicModule {
             }
             
             // Daily Pats
-            // try {
-            //     await DailyPatLoop.DoDailyPat(db, currentEpoch);
-            // }
-            // catch (Exception err) {
-            //     if (_numberOfErrored >= 5) return;
-            //     await DSharpToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
-            //     _numberOfErrored++;
-            // }
+            try {
+                await DailyPatLoop.DoDailyPat(db, currentEpoch);
+            }
+            catch (Exception err) {
+                if (_numberOfErrored >= 5) return;
+                await DSharpToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
+                _numberOfErrored++;
+            }
             
             // Rotating Status
             try {

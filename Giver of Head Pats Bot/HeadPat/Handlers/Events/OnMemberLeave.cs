@@ -19,7 +19,7 @@ public class OnMemberLeave : EventModule {
         if (guildSettings is not null && guildSettings.DailyPatChannelId == 0) return Task.CompletedTask;
         try {
             var pattedUser = guildSettings!.DailyPats!.FirstOrDefault(x => x.UserId == args.Member.Id);
-            if (pattedUser == null) return Task.CompletedTask;
+            // if (pattedUser == null) return Task.CompletedTask;
             guildSettings.DailyPats!.Remove(pattedUser);
             Config.Save();
             Log.Information("Removed {User} from the daily pats list for {GuildName} ({GuildId}), because they left the guild.", args.Member.Id, args.Guild.Name, args.Guild.Id);
