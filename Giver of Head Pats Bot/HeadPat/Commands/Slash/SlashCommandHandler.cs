@@ -32,11 +32,12 @@ public static class SlashCommandHandler {
         s.RegisterCommands<LoveCommands>();
         Log.Information("[Commands.Slash] LoveCommands Registered");
         
-        s.RegisterCommands<BangerClass>(977705960544014407);
+        /* THIS ... JUST DOESN'T WORK AT ALL, IT'LL BREAK THE BOT
+         s.RegisterCommands<BangerClass>(977705960544014407);
         Log.Information("[Commands.Slash] Banger Registered to Penny's Server");
         s.RegisterCommands<Personalization>(977705960544014407);
         Log.Information("[Commands.Slash] PersonalizedMembers Registered to Penny's Server");
         s.RegisterCommands<Personalization>(805663181170802719);
-        Log.Information("[Commands.Slash] PersonalizedMembers Registered to Lily's Server");
+        Log.Information("[Commands.Slash] PersonalizedMembers Registered to Lily's Server");*/
     }
 }

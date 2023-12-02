@@ -237,5 +237,61 @@ public sealed class Program {
         FirstTimeRun = true;
         // await AutoRemoveOldDmChannels.RemoveOldDmChannelsTask();
         await sender.SendMessageAsync(GeneralLogChannel, startEmbed);
+        /*await sender.SendMessageAsync(GeneralLogChannel, content: "Deleting application commands...");
+        
+        var globalList = new List<ulong> {
+            1174560649335013477,
+            1174560649335013478,
+            1174560649335013479,
+            1174560649335013481,
+            1174560649335013482,
+            1174560649335013483,
+            1174560649335013484,
+            1174560649335013485,
+            1174560649335013486,
+            1174560649586688122,
+            1174560649586688124,
+            1174560649586688125,
+            1174560649586688126,
+            1174560649586688127,
+            1174560649586688128
+        };
+
+        var guildGuild1 = new List<ulong> {
+            1174547002265190410,
+            1174547002265190411
+        };
+
+        var guildGuild2 = new List<ulong> {
+            1174547002323906670,
+            1174547002323906671,
+            1174547002323906672
+        };
+
+        foreach (var cmd in globalList) {
+            await Client.DeleteGlobalApplicationCommandAsync(cmd);
+        }
+        foreach (var cmd in guildGuild1) {
+            await Client.DeleteGuildApplicationCommandAsync(805663181170802719, cmd);
+        }
+        foreach (var cmd in guildGuild2) {
+            await Client.DeleteGuildApplicationCommandAsync(977705960544014407, cmd);
+        }
+        
+        await sender.SendMessageAsync(GeneralLogChannel, content: "Completed deleting application commands");
+
+        await Task.Delay(TimeSpan.FromSeconds(30));
+        await sender.SendMessageAsync(GeneralLogChannel, content: "shutting down bot with pm2...");
+        var process = new Process {
+            StartInfo = new ProcessStartInfo {
+                FileName = "/bin/bash",
+                Arguments = "-c \"pm2 stop 1\"",
+                RedirectStandardOutput = false,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+        await Client.DisconnectAsync();
+        process.Start();*/
     }
 }

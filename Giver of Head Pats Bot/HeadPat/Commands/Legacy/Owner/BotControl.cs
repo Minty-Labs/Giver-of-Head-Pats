@@ -69,7 +69,6 @@ public class BotControl : BaseCommandModule  {
         await m.ModifyAsync("Completely shut down.");
         await Log.CloseAndFlushAsync();
         await ctx.Client.DisconnectAsync();
-        Environment.Exit(0);
     }
     
     [Command("exec"), Description("Runs a linux command on the server"), RequireOwner]
@@ -90,6 +89,8 @@ public class BotControl : BaseCommandModule  {
         var weh = StringUtils.SplitMessage(output, 1900);
         foreach (var chuck in weh)
             await ctx.RespondAsync($"```\n{chuck}```");
+        if (command.Equals("pm2 stop 1"))
+            await ctx.Client.DisconnectAsync();
     }
 
     [Command("UpdateActivity"), Description("Updates the bot's activity"), RequireOwner]
