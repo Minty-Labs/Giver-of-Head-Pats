@@ -1,11 +1,11 @@
 <h1>Giver of Head Pats, Discord Bot</h1>
 <img src="https://raw.githubusercontent.com/Minty-Labs/Giver-of-Head-Pats/main/Media/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
-A <a href="https://dotnet.microsoft.com/en-us/download/dotnet/7.0" target="_blank">dotNET 7</a> rewrite of a Discord Bot, 
+The 5th rewrite of a Discord Bot done in <a href="https://dotnet.microsoft.com/en-us/download/dotnet/7.0" target="_blank">dotNET 7</a>, 
 created by <a href="https://mintlily.lgbt/">Lily</a> from <a href="https://mintylabs.dev/">Minty Labs</a>. <br>
 Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hugs, cookies, and more; leaderboards for pats and cookies; as well as summon pictures of foxes, bunnies, nekos, memes and more. I can also have moderators make auto responses for me to automatically reply to.
 <br><br>
-At the moment you can see what I can do by running the <code>hp!help</code> command.<br>
+At the moment you can see what I can do by starting to type <code>/</code>.<br>
 I am always expanding in what I can do and I hope I will be the perfect caregiver for your guild.
 </p>
 
@@ -13,11 +13,11 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=2023.11.1&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=5.0.0&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=13%20November%202023&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=2%20December%202023&color=389980&style=for-the-badge" />
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
-    <a href="https://github.com/DSharpPlus"><img src="https://img.shields.io/static/v1?label=Library&message=DSharpPlus&color=7289DA&style=for-the-badge" /></a>
+    <a href="https://github.com/discord-net/Discord.Net"><img src="https://img.shields.io/static/v1?label=Library&message=Discord.NET&color=7289DA&style=for-the-badge" /></a>
     <br><br>
     <a href=""><img src="https://img.shields.io/static/v1?label=Need%20Support%3F&message=Join%20the%20support%20server&color=7289DA&style=for-the-badge" /></a>
     <br>
@@ -30,18 +30,10 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>DSharpPlus <b>v5.0.0-01839 (Nightly)</b>
-        <ul>
-            <li>Base</li>
-            <li>CommandsNext</li>
-            <li>Interactivity</li>
-            <li>Rest</li>
-            <li>SlashCommands</li>
-        </ul>
-    </li>
+    <li>Discord.NET <b>v3.13.0</b></li>
     <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.0-prerelease.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.12</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.12</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v7.0.14</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.14</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
     <li>Serilog by <b>v3.1.1</b>
         <ul>
@@ -50,11 +42,12 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         </ul>
     </li>
     <li>fluxpoint-sharp <i>by Builderb</i> <b>v3.0.2</b></li>
+    <li>Patreon.NET <i>by sawch</i> <b>v1.0.2</b></li>
 </ul>
 
 <h2>Programs & Services Used</h2>
 <ul>
-    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.2.1
+    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.2.3
         <ul>
             <li>Rider</li>
             <li>dotPeek</li>
@@ -75,6 +68,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
             <li>DevMiner.xyz</li>
             <li>CookieAPI</li>
             <li>Fluxpoint</li>
+            <li>Patreon</li>
         </ul>
     </li>
 </ul>
@@ -84,50 +78,17 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     for friends' moral support and musical jam sessions
 ```
 
-<h2>Features</h2>
-<p>Prefix: <code>hp!</code><br> Global Command: <code>help</code> is available. Slash Commands are available.</p>
-
-<h2>Slash Commands</h2>
+<h2>Commands</h2>
 <h3>Basic</h3>
 <ul>
-    <li>Color</li>
-    <li>Gradient</li>
-    <li>Summon
-        <ul>
-            <li>Bunny</li>
-            <li>Fox</li>
-            <li><s>Neko</s></li>
-            <li>Meme</li>
-            <li>InspiroBot</li>
-        </ul>
-    </li>
-    <li>Other
-        <ul>
-            <li>About</li>
-            <li>Support</li>
-            <li>Invite</li>
-            <li>FlipCoin</li>
-        </ul>
-    </li>
+    <li>About</li>
+    <li>Support</li>
+    <li>Invite</li>
+    <li>FlipCoin</li>
 </ul>
 
-<h3>Contributors</h3>
-<ul>
-    <li>Add (BotOwner)</li>
-    <li>Remove (BotOwner)</li>
-    <li>List</li>
-</ul>
-
-<h3>Replies</h3>
-<p>(Moderator)</p>
-<ul>
-    <li>Add</li>
-    <li>Remove</li>
-    <li>List</li>
-</ul>
-
-<h3>DailyPat</h3>
-<p>(Moderator / Requires ManageGuild)</p>
+<h3>Daily Pat</h3>
+<p>(Moderator / Requires Guild Administrator)</p>
 <ul>
     <li>SetPatChannel</li>
     <li>Add</li>
@@ -156,81 +117,22 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     </li>
 </ul>
 
-<h2>Context Menu Commands</h2>
-<p>
-    These are quick commands that show up when you right-click a user and are under the "Apps" submenu.
-</p>
-<ul>
-    <li>Hug</li>
-    <li>Pat</li>
-</ul>
-
-<h2>Legacy Commands (REMOVED Commands)</h2>
-<h3>Basic</h3>
-<ul>
-    <li>Information
-        <ul>
-            <li>Ping</li>
-            <li>Stats</li>
-        </ul>
-    </li>
-    <li>Salad (Only Available in a private guild)</li>
-</ul>
-
-<h3>Admin</h3>
-<ul>
-    <li>BlacklistRoleFromPatCommand - Prevent Roles from using the pat command</li>
-    <li>UserInfo - Gets information about a user</li>
-</ul>
-
-<h3>Owner</h3>
-<ul>
-    <li>Blacklist Control</li>
-    <li>Bot Control
-        <ul>
-            <li>List Guilds</li>
-            <li>Leave Guild</li>
-            <li>Shutdown</li>
-            <li>UpdateActivity</li>
-            <li>UserStatus</li>
-        </ul>
-    </li>
-    <li>Configuration Control
-        <ul>
-            <li>SetAPIKey</li>
-            <li>NameReplacement</li>
-            <li>RotatingStatus</li>
-            <li>CleanGuildsFromConfig</li>
-        </ul>
-    </li>
-    <li>User Control
-        <ul>
-            <li>ForceAddUserToDatabase</li>
-        </ul>
-    </li>
-</ul>
-
-<h2>Commissioned Section (REMOVED Commands)</h2>
+<h2>Commissioned Features Commands</h2>
 <h3>Banger</h3>
-<p>These <i>(legacy)</i> commands only work in the commissioner's Discord server.</p>
+<p>These commands only work in the commissioner's Discord server.</p>
 <ul>
-    <li>Anyone
-        <ul>
-            <li>ListBangerValues</li>
-        </ul>
-    </li>
-    <li>Admin
-        <ul>
-            <li>ToggleBanger</li>
-            <li>SetBangerChannel</li>
-            <li>ChangeBangerUrlErrorMessage</li>
-            <li>ChangeBangerExtErrorMessage</li>
-            <li>SetBangerValues</li>
-        </ul>
-    </li>
+    <ul>
+        <li>ToggleBanger</li>
+        <li>SetBangerChannel</li>
+        <li>ChangeBangerUrlErrorMessage</li>
+        <li>ChangeBangerExtErrorMessage</li>
+        <li>SetBangerValues</li>
+        <li>ListBangerValues</li>
+    </ul>
 </ul>
+
 <h3>Personalized Roles</h3>
-<p>These <i>(legacy)</i> commands only work in the commissioner's Discord server.</p>
+<p>These commands only work in the commissioner's Discord server.</p>
 <ul>
     <li>Anyone
         <ul>
@@ -257,7 +159,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <b>Lily</b> (Main, Lead, Owner, Creator) <a href="https://github.com/MintLily">GitHub</a><br>
 
 <img src="https://avatars.githubusercontent.com/u/86266174?v=4" height="35px" align=center /> &nbsp;
-<b>Elly</b> (Supporting) <a href="https://github.com/EllyVR">GitHub</a><br>
+<b>Elly</b> (Supporting Dev) <a href="https://github.com/EllyVR">GitHub</a><br>
 
 <img src="https://avatars.githubusercontent.com/u/28003629?v=4" height="35px" align=center /> &nbsp;
 <b>Ahriana</b> (CookieAPI Dev) <a href="https://github.com/Ahriana">GitHub</a><br>
