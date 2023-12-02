@@ -265,6 +265,7 @@ public class Program {
         
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
+        OnBotJoinOrLeave.GuildCount = Client.Guilds.Count;
 
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),
