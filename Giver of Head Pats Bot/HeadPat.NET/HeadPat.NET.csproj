@@ -10,8 +10,8 @@
         <ApplicationIcon>..\..\Media\HeadPat.ico</ApplicationIcon>
         <Title>Giver of Head Pats</Title>
         <Authors>Lily</Authors>
-        <AssemblyVersion>5.0.0.94</AssemblyVersion>
-        <FileVersion>5.0.0.94</FileVersion>
+        <AssemblyVersion>5.0.2.98</AssemblyVersion>
+        <FileVersion>5.0.2.98</FileVersion>
         <Company>Minty Labs</Company>
         <Product>HeadPat.NET Discord Bot</Product>
         <PackageId>HeadPat.NET (Discord Bot)</PackageId>
