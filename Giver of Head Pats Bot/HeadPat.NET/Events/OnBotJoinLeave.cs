@@ -25,7 +25,7 @@ public class OnBotJoinOrLeave : EventModule {
 
     private static async Task OnLeaveGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
-        if (Program.Instance.Client.Guilds.Count == GuildCount) return;
+        if (Program.Instance.Client.Guilds.Count >= GuildCount) return;
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("FF2525"));
         em.WithDescription($"Left server: `{e.Name.Sanitize()}` ({e.Id})");
@@ -57,7 +57,7 @@ public class OnBotJoinOrLeave : EventModule {
 
     private static async Task OnJoinGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
-        if (Program.Instance.Client.Guilds.Count == GuildCount) return;
+        if (Program.Instance.Client.Guilds.Count <= GuildCount) return;
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("42E66C"));
         em.WithDescription($"Joined server: `{e.Name.Sanitize()}` ({e.Id})");
