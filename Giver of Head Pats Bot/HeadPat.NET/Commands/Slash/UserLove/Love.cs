@@ -100,7 +100,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter("Powered by CookieAPI");
+                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.PatCount} pats");
             }
             else {
                 start2:
@@ -113,7 +113,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter("Powered by Fluxpoint API");
+                e.WithFooter($"Powered by Fluxpoint API | You have {checkUser!.PatCount} pats");
             }
 
             var doingTheCutieSpecial = false;
@@ -397,8 +397,10 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempCookieGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter("Powered by CookieAPI");
+                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.CookieCount} cookies");
             }
+            else 
+                e.WithFooter($"You have {checkUser!.CookieCount} cookies");
 
             e.WithColor(Colors.GetRandomCookieColor());
             e.WithDescription($"{Context.User.Mention} gave a cookie to {user.Mention}");
