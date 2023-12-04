@@ -9,7 +9,7 @@ public class LoopingTaskScheduler : BasicModule {
     protected override string ModuleDescription => "Runs looping tasks";
 
     public override void Initialize() {
-        new Thread(Loop).Start();
+        // new Thread(Loop).Start();
         new Thread(LoopAsync).Start();
     }
 
@@ -39,6 +39,14 @@ public class LoopingTaskScheduler : BasicModule {
                 _numberOfErrored++;
             }
             
+            // Data Deletion
+            try {
+                DataDeletionFinderLoop.FindDataDeletion(db, currentEpoch);
+            }
+            catch (Exception err) {
+                await DNetToConsole.SendErrorToLoggingChannelAsync($"Data Deletion:\n{err}");
+            }
+            
             // Rotating Status
             try {
                 await RotatingStatus.Update(db);
@@ -60,7 +68,7 @@ public class LoopingTaskScheduler : BasicModule {
         // ReSharper disable once FunctionNeverReturns
     }
     
-    private static void Loop() {
+    /*private static void Loop() {
         var rnd = new Random();
         while (true) {
             using var db = new Context();
@@ -85,5 +93,5 @@ public class LoopingTaskScheduler : BasicModule {
             Thread.Sleep(TimeSpan.FromMinutes(10));
         }
         // ReSharper disable once FunctionNeverReturns
-    }
+    }*/
 }
