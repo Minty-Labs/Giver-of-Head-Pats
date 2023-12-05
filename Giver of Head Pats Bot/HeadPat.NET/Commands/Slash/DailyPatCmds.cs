@@ -51,7 +51,7 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         
             guildSettings!.DailyPats!.Add(dailyPat);
             Config.Save();
-            await RespondAsync($"Set daily pat to {user.Username}.");
+            await RespondAsync($"Set daily pat to {user.Username.ReplaceName(user.Id)}.");
         }
 
         [SlashCommand("remove", "Removes the daily pat from user")]
@@ -66,7 +66,7 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
             var dailyPat = guildSettings!.DailyPats!.Single(u => u.UserId == user.Id);
             guildSettings!.DailyPats!.Remove(dailyPat);
             Config.Save();
-            await RespondAsync($"Removed daily pat from {user.Username}.");
+            await RespondAsync($"Removed daily pat from {user.Username.ReplaceName(user.Id)}.");
         }
 
         [SlashCommand("list", "Lists all users with daily pats set")]
