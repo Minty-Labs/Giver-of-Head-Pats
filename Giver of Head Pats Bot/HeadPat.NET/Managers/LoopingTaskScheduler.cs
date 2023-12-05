@@ -1,4 +1,5 @@
 ﻿using HeadPats.Data;
+using HeadPats.Events;
 using HeadPats.Managers.Loops;
 using HeadPats.Modules;
 
@@ -61,6 +62,16 @@ public class LoopingTaskScheduler : BasicModule {
             }
             catch (Exception err) {
                 await DNetToConsole.SendErrorToLoggingChannelAsync($"Patreon:\n{err}");
+            }
+            
+            // Misc
+            var client = Program.Instance.Client;
+            OnBotJoinOrLeave.GuildCount = client.Guilds.Count;
+            if (OnBotJoinOrLeave.GuildIds is not null) {
+                OnBotJoinOrLeave.GuildIds.Clear();
+                foreach (var guild in client.Guilds) {
+                    OnBotJoinOrLeave.GuildIds.Add(guild.Id);
+                }
             }
             
             Thread.Sleep(TimeSpan.FromMinutes(10));

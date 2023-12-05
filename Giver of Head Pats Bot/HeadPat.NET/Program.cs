@@ -263,9 +263,13 @@ public class Program {
                             $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.ActivityText)}";
         }
         
+        OnBotJoinOrLeave.GuildIds = new List<ulong>();
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
         OnBotJoinOrLeave.GuildCount = Client.Guilds.Count;
+        foreach (var guild in Client.Guilds) {
+            OnBotJoinOrLeave.GuildIds.Add(guild.Id);
+        }
 
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),

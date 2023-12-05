@@ -21,10 +21,12 @@ public class OnBotJoinOrLeave : EventModule {
     }
     
     internal static bool DoNotRunOnStart = true;
-    internal static int GuildCount = 0;
+    internal static List<ulong>? GuildIds;
+    internal static int GuildCount;
 
     private static async Task OnLeaveGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
+        if (GuildIds is not null && !GuildIds.Contains(e.Id)) return;
         if (Program.Instance.Client.Guilds.Count >= GuildCount) return;
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("FF2525"));
@@ -36,6 +38,7 @@ public class OnBotJoinOrLeave : EventModule {
         em.AddField("Owner", $"{e.Owner.Username.Sanitize()} ({e.Owner.Id})");
         em.WithThumbnailUrl(e.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
         em.WithFooter($"Total servers: {Program.Instance.Client.Guilds.Count}");
+        GuildCount--;
 
         await Program.Instance.GeneralLogChannel!.SendMessageAsync(embed: em.Build());
         
@@ -57,6 +60,7 @@ public class OnBotJoinOrLeave : EventModule {
 
     private static async Task OnJoinGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
+        if (GuildIds is not null && GuildIds.Contains(e.Id)) return;
         if (Program.Instance.Client.Guilds.Count <= GuildCount) return;
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("42E66C"));
@@ -68,6 +72,7 @@ public class OnBotJoinOrLeave : EventModule {
         em.AddField("Owner", $"{e.Owner.Username.Sanitize()} ({e.Owner.Id})");
         em.WithThumbnailUrl(e.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
         em.WithFooter($"Total servers: {Program.Instance.Client.Guilds.Count}");
+        GuildCount++;
 
         if (Config.Base.FullBlacklistOfGuilds!.Contains(e.Id)) {
             await Program.Instance.GeneralLogChannel!.SendMessageAsync($"Leaving guild {e.Name} ({e.Id}) because it is blacklisted.", embed: em.Build());
