@@ -341,6 +341,8 @@ public class Program {
         PatreonClientInstance = new Patreon_Client();
         await PatreonClientInstance.GetPatreonInfo();
         
+        FindActiveGuilds.Start();
+        
         await Task.Delay(TimeSpan.FromSeconds(5));
         OnBotJoinOrLeave.DoNotRunOnStart = false;
         if (Vars.IsWindows)
