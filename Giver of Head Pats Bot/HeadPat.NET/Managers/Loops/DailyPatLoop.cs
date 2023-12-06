@@ -19,19 +19,12 @@ public static class DailyPatLoop {
             try {
                 var guildVar = Program.Instance.GetGuild(guild.GuildId);
                 if (guildVar is null) {
-                    var guildFromConfig = configGuildSettings.Single(x => x.GuildId == guild.GuildId);
-                    guildFromConfig.DailyPatChannelId = 0;
-                    guildFromConfig.DailyPats?.Clear();
-                    if (guildFromConfig.DataDeletionTime == 0)
-                        guildFromConfig.DataDeletionTime = DateTimeOffset.UtcNow.AddDays(28).ToUnixTimeSeconds();
-                    Config.Save();
-                    Log.Debug("Guild {guildId} not found, skipping and removing guild from config", guild.GuildId);
                     continue;
                 }
             }
             catch {/*ignore*/}
             
-            if (guild.DailyPats is null) continue;
+            if (guild.DailyPats is null || guild.DailyPats.Count is 0) continue;
                 
             var guildSettings = Config.GuildSettings(guild.GuildId);
                 
