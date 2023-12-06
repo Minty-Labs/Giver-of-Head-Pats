@@ -51,7 +51,7 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         
             guildSettings!.DailyPats!.Add(dailyPat);
             Config.Save();
-            await RespondAsync($"Set daily pat to {user.Username.ReplaceName(user.Id)}.");
+            await RespondAsync($"Set daily pat for {user.Username.ReplaceName(user.Id)}.");
         }
 
         [SlashCommand("remove", "Removes the daily pat from user")]
