@@ -32,8 +32,6 @@ public static class DailyPatLoop {
             if (guild.DailyPatChannelId is 0)
                 continue;
             
-            var channel = Program.Instance.GetChannel(guild.GuildId, guild.DailyPatChannelId);
-            
             if (guildSettings!.DailyPats is null)
                 continue;
                 
@@ -42,7 +40,7 @@ public static class DailyPatLoop {
                     continue;
                 
                 Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
-                var guildUser = Program.Instance.GetGuildUser(guild.GuildId, user.UserId);
+                var guildUser = Program.Instance.Client.GetGuild(guild.GuildId).GetUser(user.UserId);
                 if (guildUser is null) {
                     if (BotControl.TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast) {
                         await DNetToConsole.SendMessageToLoggingChannelAsync($"Daily Pat Loop Report: GuildUser ({user.UserName} - {user.UserId}) is null, not removing from config.");
@@ -77,6 +75,8 @@ public static class DailyPatLoop {
                         Text = $"Powered by {(Vars.UseCookieApi ? "CookieAPI" : "Fluxpoint API")}"
                     }
                 }.Build();
+            
+                var channel = Program.Instance.GetChannel(guild.GuildId, guild.DailyPatChannelId);
                 
                 try {
                     await channel.SendMessageAsync(embed: embed);

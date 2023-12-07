@@ -8,7 +8,6 @@ using Serilog;
 namespace HeadPats.Commands.Slash.Owner; 
 
 public class BotControl : InteractionModuleBase<SocketInteractionContext> {
-    public static bool TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast;
 
     [Group("bot", "Owner only commands - Controls the bot"), RequireOwner]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
