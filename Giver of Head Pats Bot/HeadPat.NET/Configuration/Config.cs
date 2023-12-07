@@ -14,7 +14,8 @@ public static class Config {// : BasicModule {
         
         var pennyGuildWatcher = new PennysGuildWatcher {
             GuildId = 0,
-            ChannelId = 0
+            ChannelId = 0,
+            LastUpdateTime = 0
         };
         
         var rotatingStatus = new RotatingStatus {

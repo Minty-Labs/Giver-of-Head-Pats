@@ -24,8 +24,8 @@ public class GuildUpdated : EventModule {
         if (_pennysGuildWatcherChannelId == 0) _pennysGuildWatcherChannelId = Config.Base.PennysGuildWatcher.ChannelId;
         var channel = arg1.GetTextChannel(_pennysGuildWatcherChannelId);
         if (channel is null) return Task.CompletedTask;
-        var currentTime = DateTime.UtcNow;
-        var daysNumber = DateTime.UtcNow.Subtract(currentTime).Days;
+        // var currentTime = DateTime.UtcNow;
+        var daysNumber = DateTime.UtcNow.Subtract(Config.Base.PennysGuildWatcher.LastUpdateTime.UnixTimeStampToDateTime()).Days;
         var embed = new EmbedBuilder {
             Title = "Guild Name Updated",
             Description = $"It has been {(daysNumber < 1 ? "less than a day" : (daysNumber == 1 ? "1 day" : $"{daysNumber} days"))} since the last time the guild name was updated.",
