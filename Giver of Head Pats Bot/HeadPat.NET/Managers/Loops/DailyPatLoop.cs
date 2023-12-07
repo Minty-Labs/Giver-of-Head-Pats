@@ -1,4 +1,5 @@
 ﻿using Discord;
+using HeadPats.Commands.Slash.Owner;
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
@@ -41,12 +42,18 @@ public static class DailyPatLoop {
                     continue;
                 
                 Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
-                var guildUser = Program.Instance.GetUser(user.UserId);
+                var guildUser = Program.Instance.GetGuildUser(guild.GuildId, user.UserId);
                 if (guildUser is null) {
-                    var configDailyPatUser = guildSettings.DailyPats.FirstOrDefault(u => u.UserId.Equals(user.UserId));
-                    guild.DailyPats.Remove(configDailyPatUser!);
-                    Config.Save();
-                    Log.Debug("User not found in guild, skipping and removing from config");
+                    if (BotControl.TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast) {
+                        await DNetToConsole.SendMessageToLoggingChannelAsync($"Daily Pat Loop Report: GuildUser ({user.UserName} - {user.UserId}) is null, not removing from config.");
+                    }
+                    else {
+                        var configDailyPatUser = guildSettings.DailyPats.FirstOrDefault(u => u.UserId.Equals(user.UserId));
+                        guild.DailyPats.Remove(configDailyPatUser!);
+                        Config.Save();
+                        Log.Debug("User not found in guild, skipping and removing from config");
+                    }
+                    
                     continue;
                 }
                 

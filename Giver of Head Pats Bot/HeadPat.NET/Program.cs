@@ -372,6 +372,17 @@ public class Program {
         return null;
     }
     
+    public SocketUser? GetGuildUser(ulong guildId, ulong userId) {
+        var guild = Client.GetGuild(guildId);
+        if (guild is null) {
+            Log.Error($"Selected guild {guildId} does not exist! <GetGuildUser>");
+            return null;
+        }
+        if (guild.GetUser(userId) is { } user) return user;
+        Log.Error($"Selected user {userId} does not exist! <GetGuildUser>");
+        return null;
+    }
+    
     public SocketCategoryChannel? GetCategory(ulong guildId, ulong id) {
         var guild = Client.GetGuild(guildId);
         if (guild is null) {

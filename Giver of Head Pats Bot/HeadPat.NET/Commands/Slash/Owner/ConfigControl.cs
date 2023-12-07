@@ -199,5 +199,11 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
 
             await RespondAsync(sb.ToString(), ephemeral: true);
         }
+        
+        [SlashCommand("swapsanity", "Swaps the sanity check for the daily pat loop")]
+        public async Task SwapSanity() {
+            BotControl.TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast = !BotControl.TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast;
+            await RespondAsync($"Sanity check set to: {BotControl.TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast}");
+        }
     }
 }
