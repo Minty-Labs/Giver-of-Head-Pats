@@ -8,8 +8,8 @@ public static class Vars {
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
     
-    public const string Version = "5.0.5" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
-    public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow: new(2023, 12, 6, 19, 23, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "5.0.6" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
+    public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow: new(2023, 12, 6, 19, 50, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
     public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime { get; set; }
