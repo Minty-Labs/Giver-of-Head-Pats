@@ -18,10 +18,7 @@ public sealed class Context : DbContext {
     public DbSet<Overlord> Overall { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        var path = Path.Combine(Environment.CurrentDirectory, "Data", "data.db");
-        if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "Data")))
-            Directory.CreateDirectory("Data");
-        optionsBuilder.UseSqlite($"Data Source={path}");
+        
         optionsBuilder.EnableSensitiveDataLogging();
     }
 }

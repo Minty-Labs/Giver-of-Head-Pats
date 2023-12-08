@@ -14,6 +14,8 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("setchannel", "Sets the channel where daily pats are sent")]
         public async Task SetDailyPatChannel([Summary("channel", "Channel to set as the daily pat channel")] ITextChannel channel) {
+            await RespondAsync("Daily Pats are temporarily disabled.");
+            return;
             var guildSettings = Config.GuildSettings(Context.Guild.Id);
             guildSettings!.DailyPatChannelId = channel.Id;
             Config.Save();
@@ -24,6 +26,8 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("add", "Sets the daily pat to user")]
         public async Task AddDailyPat([Summary("user", "Sets the daily pat to user")] IUser user) {
+            await RespondAsync("Daily Pats are temporarily disabled.");
+            return;
             // is user in guild
             if (user is not IGuildUser) {
                 await RespondAsync("User must be in the guild.", ephemeral: true);
@@ -56,6 +60,8 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("remove", "Removes the daily pat from user")]
         public async Task RemoveDailyPat([Summary("user", "Removes the daily pat from user")] IUser user) {
+            await RespondAsync("Daily Pats are temporarily disabled.");
+            return;
             if (!_doesItExist(user, Context.Guild.Id)) {
                 await RespondAsync("User does not have a daily pat set.", ephemeral: true);
                 return;
@@ -71,6 +77,8 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("list", "Lists all users with daily pats set")]
         public async Task ListDailyPats() {
+            await RespondAsync("Daily Pats are temporarily disabled.");
+            return;
             var sb = new StringBuilder();
             sb.AppendLine("`UserName (ID) - Next Pat Time`");
             var guildSettings = Config.GuildSettings(Context.Guild.Id);
