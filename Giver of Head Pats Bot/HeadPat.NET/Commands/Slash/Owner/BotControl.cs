@@ -59,16 +59,7 @@ public class BotControl : InteractionModuleBase<SocketInteractionContext> {
             await Log.CloseAndFlushAsync();
             await Context.Client.StopAsync();
             if (!Vars.IsWindows) {
-                var process = new Process {
-                    StartInfo = new ProcessStartInfo {
-                        FileName = "/bin/bash",
-                        Arguments = "-c \"pm2 stop 1\"",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
+                Utils.Execution.PM2.Stop();
             }
             Environment.Exit(0);
         }

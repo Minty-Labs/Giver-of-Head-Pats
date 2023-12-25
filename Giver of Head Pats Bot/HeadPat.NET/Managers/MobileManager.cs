@@ -5,9 +5,10 @@ using Serilog;
 namespace HeadPats.Managers;
 
 public static class MobileManager { // Thanks DubyaDude
+    private static readonly ILogger Logger = Log.ForContext(typeof(MobileManager));
     public static void Initialize() {
         try {
-            Log.Debug("Attempting to patch Client as mobile");
+            Logger.Debug("Attempting to patch Client as mobile");
             var harmony = new Harmony("mobilePatch"); 
             var mOriginal = AppDomain.CurrentDomain.GetAssemblies()
                 .Single(assembly => assembly.GetName().Name == "Discord.Net.WebSocket")
@@ -17,7 +18,7 @@ public static class MobileManager { // Thanks DubyaDude
             harmony.Patch(mOriginal, prefix: mPrefix);
         }
         catch (Exception e) {
-            Log.Error("Failed Mobile Patch\n{0}", e);
+            Logger.Error("Failed Mobile Patch\n{0}", e);
         }
     }
 
@@ -26,7 +27,7 @@ public static class MobileManager { // Thanks DubyaDude
         var type = __1.GetType();
         var property = type.GetProperty("Properties");
         if (property == null) {
-            Log.Error("Failed to get Properties :: Failed Mobile Patch");
+            Logger.Error("Failed to get Properties :: Failed Mobile Patch");
             return;
         }
         var properties = (IDictionary<string, string>)property.GetValue(__1)!;

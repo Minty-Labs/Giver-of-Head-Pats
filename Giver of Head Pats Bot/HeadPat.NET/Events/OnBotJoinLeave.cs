@@ -5,7 +5,6 @@ using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
 using Serilog;
-using HeadPats.Configuration.Classes;
 using HeadPats.Managers;
 using HeadPats.Modules;
 
@@ -22,12 +21,11 @@ public class OnBotJoinOrLeave : EventModule {
     
     internal static bool DoNotRunOnStart = true;
     internal static List<ulong>? GuildIds;
-    internal static int GuildCount;
 
     private static async Task OnLeaveGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
         if (GuildIds is not null && !GuildIds.Contains(e.Id)) return;
-        if (Program.Instance.Client.Guilds.Count >= GuildCount) return;
+        var logger = Log.ForContext("SourceContext", "Event - GuildLeave");
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("FF2525"));
         em.WithDescription($"Left server: `{e.Name.Sanitize()}` ({e.Id})");
@@ -38,30 +36,28 @@ public class OnBotJoinOrLeave : EventModule {
         em.AddField("Owner", $"{e.Owner.Username.Sanitize()} ({e.Owner.Id})");
         em.WithThumbnailUrl(e.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
         em.WithFooter($"Total servers: {Program.Instance.Client.Guilds.Count}");
-        GuildCount--;
 
         await Program.Instance.GeneralLogChannel!.SendMessageAsync(embed: em.Build());
         
-        var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Id);
-        if (guildSettings is null) {
-            Log.Error("Guild Settings for guild {guildId} is null, cannot delete data.", e.Id);
+        await using var db = new Context();
+        var dbGuild = db.Guilds.AsQueryable().FirstOrDefault(g => g.GuildId == e.Id);
+        if (dbGuild is null) {
+            logger.Error("Guild Settings for guild {guildId} is null, cannot delete data.", e.Id);
             return;
         }
-        guildSettings.DailyPatChannelId = 0;
-        var dailyPats = guildSettings.DailyPats;
-        dailyPats?.Clear();
-        // var irlQuotes = guildSettings.IrlQuotes;
-        // irlQuotes!.Enabled = false;
-        // irlQuotes.ChannelId = 0;
-        guildSettings.DataDeletionTime = DateTimeOffset.UtcNow.AddDays(28).ToUnixTimeSeconds();
-        Log.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Id);
-        Config.Save();
+        dbGuild.DailyPatChannelId = 0;
+        var guildPats = db.DailyPats.AsQueryable().Where(x => x.GuildId == e.Id).ToList();
+        if (guildPats.Count > 0)
+            guildPats?.Clear();
+        dbGuild.DataDeletionTime = DateTimeOffset.UtcNow.AddDays(28).ToUnixTimeSeconds();
+        await db.SaveChangesAsync();
+        logger.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Id);
     }
 
     private static async Task OnJoinGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
         if (GuildIds is not null && GuildIds.Contains(e.Id)) return;
-        if (Program.Instance.Client.Guilds.Count <= GuildCount) return;
+        var logger = Log.ForContext("SourceContext", "Event - GuildJoin");
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("42E66C"));
         em.WithDescription($"Joined server: `{e.Name.Sanitize()}` ({e.Id})");
@@ -72,7 +68,6 @@ public class OnBotJoinOrLeave : EventModule {
         em.AddField("Owner", $"{e.Owner.Username.Sanitize()} ({e.Owner.Id})");
         em.WithThumbnailUrl(e.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
         em.WithFooter($"Total servers: {Program.Instance.Client.Guilds.Count}");
-        GuildCount++;
 
         if (Config.Base.FullBlacklistOfGuilds!.Contains(e.Id)) {
             await Program.Instance.GeneralLogChannel!.SendMessageAsync($"Leaving guild {e.Name} ({e.Id}) because it is blacklisted.", embed: em.Build());
@@ -80,30 +75,6 @@ public class OnBotJoinOrLeave : EventModule {
             return;
         }
         await Program.Instance.GeneralLogChannel!.SendMessageAsync(embed: em.Build());
-
-        var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Id);
-        if (guildSettings is null) {
-            // var irlQuotes = new IrlQuotes {
-            //     Enabled = false,
-            //     ChannelId = 0,
-            //     SetEpochTime = 0
-            // };
-            
-            var guildParams = new GuildParams {
-                GuildName = e.Name,
-                GuildId = e.Id,
-                BlacklistedCommands = new List<string>(),
-                // Replies = new List<Reply>(),
-                DailyPatChannelId = 0,
-                DailyPats = new List<DailyPat>(),
-                // IrlQuotes = irlQuotes,
-                DataDeletionTime = 0
-            };
-
-            Config.Base.GuildSettings!.Add(guildParams);
-        }
-        else guildSettings.DataDeletionTime = 0;
-        Config.Save();
 
         try {
             await using var db = new Context();
@@ -116,23 +87,25 @@ public class OnBotJoinOrLeave : EventModule {
 
             if (checkGuild is null) {
                 var newGuild = new Guilds {
+                    Name = e.Name,
                     GuildId = e.Id,
-                    HeadPatBlacklistedRoleId = 0,
-                    PatCount = 0
+                    DataDeletionTime = 0,
+                    PatCount = 0,
+                    DailyPatChannelId = 0
                 };
-                Log.Information("Added guild to database from OnJoinGuild");
+                logger.Information("Added guild to database");
                 db.Guilds.Add(newGuild);
             }
         
             if (checkUser is null) {
                 var newUser = new Users {
                     UserId = e.Owner.Id,
-                    UsernameWithNumber = $"{e.Owner.Username}",
+                    Username = e.Owner.Username,
                     PatCount = 0,
                     CookieCount = 0,
-                    IsUserBlacklisted = 0
+                    Blacklisted = false
                 };
-                Log.Information("Added user to database from OnJoinGuild");
+                logger.Information("Added user to database");
                 db.Users.Add(newUser);
             }
             

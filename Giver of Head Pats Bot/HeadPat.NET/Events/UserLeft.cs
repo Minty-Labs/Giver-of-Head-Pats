@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using HeadPats.Configuration;
+using HeadPats.Data;
 using HeadPats.Modules;
 using Serilog;
 
@@ -14,19 +15,20 @@ public class UserLeft : EventModule {
         client.UserLeft += OnUserLeft;
     }
 
-    private Task OnUserLeft(SocketGuild arg1, SocketUser arg2) {
-        var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == arg1.Id);
-        if (guildSettings is not null && guildSettings.DailyPatChannelId == 0) return Task.CompletedTask;
+    private static async Task OnUserLeft(SocketGuild arg1, SocketUser arg2) {
+        var logger = Log.ForContext("SourceContext", "Event - UserLeave");
+        await using var db = new Context();
+        var dbGuild = db.Guilds.AsQueryable().FirstOrDefault(g => g.GuildId == arg1.Id);
+        if (dbGuild is not null && dbGuild.DailyPatChannelId == 0) return;
         try {
-            var pattedUser = guildSettings!.DailyPats!.FirstOrDefault(x => x.UserId == arg2.Id);
-            if (pattedUser == null) return Task.CompletedTask;
-            guildSettings.DailyPats!.Remove(pattedUser);
-            Config.Save();
-            Log.Information("Removed {User} ({UserId}) from the daily pats list for {GuildName} ({GuildId}), because they left the guild.", arg2.Username, arg2.Id , arg1.Name, arg1.Id);
+            var pattedUser = db!.DailyPats!.AsQueryable().FirstOrDefault(x => x.GuildId == arg1.Id && x.UserId == arg2.Id);
+            if (pattedUser == null) return;
+            db.DailyPats.Remove(pattedUser);
+            await db.SaveChangesAsync();
+            logger.Information("Removed {User} ({UserId}) from the daily pats list for {GuildName} ({GuildId}).", arg2.Username, arg2.Id , arg1.Name, arg1.Id);
         }
         catch {
             // ignored
         }
-        return Task.CompletedTask;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Discord;
+using HeadPats.Utils;
 using Serilog;
 using static HeadPats.Program;
 
@@ -6,72 +8,64 @@ namespace HeadPats.Data.Models;
 
 public class Users {
     [Key] public ulong UserId { get; set; }
-    public string UsernameWithNumber { get; set; }
-    public int PatCount { get; set; }
-    public int CookieCount { get; set; }
-    public int IsUserBlacklisted { get; set; }
+    public string Username { get; set; }
+    public string? NickName { get; set; }
+    public long PatCount { get; set; }
+    public long CookieCount { get; set; }
+    public bool Blacklisted { get; set; }
 }
 
 public static class UserControl {
-    public static void AddPatToUser(ulong userId, int numberOfPats, bool addToGuild = true, ulong guildToAddPatTo = 0) {
+    private static readonly ILogger Logger = Log.ForContext("SourceContext", "Database - UserControl");
+    
+    public static void AddPatToUser(ulong userId, int numberOfPats, bool addToGuild = true, ulong guildToAddPatTo = 0, IUser? user = null) {
         using var db = new Context();
-        var checkUser = db.Users.AsQueryable()
+        var dbUser = db.Users.AsQueryable()
             .Where(u => u.UserId.Equals(userId)).ToList().FirstOrDefault();
         
-        var checkGuild = db.Guilds.AsQueryable()
+        var dbGuild = db.Guilds.AsQueryable()
             .Where(u => u.GuildId.Equals(guildToAddPatTo)).ToList().FirstOrDefault();
         
-        var checkOverall = db.Overall.AsQueryable()
-            .Where(u => u.ApplicationId.Equals(Vars.ClientId)).ToList().FirstOrDefault();
-
-        var user = Instance.Client.GetUserAsync(userId).GetAwaiter().GetResult();
-        
-        if (checkUser == null) {
+        if (dbUser == null) {
             var newUser = new Users {
                 UserId = userId,
-                UsernameWithNumber = $"{user?.Username}",
+                Username = user!.Username ?? "",
                 PatCount = numberOfPats,
                 CookieCount = 0,
-                IsUserBlacklisted = 0
+                Blacklisted = false
             };
-            Log.Debug("Added user to database");
+            Logger.Debug("Added user to database");
             db.Users.Add(newUser);
         }
         else {
-            checkUser.PatCount += numberOfPats;
-            db.Users.Update(checkUser);
+            dbUser.PatCount += numberOfPats;
+            db.Users.Update(dbUser);
         }
 
         if (addToGuild && guildToAddPatTo != 0) {
-            if (checkGuild == null) {
+            if (dbGuild == null) {
                 var newGuild = new Guilds {
                     GuildId = guildToAddPatTo,
                     PatCount = numberOfPats,
-                    HeadPatBlacklistedRoleId = 0
+                    Name = "",
+                    DataDeletionTime = 0,
+                    DailyPatChannelId = 0
                 };
-                Log.Debug("Added guild to database");
+                Logger.Debug("Added guild to database");
                 db.Guilds.Add(newGuild);
             }
             else {
-                checkGuild.PatCount += numberOfPats;
-                db.Guilds.Update(checkGuild);
+                dbGuild.PatCount += numberOfPats;
+                db.Guilds.Update(dbGuild);
             }
         }
-        
-        if (checkOverall == null) {
-            var overall = new Overlord {
-                ApplicationId = Vars.ClientId,
-                PatCount = 0,
-                NsfwCommandsUsed = 0
-            };
-            db.Overall.Add(overall);
-            db.SaveChanges();
-        }
-        else {
-            checkOverall.PatCount += numberOfPats;
-            db.Overall.Update(checkOverall);
-        }
-        
+
+        // Update Global Pat Count
+        var patCount = db.GlobalVariables.AsQueryable().ToList().FirstOrDefault(x => x.Name.Equals("PatCount"));
+        var beforePatCount = patCount?.Value.AsInt();
+        var modifiedPatCount = beforePatCount + numberOfPats;
+        patCount!.Value = modifiedPatCount.ToString()!;
+        db.GlobalVariables.Update(patCount);
         db.SaveChanges();
     }
 
@@ -85,11 +79,12 @@ public static class UserControl {
         if (checkUser == null) {
             var newUser = new Users {
                 UserId = userId,
-                UsernameWithNumber = $"{user?.Username}",
+                Username = user!.Username ?? "",
                 PatCount = 0,
-                CookieCount = cookiesToAdd
+                CookieCount = cookiesToAdd,
+                Blacklisted = false,
             };
-            Log.Debug("Added user to database");
+            Logger.Debug("Added user to database");
             db.Users.Add(newUser);
         }
         else {

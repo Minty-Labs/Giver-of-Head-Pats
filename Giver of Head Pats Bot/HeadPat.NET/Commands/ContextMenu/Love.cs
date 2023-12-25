@@ -32,9 +32,11 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
         
         if (checkGuild is null) {
             var newGuild = new Guilds {
+                Name = Context.Guild.Name,
                 GuildId = Context.Guild.Id,
-                HeadPatBlacklistedRoleId = 0,
-                PatCount = 0
+                DataDeletionTime = 0,
+                PatCount = 0,
+                DailyPatChannelId = 0
             };
             Log.Information("Added guild to database from Context menu Pat Command");
             db.Guilds.Add(newGuild);
@@ -46,10 +48,11 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
         if (checkUser is null) {
             var newUser = new Users {
                 UserId = user.Id,
-                UsernameWithNumber = $"{user.Username}",
+                Username = $"{user.Username}",
+                NickName = "",
                 PatCount = 0,
                 CookieCount = 0,
-                IsUserBlacklisted = 0
+                Blacklisted = false
             };
             Log.Debug("Added user to database from Context menu Pat Command");
             db.Users.Add(newUser);

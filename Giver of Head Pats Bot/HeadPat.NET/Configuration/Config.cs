@@ -78,16 +78,16 @@ public static class Config {// : BasicModule {
         //     DeleteTriggerIfIsOnlyInMessage = false
         // };
         
-        var guildParams = new GuildParams {
-            GuildName = "Your Guild Name",
-            GuildId = 0,
-            BlacklistedCommands = new List<string>(),
-            // Replies = new List<Reply>(),
-            DailyPatChannelId = 0,
-            DailyPats = new List<DailyPat>(),
-            // IrlQuotes = irlq,
-            DataDeletionTime = 0
-        };
+        // var guildParams = new GuildParams {
+        //     GuildName = "Your Guild Name",
+        //     GuildId = 0,
+        //     BlacklistedCommands = new List<string>(),
+        //     // Replies = new List<Reply>(),
+        //     DailyPatChannelId = 0,
+        //     DailyPats = new List<DailyPat>(),
+        //     // IrlQuotes = irlq,
+        //     DataDeletionTime = 0
+        // };
         
         var contributor = new BotContributor {
             UserName = "MintLily",
@@ -120,7 +120,7 @@ public static class Config {// : BasicModule {
             FullBlacklistOfGuilds = new List<ulong>(),
             Api = api,
             Contributors = new List<BotContributor> { contributor },
-            GuildSettings = new List<GuildParams> { guildParams },
+            // GuildSettings = new List<GuildParams> { guildParams },
             NameReplacements = new List<NameReplacement> { nameReplacement },
             Banger = banger,
             PersonalizedMemberLily = personalizationLily,
@@ -139,7 +139,7 @@ public static class Config {// : BasicModule {
     public static void Save() 
         => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
     
-    public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
+    // public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
     
     public static PersonalizedMember PersonalizedMember(ulong guildId) => Base.PersonalizedMemberLily.GuildId == guildId ? Base.PersonalizedMemberLily : Base.PersonalizedMemberPenny;
 }

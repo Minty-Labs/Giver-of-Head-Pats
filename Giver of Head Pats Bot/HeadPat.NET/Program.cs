@@ -1,5 +1,7 @@
 ﻿using Serilog;
 using Serilog.Events; 
+using Serilog.Templates;
+using Serilog.Templates.Themes;
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
 using Discord.Commands;
@@ -21,11 +23,16 @@ using HeadPats.Events;
 using HeadPats.Managers;
 using HeadPats.Modules;
 using HeadPats.Utils.ExternalApis;
+using Serilog.Core;
 
 namespace HeadPats;
 
 public class Program {
     public static Program Instance { get; private set; }
+    private static readonly ILogger Logger = Log.ForContext("SourceContext", Vars.Name);
+    private static readonly ILogger UtilLogger = Log.ForContext("SourceContext", "Util");
+    private static readonly ILogger CrLogger = Log.ForContext("SourceContext", "ClientReady");
+    
     public DiscordSocketClient Client { get; set; }
     private InteractionService GlobalInteractions { get; set; }
     private InteractionService PersonalizedMembersInteractions { get; set; }
@@ -45,9 +52,9 @@ public class Program {
     public Patreon_Client PatreonClientInstance;
 
     public static Task Main(string[] args) {
-        Vars.IsWindows = Environment.OSVersion.ToString().ToLower().Contains("windows");
+        Vars.IsWindows = Environment.OSVersion.ToString().Contains("windows", StringComparison.CurrentCultureIgnoreCase);
         Console.Title = $"{Vars.Name} v{Vars.Version} | Starting...";
-        Log.Debug($"{Vars.Name} Bot is starting . . .");
+        Logger.Debug($"{Vars.Name} Bot is starting . . .");
         new Program().MainAsync().GetAwaiter().GetResult();
         return Task.CompletedTask;
     }
@@ -56,21 +63,27 @@ public class Program {
         Instance = this;
         Log.Logger = 
             new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console()
-                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 25, 
-                    rollOnFileSizeLimit: true, fileSizeLimitBytes: 1024000000L)
+                .MinimumLevel.ControlledBy(new LoggingLevelSwitch(
+                    initialMinimumLevel: Vars.IsDebug ? LogEventLevel.Debug : LogEventLevel.Information))
+                .WriteTo.Console(new ExpressionTemplate(
+                    template: "[{@t:HH:mm:ss} {@l:u3} {Coalesce(Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),'unset')}] {@m}\n{@x}",
+                    theme: TemplateTheme.Literate))
+                .WriteTo.File(Path.Combine(Environment.CurrentDirectory, "Logs", "start_.log"),
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 25, 
+                    rollOnFileSizeLimit: true,
+                    fileSizeLimitBytes: 1024000000L)
                 .CreateLogger();
     }
 
     private async Task MainAsync() {
         if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
             Console.Title = "HeadPat.NET | Enter your bot token";
-            Log.Information("Please enter your bot token:");
+            Logger.Information("Please enter your bot token:");
             Config.Base.BotToken = Console.ReadLine()!.Trim();
         }
         else if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
-            Log.Information("Cannot proceed without a bot token. Please enter your bot token in the Configuration.json file.");
+            Logger.Information("Cannot proceed without a bot token. Please enter your bot token in the Configuration.json file.");
             Environment.Exit(0);
         }
         Config.Save();
@@ -186,11 +199,12 @@ public class Program {
         await MintyLabsInteractions.AddModuleAsync<ConfigControl>(null);
 
         Client.InteractionCreated += async arg => {
+            var iLogger = Log.ForContext("SourceContext", "Interaction");
             await BangerInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             await PersonalizedMembersInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             await GlobalInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             await MintyLabsInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
-            Log.Debug("{0} ran an interaction in guild {1}", arg.User.Username, arg.GuildId);
+            iLogger.Debug("{0} ran in guild {1}", arg.User.Username, arg.GuildId);
         };
         
         #endregion
@@ -212,22 +226,29 @@ public class Program {
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!))
             FluxpointClient = new FluxpointClient(Vars.Name, Config.Base.Api.ApiKeys.FluxpointApiKey!);
+
+        if (string.IsNullOrWhiteSpace(Config.Base.Database.Database)) {
+            Logger.Error("Cannot proceed without a database name. Exiting...");
+            if (!Vars.IsWindows) {
+                Utils.Execution.PM2.Stop();
+            }
+            Environment.Exit(0);
+            return;
+        }
         
         await using var db = new Context();
-        var check = db.Overall.AsQueryable()
-            .Where(u => u.ApplicationId.Equals(Vars.ClientId)).ToList().FirstOrDefault();
-        
+        var check = db.GlobalVariables.AsQueryable().FirstOrDefault(x => x.Name.Equals("PatCount") && x.ApplicationId.Equals(Vars.ClientId));
         if (check == null) {
-            var overall = new Overlord {
+            var global = new GlobalVariable {
+                Name = "PatCount",
                 ApplicationId = Vars.ClientId,
-                PatCount = 0,
-                NsfwCommandsUsed = 0
+                Value = "0"
             };
-            db.Overall.Add(overall);
+            db.GlobalVariables.Add(global);
             await db.SaveChangesAsync();
         }
         
-        Log.Information("Bot finished initializing, logging in to Discord...");
+        Logger.Information("Bot finished initializing, logging in to Discord...");
         await Client.LoginAsync(TokenType.Bot, Config.Base.BotToken);
         await Client.StartAsync();
 
@@ -242,15 +263,15 @@ public class Program {
         // }
         
         Vars.StartTime = DateTime.UtcNow;
-        Log.Debug("Bot Version        = " + Vars.Version);
-        Log.Debug("Process ID         = " + Environment.ProcessId);
-        Log.Debug("Build Date         = " + Vars.BuildDate);
-        Log.Debug("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
-        Log.Debug("Token              = " + Config.Base.BotToken!.Redact());
+        CrLogger.Debug("Bot Version        = " + Vars.Version);
+        CrLogger.Debug("Process ID         = " + Environment.ProcessId);
+        CrLogger.Debug("Build Date         = " + Vars.BuildDate);
+        CrLogger.Debug("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
+        CrLogger.Debug("Token              = " + Config.Base.BotToken!.Redact());
         // Log.Debug("Prefix (non-Slash) = " + $"{Config.Base.Prefix}");
-        Log.Debug("ActivityType       = " + $"{Config.Base.ActivityType}");
-        Log.Debug("Game               = " + $"{Config.Base.ActivityText}");
-        Log.Debug("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + BangerInteractions.SlashCommands.Count + PersonalizedMembersInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
+        CrLogger.Debug("ActivityType       = " + $"{Config.Base.ActivityType}");
+        CrLogger.Debug("Game               = " + $"{Config.Base.ActivityText}");
+        CrLogger.Debug("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + BangerInteractions.SlashCommands.Count + PersonalizedMembersInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
 
         await Client.SetStatusAsync(Vars.IsDebug || Vars.IsWindows ? UserStatus.DoNotDisturb : UserStatus.Online);
         if (Vars.IsWindows)
@@ -265,8 +286,8 @@ public class Program {
         
         OnBotJoinOrLeave.GuildIds = new List<ulong>();
         await using var db = new Context();
-        var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
-        OnBotJoinOrLeave.GuildCount = Client.Guilds.Count;
+        var tempPatCount = Convert.ToInt32(db.GlobalVariables.AsQueryable().ToList().FirstOrDefault(x => x.Name.Equals("PatCount"))!.Value);
+        
         foreach (var guild in Client.Guilds) {
             OnBotJoinOrLeave.GuildIds.Add(guild.Id);
         }
@@ -303,39 +324,39 @@ public class Program {
         else await DNetToConsole.SendErrorToLoggingChannelAsync("No Event Modules were found or loaded!!");
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
-        Log.Information("[{0}] Registered global slash commands.", "Register");
+        CrLogger.Information("[{0}] Registered global slash commands.", "Register");
         try {
             await PersonalizedMembersInteractions.RegisterCommandsToGuildAsync(805663181170802719);
-            Log.Information("[{0}] Registered Personalized Member guild slash commands for {1}.", "Register", "805663181170802719");
+            CrLogger.Information("[{0}] Registered Personalized Member guild slash commands for {1}.", "Register", "805663181170802719");
         }
         catch (Exception e) {
-            Log.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "805663181170802719", e);
+            CrLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "805663181170802719", e);
         }
 
         if (!Vars.IsDebug) {
             try {
                 await PersonalizedMembersInteractions.RegisterCommandsToGuildAsync(977705960544014407);
-                Log.Information("[{0}] Registered Personalized Member guild slash commands for {1}.", "Register", "977705960544014407");
+                CrLogger.Information("[{0}] Registered Personalized Member guild slash commands for {1}.", "Register", "977705960544014407");
             }
             catch (Exception e) {
-                Log.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "977705960544014407", e);
+                CrLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "977705960544014407", e);
             }
 
             try {
                 await BangerInteractions.RegisterCommandsToGuildAsync(977705960544014407);
-                Log.Information("[{0}] Registered Banger guild slash commands for {1}.", "Register", "977705960544014407");
+                CrLogger.Information("[{0}] Registered Banger guild slash commands for {1}.", "Register", "977705960544014407");
             }
             catch (Exception e) {
-                Log.Error("Failed to register Banger guild slash commands for {0}\n{err}", "977705960544014407", e);
+                CrLogger.Error("Failed to register Banger guild slash commands for {0}\n{err}", "977705960544014407", e);
             }
         }
 
         try {
             await MintyLabsInteractions.RegisterCommandsToGuildAsync(Vars.SupportServerId);
-            Log.Information("[{0}] Registered Owner slash commands for {1} ({2}).", "Register", "Minty Labs",  Vars.SupportServerId);
+            CrLogger.Information("[{0}] Registered Owner slash commands for {1} ({2}).", "Register", "Minty Labs",  Vars.SupportServerId);
         }
         catch (Exception e) {
-            Log.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
+            CrLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
         }
         
         PatreonClientInstance = new Patreon_Client();
@@ -352,45 +373,45 @@ public class Program {
     public SocketTextChannel? GetChannel(ulong guildId, ulong id) {
         var guild = Client.GetGuild(guildId);
         if (guild is null) {
-            Log.Error($"Selected guild {guildId} does not exist!");
+            UtilLogger.Error($"Selected guild {guildId} does not exist!");
             return null;
         }
         if (guild.GetTextChannel(id) is { } channel) return channel;
-        Log.Error($"Selected channel {id} does not exist!");
+        UtilLogger.Error($"Selected channel {id} does not exist!");
         return null;
     }
     
     public SocketUser? GetUser(ulong id) {
         if (Client.GetUser(id) is { } user) return user;
-        Log.Error($"Selected user {id} does not exist!");
+        UtilLogger.Error($"Selected user {id} does not exist!");
         return null;
     }
     
     public SocketGuild? GetGuild(ulong id) {
         if (Client.GetGuild(id) is { } guild) return guild;
-        Log.Error($"Selected guild {id} does not exist!");
+        UtilLogger.Error($"Selected guild {id} does not exist!");
         return null;
     }
     
     public SocketUser? GetGuildUser(ulong guildId, ulong userId) {
         var guild = Client.GetGuild(guildId);
         if (guild is null) {
-            Log.Error($"Selected guild {guildId} does not exist! <GetGuildUser>");
+            UtilLogger.Error($"Selected guild {guildId} does not exist! <GetGuildUser>");
             return null;
         }
         if (guild.GetUser(userId) is { } user) return user;
-        Log.Error($"Selected user {userId} does not exist! <GetGuildUser>");
+        UtilLogger.Error($"Selected user {userId} does not exist! <GetGuildUser>");
         return null;
     }
     
     public SocketCategoryChannel? GetCategory(ulong guildId, ulong id) {
         var guild = Client.GetGuild(guildId);
         if (guild is null) {
-            Log.Error($"Selected guild {guildId} does not exist!");
+            UtilLogger.Error($"Selected guild {guildId} does not exist!");
             return null;
         }
         if (guild.GetCategoryChannel(id) is { } category) return category;
-        Log.Error($"Selected category {id} does not exist!");
+        UtilLogger.Error($"Selected category {id} does not exist!");
         return null;
     }
 }

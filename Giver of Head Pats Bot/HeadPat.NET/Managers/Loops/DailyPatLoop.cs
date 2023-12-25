@@ -9,14 +9,15 @@ using Serilog;
 namespace HeadPats.Managers.Loops; 
 
 public static class DailyPatLoop {
+    private static readonly ILogger Logger = Log.ForContext(typeof(DailyPatLoop));
 
     public static async Task DoDailyPat(Context db, long currentEpoch) {
         if (Vars.IsDebug) return;
-        var configGuildSettings = Config.Base.GuildSettings;
-        if (configGuildSettings is null) return;
+        var dbGuilds = db.Guilds;
+        var dbDailyPats = db.DailyPats;
         var updated = false;
         
-        foreach (var guild in configGuildSettings) {
+        foreach (var guild in dbGuilds) {
             try {
                 var guildVar = Program.Instance.GetGuild(guild.GuildId);
                 if (guildVar is null) {
@@ -25,17 +26,14 @@ public static class DailyPatLoop {
             }
             catch {/*ignore*/}
             
-            if (guild.DailyPats is null || guild.DailyPats.Count is 0) continue;
-                
-            var guildSettings = Config.GuildSettings(guild.GuildId);
+            var guildPats = dbDailyPats.AsQueryable().Where(x => x.GuildId == guild.GuildId).ToList();
+            
+            if (guildPats.Count is 0) continue;
                 
             if (guild.DailyPatChannelId is 0)
                 continue;
-            
-            if (guildSettings!.DailyPats is null)
-                continue;
                 
-            foreach (var user in guildSettings.DailyPats) {
+            foreach (var user in guildPats) {
                 if (user.SetEpochTime >= currentEpoch)
                     continue;
                 
@@ -68,7 +66,7 @@ public static class DailyPatLoop {
                 
                 var embed = new EmbedBuilder {
                     Title = "Daily Pats!",
-                    Description = $"{user.UserName.ReplaceName(user.UserId)}, You have received your daily pats! You now have {userPatCount} pats!",
+                    Description = $"{dbUser.Username.ReplaceName(user.UserId)}, You have received your daily pats! You now have {userPatCount} pats!",
                     Color = Colors.Yellow,
                     ImageUrl = patUrl,
                     Footer = new EmbedFooterBuilder {
@@ -82,7 +80,7 @@ public static class DailyPatLoop {
                     await channel.SendMessageAsync(embed: embed);
                 }
                 catch {
-                    Log.Debug("Failed to send message to channel, skipping");
+                    Logger.Debug("Failed to send message to channel, skipping");
                     continue;
                 }
                 

@@ -6,11 +6,15 @@ namespace HeadPats;
 public static class Vars {
     public static string DNetVer { get; } = Assembly.GetAssembly(typeof(DiscordSocketClient))!.GetName().Version!.ToString(3);
     public const string Name = "Giver of Head Pats";
-    public const ulong ClientId = 489144212911030304;
+    public const ulong ClientId = IsDebug ? 495714488897503232 : 489144212911030304;
     
-    public const string Version = "5.0.6" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
+    public const string Version = "5.1.0" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
     public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow: new(2023, 12, 6, 19, 50, 00); // (year, month, day, hour, min, sec)
+#if DEBUG
+    public const bool IsDebug = true;
+#else
     public const bool IsDebug = false;
+#endif
     public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime { get; set; }
     public static bool IsWindows { get; set; }

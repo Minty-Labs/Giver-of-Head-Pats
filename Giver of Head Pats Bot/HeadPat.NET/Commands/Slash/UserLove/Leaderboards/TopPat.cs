@@ -11,14 +11,15 @@ namespace HeadPats.Commands.Slash.UserLove.Leaderboards;
 public class TopPat : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("toppat", "Get the top head pat leaderboard")]
     public async Task HeadPatLeaderboard([Summary("keywords", "Key words")] string keyWords = "") {
+        var logger = Log.ForContext("SourceContext", "Command - TopPat");
         await using var db = new Context();
-        var guildPats = 0;
+        long guildPats = 0;
         try { guildPats = db.Guilds.AsQueryable().ToList().FirstOrDefault(g => g.GuildId == Context.Guild.Id)!.PatCount; }
-        catch { Log.Error("[TopPat] Guilds DataSet is Empty"); }
+        catch { logger.Error("Guilds DataSet is Empty"); }
 
         var globalPats = 0;
-        try { globalPats = db.Overall.AsQueryable().ToList().First().PatCount; }
-        catch { Log.Error("[TopPat] Server DataSet is Empty"); }
+        try { globalPats = Convert.ToInt32(db.GlobalVariables.AsQueryable().ToList().FirstOrDefault(x=> x.Name.Equals("PatCount"))?.Value); }
+        catch { logger.Error("GlobalVariable {0} is Empty or does not exist", "PatCount"); }
 
         var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
 
@@ -33,7 +34,7 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
             foreach (var u in newUserList) {
                 if (counter >= 51) continue;
                 if (Context.Guild.Users.Any(m => m.Id != u.UserId)) continue;
-                strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
+                strings.AppendLine($"`{counter}.` {(u.Username.Contains('#') ? u.Username.Split('#')[0].ReplaceName(u.UserId) : u.Username.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
                 counter++;
             }
 
@@ -47,7 +48,7 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
         foreach (var u in newUserList) {
             if (max >= 11) continue;
             if (Context.Guild.Users.Any(m => m.Id != u.UserId)) continue;
-            sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
+            sb.AppendLine($"`{max}.` {(u.Username.Contains('#') ? u.Username.Split('#')[0].ReplaceName(u.UserId) : u.Username.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
             max++;
         }
 

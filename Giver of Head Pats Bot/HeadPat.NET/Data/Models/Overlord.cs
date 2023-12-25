@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*using System.ComponentModel.DataAnnotations;
 
 namespace HeadPats.Data.Models; 
 
@@ -9,7 +9,7 @@ public class Overlord {
 }
 
 public static class OverlordControl {
-    public static void AddToCommandCounter() {
+    /*public static void AddToCommandCounter() {
         using var db = new Context();
         var checkOverall = db.Overall.AsQueryable()
             .Where(u => u.ApplicationId.Equals(Vars.ClientId)).ToList().FirstOrDefault();
@@ -29,5 +29,5 @@ public static class OverlordControl {
         }
         
         db.SaveChanges();
-    }
-}
+    }#1#
+}*/

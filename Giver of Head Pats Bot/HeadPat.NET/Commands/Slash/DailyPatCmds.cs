@@ -2,7 +2,8 @@
 using Discord;
 using Discord.Interactions;
 using HeadPats.Configuration;
-using HeadPats.Configuration.Classes;
+using HeadPats.Data;
+using HeadPats.Data.Models;
 using HeadPats.Managers;
 
 namespace HeadPats.Commands.Slash; 
@@ -14,76 +15,71 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("setchannel", "Sets the channel where daily pats are sent")]
         public async Task SetDailyPatChannel([Summary("channel", "Channel to set as the daily pat channel")] ITextChannel channel) {
-            await RespondAsync("Daily Pats are temporarily disabled.");
-            return;
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
-            guildSettings!.DailyPatChannelId = channel.Id;
+            await using var db = new Context();
+            var dbGuild = db.Guilds.AsQueryable().FirstOrDefault(x => x.GuildId == Context.Guild.Id);
+            dbGuild!.DailyPatChannelId = channel.Id;
             Config.Save();
             await RespondAsync($"Set the daily pat channel to <#{channel.Id}>");
         }
 
-        private static bool _doesItExist(ISnowflakeEntity user, ulong guildId) => Config.GuildSettings(guildId)!.DailyPats!.Any(u => u.UserId == user.Id); 
+        private static bool _doesItExist(ISnowflakeEntity user, Context db, ulong guildId) => db.DailyPats.AsQueryable().Where(g => g.GuildId == guildId).Any(u => u.UserId == user.Id);
         
         [SlashCommand("add", "Sets the daily pat to user")]
         public async Task AddDailyPat([Summary("user", "Sets the daily pat to user")] IUser user) {
-            await RespondAsync("Daily Pats are temporarily disabled.");
-            return;
             // is user in guild
             if (user is not IGuildUser) {
                 await RespondAsync("User must be in the guild.", ephemeral: true);
                 return;
             }
             
-            // is not role
-            // if (user is IRole) {
-            //     await RespondAsync("You cannot set a daily pat to a role; it must be a DiscordMember");
-            //     return;
-            // }
+            await using var db = new Context();
             
             // does it exist
-            if (_doesItExist(user, Context.Guild.Id)) {
+            if (_doesItExist(user, db, Context.Guild.Id)) {
                 await RespondAsync("User already has a daily pat set.", ephemeral: true);
                 return;
             }
             
-            var dailyPat = new DailyPat {
+            var dailyPat = new DailyPats {
                 UserId = user.Id,
-                UserName = user.Username,
+                // UserName = user.Username,
+                GuildId = Context.Guild.Id,
                 SetEpochTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + 86400
             };
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
         
-            guildSettings!.DailyPats!.Add(dailyPat);
-            Config.Save();
+            db.DailyPats.Add(dailyPat);
+            await db.SaveChangesAsync();
             await RespondAsync($"Set daily pat for {user.Username.ReplaceName(user.Id)}.");
         }
 
         [SlashCommand("remove", "Removes the daily pat from user")]
         public async Task RemoveDailyPat([Summary("user", "Removes the daily pat from user")] IUser user) {
-            await RespondAsync("Daily Pats are temporarily disabled.");
-            return;
-            if (!_doesItExist(user, Context.Guild.Id)) {
+            await using var db = new Context();
+            if (!_doesItExist(user, db, Context.Guild.Id)) {
                 await RespondAsync("User does not have a daily pat set.", ephemeral: true);
                 return;
             }
 
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
-
-            var dailyPat = guildSettings!.DailyPats!.Single(u => u.UserId == user.Id);
-            guildSettings!.DailyPats!.Remove(dailyPat);
-            Config.Save();
+            var dailyPat = db.DailyPats.AsQueryable().FirstOrDefault(x => x.UserId == user.Id && x.GuildId == Context.Guild.Id);
+            db.DailyPats.Remove(dailyPat!);
+            await db.SaveChangesAsync();
             await RespondAsync($"Removed daily pat from {user.Username.ReplaceName(user.Id)}.");
         }
 
         [SlashCommand("list", "Lists all users with daily pats set")]
         public async Task ListDailyPats() {
-            await RespondAsync("Daily Pats are temporarily disabled.");
-            return;
+            await using var db = new Context();
             var sb = new StringBuilder();
             sb.AppendLine("`UserName (ID) - Next Pat Time`");
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
-            foreach (var dailyPat in guildSettings!.DailyPats!) {
-                sb.AppendLine($"{dailyPat.UserName.ReplaceName(dailyPat.UserId)} ({dailyPat.UserId}) - <t:{dailyPat.SetEpochTime}:>");
+            
+            var guildPats = db.DailyPats.AsQueryable().Where(x => x.GuildId == Context.Guild.Id).ToList();
+            if (guildPats.Count is 0) {
+                await RespondAsync("No daily pats are set.");
+                return;
+            }
+            
+            foreach (var user in guildPats) {
+                sb.AppendLine($"{Program.Instance.GetGuildUser(Context.Guild.Id, user.UserId)!.Username.ReplaceName(user.UserId) ?? "\"could not load username\""} ({user.UserId}) - <t:{user.SetEpochTime}:>");
             }
 
             await RespondAsync(sb.ToString());

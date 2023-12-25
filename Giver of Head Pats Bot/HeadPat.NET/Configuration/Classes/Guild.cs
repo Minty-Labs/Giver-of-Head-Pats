@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿/*using System.Text.Json.Serialization;
 namespace HeadPats.Configuration.Classes;
 
 public class GuildParams {
@@ -10,4 +10,4 @@ public class GuildParams {
     public List<DailyPat>? DailyPats { get; set; }
     // [JsonPropertyName("IRL Quotes")] public IrlQuotes IrlQuotes { get; set; }
     [JsonPropertyName("Data Deletion Time")] public long DataDeletionTime { get; set; }
-}
+}*/

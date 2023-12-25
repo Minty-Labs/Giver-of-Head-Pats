@@ -8,6 +8,7 @@ namespace HeadPats.Managers;
 public class LoopingTaskScheduler : BasicModule {
     protected override string ModuleName => "Task Scheduler";
     protected override string ModuleDescription => "Runs scheduler tasks";
+    private static readonly ILogger Logger = Log.ForContext(typeof(LoopingTaskScheduler));
 
     public override void Initialize() => Scheduler();
 
@@ -27,7 +28,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(statusLoop, statusLoopTrigger);
     
-        var rotatingStatusLoop = JobBuilder.Create<DataDeletionJob>().Build();
+        var rotatingStatusLoop = JobBuilder.Create<RotatingStatusJob>().Build();
         var rotatingStatusLoopTrigger = TriggerBuilder.Create()
             .WithIdentity("RotatingStatusLoop", Vars.Name)
             .StartNow()
@@ -47,7 +48,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(guildDataDeletion, guildDataDeletionTrigger);
         
-        var dailyPat = JobBuilder.Create<DataDeletionJob>().Build();
+        var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
         var dailyPatTrigger = TriggerBuilder.Create()
             .WithIdentity("DailyPat", Vars.Name)
             .StartNow()
@@ -57,7 +58,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);
         
-        var patreonInfo = JobBuilder.Create<DataDeletionJob>().Build();
+        var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
         var patreonInfoTrigger = TriggerBuilder.Create()
             .WithIdentity("PatreonInfo", Vars.Name)
             .StartNow()
@@ -66,6 +67,6 @@ public class LoopingTaskScheduler : BasicModule {
                 .RepeatForever())
             .Build();
         await scheduler.ScheduleJob(patreonInfo, patreonInfoTrigger);
-        Log.Information("[Scheduler] Scheduler initialized!");
+        Logger.Information("Initialized!");
     }
 }

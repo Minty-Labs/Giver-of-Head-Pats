@@ -19,7 +19,7 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
             foreach (var u in newUserList) {
                 if (counter >= 51) continue;
                 if (Context.Guild.Users.Any(m => m.Id != u.UserId)) continue;
-                strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
+                strings.AppendLine($"`{counter}.` {(u.Username.Contains('#') ? u.Username.Split('#')[0].ReplaceName(u.UserId) : u.Username.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
                 counter++;
             }
 
@@ -33,7 +33,7 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
         foreach (var u in newUserList) {
             if (max >= 11) continue;
             if (Context.Guild.Users.Any(m => m.Id != u.UserId)) continue;
-            sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
+            sb.AppendLine($"`{max}.` {(u.Username.Contains('#') ? u.Username.Split('#')[0].ReplaceName(u.UserId) : u.Username.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
             max++;
         }
 

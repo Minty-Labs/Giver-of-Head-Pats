@@ -17,27 +17,28 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
         public async Task Pat([Summary("user", "User to pat")] IGuildUser user,
             [Summary("params", "Extra parameters (for the bot owner)")]
             string extraParams = "") {
+            var logger = Log.ForContext("SourceContext", "Command - Pat");
             var canUseParams = Context.User.Id == 167335587488071682;
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
-                var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("pat");
-                if (isThisCommandBlacklisted) {
-                    await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
-                    return;
-                }
+                await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
+                logger.Debug("Guild {guildId} is blacklisted and is trying to run the pat command", Context.Guild.Id);
+                return;
             }
-
+            
             await using var db = new Context();
             var checkGuild = db.Guilds.AsQueryable()
                 .Where(u => u.GuildId.Equals(Context.Guild.Id)).ToList().FirstOrDefault();
 
             if (checkGuild is null) {
                 var newGuild = new Guilds {
+                    Name = Context.Guild.Name,
                     GuildId = Context.Guild.Id,
-                    HeadPatBlacklistedRoleId = 0,
-                    PatCount = 0
+                    DataDeletionTime = 0,
+                    PatCount = 0,
+                    DailyPatChannelId = 0
                 };
-                Log.Information("Added guild to database from Pat Command");
+                logger.Debug("Added guild to database from Pat Command");
                 db.Guilds.Add(newGuild);
             }
 
@@ -47,16 +48,17 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             if (checkUser is null) {
                 var newUser = new Users {
                     UserId = user.Id,
-                    UsernameWithNumber = $"{user.Username}",
+                    Username = $"{user.Username}",
+                    NickName = "",
                     PatCount = 0,
                     CookieCount = 0,
-                    IsUserBlacklisted = 0
+                    Blacklisted = false
                 };
-                Log.Debug("Added user to database from Pat Command");
+                logger.Debug("Added user to database from Pat Command");
                 db.Users.Add(newUser);
             }
 
-            var isUserBlackListed = checkUser is not null && checkUser.IsUserBlacklisted == 1;
+            var isUserBlackListed = checkUser is not null && checkUser.Blacklisted;
 
             if (isUserBlackListed) {
                 await RespondAsync("You are not allowed to use this command. This was set by a bot developer.", ephemeral: true);
@@ -93,20 +95,20 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 var image = Program.Instance.CookieClient!.GetPat();
                 // Log.Debug($"THE IMAGE IS: {image}");
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.PatCount} pats");
+                e.WithFooter($"Powered by CookieAPI | You now have {checkUser!.PatCount + 1} pats");
             }
             else {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetPatAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -146,20 +148,19 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{Context.User.Mention} gave **{special}** headpats to {user.Mention}");
             else
                 e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{Context.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
-            UserControl.AddPatToUser(user.Id, special, true, Context.Guild.Id);
+            UserControl.AddPatToUser(user.Id, special, true, Context.Guild.Id, user);
             await RespondAsync(embed: e.Build());
-            Log.Debug($"Total Pat amount Given: {special}");
+            logger.Debug("Total Pat amount given to {0}: {1}", user.DisplayName, special);
         }
 
         [SlashCommand("hug", "Hug a user")]
         public async Task Hug([Summary("User", "User to hug")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Hug");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
-                var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("hug");
-                if (isThisCommandBlacklisted) {
-                    await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
-                    return;
-                }
+                await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
+                logger.Debug("Guild {guildId} is blacklisted and is trying to run the pat command", Context.Guild.Id);
+                return;
             }
 
             if (user.Id == Context.User.Id) {
@@ -182,7 +183,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetHug();
                 if (image.Equals(_tempHugGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -195,7 +196,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetHugAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -212,13 +213,12 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("kiss", "Kiss a user")]
         public async Task Kiss([Summary("kiss", "User to kiss")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Kiss");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
-                var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("kiss");
-                if (isThisCommandBlacklisted) {
-                    await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
-                    return;
-                }
+                await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
+                logger.Debug("Guild {guildId} is blacklisted and is trying to run the pat command", Context.Guild.Id);
+                return;
             }
 
             if (user.Id == Context.User.Id) {
@@ -241,7 +241,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetKiss();
                 if (image.Equals(_tempKissGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -254,7 +254,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetKissAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -271,13 +271,12 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("slap", "Slap a user")]
         public async Task Slap([Summary("slap", "User to slap")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Slap");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
-                var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("slap");
-                if (isThisCommandBlacklisted) {
-                    await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
-                    return;
-                }
+                await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
+                logger.Debug("Guild {guildId} is blacklisted and is trying to run the pat command", Context.Guild.Id);
+                return;
             }
 
             if (user.Id == Context.User.Id) {
@@ -300,7 +299,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetSlap();
                 if (image.Equals(_tempSlapGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -313,7 +312,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetSlapAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -330,13 +329,12 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("cookie", "Give a user a cookie")]
         public async Task Cookie([Summary("Cookie", "User to give cookie")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Cookie");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
-                var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("cookie");
-                if (isThisCommandBlacklisted) {
-                    await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
-                    return;
-                }
+                await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
+                logger.Debug("Guild {guildId} is blacklisted and is trying to run the pat command", Context.Guild.Id);
+                return;
             }
 
             await using var db = new Context();
@@ -345,11 +343,13 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (checkGuild is null) {
                 var newGuild = new Guilds {
+                    Name = Context.Guild.Name,
                     GuildId = Context.Guild.Id,
-                    HeadPatBlacklistedRoleId = 0,
-                    PatCount = 0
+                    DataDeletionTime = 0,
+                    PatCount = 0,
+                    DailyPatChannelId = 0
                 };
-                Log.Information("Added guild to database from Pat Command");
+                logger.Debug("Added guild to database from Pat Command");
                 db.Guilds.Add(newGuild);
             }
 
@@ -359,12 +359,13 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             if (checkUser is null) {
                 var newUser = new Users {
                     UserId = user.Id,
-                    UsernameWithNumber = $"{user.Username}",
+                    Username = $"{user.Username}",
+                    NickName = "",
                     PatCount = 0,
                     CookieCount = 0,
-                    IsUserBlacklisted = 0
+                    Blacklisted = false
                 };
-                Log.Debug("Added user to database from Pat Command");
+                logger.Debug("Added user to database from Pat Command");
                 db.Users.Add(newUser);
             }
 
@@ -390,17 +391,17 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetCookie();
                 if (image.Equals(_tempCookieGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
                 _tempCookieGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.CookieCount} cookies");
+                e.WithFooter($"Powered by CookieAPI | You now have {checkUser!.CookieCount + 1} cookies");
             }
             else 
-                e.WithFooter($"You have {checkUser!.CookieCount} cookies");
+                e.WithFooter($"You now have {checkUser!.CookieCount + 1} cookies");
 
             e.WithColor(Colors.GetRandomCookieColor());
             e.WithDescription($"{Context.User.Mention} gave a cookie to {user.Mention}");

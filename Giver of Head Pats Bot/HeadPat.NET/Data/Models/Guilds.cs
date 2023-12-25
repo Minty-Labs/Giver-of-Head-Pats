@@ -4,6 +4,8 @@ namespace HeadPats.Data.Models;
 
 public class Guilds {
     [Key] public ulong GuildId { get; set; }
-    public int PatCount { get; set; }
-    public ulong HeadPatBlacklistedRoleId { get; set; }
+    public string Name { get; set; }
+    public long DataDeletionTime { get; set; }
+    public long PatCount { get; set; }
+    public ulong DailyPatChannelId { get; set; }
 }

@@ -188,13 +188,14 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         [SlashCommand("cleanguildsfromconfig", "Cleans the guilds from the config that are not in the guilds list")]
         public async Task CleanGuildsFromConfig() {
             var guilds = Context.Client.Guilds;
-            var configGuildSettings = Config.Base.GuildSettings!;
+            await using var db = new Context();
+            var dbGuilds = db.Guilds.AsQueryable();
             var sb = new StringBuilder();
             sb.AppendLine("Guilds:");
         
-            foreach (var guild in configGuildSettings.Where(guild => guilds.All(g => g.Id != guild.GuildId))) {
-                configGuildSettings.Remove(guild);
-                sb.AppendLine($"Removed {guild.GuildName} ({guild.GuildId}) from the config.");
+            foreach (var guild in dbGuilds.Where(guild => guilds.All(g => g.Id != guild.GuildId))) {
+                sb.AppendLine($"Removed {guild.Name} ({guild.GuildId}) from the config.");
+                db.Remove(guild);
             }
 
             await RespondAsync(sb.ToString(), ephemeral: true);

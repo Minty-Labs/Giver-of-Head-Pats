@@ -9,7 +9,7 @@ public static class StatusLoop {
     
     public static async Task Update(Context db) {
         if (Config.Base.RotatingStatus.Enabled || Vars.IsDebug) return;
-        var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
+        var tempPatCount = Convert.ToInt32(db.GlobalVariables.AsQueryable().ToList().FirstOrDefault(x => x.Name.Equals("PatCount")).Value);
 
         if (tempPatCount == _tempPatCount) return;
         
