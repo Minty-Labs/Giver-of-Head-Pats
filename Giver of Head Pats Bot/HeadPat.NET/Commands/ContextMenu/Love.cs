@@ -26,6 +26,7 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
 
     [UserCommand("Pat")]
     public async Task ContextMenuPat(IUser user) {
+        var logger = Log.ForContext("SourceContext", "CONTEXTMENU:HUG");
         await using var db = new Context();
         var checkGuild = db.Guilds.AsQueryable()
             .Where(u => u.GuildId.Equals(Context.Guild.Id)).ToList().FirstOrDefault();
@@ -36,7 +37,7 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
                 HeadPatBlacklistedRoleId = 0,
                 PatCount = 0
             };
-            Log.Information("Added guild to database from Context menu Pat Command");
+            logger.Information("Added guild to database from Context menu Pat Command");
             db.Guilds.Add(newGuild);
         }
         
@@ -51,7 +52,7 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
                 CookieCount = 0,
                 IsUserBlacklisted = 0
             };
-            Log.Debug("Added user to database from Context menu Pat Command");
+            logger.Debug("Added user to database from Context menu Pat Command");
             db.Users.Add(newUser);
         }
         

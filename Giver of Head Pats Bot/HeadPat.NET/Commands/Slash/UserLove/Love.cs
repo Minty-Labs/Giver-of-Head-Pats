@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Interactions;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -17,6 +17,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
         public async Task Pat([Summary("user", "User to pat")] IGuildUser user,
             [Summary("params", "Extra parameters (for the bot owner)")]
             string extraParams = "") {
+            var logger = Log.ForContext("SourceContext", "Command - Pat");
             var canUseParams = Context.User.Id == 167335587488071682;
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
@@ -37,7 +38,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                     HeadPatBlacklistedRoleId = 0,
                     PatCount = 0
                 };
-                Log.Information("Added guild to database from Pat Command");
+                logger.Information("Added guild to database from Pat Command");
                 db.Guilds.Add(newGuild);
             }
 
@@ -52,7 +53,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                     CookieCount = 0,
                     IsUserBlacklisted = 0
                 };
-                Log.Debug("Added user to database from Pat Command");
+                logger.Debug("Added user to database from Pat Command");
                 db.Users.Add(newUser);
             }
 
@@ -91,9 +92,9 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             if (Vars.UseCookieApi) {
                 start:
                 var image = Program.Instance.CookieClient!.GetPat();
-                // Log.Debug($"THE IMAGE IS: {image}");
+                // logger.Debug($"THE IMAGE IS: {image}");
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -148,11 +149,12 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{Context.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
             UserControl.AddPatToUser(user.Id, special, true, Context.Guild.Id);
             await RespondAsync(embed: e.Build());
-            Log.Debug($"Total Pat amount Given: {special}");
+            logger.Debug($"Total Pat amount Given: {numberOfPats}");
         }
 
         [SlashCommand("hug", "Hug a user")]
         public async Task Hug([Summary("User", "User to hug")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Hug");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
                 var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("hug");
@@ -182,7 +184,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetHug();
                 if (image.Equals(_tempHugGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -195,7 +197,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetHugAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -212,6 +214,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("kiss", "Kiss a user")]
         public async Task Kiss([Summary("kiss", "User to kiss")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Kiss");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
                 var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("kiss");
@@ -241,7 +244,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetKiss();
                 if (image.Equals(_tempKissGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -254,7 +257,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetKissAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -271,6 +274,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("slap", "Slap a user")]
         public async Task Slap([Summary("slap", "User to slap")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Slap");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
                 var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("slap");
@@ -300,7 +304,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetSlap();
                 if (image.Equals(_tempSlapGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 
@@ -313,7 +317,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetSlapAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
@@ -330,6 +334,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("cookie", "Give a user a cookie")]
         public async Task Cookie([Summary("Cookie", "User to give cookie")] IGuildUser user) {
+            var logger = Log.ForContext("SourceContext", "Command - Cookie");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
             if (hasCommandBlacklist) {
                 var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("cookie");
@@ -349,7 +354,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                     HeadPatBlacklistedRoleId = 0,
                     PatCount = 0
                 };
-                Log.Information("Added guild to database from Pat Command");
+                logger.Information("Added guild to database from Pat Command");
                 db.Guilds.Add(newGuild);
             }
 
@@ -364,7 +369,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                     CookieCount = 0,
                     IsUserBlacklisted = 0
                 };
-                Log.Debug("Added user to database from Pat Command");
+                logger.Debug("Added user to database from Pat Command");
                 db.Users.Add(newUser);
             }
 
@@ -390,7 +395,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 start:
                 var image = Program.Instance.CookieClient!.GetCookie();
                 if (image.Equals(_tempCookieGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start;
                 }
 

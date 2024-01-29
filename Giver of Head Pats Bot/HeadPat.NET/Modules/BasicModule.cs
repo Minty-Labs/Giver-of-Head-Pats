@@ -9,9 +9,10 @@ public class BasicModule {
 
     internal BasicModule() {
         if (ModuleName == "MODULE NAME" || ModuleDescription == "MODULE DESCRIPTION") return;
-        Log.Information("Setting up the {Name} Module :: {Description}", ModuleName, ModuleDescription);
+        var logger = Log.ForContext("SourceContext", "MODULE");
+        logger.Information("Setting up the {Name} Module :: {Description}", ModuleName, ModuleDescription);
     }
     
-    public virtual void Initialize() { }
+    public virtual async Task InitializeAsync() { }
     public virtual void InitializeClient(DiscordSocketClient client) { }
 }

@@ -1,4 +1,4 @@
-﻿using HeadPats.Configuration;
+using HeadPats.Configuration;
 using HeadPats.Events;
 using HeadPats.Managers;
 using Patreon.Net;
@@ -12,17 +12,18 @@ public class Patreon_Client {
     public List<string>? MegaCutieTier { get; set; }
     public List<string>? AdorableTier { get; set; }
     private int MemberCount { get; set; }
+    private static readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
 
-    public async Task GetPatreonInfo(bool reRun = false) {
-        if (reRun && OnBotJoinOrLeave.DoNotRunOnStart) return;
+    public static async Task GetPatreonInfo(bool reRun = false) {
+        // if (reRun && OnBotJoinOrLeave.DoNotRunOnStart) return;
         PatreonClient = new PatreonClient(Config.Base.Api.PatreonClientData.PatreonAccessToken, Config.Base.Api.PatreonClientData.PatreonRefreshToken, Config.Base.Api.PatreonClientData.PatreonClientId);
         
         var campaigns = await PatreonClient.GetCampaignsAsync(Includes.All).ConfigureAwait(false);
         var cId = string.Empty;
         if (string.IsNullOrWhiteSpace(cId)) {
-            Log.Information("[{0}] Total number of {1} campaigns found.", "Patreon Client", campaigns.Meta.Pagination.Total);
+            Logger.Information("Total number of {0} campaigns found.", campaigns.Meta.Pagination.Total);
             await foreach (var c in campaigns) {
-                Log.Information("[{0}] Campaign, {1} ({2}) has {3} patrons.", "Patreon Client", c.CreationName , c.Id, c.PatronCount);
+                Logger.Information("Campaign, {0} ({1}) has {2} patrons.", c.CreationName , c.Id, c.PatronCount);
                 cId = c.Id;
                 Config.Base.Api.PatreonClientData.CampaignId = c.Id;
             }
@@ -30,16 +31,16 @@ public class Patreon_Client {
                 Config.Save();
         }
         else {
-            Log.Error("[{0}] No campaigns found.", "Patreon Client");
+            Logger.Error("No campaigns found.");
             return;
         }
         
         var singleCampaign = await PatreonClient.GetCampaignAsync(cId, Includes.All).ConfigureAwait(false);
-        Log.Information("[{0}] Campaign {1}: created at {2}, created by {3}", "Patreon Client", singleCampaign.PledgeUrl, singleCampaign.CreatedAt, singleCampaign.Relationships.Creator.FirstName);
+        Logger.Information("Campaign {0}: created at {1}, created by {2}", singleCampaign.PledgeUrl, singleCampaign.CreatedAt, singleCampaign.Relationships.Creator.FirstName);
         var tiers = singleCampaign.Relationships.Tiers;
         if (tiers is not null && tiers.Length > 0) {
             foreach (var tier in tiers) 
-                Log.Information("[{0}] Tier {1}: titled {2}, worth {3} cents, has {4} patrons.", "Patreon Client", tier.Id, tier.Title, tier.AmountCents, tier.PatronCount);
+                Logger.Information("Tier {0}: titled {1}, worth {2} cents, has {3} patrons.", tier.Id, tier.Title, tier.AmountCents, tier.PatronCount);
         }
         
         var members = await PatreonClient.GetCampaignMembersAsync(cId, Includes.All).ConfigureAwait(false);
@@ -48,11 +49,11 @@ public class Patreon_Client {
             if (reRun && MemberCount != members.Meta.Pagination.Total) {
                 await DNetToConsole.SendMessageToLoggingChannelAsync($"Patron count changed! New count: {members.Meta.Pagination.Total}");
             }
-            Log.Information("[{0}] Total number of {1} members found.", "Patreon Client", members.Meta.Pagination.Total);
+            Logger.Information("Total number of {0} members found.", members.Meta.Pagination.Total);
             MemberCount = members.Meta.Pagination.Total;
             
             await foreach (var member in members) {
-                Log.Information("[{0}] Member {1}: {2} ({3}) has pledged {4} cents total with status {5}.", "Patreon Client", member.Id, member.FullName, member.Email, member.LifetimeSupportCents, member.PatronStatus);
+                Logger.Information("Member {0}: {1} ({2}) has pledged {3} cents total with status {4}.", member.Id, member.FullName, member.Email, member.LifetimeSupportCents, member.PatronStatus);
                 memberId = member.Id;
                 var tier = member.Relationships.Tiers.FirstOrDefault(t => t.Id.Equals(member.Id));
                 switch (tier!.Title.ToLower()) {
@@ -79,7 +80,8 @@ public class Patreon_Client {
             }
         }
         else {
-            Log.Information("[{0}] No members found.", "Patreon Client");
+            Logger.Information("No members found.");
         }
+        Logger.Information("Ran PatreonClient successfully.");
     }
 }

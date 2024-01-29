@@ -9,7 +9,8 @@ public class EventModule {
 
     internal EventModule() {
         if (EventName == "MODULE NAME" || Description == "MODULE DESCRIPTION") return;
-        Log.Information("Setting up {EventName} Event Handler :: {EventDescription}", EventName, Description);
+        var logger = Log.ForContext("SourceContext", "EVENT");
+        logger.Information("Setting up {EventName} Event Handler :: {EventDescription}", EventName, Description);
     }
     
     public virtual void Initialize(DiscordSocketClient client) { }

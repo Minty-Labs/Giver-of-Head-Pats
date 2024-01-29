@@ -10,22 +10,24 @@ namespace HeadPats.Managers;
 public class DNetToConsole : BasicModule {
     protected override string ModuleName => "D.NET To Console";
     protected override string ModuleDescription => "Replaces D.NET logs with Serilog";
+    private static readonly ILogger Logger = Log.ForContext(typeof(DNetToConsole));
+    private static readonly ILogger DnLogger = Log.ForContext("SourceContext", "DNET");
     
     public override void InitializeClient(DiscordSocketClient client) {
         client.Connected += OnResumed;
         client.Disconnected += OnSocketClosed;
         
-        Log.Information("Replacing D.NETPlus logs as Serilog");
+        Logger.Information("Replacing D.NETPlus logs as Serilog");
     }
     
     private static Task OnResumed() {
         if (Vars.IsDebug)
-            Log.Information("[D.NET] Resumed Client");
+            Logger.Information("Resumed Client");
         return Task.CompletedTask;
     }
     
     private static Task OnSocketClosed(Exception exception) {
-        Log.Information($"[D.NET] [Socket] Socket disconnected: Source: {exception.Source} - Message: {exception.Message}");
+        DnLogger.Information($"[Socket] Socket disconnected: Source: {exception.Source} - Message: {exception.Message}");
         return Task.CompletedTask;
     }
 
@@ -41,7 +43,7 @@ public class DNetToConsole : BasicModule {
             return null; // Break if contains
         // if (finalMessage.Contains("Bad request: 400") && finalMessage.Contains("CreateWebhookAsync"))
         //     forceSendNormalMessage = true;
-        Log.Error("{0}", message);
+        Logger.Error("{0}", message);
 
         return new EmbedBuilder {
             Color = Colors.HexToColor("FF2525"),

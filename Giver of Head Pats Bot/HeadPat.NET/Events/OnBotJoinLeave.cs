@@ -22,12 +22,11 @@ public class OnBotJoinOrLeave : EventModule {
     
     internal static bool DoNotRunOnStart = true;
     internal static List<ulong>? GuildIds;
-    internal static int GuildCount;
 
     private static async Task OnLeaveGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
         if (GuildIds is not null && !GuildIds.Contains(e.Id)) return;
-        if (Program.Instance.Client.Guilds.Count >= GuildCount) return;
+        var logger = Log.ForContext("SourceContext", "Event - GuildLeave");
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("FF2525"));
         em.WithDescription($"Left server: `{e.Name.Sanitize()}` ({e.Id})");
@@ -38,13 +37,12 @@ public class OnBotJoinOrLeave : EventModule {
         em.AddField("Owner", $"{e.Owner.Username.Sanitize()} ({e.Owner.Id})");
         em.WithThumbnailUrl(e.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
         em.WithFooter($"Total servers: {Program.Instance.Client.Guilds.Count}");
-        GuildCount--;
 
         await Program.Instance.GeneralLogChannel!.SendMessageAsync(embed: em.Build());
         
         var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Id);
         if (guildSettings is null) {
-            Log.Error("Guild Settings for guild {guildId} is null, cannot delete data.", e.Id);
+            logger.Error("Guild Settings for guild {guildId} is null, cannot delete data.", e.Id);
             return;
         }
         guildSettings.DailyPatChannelId = 0;
@@ -54,14 +52,14 @@ public class OnBotJoinOrLeave : EventModule {
         // irlQuotes!.Enabled = false;
         // irlQuotes.ChannelId = 0;
         guildSettings.DataDeletionTime = DateTimeOffset.UtcNow.AddDays(28).ToUnixTimeSeconds();
-        Log.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Id);
+        logger.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Id);
         Config.Save();
     }
 
     private static async Task OnJoinGuild(SocketGuild e) {
         if (DoNotRunOnStart) return;
         if (GuildIds is not null && GuildIds.Contains(e.Id)) return;
-        if (Program.Instance.Client.Guilds.Count <= GuildCount) return;
+        var logger = Log.ForContext("SourceContext", "Event - GuildJoin");
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("42E66C"));
         em.WithDescription($"Joined server: `{e.Name.Sanitize()}` ({e.Id})");
@@ -72,7 +70,6 @@ public class OnBotJoinOrLeave : EventModule {
         em.AddField("Owner", $"{e.Owner.Username.Sanitize()} ({e.Owner.Id})");
         em.WithThumbnailUrl(e.IconUrl ?? "https://i.mintlily.lgbt/null.jpg");
         em.WithFooter($"Total servers: {Program.Instance.Client.Guilds.Count}");
-        GuildCount++;
 
         if (Config.Base.FullBlacklistOfGuilds!.Contains(e.Id)) {
             await Program.Instance.GeneralLogChannel!.SendMessageAsync($"Leaving guild {e.Name} ({e.Id}) because it is blacklisted.", embed: em.Build());
@@ -120,7 +117,7 @@ public class OnBotJoinOrLeave : EventModule {
                     HeadPatBlacklistedRoleId = 0,
                     PatCount = 0
                 };
-                Log.Information("Added guild to database from OnJoinGuild");
+                logger.Information("Added guild to database");
                 db.Guilds.Add(newGuild);
             }
         
@@ -132,7 +129,7 @@ public class OnBotJoinOrLeave : EventModule {
                     CookieCount = 0,
                     IsUserBlacklisted = 0
                 };
-                Log.Information("Added user to database from OnJoinGuild");
+                logger.Information("Added user to database");
                 db.Users.Add(newUser);
             }
             
