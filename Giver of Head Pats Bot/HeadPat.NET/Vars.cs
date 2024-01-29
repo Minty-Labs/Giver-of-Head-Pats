@@ -8,8 +8,8 @@ public static class Vars {
     public const string Name = "Giver of Head Pats";
     public const ulong ClientId = 489144212911030304;
     
-    public const string Version = "5.0.6" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
-    public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow: new(2023, 12, 6, 19, 50, 00); // (year, month, day, hour, min, sec)
+    public const string Version = "5.1.0" + (IsDebug ? "-dev" : ""); // Year.Month.Revision
+    public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow: new(2024, 1, 29, 17, 22, 00); // (year, month, day, hour, min, sec)
     public const bool IsDebug = false;
     public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime { get; set; }
@@ -18,5 +18,5 @@ public static class Vars {
     public const string SupportServer = "https://discord.gg/Qg9eVB34sq";
     public const ulong SupportServerId = 1083619886980403272;
     public static bool UseCookieApi { get; set; } = true;
-    public const string FakeUserAgent = $"{Name} v{Version} (https://github.com/Minty-Labs/Giver-of-Head-Pats)";
+    public const string FakeUserAgent = $"{Name}/{Version} (https://github.com/Minty-Labs/Giver-of-Head-Pats)";
 }
