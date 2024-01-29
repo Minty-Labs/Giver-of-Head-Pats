@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -85,7 +85,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             var num = new Random().Next(0, 3);
             var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
 
-            var special = num == 3 ? 2 : 1;
+            var numberOfPats = num == 3 ? 2 : 1;
 
             e.WithTitle(outputs[num]);
 
@@ -101,20 +101,20 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.PatCount} pats");
+                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.PatCount + numberOfPats} pats");
             }
             else {
                 start2:
                 var image = (await Program.Instance.FluxpointClient!.Gifs.GetPatAsync()).file;
                 if (image.Equals(_tempPatGifUrl)) {
-                    Log.Debug("Image is same as previous image");
+                    logger.Debug("Image is same as previous image");
                     goto start2;
                 }
 
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by Fluxpoint API | You have {checkUser!.PatCount} pats");
+                e.WithFooter($"Powered by Fluxpoint API | You have {checkUser!.PatCount + numberOfPats} pats");
             }
 
             var doingTheCutieSpecial = false;
@@ -123,13 +123,13 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 case true: {
                     if (!string.IsNullOrWhiteSpace(extraParams)) {
                         if (extraParams.Equals("mega"))
-                            special = 2;
+                            numberOfPats = 2;
 
                         if (extraParams.Contains('%'))
-                            special = int.Parse(extraParams.Split('%')[1]);
+                            numberOfPats = int.Parse(extraParams.Split('%')[1]);
 
-                        if (extraParams.ToLower().Contains("elly")) {
-                            special += 5;
+                        if (extraParams.Contains("elly", StringComparison.CurrentCultureIgnoreCase)) {
+                            numberOfPats += 5;
                             doingTheCutieSpecial = true;
                         }
                     }
@@ -143,11 +143,14 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             e.WithColor(Colors.Random);
 
-            if (doingTheCutieSpecial)
-                e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{Context.User.Mention} gave **{special}** headpats to {user.Mention}");
+            if (gaveToBot)
+                e.WithDescription($"Gave headpats to {user.Mention}");
+            else if (doingTheCutieSpecial)
+                e.WithDescription($"{Context.User.Mention} gave **{numberOfPats}** headpats to the cutie {user.Mention}");
             else
-                e.WithDescription(gaveToBot ? $"Gave headpats to {user.Mention}" : $"{Context.User.Mention} gave {(special != 1 ? $"**{special}** headpats" : "a headpat")} to {user.Mention}");
-            UserControl.AddPatToUser(user.Id, special, true, Context.Guild.Id);
+                e.WithDescription(PatUtils.GetRandomPatMessageTemplate(Context.User.Mention, user.Mention));
+            
+            UserControl.AddPatToUser(user.Id, numberOfPats, true, Context.Guild.Id);
             await RespondAsync(embed: e.Build());
             logger.Debug($"Total Pat amount Given: {numberOfPats}");
         }

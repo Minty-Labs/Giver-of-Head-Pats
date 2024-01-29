@@ -32,7 +32,7 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
 
         foreach (var u in newUserList) {
             if (max >= 11) continue;
-            if (Context.Guild.Users.Any(m => m.Id != u.UserId)) continue;
+            if (Context.Guild.Users.Any(m => m.Id == u.UserId)) continue;
             sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: **{u.CookieCount}**");
             max++;
         }

@@ -39,29 +39,44 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
             ThumbnailUrl = bot.GetAvatarUrl(),
             Footer = new EmbedFooterBuilder { Text = "If you would like to be added to this list, please contact me." }
         };
-        Config.Base.Contributors!.ForEach(contributor => embed2.AddField(contributor.UserName, contributor.Info!.Replace("<br>", "\n")));
         
-        var supporterEmbed = new EmbedBuilder {
-            Title = "Patreon Supporters",
-            Url = "https://www.patreon.com/MintLily",
-            Description = "These are the Supporters of this bot's project",
-            Color = Colors.HexToColor("8A698D"),
-            ThumbnailUrl = "https://i.mintlily.lgbt/Lily_2022_Alternate_pfp.png",
-            Footer = new EmbedFooterBuilder { Text = "If you would like to be added to this list, please contact me." }
-        };
+        Embed[] embeds;
+        
+        Config.Base.Contributors!.ForEach(contributor => embed2.AddField(contributor.UserName, contributor.Info!.Replace("<br>", "\n")));
+
+        List<string>? cutie = new(), megaCutie = new(), adorable = new();
         try {
-            var cutie = Program.Instance.PatreonClientInstance.CutieTier;
-            var megaCutie = Program.Instance.PatreonClientInstance.MegaCutieTier;
-            var adorable = Program.Instance.PatreonClientInstance.AdorableTier;
-            supporterEmbed.AddField("Cutie", cutie is null || cutie.Count > 0 ? "None" : string.Join(',', cutie));
-            supporterEmbed.AddField("Mega Cutie", megaCutie is null || megaCutie.Count > 0  ? "None" : string.Join(',', megaCutie));
-            supporterEmbed.AddField("Adorable", adorable is null || adorable.Count > 0 ? "None" : string.Join(',', adorable));
+            cutie = Patreon_Client.CutieTier;
+            megaCutie = Patreon_Client.MegaCutieTier;
+            adorable = Patreon_Client.AdorableTier;
         }
         catch (Exception ex) {
-            supporterEmbed.AddField("Uh oh!", "Nothing loaded.\n```" + ex.Message + "```");
+            // ignored
         }
         
-        await RespondAsync(embeds: new [] { embed.Build(), embed2.Build(), supporterEmbed.Build() });
+        var cutieBool = cutie is null || cutie.Count > 0;
+        var megaCutieBool = megaCutie is null || megaCutie.Count > 0;
+        var adorableBool = adorable is null || adorable.Count > 0;
+
+        if (!cutieBool && !megaCutieBool && !adorableBool) {
+            var supporterEmbed = new EmbedBuilder {
+                Title = "Patreon Supporters",
+                Url = "https://www.patreon.com/MintLily",
+                Description = "These are the Supporters of this bot's project",
+                Color = Colors.HexToColor("8A698D"),
+                ThumbnailUrl = "https://i.mintlily.lgbt/Lily_2022_Alternate_pfp.png",
+                Footer = new EmbedFooterBuilder { Text = "If you would like to be added to this list, please contact me." }
+            };
+            supporterEmbed.AddField("Cutie", cutieBool ? "None" : string.Join(',', cutie!));
+            supporterEmbed.AddField("Mega Cutie", megaCutieBool  ? "None" : string.Join(',', megaCutie!));
+            supporterEmbed.AddField("Adorable", adorableBool ? "None" : string.Join(',', adorable!));
+            embeds = new[] { embed.Build(), embed2.Build(), supporterEmbed.Build() };
+        }
+        else {
+            embeds = new [] { embed.Build(), embed2.Build() };
+        }
+        
+        await RespondAsync(embeds: embeds);
     }
 
     [SlashCommand("support", "Get the support server invite link")]
