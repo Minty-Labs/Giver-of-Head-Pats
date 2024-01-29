@@ -1,4 +1,4 @@
-using HeadPats.Configuration;
+﻿using HeadPats.Configuration;
 using HeadPats.Events;
 using HeadPats.Managers;
 using Patreon.Net;
@@ -7,11 +7,11 @@ using Serilog;
 namespace HeadPats.Utils.ExternalApis; 
 
 public class Patreon_Client {
-    private PatreonClient PatreonClient { get; set; }
-    public List<string>? CutieTier { get; set; }
-    public List<string>? MegaCutieTier { get; set; }
-    public List<string>? AdorableTier { get; set; }
-    private int MemberCount { get; set; }
+    private static PatreonClient PatreonClient { get; set; }
+    public static List<string>? CutieTier { get; set; }
+    public static List<string>? MegaCutieTier { get; set; }
+    public static List<string>? AdorableTier { get; set; }
+    private static int MemberCount { get; set; }
     private static readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
 
     public static async Task GetPatreonInfo(bool reRun = false) {

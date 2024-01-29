@@ -1,108 +1,73 @@
-﻿using HeadPats.Data;
-using HeadPats.Events;
-using HeadPats.Managers.Loops;
+﻿using HeadPats.Managers.Loops.Jobs;
 using HeadPats.Modules;
+using Quartz;
+using Serilog;
 
 namespace HeadPats.Managers; 
 
 public class LoopingTaskScheduler : BasicModule {
-    protected override string ModuleName => "Looping Task Scheduler";
-    protected override string ModuleDescription => "Runs looping tasks";
+    protected override string ModuleName => "Task Scheduler";
+    protected override string ModuleDescription => "Runs scheduler tasks";
+    private static readonly ILogger Logger = Log.ForContext(typeof(LoopingTaskScheduler));
 
-    public override void Initialize() {
-        // new Thread(Loop).Start();
-        new Thread(LoopAsync).Start();
-    }
+    public override async Task InitializeAsync() => await Scheduler();
 
-    private static int _numberOfErrored;
-
-    private static async void LoopAsync() {
-        while (true) {
-            await using var db = new Context();
-            var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            Thread.Sleep(TimeSpan.FromSeconds(30));
-            
-            // Status
-            try {
-                await StatusLoop.Update(db);
-            }
-            catch (Exception err) {
-                await DNetToConsole.SendErrorToLoggingChannelAsync($"Status:\n{err}");
-            }
-            
-            // Daily Pats
-            // try {
-            //     await DailyPatLoop.DoDailyPat(db, currentEpoch);
-            // }
-            // catch (Exception err) {
-            //     if (_numberOfErrored >= 5) return;
-            //     await DNetToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
-            //     _numberOfErrored++;
-            // }
-            
-            // Data Deletion
-            try {
-                DataDeletionFinderLoop.FindDataDeletion(db, currentEpoch);
-            }
-            catch (Exception err) {
-                await DNetToConsole.SendErrorToLoggingChannelAsync($"Data Deletion:\n{err}");
-            }
-            
-            // Rotating Status
-            try {
-                await RotatingStatus.Update(db);
-            }
-            catch (Exception err) {
-                await DNetToConsole.SendErrorToLoggingChannelAsync($"Rotating Status:\n{err}");
-            }
-            
-            // Patreon
-            try {
-                await Program.Instance.PatreonClientInstance.GetPatreonInfo(true);
-            }
-            catch (Exception err) {
-                await DNetToConsole.SendErrorToLoggingChannelAsync($"Patreon:\n{err}");
-            }
-            
-            // Misc
-            var client = Program.Instance.Client;
-            OnBotJoinOrLeave.GuildCount = client.Guilds.Count;
-            if (OnBotJoinOrLeave.GuildIds is not null) {
-                OnBotJoinOrLeave.GuildIds.Clear();
-                foreach (var guild in client.Guilds) {
-                    OnBotJoinOrLeave.GuildIds.Add(guild.Id);
-                }
-            }
-            
-            Thread.Sleep(TimeSpan.FromMinutes(10));
-        }
-        // ReSharper disable once FunctionNeverReturns
-    }
+    private static async Task Scheduler() {
+        Logger.Information("Creating and Building...");
+        var scheduler = await SchedulerBuilder.Create()
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 5)
+            .BuildScheduler();
+        await scheduler.Start();
+        
+        var statusLoop = JobBuilder.Create<StatusLoopJob>().Build();
+        var statusLoopTrigger = TriggerBuilder.Create()
+            .WithIdentity("StatusLoop", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInMinutes(10)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(statusLoop, statusLoopTrigger);
     
-    /*private static void Loop() {
-        var rnd = new Random();
-        while (true) {
-            using var db = new Context();
-            var currentEpoch = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            
-            // IRL Quotes
-            // try {
-            //     IrlQuotesLoop.SendQuote(currentEpoch, rnd);
-            // }
-            // catch (Exception err) {
-            //     DNetToConsole.SendErrorToLoggingChannel($"IRL Quotes:\n{err}");
-            // }
-            
-            // Data Deletion
-            try {
-                DataDeletionFinderLoop.FindDataDeletion(db, currentEpoch);
-            }
-            catch (Exception err) {
-                DNetToConsole.SendErrorToLoggingChannel($"Data Deletion:\n{err}");
-            }
-
-            Thread.Sleep(TimeSpan.FromMinutes(10));
-        }
-        // ReSharper disable once FunctionNeverReturns
-    }*/
+        var rotatingStatusLoop = JobBuilder.Create<RotatingStatusJob>().Build();
+        var rotatingStatusLoopTrigger = TriggerBuilder.Create()
+            .WithIdentity("RotatingStatusLoop", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInMinutes(10)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(rotatingStatusLoop, rotatingStatusLoopTrigger);
+        
+        var guildDataDeletion = JobBuilder.Create<DataDeletionJob>().Build();
+        var guildDataDeletionTrigger = TriggerBuilder.Create()
+            .WithIdentity("GuildDataDeletion", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInHours(12)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(guildDataDeletion, guildDataDeletionTrigger);
+        
+        // var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
+        // var dailyPatTrigger = TriggerBuilder.Create()
+        //     .WithIdentity("DailyPat", Vars.Name)
+        //     .StartNow()
+        //     .WithSimpleSchedule(x => x
+        //         .WithIntervalInMinutes(10)
+        //         .RepeatForever())
+        //     .Build();
+        // await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);
+        
+        var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
+        var patreonInfoTrigger = TriggerBuilder.Create()
+            .WithIdentity("PatreonInfo", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInHours(24)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(patreonInfo, patreonInfoTrigger);
+        Logger.Information("Initialized!");
+    }
 }
