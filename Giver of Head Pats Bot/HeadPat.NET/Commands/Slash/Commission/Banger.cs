@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
+using HeadPats.Events;
 
 namespace HeadPats.Commands.Slash.Commission; 
 
@@ -29,7 +30,7 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("seturlerrormessage", "Changes the error message")]
         public async Task ChangeBangerUrlErrorMessage([Summary("message", "Admin defined error message")] string text) {
-            var newText = string.IsNullOrWhiteSpace(text) ? "This URL is not whitelisted." : text;
+            var newText = string.IsNullOrWhiteSpace(text) || text is "none" or "null" ? "This URL is not whitelisted." : text;
             Config.Base.Banger!.UrlErrorResponseMessage = newText;
             Config.Save();
             await RespondAsync($"Set Banger URL Error Message to: {newText}");
@@ -37,7 +38,7 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("setexterrormessage", "Changes the error message")]
         public async Task ChangeBangerExtErrorMessage([Summary("message", "Admin defined error message")] string text) {
-            var newText = string.IsNullOrWhiteSpace(text) ? "This file extension is not whitelisted." : text;
+            var newText = string.IsNullOrWhiteSpace(text) || text is "none" or "null" ? "This file extension is not whitelisted." : text;
             Config.Base.Banger!.FileErrorResponseMessage = newText;
             Config.Save();
             await RespondAsync($"Set Banger File Extension Error Message to: {newText}");
@@ -106,14 +107,10 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
             var sb = new StringBuilder();
             sb.AppendLine("```");
             sb.AppendLine("Whitelisted URLs:");
-            // foreach (var url in BangerEventListener.WhitelistedUrls!) {
-            //     sb.AppendLine($"- {url}");
-            // }
+            BangerEventListener.WhitelistedUrls!.ForEach(s => sb.AppendLine($"- {s}"));
             sb.AppendLine();
             sb.AppendLine("Whitelisted File Extensions:");
-            // foreach (var ext in BangerEventListener.WhitelistedFileExtensions!) {
-            //     sb.AppendLine($"- {ext}");
-            // }
+            BangerEventListener.WhitelistedFileExtensions!.ForEach(s => sb.AppendLine($"- {s}"));
             sb.AppendLine("```");
             await RespondAsync(sb.ToString());
         }

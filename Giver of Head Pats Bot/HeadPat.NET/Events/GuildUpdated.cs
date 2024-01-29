@@ -34,6 +34,8 @@ public class GuildUpdated : EventModule {
         embed.AddField("Old Name", arg1.Name);
         embed.AddField("New Name", arg2.Name);
         channel.SendMessageAsync(embed: embed.Build());
+        Config.Base.PennysGuildWatcher.LastUpdateTime = DateTime.UtcNow.ToUniversalTime().GetSecondsFromUtcUnixTime();
+        Config.Save();
         return Task.CompletedTask;
     }
 }

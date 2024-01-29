@@ -6,6 +6,7 @@ using HeadPats.Configuration;
 using HeadPats.Managers;
 using HeadPats.Configuration.Classes;
 using HeadPats.Modules;
+using HeadPats.Utils;
 
 namespace HeadPats.Events; 
 
@@ -15,10 +16,11 @@ public class BangerEventListener : EventModule {
 
     public override void Initialize(DiscordSocketClient client) {
         client.MessageReceived += WatchForBangerChannel;
+        // client.MessageUpdated += WatchForReactionChanges;
     }
 
-    private static List<string>? WhitelistedUrls;
-    private static List<string>? WhitelistedFileExtensions;
+    public static List<string>? WhitelistedUrls;
+    public static List<string>? WhitelistedFileExtensions;
 
     public override void OnSessionCreated() {
         if (Config.Base.Banger is null) {
@@ -47,13 +49,13 @@ public class BangerEventListener : EventModule {
         => list?.Contains(extension) ?? throw new ArgumentNullException(nameof(list));
 
     private static async Task WatchForBangerChannel(SocketMessage args) {
-        if (args.Channel.GetChannelType() != ChannelType.DM) return;
-        if (!Config.Base.Banger!.Enabled) return;
-        if (args.Id != Config.Base.Banger.GuildId) return;
-        if (args.Author.Id == 875251523641294869) return; // Penny can talk in channel just fine
-        if (args.Channel.Id != Config.Base.Banger.ChannelId) return;
-        if (args.Author.IsBot) return; // no bot
-        if (args.Content.StartsWith(".")) return; // can technically be exploited but whatever
+        if (args.Channel.GetChannelType() == ChannelType.DM) return; // if dm
+        if (!Config.Base.Banger!.Enabled) return;                    // if disabled
+        if (args.Id != Config.Base.Banger.GuildId) return;           // if not target guild
+        if (args.Author.Id == 875251523641294869) return;            // Penny can talk in channel freely
+        if (args.Channel.Id != Config.Base.Banger.ChannelId) return; // if not target channel
+        if (args.Author.IsBot) return;                               // if bot
+        if (args.Content.StartsWith('.')) return;                    // can technically be exploited but whatever
         
         var messageContent = args.Content;
         var attachments = args.Attachments;
@@ -61,14 +63,42 @@ public class BangerEventListener : EventModule {
 
         if (string.IsNullOrEmpty(messageContent) && (attachments.Count != 0 || stickers.Count != 0)) {
             var extGood = IsFileExtWhitelisted(attachments.First().Filename.Split('.').Last(), WhitelistedFileExtensions!);
-            if (extGood) return;
-            await args.Channel.SendMessageAsync(Config.Base.Banger.FileErrorResponseMessage, messageReference: new MessageReference(messageId: args.Id, channelId: args.Channel.Id)).DeleteAfter(5);
+            if (extGood) {
+                await args.AddReactionAsync(Upvote);
+                // await args.AddReactionAsync(Downvote);
+                return;
+            }
+            await args.Channel.SendMessageAsync(Config.Base.Banger.FileErrorResponseMessage).DeleteAfter(5);
             await args.DeleteAsync();
         }
         
         var urlGood = IsUrlWhitelisted(messageContent, WhitelistedUrls!);
-        if (urlGood) return;
-        await args.Channel.SendMessageAsync(Config.Base.Banger.UrlErrorResponseMessage, messageReference: new MessageReference(messageId: args.Id, channelId: args.Channel.Id)).DeleteAfter(5);
+        if (urlGood) {
+            await args.AddReactionAsync(Upvote);
+            // await args.AddReactionAsync(Downvote);
+            return;
+        }
+        await args.Channel.SendMessageAsync(Config.Base.Banger.UrlErrorResponseMessage).DeleteAfter(5);
         await args.DeleteAsync();
     }
+
+    // private const float RemovalPercent = 0.2f;
+    // private const int MinVotes = 5;
+    private static readonly Emote Upvote = EmojiUtils.GetCustomEmoji("upvote", 1201639290048872529)!;
+    // private static readonly Emote Downvote = EmojiUtils.GetCustomEmoji("downvote", 1201639287972696166)!;
+    
+    // private static async Task WatchForReactionChanges(Cacheable<IMessage, ulong> oldMessage, SocketMessage newMessage, ISocketMessageChannel messageChannel) {
+    //     var emotes = newMessage.Reactions;
+    //     var upvote = emotes.FirstOrDefault(e => e.Key.Name == "upvote").Value;
+    //     var downvote = emotes.FirstOrDefault(e => e.Key.Name == "downvote").Value;
+    //     
+    //     if (upvote.ReactionCount + downvote.ReactionCount < MinVotes) return;
+    //     var reactionVotes = _getPercentage(upvote.ReactionCount, downvote.ReactionCount);
+    //
+    //     if (reactionVotes < RemovalPercent) {
+    //         var sb = new StringBuilder();
+    //     }
+    // }
+    //
+    // private static float _getPercentage(int up, int down) => (float)up / (up + down);
 }

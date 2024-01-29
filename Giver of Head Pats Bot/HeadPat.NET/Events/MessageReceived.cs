@@ -25,7 +25,7 @@ public class MessageReceived : EventModule {
         var message = e.Content;
         // format: userId-userName
 
-        if (message.StartsWith("."))
+        if (message.StartsWith('.'))
             return;
         
         var author = e.Author;
