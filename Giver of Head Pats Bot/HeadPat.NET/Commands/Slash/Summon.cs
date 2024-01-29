@@ -112,6 +112,21 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
             await RespondAsync(embed: embed.Build());
         }
         
+        [SlashCommand("redpanda", "Red Pandas are adorable")]
+        public async Task RedPanda() {
+            var getRedPandaCount = ExtraRedPando.MoreRedPandas.Count;
+            var randomRedPanda = new Random().Next(0, getRedPandaCount);
+            var embed = new EmbedBuilder {
+                Title = $"{randomRedPanda} / {getRedPandaCount}",
+                Color = Colors.HexToColor("935824"),
+                ImageUrl = ExtraRedPando.MoreRedPandas[randomRedPanda],
+                Footer = new EmbedFooterBuilder {
+                    Text = "Powered by the community"
+                }
+            };
+            await RespondAsync(embed: embed.Build());
+        }
+        
         [SlashCommand("aiquote", "Lets an inspirobot AI create an inspirational quote with image")]
         public async Task InspiroBot() {
             var httpClient = new HttpClient();
