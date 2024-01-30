@@ -1,7 +1,7 @@
 <h1>Giver of Head Pats, Discord Bot</h1>
 <img src="https://raw.githubusercontent.com/Minty-Labs/Giver-of-Head-Pats/main/Media/HeadPatSharp.png" align="right" width="200" height="200" />
 <p>
-The 5th rewrite of a Discord Bot done in <a href="https://dotnet.microsoft.com/en-us/download/dotnet/7.0" target="_blank">dotNET 7</a>, 
+The 5th rewrite of a Discord Bot done in <a href="https://dotnet.microsoft.com/en-us/download/dotnet/8.0" target="_blank">dotNET 8</a>, 
 created by <a href="https://mintlily.lgbt/">Lily</a> from <a href="https://mintylabs.dev/">Minty Labs</a>. <br>
 Hi, I am the <b>Giver of Head Pats</b>. I am here to give others head pats, hugs, cookies, and more; leaderboards for pats and cookies; as well as summon pictures of foxes, bunnies, nekos, memes and more. I can also have moderators make auto responses for me to automatically reply to.
 <br><br>
@@ -13,9 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=5.0.6&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=5.1.0&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=6%20December%202023&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=29%20January%202024&color=389980&style=for-the-badge" />
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/discord-net/Discord.Net"><img src="https://img.shields.io/static/v1?label=Library&message=Discord.NET&color=7289DA&style=for-the-badge" /></a>
     <br><br>
@@ -31,23 +31,24 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <h2>Packages (Nuget)</h2>
 <ul>
     <li>Discord.NET <b>v3.13.0</b></li>
-    <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.0-prerelease.2</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v7.0.14</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v7.0.14</b></li>
+    <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.0-prerelease.5</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v8.0.1</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v8.0.1</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
     <li>Serilog by <b>v3.1.1</b>
         <ul>
-            <li>Serilog.Sinks.Console <b>v5.0.0</b></li>
+            <li>Serilog.Sinks.Console <b>v5.0.1</b></li>
             <li>Serilog.Sinks.File <b>v5.0.0</b></li>
         </ul>
     </li>
     <li>fluxpoint-sharp <i>by Builderb</i> <b>v3.0.2</b></li>
     <li>Patreon.NET <i>by sawch</i> <b>v1.0.2</b></li>
+    <li>Quartz <i>by Marko Lahma</i> <b>v3.8.0</b></li>
 </ul>
 
 <h2>Programs & Services Used</h2>
 <ul>
-    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.2.3
+    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.3.3
         <ul>
             <li>Rider</li>
             <li>dotPeek</li>
