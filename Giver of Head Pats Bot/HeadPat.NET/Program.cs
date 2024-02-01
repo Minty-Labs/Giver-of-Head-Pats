@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using Serilog.Events; 
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
@@ -269,13 +269,13 @@ public class Program {
                             $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.ActivityText)}";
         }
         
-        OnBotJoinOrLeave.GuildIds = new List<ulong>();
+        // OnBotJoinOrLeave.GuildIds = new List<ulong>();
         await using var db = new Context();
         var tempPatCount = db.Overall.AsQueryable().ToList().First().PatCount;
         
-        foreach (var guild in Client.Guilds) {
-            OnBotJoinOrLeave.GuildIds.Add(guild.Id);
-        }
+        // foreach (var guild in Client.Guilds) {
+        //     OnBotJoinOrLeave.GuildIds.Add(guild.Id);
+        // }
 
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),
@@ -345,7 +345,7 @@ public class Program {
         }
         
         await Task.Delay(TimeSpan.FromSeconds(5));
-        OnBotJoinOrLeave.DoNotRunOnStart = false;
+        // OnBotJoinOrLeave.DoNotRunOnStart = false;
         if (Vars.IsWindows)
             await Client.SetGameAsync(name: "Coding in Rider", type: ActivityType.CustomStatus);
     }

@@ -1,4 +1,4 @@
-﻿using Discord;
+﻿/*using Discord;
 using Discord.WebSocket;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -138,4 +138,4 @@ public class OnBotJoinOrLeave : EventModule {
             await DNetToConsole.SendErrorToLoggingChannelAsync(ex);
         }
     }
-}
+}*/
