@@ -56,6 +56,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     </li>
     <li>Sublime Text</li>
     <li>Visual Studio Code</li>
+    <li>GitKraken</li>
     <li>Photoshop</li>
     <li>Discord *</li>
     <li>Spotify / Plex(amp) / Tidal*</li>
@@ -86,6 +87,18 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     <li>Support</li>
     <li>Invite</li>
     <li>FlipCoin</li>
+    <li>Summon
+        <ul>
+            <li>Bunny</li>
+            <li>Fox</li>
+            <li>Neko</li>
+            <li>Cat</li>
+            <li>RedPanda</li>
+            <li>AIQuote</li>
+        </ul>
+    </li>
+    <li>Color</li>
+    <li>Gradient</li>
 </ul>
 
 <h3>Daily Pat</h3>
@@ -109,9 +122,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         <ul>
             <li>Pat</li>
             <li>Hug</li>
-            <li>Cuddle</li>
             <li>Kiss</li>
-            <li>Slap</li>
             <li>Poke</li>
             <li>Cookie</li>
         </ul>
@@ -123,12 +134,21 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <p>These commands only work in the commissioner's Discord server.</p>
 <ul>
     <ul>
-        <li>ToggleBanger</li>
-        <li>SetBangerChannel</li>
-        <li>ChangeBangerUrlErrorMessage</li>
-        <li>ChangeBangerExtErrorMessage</li>
-        <li>SetBangerValues</li>
-        <li>ListBangerValues</li>
+        <li>Toggle</li>
+        <li>SetChannel</li>
+        <li>SetUrlErrorMessage</li>
+        <li>SetExtErrorMessage</li>
+        <li>AddUrl</li>
+        <li>RemoveUrl</li>
+        <li>AddExt</li>
+        <li>RemoveExt</li>
+        <li>ListEverything</li>
+        <li>AddUpvote</li>
+        <li>AddDownvote</li>
+        <li>UseCustomUpvote</li>
+        <li>UseCustomDownvote</li>
+        <li>SetCustomUpvote</li>
+        <li>SetCustomDownvote</li>
     </ul>
 </ul>
 
@@ -137,19 +157,21 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <ul>
     <li>Anyone
         <ul>
-            <li>RoleCreate</li>
-            <li>RoleColor</li>
-            <li>RoleName</li>
-            <li>RoleRemove</li>
+            <li>CreateRole</li>
+            <li>DeleteRole</li>
+            <li>UpdateColor</li>
+            <li>UpdateName</li>
         </ul>
     </li>
     <li>Admin
         <ul>
-            <li>RoleToggle</li>
-            <li>RoleSetChannel</li>
-            <li>RoleResetTimer</li>
-            <li>RoleRemoveAdmin</li>
+            <li>Toggle</li>
+            <li>SetChannel</li>
+            <li>SetDefaultRole</li>
+            <li>setresettime</li>
             <li>RoleSetTimer</li>
+            <li>AddRoleTo</li>
+            <li>RemoveRoleFrom</li>
         </ul>
     </li>
 </ul>
