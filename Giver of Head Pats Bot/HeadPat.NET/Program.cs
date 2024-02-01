@@ -1,4 +1,4 @@
-using Serilog;
+﻿using Serilog;
 using Serilog.Events; 
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
@@ -28,9 +28,8 @@ namespace HeadPats;
 
 public class Program {
     public static Program Instance { get; private set; }
-    private static readonly ILogger Logger = Log.ForContext("SourceContext", Vars.Name);
+    private static readonly ILogger Logger = Log.ForContext("SourceContext", "GoHP");
     private static readonly ILogger UtilLogger = Log.ForContext("SourceContext", "Util");
-    private static readonly ILogger CrLogger = Log.ForContext("SourceContext", "ClientReady");
     
     public DiscordSocketClient Client { get; set; }
     private InteractionService GlobalInteractions { get; set; }
@@ -51,7 +50,7 @@ public class Program {
     public static async Task Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().Contains("windows", StringComparison.CurrentCultureIgnoreCase);
         Console.Title = $"{Vars.Name} v{Vars.Version} | Starting...";
-        Logger.Debug($"{Vars.Name} Bot is starting . . .");
+        Logger.Information($"{Vars.Name} Bot is starting . . .");
         await new Program().MainAsync();
     }
 
@@ -93,10 +92,10 @@ public class Program {
             MobileManager.Initialize();
         
         Client = new DiscordSocketClient(new DiscordSocketConfig {
-            // AlwaysDownloadUsers = true,
+            AlwaysDownloadUsers = true,
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
             MessageCacheSize = 2000,
-            GatewayIntents = GatewayIntents.Guilds
+            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers | GatewayIntents.GuildEmojis | GatewayIntents.GuildMessageReactions
         });
         
         Commands = new CommandService(new CommandServiceConfig {
@@ -211,7 +210,7 @@ public class Program {
         
         _eventModules.Add(new BangerEventListener());
         _eventModules.Add(new MessageReceived());
-        _eventModules.Add(new OnBotJoinOrLeave());
+        // _eventModules.Add(new OnBotJoinOrLeave());
         _eventModules.Add(new UserLeft());
         _eventModules.Add(new GuildUpdated());
         _eventModules.ForEach(module => module.Initialize(Client));
@@ -250,15 +249,16 @@ public class Program {
         //     CrLogger.Debug("Deleted global slash command {0}", cmds.Name);
         // }
         
+        var crLogger = Log.ForContext("SourceContext", "ClientReady");
         Vars.StartTime = DateTime.UtcNow;
-        CrLogger.Debug("Bot Version        = " + Vars.Version);
-        CrLogger.Debug("Process ID         = " + Environment.ProcessId);
-        CrLogger.Debug("Build Date         = " + Vars.BuildDate);
-        CrLogger.Debug("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
-        CrLogger.Debug("Token              = " + Config.Base.BotToken!.Redact());
-        CrLogger.Debug("ActivityType       = " + $"{Config.Base.ActivityType}");
-        CrLogger.Debug("Game               = " + $"{Config.Base.ActivityText}");
-        CrLogger.Debug("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + BangerInteractions.SlashCommands.Count + PersonalizedMembersInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
+        crLogger.Information("Bot Version        = " + Vars.Version);
+        crLogger.Information("Process ID         = " + Environment.ProcessId);
+        crLogger.Information("Build Date         = " + Vars.BuildDate);
+        crLogger.Information("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
+        crLogger.Information("Token              = " + Config.Base.BotToken!.Redact());
+        crLogger.Information("ActivityType       = " + $"{Config.Base.ActivityType}");
+        crLogger.Information("Game               = " + $"{Config.Base.ActivityText}");
+        crLogger.Information("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + BangerInteractions.SlashCommands.Count + PersonalizedMembersInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
 
         await Client.SetStatusAsync(Vars.IsDebug || Vars.IsWindows ? UserStatus.DoNotDisturb : UserStatus.Online);
         
@@ -309,45 +309,50 @@ public class Program {
         else await DNetToConsole.SendErrorToLoggingChannelAsync("No Event Modules were found or loaded!!");
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
-        CrLogger.Information("Registered global slash commands.");
+        crLogger.Information("Registered global slash commands.");
         try {
             await PersonalizedMembersInteractions.RegisterCommandsToGuildAsync(805663181170802719);
-            CrLogger.Information("Registered Personalized Member guild slash commands for {0}.", "805663181170802719");
+            crLogger.Information("Registered Personalized Member guild slash commands for {0}.", "805663181170802719");
         }
         catch (Exception e) {
-            CrLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "805663181170802719", e);
+            crLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "805663181170802719", e);
         }
 
         if (!Vars.IsDebug) {
             try {
                 await PersonalizedMembersInteractions.RegisterCommandsToGuildAsync(977705960544014407);
-                CrLogger.Information("Registered Personalized Member guild slash commands for {0}.", "977705960544014407");
+                crLogger.Information("Registered Personalized Member guild slash commands for {0}.", "977705960544014407");
             }
             catch (Exception e) {
-                CrLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "977705960544014407", e);
+                crLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "977705960544014407", e);
             }
 
             try {
                 await BangerInteractions.RegisterCommandsToGuildAsync(977705960544014407);
-                CrLogger.Information("Registered Banger guild slash commands for {0}.", "977705960544014407");
+                crLogger.Information("Registered Banger guild slash commands for {0}.", "977705960544014407");
             }
             catch (Exception e) {
-                CrLogger.Error("Failed to register Banger guild slash commands for {0}\n{err}", "977705960544014407", e);
+                crLogger.Error("Failed to register Banger guild slash commands for {0}\n{err}", "977705960544014407", e);
             }
         }
 
         try {
             await MintyLabsInteractions.RegisterCommandsToGuildAsync(Vars.SupportServerId);
-            CrLogger.Information("Registered Owner slash commands for {0} ({1}).", "Minty Labs",  Vars.SupportServerId);
+            crLogger.Information("Registered Owner slash commands for {0} ({1}).", "Minty Labs",  Vars.SupportServerId);
         }
         catch (Exception e) {
-            CrLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
+            crLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
         }
         
         await Task.Delay(TimeSpan.FromSeconds(5));
         // OnBotJoinOrLeave.DoNotRunOnStart = false;
-        if (Vars.IsWindows)
-            await Client.SetGameAsync(name: "Coding in Rider", type: ActivityType.CustomStatus);
+        
+        // crLogger.Warning("This is STUPID - NEVER DO THIS IN PROD");
+        // foreach (var g in Client.Guilds) {
+        //     crLogger.Information("Downloading users for guild {0} ({1})", g.Name, g.Id);
+        //     await g.DownloadUsersAsync();
+        //     crLogger.Information("Done");
+        // }
     }
 
     public SocketTextChannel? GetChannel(ulong guildId, ulong id) {
