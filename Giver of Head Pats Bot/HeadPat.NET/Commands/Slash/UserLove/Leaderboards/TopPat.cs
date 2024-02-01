@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using HeadPats.Data;
 using HeadPats.Managers;
 using HeadPats.Utils;
@@ -12,17 +13,18 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("toppat", "Get the top head pat leaderboard")]
     public async Task HeadPatLeaderboard([Summary("keywords", "Key words")] string keyWords = "") {
         await using var db = new Context();
+        var logger = Log.ForContext("SourceContext", "Command - TopPat");
         var guildPats = 0;
         try { guildPats = db.Guilds.AsQueryable().ToList().FirstOrDefault(g => g.GuildId == Context.Guild.Id)!.PatCount; }
-        catch { Log.Error("[TopPat] Guilds DataSet is Empty"); }
+        catch { logger.Error("Guilds DataSet is Empty"); }
 
         var globalPats = 0;
         try { globalPats = db.Overall.AsQueryable().ToList().First().PatCount; }
-        catch { Log.Error("[TopPat] Server DataSet is Empty"); }
+        catch { logger.Error("Server DataSet is Empty"); }
 
         var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
-
         var patPercentage = globalPats == 0 ? 0 : (float) guildPats / globalPats * 100;
+        var guildUserList = Context.Guild.Users.ToDictionary(user => user.Id);
 
         if (keyWords!.ToLower().Equals("server")) {
             var strings = new StringBuilder();
@@ -32,7 +34,7 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
             var counter = 1;
             foreach (var u in newUserList) {
                 if (counter >= 51) continue;
-                if (Context.Guild.Users.Any(m => m.Id != u.UserId)) continue;
+                if (!guildUserList.ContainsKey(u.UserId)) continue;
                 strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
                 counter++;
             }
@@ -46,7 +48,7 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
 
         foreach (var u in newUserList) {
             if (max >= 11) continue;
-            if (Context.Guild.Users.Any(m => m.Id == u.UserId)) continue;
+            if (!guildUserList.ContainsKey(u.UserId)) continue;
             sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: **{u.PatCount}**");
             max++;
         }
@@ -61,7 +63,7 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
                 Text = $"Synced across all servers • {Vars.Name} (v{Vars.Version})"
             }
         };
-        embed.AddField("Current Server Stats", $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}** ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)");
+        embed.AddField("Statistics for " + Context.Guild.Name, $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\nTotal Server Pats **{guildPats}** ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)");
         embed.AddField("Global Stats", $"Total Pats: **{globalPats}**");
         await RespondAsync(embed: embed.Build());
     }
