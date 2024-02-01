@@ -55,7 +55,16 @@ public static class Config {// : BasicModule {
             WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "www.youtube.com", "music.youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
             WhitelistedFileExtensions = new List<string> { "mp3", "flac", "wav", "ogg", "m4a", "alac", "aac", "aiff", "wma" },
             UrlErrorResponseMessage = "This URL is not whitelisted.",
-            FileErrorResponseMessage = "This file type is not whitelisted."
+            FileErrorResponseMessage = "This file type is not whitelisted.",
+            AddUpvoteEmoji = true,
+            AddDownvoteEmoji = false,
+            UseCustomUpvoteEmoji = true,
+            CustomUpvoteEmojiName = "upvote",
+            CustomUpvoteEmojiId = 1201639290048872529,
+            UseCustomDownvoteEmoji = false,
+            CustomDownvoteEmojiName = "downvote",
+            CustomDownvoteEmojiId = 1201639287972696166,
+            NoticeComment = "Having a custom emoji ID of zero will logically mean that you are using a Discord default emoji."
         };
 
         // var irlq = new IrlQuotes {

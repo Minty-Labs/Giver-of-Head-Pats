@@ -49,7 +49,7 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
         [SlashCommand("addurl", "Adds a URL to the whitelist")]
         public async Task AddUrl([Summary("url", "URL to whitelist")] string url) {
             var configBanger = Config.Base.Banger!;
-            configBanger.WhitelistedUrls ??= new();
+            configBanger.WhitelistedUrls ??= [];
             if (_doesItExist(url, configBanger.WhitelistedUrls)) {
                 await RespondAsync("URL already exists in the whitelist.", ephemeral: true);
                 return;
@@ -62,7 +62,7 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
         [SlashCommand("removeurl", "Removes a URL from the whitelist")]
         public async Task RemoveUrl([Summary("url", "URL to remove from the whitelist")] string url) {
             var configBanger = Config.Base.Banger!;
-            configBanger.WhitelistedUrls ??= new();
+            configBanger.WhitelistedUrls ??= [];
             if (!_doesItExist(url, configBanger.WhitelistedUrls)) {
                 await RespondAsync("URL does not exist in the whitelist.", ephemeral: true);
                 return;
@@ -75,7 +75,7 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
         [SlashCommand("addext", "Adds a file extension to the whitelist")]
         public async Task AddExt([Summary("ext", "File extension to whitelist")] string ext) {
             var configBanger = Config.Base.Banger!;
-            configBanger.WhitelistedFileExtensions ??= new();
+            configBanger.WhitelistedFileExtensions ??= [];
             if (ext.StartsWith('.'))
                 ext = ext[1..];
             if (_doesItExist(ext, configBanger.WhitelistedFileExtensions)) {
@@ -90,7 +90,7 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
         [SlashCommand("removeext", "Removes a file extension from the whitelist")]
         public async Task RemoveExt([Summary("ext", "File extension to remove from the whitelist")] string ext) {
             var configBanger = Config.Base.Banger!;
-            configBanger.WhitelistedFileExtensions ??= new();
+            configBanger.WhitelistedFileExtensions ??= [];
             if (ext.StartsWith('.'))
                 ext = ext[1..];
             if (!_doesItExist(ext, configBanger.WhitelistedFileExtensions)) {
@@ -113,6 +113,60 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
             BangerEventListener.WhitelistedFileExtensions!.ForEach(s => sb.AppendLine($"- {s}"));
             sb.AppendLine("```");
             await RespondAsync(sb.ToString());
+        }
+
+        [SlashCommand("addupvote", "Adds an upvote emoji to a banger post")]
+        public async Task AddUpvote([Summary("toggle", "Enable or disable")] bool enabled) {
+            Config.Base.Banger!.AddUpvoteEmoji = enabled;
+            Config.Save();
+            await RespondAsync($"Upvote emoji {(enabled ? "will show" : "will not show")} on banger posts.");
+        }
+        
+        [SlashCommand("adddownvote", "Adds a downvote emoji to a banger post")]
+        public async Task AddDownvote([Summary("toggle", "Enable or disable")] bool enabled) {
+            Config.Base.Banger!.AddDownvoteEmoji = enabled;
+            Config.Save();
+            await RespondAsync($"Downvote emoji {(enabled ? "will show" : "will not show")} on banger posts.");
+        }
+        
+        [SlashCommand("usecustomupvote", "Sets a custom upvote emoji")]
+        public async Task UseCustomUpvote([Summary("toggle", "Enable or disable")] bool enabled) {
+            Config.Base.Banger!.UseCustomUpvoteEmoji = enabled;
+            Config.Save();
+            await RespondAsync($"Custom upvote emoji {(enabled ? "will show" : "will not show")} on banger posts.");
+        }
+        
+        [SlashCommand("usecustomdownvote", "Sets a custom downvote emoji")]
+        public async Task UseCustomDownvote([Summary("toggle", "Enable or disable")] bool enabled) {
+            Config.Base.Banger!.UseCustomDownvoteEmoji = enabled;
+            Config.Save();
+            await RespondAsync($"Custom downvote emoji {(enabled ? "will show" : "will not show")} on banger posts.");
+        }
+        
+        [SlashCommand("setcustomupvote", "Sets a custom upvote emoji")]
+        public async Task SetCustomUpvoteTheLongWay([Summary("name", "Custom upvote emoji name")] string name, [Summary("id", "Custom upvote emoji ID")] string id) {
+            if (!Emote.TryParse($"<:{name}:{id}>", out var emote)) {
+                await RespondAsync("Invalid emoji. Is the bot in the same guild as where this emoji is from?");
+                return;
+            }
+            
+            Config.Base.Banger!.CustomUpvoteEmojiName = name;
+            Config.Base.Banger.CustomUpvoteEmojiId = ulong.Parse(id);
+            Config.Save();
+            await RespondAsync($"Custom upvote emoji set to {emote}.\nNote:{Config.Base.Banger.NoticeComment}");
+        }
+        
+        [SlashCommand("setcustomdownvote", "Sets a custom downvote emoji")]
+        public async Task SetCustomDownvoteTheLongWay([Summary("name", "Custom downvote emoji name")] string name, [Summary("id", "Custom downvote emoji ID")] string id) {
+            if (!Emote.TryParse($"<:{name}:{id}>", out var emote)) {
+                await RespondAsync("Invalid emoji. Is the bot in the same guild as where this emoji is from?");
+                return;
+            }
+            
+            Config.Base.Banger!.CustomDownvoteEmojiName = name;
+            Config.Base.Banger.CustomDownvoteEmojiId = ulong.Parse(id);
+            Config.Save();
+            await RespondAsync($"Custom downvote emoji set to {emote}.\nNote:{Config.Base.Banger.NoticeComment}");
         }
     }
 }
