@@ -147,6 +147,8 @@ public class Program {
             await GlobalInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             iLogger.Debug("{0} ran a command in guild {1}", arg.User.Username, arg.GuildId);
         };
+        
+        await Scheduler.Initialize();
 
         Logger.Information("Bot finished initializing, logging in to Discord...");
         await Client.LoginAsync(TokenType.Bot, Config.Base.BotToken);

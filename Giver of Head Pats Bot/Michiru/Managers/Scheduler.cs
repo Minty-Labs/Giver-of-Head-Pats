@@ -7,7 +7,7 @@ namespace Michiru.Managers;
 public class Scheduler {
     private static readonly ILogger Logger = Log.ForContext(typeof(Scheduler));
 
-    private static async Task Initialize() {
+    public static async Task Initialize() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
             .UseDefaultThreadPool(x => x.MaxConcurrency = 1)
