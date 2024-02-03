@@ -1,100 +1,41 @@
 ﻿using System.Text.Json;
 using HeadPats.Configuration.Classes;
+using Serilog;
 
 namespace HeadPats.Configuration; 
 
-public static class Config {// : BasicModule {
-    // protected override string ModuleName => "Configuration";
-    // protected override string ModuleDescription => "Handles the configuration of the bot.";
-    
-    public static Base Base { get; internal set; } = Load();
+public static class Config {
+    public static Base Base { get; internal set; }
+    private static readonly ILogger Logger = Log.ForContext(typeof(Config));
 
-    private static /*public override*/ void Initialize() {
-        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) return;
-        
-        var pennyGuildWatcher = new PennysGuildWatcher {
-            GuildId = 0,
-            ChannelId = 0,
-            LastUpdateTime = 0
-        };
+    public static void Initialize() {
+        const string file = "Configuration.json";
+        var hasFile = File.Exists(file);
         
         var rotatingStatus = new RotatingStatus {
             Enabled = false,
-            Statuses = new List<Status> {
-                new() {
+            Statuses = [
+                new Status {
                     Id = 0,
                     ActivityText = "for 5 years",
                     ActivityType = "Playing",
                     UserStatus = "Online"
                 }
-            }
+            ]
         };
-
-        var personalizationLily = new PersonalizedMember {
-            Enabled = false,
-            GuildId = 0,
-            ChannelId = 0,
-            ResetTimer = 30,
-            DefaultRoleId = 0,
-            Members = new List<Member>()
-        };
-        
-        var personalizationPenny = new PersonalizedMember {
-            Enabled = false,
-            GuildId = 0,
-            ChannelId = 0,
-            ResetTimer = 30,
-            DefaultRoleId = 0,
-            Members = new List<Member>()
-        };
-
-        var banger = new Banger {
-            Enabled = false,
-            GuildId = 0,
-            ChannelId = 0,
-            WhitelistedUrls = new List<string> { "open.spotify.com", "youtube.com", "www.youtube.com", "music.youtube.com", "youtu.be", "deezer.com", "tidal.com", "bandcamp.com", "music.apple.com", "soundcloud.com" },
-            WhitelistedFileExtensions = new List<string> { "mp3", "flac", "wav", "ogg", "m4a", "alac", "aac", "aiff", "wma" },
-            UrlErrorResponseMessage = "This URL is not whitelisted.",
-            FileErrorResponseMessage = "This file type is not whitelisted.",
-            AddUpvoteEmoji = true,
-            AddDownvoteEmoji = false,
-            UseCustomUpvoteEmoji = true,
-            CustomUpvoteEmojiName = "upvote",
-            CustomUpvoteEmojiId = 1201639290048872529,
-            UseCustomDownvoteEmoji = false,
-            CustomDownvoteEmojiName = "downvote",
-            CustomDownvoteEmojiId = 1201639287972696166,
-            NoticeComment = "Having a custom emoji ID of zero will logically mean that you are using a Discord default emoji."
-        };
-
-        // var irlq = new IrlQuotes {
-        //     Enabled = false,
-        //     ChannelId = 0,
-        //     SetEpochTime = 0
-        // };
         
         var nameReplacement = new NameReplacement {
             UserId = 0,
             BeforeName = "MintLily",
             Replacement = "Lily"
         };
-
-        // var reply = new Reply {
-        //     Trigger = StringUtils.GetRandomString(),
-        //     Response = StringUtils.GetRandomString(),
-        //     OnlyTrigger = false,
-        //     DeleteTrigger = false,
-        //     DeleteTriggerIfIsOnlyInMessage = false
-        // };
         
         var guildParams = new GuildParams {
             GuildName = "Your Guild Name",
             GuildId = 0,
             BlacklistedCommands = new List<string>(),
-            // Replies = new List<Reply>(),
             DailyPatChannelId = 0,
             DailyPats = new List<DailyPat>(),
-            // IrlQuotes = irlq,
             DataDeletionTime = 0
         };
         
@@ -116,6 +57,7 @@ public static class Config {// : BasicModule {
         };
 
         var config = new Base {
+            ConfigVersion = Vars.TargetConfigVersion,
             BotToken = "",
             Prefix = "hp!",
             ActivityType = "Playing",
@@ -130,25 +72,33 @@ public static class Config {// : BasicModule {
             Api = api,
             Contributors = new List<BotContributor> { contributor },
             GuildSettings = new List<GuildParams> { guildParams },
-            NameReplacements = new List<NameReplacement> { nameReplacement },
-            Banger = banger,
-            PersonalizedMemberLily = personalizationLily,
-            PersonalizedMemberPenny = personalizationPenny,
-            PennysGuildWatcher = pennyGuildWatcher
+            NameReplacements = new List<NameReplacement> { nameReplacement }
         };
         
-        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(config, new JsonSerializerOptions {WriteIndented = true}));
-    }
-    
-    private static Base Load() {
-        Initialize();
-        return JsonSerializer.Deserialize<Base>(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"))) ?? throw new Exception();
+        bool update;
+        Base? baseConfig = null;
+        if (hasFile) {
+            var oldJson = File.ReadAllText(file);
+            baseConfig = JsonSerializer.Deserialize<Base>(oldJson);
+            if (baseConfig?.ConfigVersion == Vars.TargetConfigVersion) {
+                Base = baseConfig;
+                update = false;
+            } else {
+                update = true;
+                baseConfig!.ConfigVersion = Vars.TargetConfigVersion;
+            }
+        } else {
+            update = true;
+        }
+        
+        var json = JsonSerializer.Serialize(baseConfig ?? config, new JsonSerializerOptions {WriteIndented = true});
+        File.WriteAllText(file, json);
+        Logger.Information("{0} {1}", update ? "Updated" : hasFile ? "Loaded" : "Created", file);
+        Base = baseConfig ?? config;
     }
     
     public static void Save() 
         => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
     
     public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
-    
-    public static PersonalizedMember PersonalizedMember(ulong guildId) => Base.PersonalizedMemberLily.GuildId == guildId ? Base.PersonalizedMemberLily : Base.PersonalizedMemberPenny;
 }

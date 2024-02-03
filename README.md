@@ -23,7 +23,8 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     <br>
     <a href="https://discord.com/api/oauth2/authorize?client_id=489144212911030304&permissions=1238830009424&scope=applications.commands%20bot"><img src="https://img.shields.io/static/v1?label=Would%20you%20like%20the%20bot%3F&message=Invite%20to%20your%20server&color=9fffe3&style=for-the-badge" /></a>
     <br>
-    <a href="https://ko-fi.com/MintLily"><img src="https://img.shields.io/static/v1?label=Donate&message=Support%20the%20Author&color=0D8AC8&style=for-the-badge" /></a>
+    <a href="https://ko-fi.com/MintLily"><img src="https://img.shields.io/static/v1?label=Donate&message=Support%20the%20Author%20on%20Ko%2Dfi&color=0D8AC8&style=for-the-badge" /></a> 
+    <a href="https://www.patreon.com/MintLily"><img src="https://img.shields.io/static/v1?label=Donate&message=Support%20the%20Author%20on%20Patreon&color=0D8AC8&style=for-the-badge" /></a>
     <br>
     <a href="https://top.gg/bot/489144212911030304"><img src="https://img.shields.io/static/v1?label=Boost%20on&message=Top.gg&color=FF3366&style=for-the-badge" /></a>
 </p>
@@ -128,54 +129,6 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
         </ul>
     </li>
 </ul>
-
-<h2>Commissioned Features Commands</h2>
-<h3>Banger</h3>
-<p>These commands only work in the commissioner's Discord server.</p>
-<ul>
-    <ul>
-        <li>Toggle</li>
-        <li>SetChannel</li>
-        <li>SetUrlErrorMessage</li>
-        <li>SetExtErrorMessage</li>
-        <li>AddUrl</li>
-        <li>RemoveUrl</li>
-        <li>AddExt</li>
-        <li>RemoveExt</li>
-        <li>ListEverything</li>
-        <li>AddUpvote</li>
-        <li>AddDownvote</li>
-        <li>UseCustomUpvote</li>
-        <li>UseCustomDownvote</li>
-        <li>SetCustomUpvote</li>
-        <li>SetCustomDownvote</li>
-    </ul>
-</ul>
-
-<h3>Personalized Roles</h3>
-<p>These commands only work in the commissioner's Discord server.</p>
-<ul>
-    <li>Anyone
-        <ul>
-            <li>CreateRole</li>
-            <li>DeleteRole</li>
-            <li>UpdateColor</li>
-            <li>UpdateName</li>
-        </ul>
-    </li>
-    <li>Admin
-        <ul>
-            <li>Toggle</li>
-            <li>SetChannel</li>
-            <li>SetDefaultRole</li>
-            <li>setresettime</li>
-            <li>RoleSetTimer</li>
-            <li>AddRoleTo</li>
-            <li>RemoveRoleFrom</li>
-        </ul>
-    </li>
-</ul>
-
 
 <h2>Developers</h2>
 <img src="https://avatars.githubusercontent.com/u/22991790?v=4" height="35px" align=center /> &nbsp;

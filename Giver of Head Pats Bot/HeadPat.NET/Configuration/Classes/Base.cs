@@ -3,6 +3,7 @@
 namespace HeadPats.Configuration.Classes;
 
 public class Base {
+    public int ConfigVersion { get; set; }
     [JsonPropertyName("Token")] public string? BotToken { get; set; }
     [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; set; } = "hp!";
     [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
@@ -18,8 +19,4 @@ public class Base {
     [JsonPropertyName("Contributors")] public List<BotContributor> Contributors { get; set; }
     [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
     [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
-    [JsonPropertyName("Banger System")] public Banger? Banger { get; set; }
-    [JsonPropertyName("Personalized Members")] public PersonalizedMember PersonalizedMemberLily { get; set; }
-    [JsonPropertyName("Personalized Members for Penny")] public PersonalizedMember PersonalizedMemberPenny { get; set; }
-    [JsonPropertyName("Penny's Guild Watcher")] public PennysGuildWatcher PennysGuildWatcher { get; set; }
 }

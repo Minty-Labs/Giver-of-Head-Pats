@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿/*using System.Text;
 using Discord;
 using Discord.WebSocket;
 using HeadPats.Configuration;
@@ -112,4 +112,4 @@ public class MessageReceived : EventModule {
     //             await e.DeleteAsync(new RequestOptions {AuditLogReason = "Auto delete by bot response."});
     //     }
     // }
-}
+}*/

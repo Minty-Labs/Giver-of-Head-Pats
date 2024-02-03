@@ -13,7 +13,6 @@ using HeadPats.Data.Models;
 using HeadPats.Utils;
 using HeadPats.Commands.ContextMenu;
 using HeadPats.Commands.Slash;
-using HeadPats.Commands.Slash.Commission;
 using HeadPats.Commands.Slash.Owner;
 using HeadPats.Commands.Slash.UserLove;
 using HeadPats.Commands.Slash.UserLove.Leaderboards;
@@ -33,10 +32,8 @@ public class Program {
     
     public DiscordSocketClient Client { get; set; }
     private InteractionService GlobalInteractions { get; set; }
-    private InteractionService PersonalizedMembersInteractions { get; set; }
-    private InteractionService BangerInteractions { get; set; }
     private InteractionService MintyLabsInteractions { get; set; }
-    private CommandService Commands { get; set; }
+    // private CommandService Commands { get; set; }
     public FluxpointClient FluxpointClient { get; set; }
     public CookieClient CookieClient { get; set; }
     
@@ -59,7 +56,7 @@ public class Program {
         Log.Logger = 
             new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(new LoggingLevelSwitch(
-                    initialMinimumLevel: Vars.IsDebug ? LogEventLevel.Debug : LogEventLevel.Information))
+                    initialMinimumLevel: LogEventLevel.Debug))
                 .WriteTo.Console(new ExpressionTemplate(
                     template: "[{@t:HH:mm:ss} {@l:u3} {Coalesce(Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),'unset')}] {@m}\n{@x}",
                     theme: TemplateTheme.Literate))
@@ -72,6 +69,7 @@ public class Program {
     }
 
     private async Task MainAsync() {
+        Config.Initialize();
         if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
             Console.Title = "HeadPat.NET | Enter your bot token";
             Logger.Information("Please enter your bot token:");
@@ -81,6 +79,10 @@ public class Program {
             Logger.Information("Cannot proceed without a bot token. Please enter your bot token in the Configuration.json file.");
             Environment.Exit(0);
         }
+        if (Config.Base.BotLogsChannel.IsZero()) 
+            Logger.Warning("Bot Logs Channel is not set. Please set the BotLogsChannel in the Configuration.json file.");
+        if (Config.Base.ErrorLogsChannel.IsZero())
+            Logger.Warning("Error Logs Channel is not set. Please set the ErrorLogsChannel in the Configuration.json file.");
         Config.Save();
         
         if (Vars.IsWindows)
@@ -95,29 +97,17 @@ public class Program {
             AlwaysDownloadUsers = true,
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
             MessageCacheSize = 2000,
-            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers | GatewayIntents.GuildEmojis | GatewayIntents.GuildMessageReactions
+            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers
         });
         
-        Commands = new CommandService(new CommandServiceConfig {
-            LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-            DefaultRunMode = Discord.Commands.RunMode.Async,
-            CaseSensitiveCommands = false,
-            ThrowOnError = true
-        });
+        // Commands = new CommandService(new CommandServiceConfig {
+        //     LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
+        //     DefaultRunMode = Discord.Commands.RunMode.Async,
+        //     CaseSensitiveCommands = false,
+        //     ThrowOnError = true
+        // });
         
         GlobalInteractions = new InteractionService(Client, new InteractionServiceConfig {
-            LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-            DefaultRunMode = Discord.Interactions.RunMode.Async,
-            ThrowOnError = true
-        });
-        
-        PersonalizedMembersInteractions = new InteractionService(Client, new InteractionServiceConfig {
-            LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-            DefaultRunMode = Discord.Interactions.RunMode.Async,
-            ThrowOnError = true
-        });
-        
-        BangerInteractions = new InteractionService(Client, new InteractionServiceConfig {
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
             DefaultRunMode = Discord.Interactions.RunMode.Async,
             ThrowOnError = true
@@ -144,28 +134,28 @@ public class Program {
             return Task.CompletedTask;
         };
 
-        var argPos = 0;
-        Client.MessageReceived += async arg => {
+        // var argPos = 0;
+        // Client.MessageReceived += async arg => {
             // Don't process the command if it was a system message
-            if (arg is not SocketUserMessage message)
-                return;
+            // if (arg is not SocketUserMessage message)
+            //     return;
 
             // Create a number to track where the prefix ends and the command begins
 
             // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!message.HasStringPrefix(Vars.IsDebug ? ".." : Config.Base.Prefix, ref argPos) || message.Author.IsBot)
-                return;
+            // if (!message.HasStringPrefix(Vars.IsDebug ? ".." : Config.Base.Prefix, ref argPos) || message.Author.IsBot)
+            //     return;
 
             // Create a WebSocket-based command context based on the message
-            var context = new SocketCommandContext(Client, message);
+            // var context = new SocketCommandContext(Client, message);
 
             // Execute the command with the command context we just
             // created, along with the service provider for precondition checks.
-            await Commands.ExecuteAsync(
-                context: context,
-                argPos: argPos,
-                services: null);
-        };
+            // await Commands.ExecuteAsync(
+            //     context: context,
+            //     argPos: argPos,
+            //     services: null);
+        // };
 
         Client.Ready += ClientOnReady;
         
@@ -183,10 +173,6 @@ public class Program {
         await GlobalInteractions.AddModuleAsync<Love>(null);
         await GlobalInteractions.AddModuleAsync<DailyPatCmds>(null);
         
-        // Commission
-        await BangerInteractions.AddModuleAsync<Banger>(null);
-        await PersonalizedMembersInteractions.AddModuleAsync<PersonalizedMembers>(null);
-        
         // Owner
         await MintyLabsInteractions.AddModuleAsync<Contributors>(null);
         await MintyLabsInteractions.AddModuleAsync<BotControl>(null);
@@ -194,8 +180,6 @@ public class Program {
 
         Client.InteractionCreated += async arg => {
             var iLogger = Log.ForContext("SourceContext", "Interaction");
-            await BangerInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
-            await PersonalizedMembersInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             await GlobalInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             await MintyLabsInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
             iLogger.Debug("{0} ran a command in guild {1}", arg.User.Username, arg.GuildId);
@@ -208,11 +192,9 @@ public class Program {
             module.InitializeClient(Client);
         }
         
-        _eventModules.Add(new BangerEventListener());
-        _eventModules.Add(new MessageReceived());
+        // _eventModules.Add(new MessageReceived());
         // _eventModules.Add(new OnBotJoinOrLeave());
         _eventModules.Add(new UserLeft());
-        _eventModules.Add(new GuildUpdated());
         _eventModules.ForEach(module => module.Initialize(Client));
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.CookieClientApiKey))
@@ -243,12 +225,6 @@ public class Program {
     }
 
     private async Task ClientOnReady() {
-        // var globalCommands = await Client.GetGlobalApplicationCommandsAsync();
-        // foreach (var cmds in globalCommands) {
-        //     await cmds.DeleteAsync();
-        //     CrLogger.Debug("Deleted global slash command {0}", cmds.Name);
-        // }
-        
         var crLogger = Log.ForContext("SourceContext", "ClientReady");
         Vars.StartTime = DateTime.UtcNow;
         crLogger.Information("Bot Version        = " + Vars.Version);
@@ -258,7 +234,7 @@ public class Program {
         crLogger.Information("Token              = " + Config.Base.BotToken!.Redact());
         crLogger.Information("ActivityType       = " + $"{Config.Base.ActivityType}");
         crLogger.Information("Game               = " + $"{Config.Base.ActivityText}");
-        crLogger.Information("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + BangerInteractions.SlashCommands.Count + PersonalizedMembersInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
+        crLogger.Information("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
 
         await Client.SetStatusAsync(Vars.IsDebug || Vars.IsWindows ? UserStatus.DoNotDisturb : UserStatus.Online);
         
@@ -310,31 +286,6 @@ public class Program {
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
         crLogger.Information("Registered global slash commands.");
-        try {
-            await PersonalizedMembersInteractions.RegisterCommandsToGuildAsync(805663181170802719);
-            crLogger.Information("Registered Personalized Member guild slash commands for {0}.", "805663181170802719");
-        }
-        catch (Exception e) {
-            crLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "805663181170802719", e);
-        }
-
-        if (!Vars.IsDebug) {
-            try {
-                await PersonalizedMembersInteractions.RegisterCommandsToGuildAsync(977705960544014407);
-                crLogger.Information("Registered Personalized Member guild slash commands for {0}.", "977705960544014407");
-            }
-            catch (Exception e) {
-                crLogger.Error("Failed to register Personalized Member guild slash commands for {0}\n{err}", "977705960544014407", e);
-            }
-
-            try {
-                await BangerInteractions.RegisterCommandsToGuildAsync(977705960544014407);
-                crLogger.Information("Registered Banger guild slash commands for {0}.", "977705960544014407");
-            }
-            catch (Exception e) {
-                crLogger.Error("Failed to register Banger guild slash commands for {0}\n{err}", "977705960544014407", e);
-            }
-        }
 
         try {
             await MintyLabsInteractions.RegisterCommandsToGuildAsync(Vars.SupportServerId);
@@ -344,15 +295,8 @@ public class Program {
             crLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
         }
         
-        await Task.Delay(TimeSpan.FromSeconds(5));
+        // await Task.Delay(TimeSpan.FromSeconds(5));
         // OnBotJoinOrLeave.DoNotRunOnStart = false;
-        
-        // crLogger.Warning("This is STUPID - NEVER DO THIS IN PROD");
-        // foreach (var g in Client.Guilds) {
-        //     crLogger.Information("Downloading users for guild {0} ({1})", g.Name, g.Id);
-        //     await g.DownloadUsersAsync();
-        //     crLogger.Information("Done");
-        // }
     }
 
     public SocketTextChannel? GetChannel(ulong guildId, ulong id) {
