@@ -1,13 +1,17 @@
 ﻿using System.Text.Json.Serialization;
-namespace HeadPats.Configuration.Classes;
+namespace Michiru.Configuration.Classes;
 
 public class PersonalizedMember {
-    [JsonPropertyName("Enabled")] public bool Enabled { get; set; }
-    [JsonPropertyName("Guild ID")] public ulong GuildId { get; set; }
-    [JsonPropertyName("Channel ID")] public ulong ChannelId { get; set; }
+    public List<PmGuildData>? Guilds { get; set; } = [];
+}
+
+public class PmGuildData {
+    [JsonPropertyName("Enabled")] public bool Enabled { get; set; } = false;
+    [JsonPropertyName("Guild ID")] public ulong GuildId { get; set; } = 0;
+    [JsonPropertyName("Channel ID")] public ulong ChannelId { get; set; } = 0;
     [JsonPropertyName("Reset Timer")] public int ResetTimer { get; set; } = 30;
-    [JsonPropertyName("Default Role ID")] public ulong DefaultRoleId { get; set; }
-    [JsonPropertyName("Members")] public List<Member>? Members { get; set; }
+    [JsonPropertyName("Default Role ID")] public ulong DefaultRoleId { get; set; } = 0;
+    [JsonPropertyName("Members")] public List<Member>? Members { get; set; } = [];
 }
 
 public class Member {

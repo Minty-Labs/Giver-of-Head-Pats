@@ -3,4 +3,5 @@
   &lt;Assembly Path="C:\Users\dephi\.nuget\packages\discord.net.core\3.12.0\lib\net6.0\Discord.Net.Core.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\dephi\.nuget\packages\dsharpplus\5.0.0-nightly-01839\lib\net7.0\DSharpPlus.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=downvote/@EntryIndexedValue">True</s:Boolean>
 	</wpf:ResourceDictionary>
