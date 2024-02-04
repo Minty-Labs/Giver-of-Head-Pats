@@ -6,6 +6,7 @@ namespace Michiru.Managers;
 
 public static class MobileManager { // Thanks DubyaDude
     private static readonly ILogger Logger = Log.ForContext(typeof(MobileManager));
+    
     public static void Initialize() {
         try {
             Logger.Debug("Attempting to patch Client as mobile");

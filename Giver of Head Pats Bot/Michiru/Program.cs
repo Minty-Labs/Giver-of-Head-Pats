@@ -1,4 +1,4 @@
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -57,11 +57,12 @@ public class Program {
             Console.Title = $"{Vars.Name} | Enter your bot token";
             Console.Write("Please enter your bot token: ");
             Config.Base.BotToken = Console.ReadLine()!.Trim();
-        }
-        else if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
-            Logger.Warning("Cannot proceed without a bot token. Please enter your bot token in the Michiru.Bot.config.json file.");
-            Console.ReadKey();
-            Environment.Exit(0);
+            
+            if (string.IsNullOrWhiteSpace(Config.Base.BotToken)) {
+                Logger.Warning("Cannot proceed without a bot token. Please enter your bot token in the Michiru.Bot.config.json file.");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
         }
         if (Config.Base.BotLogsChannel.IsZero()) 
             Logger.Warning("Bot Logs Channel is not set. Please set the BotLogsChannel in the Michiru.Bot.config.json file.");
