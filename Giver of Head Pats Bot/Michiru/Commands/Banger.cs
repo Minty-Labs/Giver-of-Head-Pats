@@ -175,5 +175,9 @@ public class Banger : InteractionModuleBase<SocketInteractionContext> {
             Config.Save();
             await RespondAsync($"Users {(enabled ? "can" : "cannot")} speak freely in the banger channel.");
         }
+        
+        [SlashCommand("getbangercount", "Gets the number of bangers submitted in this guild")]
+        public async Task GetBangerCount()
+            => await RespondAsync($"There are {Config.GetGuildBanger(Context.Guild.Id).SubmittedBangers} bangers in this guild.");
     }
 }
