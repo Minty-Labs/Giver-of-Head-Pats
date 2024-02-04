@@ -111,4 +111,8 @@ public static class Config {
         Save();
         return pm.Guilds!.First();
     }
+    
+    public static int GetBangerNumber() => Base.Banger.Sum(guild => guild.SubmittedBangers);
+
+    public static int GetPersonalizedMemberCount() => Base.PersonalizedMember.SelectMany(member => member.Guilds!).Sum(guild => guild.Members!.Count);
 }

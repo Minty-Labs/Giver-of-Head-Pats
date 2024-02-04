@@ -20,8 +20,8 @@ public static class RotatingStatus {
     }
 
     private static string GetStatusVariable(this string input) {
-        return input.Replace("%bangers%", $"{Config.Base.Banger.Sum(b => b.SubmittedBangers)}")
-                .Replace("%personalizedMembers%", $"{Config.Base.PersonalizedMember.Sum(pm => pm.Guilds!.Count)}")
+        return input.Replace("%bangers%", $"{Config.GetBangerNumber()}")
+                .Replace("%pm%", $"{Config.GetPersonalizedMemberCount()}")
                 .Replace("%users%", $"{Program.Instance.Client.Guilds.Sum(guild => guild.MemberCount)}")
                 .Replace("%os%", Vars.IsWindows ? "Windows" : "Linux")
             ;
