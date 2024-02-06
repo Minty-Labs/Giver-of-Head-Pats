@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadPat", "HeadPat\HeadPat.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadPat.NET", "HeadPat.NET\HeadPat.NET.csproj", "{474C55DF-4398-43A2-82D9-3F541EA5D20B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Michiru", "Michiru\Michiru.csproj", "{5295F587-85F8-4CC6-BB73-2277F5B7B6C6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{474C55DF-4398-43A2-82D9-3F541EA5D20B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{474C55DF-4398-43A2-82D9-3F541EA5D20B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{474C55DF-4398-43A2-82D9-3F541EA5D20B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5295F587-85F8-4CC6-BB73-2277F5B7B6C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5295F587-85F8-4CC6-BB73-2277F5B7B6C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5295F587-85F8-4CC6-BB73-2277F5B7B6C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5295F587-85F8-4CC6-BB73-2277F5B7B6C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
