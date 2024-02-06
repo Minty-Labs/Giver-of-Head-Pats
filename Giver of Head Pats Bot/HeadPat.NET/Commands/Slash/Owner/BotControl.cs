@@ -2,6 +2,7 @@
 using System.Text;
 using Discord;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Utils;
 using Serilog;
 
@@ -9,7 +10,7 @@ namespace HeadPats.Commands.Slash.Owner;
 
 public class BotControl : InteractionModuleBase<SocketInteractionContext> {
 
-    [Group("bot", "Owner only commands - Controls the bot"), RequireOwner]
+    [Group("bot", "Owner only commands - Controls the bot"), RequireUser(167335587488071682)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("listguilds", "Lists all the guilds the bot is in")]

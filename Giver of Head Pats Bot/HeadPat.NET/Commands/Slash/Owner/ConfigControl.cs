@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
 using HeadPats.Configuration.Classes;
 using HeadPats.Data;
@@ -7,7 +8,7 @@ using HeadPats.Data;
 namespace HeadPats.Commands.Slash.Owner;
 
 public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
-    [Group("config", "Owner only commands - Controls the config"), RequireOwner]
+    [Group("config", "Owner only commands - Controls the config"), RequireUser(167335587488071682)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
         public enum ApiSet {
             [ChoiceDisplay("Unsplash Access Key")] UnsplashAccessKey = 1,
