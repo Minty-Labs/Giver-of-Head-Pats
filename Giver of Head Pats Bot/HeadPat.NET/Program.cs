@@ -56,7 +56,7 @@ public class Program {
         Log.Logger = 
             new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(new LoggingLevelSwitch(
-                    initialMinimumLevel: LogEventLevel.Debug))
+                    initialMinimumLevel: LogEventLevel.Information))
                 .WriteTo.Console(new ExpressionTemplate(
                     template: "[{@t:HH:mm:ss} {@l:u3} {Coalesce(Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1),'unset')}] {@m}\n{@x}",
                     theme: TemplateTheme.Literate))

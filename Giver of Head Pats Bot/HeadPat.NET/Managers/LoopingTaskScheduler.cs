@@ -15,7 +15,7 @@ public class LoopingTaskScheduler : BasicModule {
     private static async Task Scheduler() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
-            .UseDefaultThreadPool(x => x.MaxConcurrency = 5)
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 4)
             .BuildScheduler();
         await scheduler.Start();
         
