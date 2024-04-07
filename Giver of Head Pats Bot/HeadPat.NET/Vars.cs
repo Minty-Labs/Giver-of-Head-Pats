@@ -9,8 +9,8 @@ public static class Vars {
     public const ulong ClientId = 489144212911030304;
     public const int TargetConfigVersion = 1;
     
-    public const string Version = "5.1.2.1" + (IsDebug ? "-dev" : ""); // Major.Feature.Minor
-    public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow : new DateTime(2024, 2, 6, 14, 21, 00);
+    public const string Version = "5.1.3" + (IsDebug ? "-dev" : ""); // Major.Feature.Minor
+    public static readonly DateTime BuildTime = IsDebug ? DateTime.UtcNow : new DateTime(2024, 4, 7, 11, 57, 00);
     public const bool IsDebug = false;
     public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime { get; set; }
@@ -19,5 +19,5 @@ public static class Vars {
     public const string SupportServer = "https://discord.gg/Qg9eVB34sq";
     public const ulong SupportServerId = 1083619886980403272;
     public static bool UseCookieApi { get; set; } = true;
-    public const string FakeUserAgent = $"{Name}/{Version} (https://github.com/Minty-Labs/Giver-of-Head-Pats)";
+    public const string BotUserAgent = $"{Name} Bot/{Version} (https://github.com/Minty-Labs/Giver-of-Head-Pats) (Email Contact: admin@mintlily.lgbt)";
 }
