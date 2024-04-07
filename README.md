@@ -13,9 +13,9 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 <!-- Just Extra Space -->
 
 <p align="center">
-    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=5.1.2&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Bot%20Version&message=5.1.3&color=389980&style=for-the-badge" />
     <!-- Elly Cute -->
-    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=3%20February%202024&color=389980&style=for-the-badge" />
+    <img src="https://img.shields.io/static/v1?label=Last%20Updated&message=7%20April%202024&color=389980&style=for-the-badge" />
     <img src="https://img.shields.io/static/v1?label=Language&message=C%23&color=C059D0&style=for-the-badge" />
     <a href="https://github.com/discord-net/Discord.Net"><img src="https://img.shields.io/static/v1?label=Library&message=Discord.NET&color=7289DA&style=for-the-badge" /></a>
     <br><br>
@@ -31,10 +31,10 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
 
 <h2>Packages (Nuget)</h2>
 <ul>
-    <li>Discord.NET <b>v3.13.0</b></li>
-    <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.0-prerelease.5</b></li>
-    <li>Microsoft.EntityFrameworkCore <b>v8.0.1</b></li>
-    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v8.0.1</b></li>
+    <li>Discord.NET <b>v3.14.1</b></li>
+    <li>Lib.Harmony <i>by pardeike</i> <b>v2.3.3</b></li>
+    <li>Microsoft.EntityFrameworkCore <b>v8.0.3</b></li>
+    <li>Microsoft.EntityFrameworkCore.Sqlite <b>v8.0.3</b></li>
     <li>ColorHelper <i>by iamartyom</i> <b>v1.8.1</b></li>
     <li>Serilog by <b>v3.1.1</b>
         <ul>
@@ -44,12 +44,12 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     </li>
     <li>fluxpoint-sharp <i>by Builderb</i> <b>v3.0.2</b></li>
     <li>Patreon.NET <i>by sawch</i> <b>v1.0.2</b></li>
-    <li>Quartz <i>by Marko Lahma</i> <b>v3.8.0</b></li>
+    <li>Quartz <i>by Marko Lahma</i> <b>v3.8.1</b></li>
 </ul>
 
 <h2>Programs & Services Used</h2>
 <ul>
-    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.3.3
+    <li><a href="https://jb.gg/OpenSourceSupport" target="_blank">JetBrains</a> v2023.3.4
         <ul>
             <li>Rider</li>
             <li>dotPeek</li>
@@ -60,7 +60,7 @@ I am always expanding in what I can do and I hope I will be the perfect caregive
     <li>GitKraken</li>
     <li>Photoshop</li>
     <li>Discord *</li>
-    <li>Spotify / Plex(amp) / Tidal*</li>
+    <li>Spotify / Plex(amp)*</li>
     <li>APIs
         <ul>
             <li>RandomFox.ca</li>
