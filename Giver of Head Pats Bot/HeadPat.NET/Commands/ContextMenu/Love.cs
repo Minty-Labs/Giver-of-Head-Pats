@@ -5,6 +5,7 @@ using HeadPats.Configuration.Classes;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Managers;
+using HeadPats.Utils;
 using Serilog;
 
 namespace HeadPats.Commands.ContextMenu; 
@@ -60,8 +61,9 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
             await RespondAsync("You cannot give bots headpats.", ephemeral: true);
         else if (Context.User.Id == user.Id)
             await RespondAsync("You cannot give yourself headpats.", ephemeral: true);
-        else 
-            await RespondAsync($"{Context.User.Username.ReplaceName(Context.User.Id)} patted {user.Username.ReplaceName(user.Id)}!");
+        else
+            await RespondAsync(PatUtils.GetRandomPatMessageTemplate(Context.User.Mention, user.Username.ReplaceName(user.Id)));
+            //await RespondAsync($"{Context.User.Username.ReplaceName(Context.User.Id)} patted {user.Username.ReplaceName(user.Id)}!");
         UserControl.AddPatToUser(user.Id, 1, true, Context.Guild.Id);
     }
 }
