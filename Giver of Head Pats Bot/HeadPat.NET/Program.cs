@@ -1,4 +1,4 @@
-using Serilog;
+﻿using Serilog;
 using Serilog.Events; 
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
@@ -43,6 +43,8 @@ public class Program {
     
     private static List<EventModule> _eventModules = [];
     private static List<BasicModule> _basicModules = [];
+    
+    // private ModalProcessor _modalProcessor;
 
     public static async Task Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().Contains("windows", StringComparison.CurrentCultureIgnoreCase);
@@ -158,8 +160,10 @@ public class Program {
         // };
 
         Client.Ready += ClientOnReady;
+        // Client.ModalSubmitted += async arg => await ModalProcessor.ProcessModal(arg);
         
         var serviceCollection = new ServiceCollection();
+        // _modalProcessor = new ModalProcessor();
         
         #region Slash Comands
         

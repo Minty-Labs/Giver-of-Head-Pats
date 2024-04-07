@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Discord;
 using Discord.Interactions;
 using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
@@ -39,6 +40,15 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
             [ChoiceDisplay("Update")] Update = 2,
             [ChoiceDisplay("Remove")] Remove = 3
         }
+        
+        // [SlashCommand("setapikey", "Sets an API key for the bot")]
+        // public async Task SetApiKey() {
+        //     var modal = new ModalBuilder {
+        //         Title = "API Key",
+        //         CustomId = "setapikey",
+        //     }
+        //     .AddComponents( );
+        // }
 
         [SlashCommand("setapikey", "Sets an API key for the bot")]
         public async Task SetApiKey(ApiSet apiSet, [Summary(description: "The API Key")] string key) {
