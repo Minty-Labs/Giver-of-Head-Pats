@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using Discord;
 using Discord.Interactions;
@@ -96,6 +96,11 @@ public class BotControl : InteractionModuleBase<SocketInteractionContext> {
                 await Context.Client.StopAsync();
         }
         
+        [SlashCommand("setbotjoinleaveboolaction", "Sets the bool for bot join leave actions")]
+        public async Task SetBotJoinLeaveBoolAction([Summary(description: "The bool to set")] bool value) {
+            Events.OnBotJoinOrLeave.RunInGeneralControlledByCommand = value;
+            await RespondAsync($"Set RunInGeneralControlledByCommand to: {value}", ephemeral: true);
+        }
+        
     }
-    
 }

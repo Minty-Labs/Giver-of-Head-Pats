@@ -193,7 +193,7 @@ public class Program {
         }
         
         // _eventModules.Add(new MessageReceived());
-        // _eventModules.Add(new OnBotJoinOrLeave());
+        _eventModules.Add(new OnBotJoinOrLeave());
         _eventModules.Add(new UserLeft());
         _eventModules.ForEach(module => module.Initialize(Client));
         
@@ -299,8 +299,8 @@ public class Program {
             crLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
         }
         
-        // await Task.Delay(TimeSpan.FromSeconds(5));
-        // OnBotJoinOrLeave.DoNotRunOnStart = false;
+        await Task.Delay(TimeSpan.FromSeconds(5));
+        OnBotJoinOrLeave.DoNotRunOnStart = false;
     }
 
     public SocketTextChannel? GetChannel(ulong guildId, ulong id) {
