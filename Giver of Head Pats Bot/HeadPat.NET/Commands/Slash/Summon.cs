@@ -15,7 +15,7 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
         public async Task Bunny() {
             start:
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.FakeUserAgent);
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.BotUserAgent);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var content = await httpClient.GetStringAsync("https://api.bunnies.io/v2/loop/random/?media=gif,png");
             // Logger.Log($"Data: {content}");
@@ -50,7 +50,7 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
             if (!doingCustomFox) {
                 RandomFoxJson.FoxData = null;
                 var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.FakeUserAgent);
+                httpClient.DefaultRequestHeaders.Add("User-Agent", Vars.BotUserAgent);
                 var content = await httpClient.GetStringAsync("https://randomfox.ca/floof/");
                 RandomFoxJson.GetData(content);
 

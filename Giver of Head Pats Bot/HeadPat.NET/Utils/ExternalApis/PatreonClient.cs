@@ -11,7 +11,7 @@ public class Patreon_Client {
     public static List<string>? CutieTier { get; set; }
     public static List<string>? MegaCutieTier { get; set; }
     public static List<string>? AdorableTier { get; set; }
-    private static int MemberCount { get; set; }
+    public static int MemberCount { get; set; }
     private static readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
 
     public static async Task GetPatreonInfo(bool reRun = false) {

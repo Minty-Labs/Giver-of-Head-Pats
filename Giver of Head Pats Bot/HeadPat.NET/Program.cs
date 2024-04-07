@@ -234,6 +234,9 @@ public class Program {
         crLogger.Information("Token              = " + Config.Base.BotToken!.Redact());
         crLogger.Information("ActivityType       = " + $"{Config.Base.ActivityType}");
         crLogger.Information("Game               = " + $"{Config.Base.ActivityText}");
+        crLogger.Information("Rotating Statuses  = " + $"{Config.Base.RotatingStatus.Enabled}");
+        if (Config.Base.RotatingStatus.Enabled)
+            crLogger.Information("Statuses =         " + $"{string.Join(" | ", Config.Base.RotatingStatus.Statuses.Select(x => x.ActivityType + " - " + x.UserStatus + " - " + x.ActivityText).ToArray())}");
         crLogger.Information("Number of Commands = " + $"{GlobalInteractions.SlashCommands.Count + MintyLabsInteractions.SlashCommands.Count}");
 
         await Client.SetStatusAsync(Vars.IsDebug || Vars.IsWindows ? UserStatus.DoNotDisturb : UserStatus.Online);
@@ -266,6 +269,7 @@ public class Program {
             .AddField("Build Time", $"<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:F>\n<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:R>")
             .AddField("Start Time", $"<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:F>\n<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:R>")
             .AddField("Discord.NET Version", Vars.DNetVer)
+            .AddField("System .NET Version", Environment.Version)
             .Build();
         
         if (!Config.Base.ErrorLogsChannel.IsZero()) 
