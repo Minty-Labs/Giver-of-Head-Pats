@@ -1,10 +1,11 @@
 ﻿using Discord;
 using Discord.Interactions;
 using HeadPats.Configuration;
+using HeadPats.Data;
 using HeadPats.Utils;
 using HeadPats.Utils.ExternalApis;
 
-namespace HeadPats.Commands.Slash; 
+namespace HeadPats.Commands.Slash;
 
 public class Basic : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("about", "Shows a message that describes the bot")]
@@ -24,13 +25,13 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
             ThumbnailUrl = bot!.GetAvatarUrl()
         };
         embed.AddField("Bot Creator Information", "Website: https://mintylabs.dev/gohp \n" +
-                                              "Donate: https://ko-fi.com/MintLily \n" +
-                                              "Patreon: https://www.patreon.com/MintLily \n" +
-                                              "Open-Source: https://github.com/Minty-Labs/Giver-of-Head-Pats \n" +
-                                              $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
-                                              $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
-                                              "Privacy Policy: [Link (`mintylabs.dev`)](https://mintylabs.dev/gohp/privacy-policy) \n" +
-                                              "Terms of Service: [Link (`mintylabs.dev`)](https://mintylabs.dev/gohp/terms) \n");
+                                                  "Donate: https://ko-fi.com/MintLily \n" +
+                                                  "Patreon: https://www.patreon.com/MintLily \n" +
+                                                  "Open-Source: https://github.com/Minty-Labs/Giver-of-Head-Pats \n" +
+                                                  $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
+                                                  $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
+                                                  "Privacy Policy: [Link (`mintylabs.dev`)](https://mintylabs.dev/gohp/privacy-policy) \n" +
+                                                  "Terms of Service: [Link (`mintylabs.dev`)](https://mintylabs.dev/gohp/terms) \n");
         embed.AddField("Uptime", "```" + (DateTime.UtcNow - Vars.StartTime).ToString(@"dd\.hh\:mm\:ss") + "```");
         var embed2 = new EmbedBuilder {
             Title = "Contributors",
@@ -39,12 +40,12 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
             ThumbnailUrl = bot.GetAvatarUrl(),
             Footer = new EmbedFooterBuilder { Text = "If you would like to be added to this list, please contact me." }
         };
-        
+
         Embed[] embeds;
-        
+
         Config.Base.Contributors!.ForEach(contributor => embed2.AddField(contributor.UserName, contributor.Info!.Replace("<br>", "\n")));
 
-        List<string>? cutie = new(), megaCutie = new(), adorable = new();
+        List<string>? cutie = [], megaCutie = [], adorable = [];
         try {
             cutie = Patreon_Client.CutieTier;
             megaCutie = Patreon_Client.MegaCutieTier;
@@ -53,7 +54,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
         catch (Exception ex) {
             // ignored
         }
-        
+
         var cutieBool = cutie is null || cutie.Count > 0;
         var megaCutieBool = megaCutie is null || megaCutie.Count > 0;
         var adorableBool = adorable is null || adorable.Count > 0;
@@ -68,14 +69,14 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 Footer = new EmbedFooterBuilder { Text = "If you would like to be added to this list, please contact me." }
             };
             supporterEmbed.AddField("Cutie", cutieBool ? "None" : string.Join(',', cutie!));
-            supporterEmbed.AddField("Mega Cutie", megaCutieBool  ? "None" : string.Join(',', megaCutie!));
+            supporterEmbed.AddField("Mega Cutie", megaCutieBool ? "None" : string.Join(',', megaCutie!));
             supporterEmbed.AddField("Adorable", adorableBool ? "None" : string.Join(',', adorable!));
-            embeds = new[] { embed.Build(), embed2.Build(), supporterEmbed.Build() };
+            embeds = [embed.Build(), embed2.Build(), supporterEmbed.Build()];
         }
         else {
-            embeds = new [] { embed.Build(), embed2.Build() };
+            embeds = [embed.Build(), embed2.Build()];
         }
-        
+
         await RespondAsync(embeds: embeds);
     }
 
@@ -87,4 +88,73 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
 
     [SlashCommand("flipcoin", "Flip a coin")]
     public async Task FlipCoin() => await RespondAsync($"The coin flip result is **{(new Random().Next(0, 1) == 0 ? "Heads" : "Tails")}**");
+
+    [SlashCommand("opencmd", "Runs very specific commands set by the owner")]
+    public async Task OpenCommand([Summary("Command", "The command to run")] string command) {
+        /*if (!Config.Base.OwnerIds.Contains(Context.User.Id)) {
+            await RespondAsync("You are not permitted to use this command", ephemeral: true);
+            return;
+        }*/
+
+        switch (command) {
+            case "stats":
+            case "status": {
+                await using var db = new Context();
+                var embed = new EmbedBuilder {
+                    Title = "Bot Stats",
+                    Description = $"{Context.User.Mention} is cute!",
+                    Color = Colors.HexToColor("9fffe3"),
+                    ThumbnailUrl = Context.Client.CurrentUser.GetAvatarUrl(),
+                    Footer = new EmbedFooterBuilder {
+                        Text = $"v{Vars.Version}"
+                    },
+                    Timestamp = DateTime.Now
+                }
+                    .AddField("Global Pat Count", $"{db.Overall.AsQueryable().ToList().First().PatCount:N0}")
+                    .AddField("Guild Count", $"{Program.Instance.Client.Guilds.Count}")
+                    .AddField("Patreon Pledge Count", $"{Patreon_Client.MemberCount}")
+                    .AddField("Build Time", $"<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:F>\n<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:R>")
+                    .AddField("Start Time", $"<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:F>\n<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:R>")
+                    .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)
+                    .AddField("Discord.NET Version", Vars.DNetVer, true)
+                    .AddField("System .NET Version", Environment.Version, true)
+                    .AddField("Links", $"[Invite Link]({Vars.InviteLink}) | [Support Server]({Vars.SupportServer}) | [GitHub](https://github.com/Minty-Labs/Giver-of-Head-Pats) | " +
+                                       $"[Privacy Policy](https://mintylabs.dev/gohp/privacy-policy) | [Terms of Service](https://mintylabs.dev/gohp/terms) | " +
+                                       $"[Donate](https://ko-fi.com/MintLily) | [Patreon](https://www.patreon.com/MintLily)");
+                await RespondAsync(embed: embed.Build());
+                break;
+            }
+            case "peppermint":
+            case "mintcraft":
+            case "pepper mint":
+            case "mint craft":
+            case "mc":
+            case "minecraft": {
+                try {
+                    var mcServer = await Program.Instance.FluxpointClient.Minecraft.GetMinecraftServerAsync("mc.mili.lgbt");
+                    var embed = new EmbedBuilder {
+                            Title = "Minecraft Server",
+                            Description = $"Server is currently {(mcServer.online ? "online" : "offline")}",
+                            Color = Colors.HexToColor("00D200"),
+                            ThumbnailUrl = mcServer.icon ?? "https://i.mintlily.lgbt/null.jpg",
+                        }
+                        .AddField("IP", "mc.mili.lgbt")
+                        .AddField("Player Count", $"{mcServer.playersOnline} / {mcServer.playersMax}")
+                        .AddField("Version", mcServer.version)
+                        .AddField("MOTD", mcServer.motd)
+                        .AddField("Available Platforms", "Java Edition, Bedrock Edition (Xbox, PlayStation, Switch, iOS, Android, Windows 10/11)")
+                        .AddField("Players", $"{(mcServer.players.Length > 0 ? string.Join(", ", mcServer.players)[..512] : "No players online")}")
+                        .AddField("Miscellaneous Info", $"code:{mcServer.code}|success:{mcServer.success}|message:{mcServer.message}");
+                    await RespondAsync(embed: embed.Build());
+                }
+                catch {
+                    await RespondAsync("Failed to get server status", ephemeral: true);
+                }
+                break;
+            }
+            default:
+                await RespondAsync("Invalid or unknown command", ephemeral: true);
+                break;
+        }
+    }
 }
