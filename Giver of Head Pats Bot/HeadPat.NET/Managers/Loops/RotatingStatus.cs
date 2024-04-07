@@ -22,7 +22,7 @@ public static class RotatingStatus {
 
 public static class StatusUtils {
     public static string GetStatusVariable(this string input, Context db) {
-        return input.Replace("%patCount%", $"{db.Overall.AsQueryable().ToList().First().PatCount}")
+        return input.Replace("%patCount%", $"{db.Overall.AsQueryable().ToList().First().PatCount:N0}")
             .Replace("%guildCount%", $"{Program.Instance.Client.Guilds.Count}")
             .Replace("%users%", $"{Program.Instance.Client.Guilds.Sum(guild => guild.MemberCount)}")
             .Replace("%os%", Vars.IsWindows ? "Windows" : "Linux")

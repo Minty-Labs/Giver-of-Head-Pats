@@ -1,4 +1,4 @@
-﻿using Serilog;
+using Serilog;
 using Serilog.Events; 
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
@@ -256,7 +256,7 @@ public class Program {
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),
             Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
-                          $"Currently in {Client.Guilds.Count} Guilds with {tempPatCount} total head pats given",
+                          $"Currently in {Client.Guilds.Count} Guilds with {tempPatCount:N0} total head pats given",
             Footer = new EmbedFooterBuilder {
                 Text = $"v{Vars.Version}",
                 IconUrl = Client.CurrentUser.GetAvatarUrl()

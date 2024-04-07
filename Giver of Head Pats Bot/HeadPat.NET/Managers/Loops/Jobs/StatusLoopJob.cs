@@ -17,7 +17,7 @@ public class StatusLoopJob : IJob {
             if (tempPatCount == _tempPatCount) return;
         
             await Program.Instance.Client.SetStatusAsync(UserStatus.Online);
-            await Program.Instance.Client.SetActivityAsync(new CustomStatusGame($"{tempPatCount} head pats given"));
+            await Program.Instance.Client.SetActivityAsync(new CustomStatusGame($"{tempPatCount:N0} head pats given"));
             // Log.Debug("Updated Status");
         }
         catch (Exception err) {
