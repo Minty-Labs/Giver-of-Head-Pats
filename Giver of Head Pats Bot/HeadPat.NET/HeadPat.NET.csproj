@@ -27,13 +27,13 @@
 
     <ItemGroup>
       <PackageReference Include="ColorHelper" Version="1.8.1" />
-      <PackageReference Include="Discord.Net" Version="3.13.0" />
+      <PackageReference Include="Discord.Net" Version="3.14.1" />
       <PackageReference Include="fluxpoint-sharp" Version="3.0.2" />
-      <PackageReference Include="Lib.Harmony" Version="2.3.0-prerelease.5" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
+      <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
       <PackageReference Include="Patreon.Net" Version="1.0.2" />
-      <PackageReference Include="Quartz" Version="3.8.0" />
+      <PackageReference Include="Quartz" Version="3.8.1" />
       <PackageReference Include="Serilog" Version="3.1.1" />
       <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
