@@ -1,6 +1,7 @@
 ﻿using ColorHelper;
 using Discord;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Utils;
 
 namespace HeadPats.Commands.Slash; 
@@ -16,7 +17,7 @@ public class ColorCmds : InteractionModuleBase<SocketInteractionContext> {
     }
     private const string BaseUrl = "https://c.devminer.xyz/256/256";
 
-    [SlashCommand("color", "Shows you the color from the given input")]
+    [SlashCommand("color", "Shows you the color from the given input"), RateLimit(30, 20)]
     public async Task SolidColor(ColorType colorType, [Summary(description: "Color values, non-hex separate with spaces or commas")] string colorValue = "x") {
         if (string.IsNullOrWhiteSpace(colorValue)) {
             await RespondAsync("You must in a color value\nExamples: `fd3ac1` or `148, 78, 36` or `48 128 71` etc.", ephemeral: true);
@@ -99,7 +100,7 @@ public class ColorCmds : InteractionModuleBase<SocketInteractionContext> {
         await RespondAsync(embed: embed.Build());
     }
 
-    [SlashCommand("gradient", "Shows you the gradient from the given input")]
+    [SlashCommand("gradient", "Shows you the gradient from the given input"), RateLimit(30, 20)]
     public async Task GradientColor(ColorType colorType,
         [Summary("leftvalues", "Color values, non-hex separate with spaces or commas")] string valuesL,
         [Summary("rightvalues", "must be same format as previous value")] string valuesR)

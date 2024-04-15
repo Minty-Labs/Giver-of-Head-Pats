@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using Discord;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Utils;
 using HeadPats.Utils.ExternalApis;
 
@@ -11,7 +12,7 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
     [Group("summon", "Summon various images")]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
 
-        [SlashCommand("bunny", "Bunnies are adorable")]
+        [SlashCommand("bunny", "Bunnies are adorable"), RateLimit(30, 10)]
         public async Task Bunny() {
             start:
             var httpClient = new HttpClient();
@@ -127,7 +128,7 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
             await RespondAsync(embed: embed.Build());
         }
         
-        [SlashCommand("aiquote", "Lets an inspirobot AI create an inspirational quote with image")]
+        [SlashCommand("aiquote", "Lets an inspirobot AI create an inspirational quote with image"), RateLimit(30, 10)]
         public async Task InspiroBot() {
             var httpClient = new HttpClient();
             var content = await httpClient.GetStringAsync("https://inspirobot.me/api?generate=true&oy=vey"); // out puts an image URL link
