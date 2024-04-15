@@ -3,13 +3,8 @@ using System.Globalization;
 
 namespace HeadPats.Utils; 
 
-public class Colors {
-    public static Discord.Color Random {
-        get {
-            Random rnd = new();
-            return ConvertColor(Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255)));
-        }
-    }
+public static class Colors {
+    public static string RandomColorHex => ColorToHex(Random);
     public static readonly Discord.Color WarnYellow = new(252, 185, 0);
     public static readonly Discord.Color Purplism = new(38, 0, 99);
     public static readonly Discord.Color Yellow = new(255, 255, 0);
@@ -19,6 +14,13 @@ public class Colors {
         byte.TryParse(color.G.ToString(), out var g);
         byte.TryParse(color.B.ToString(), out var b);
         return new Discord.Color(r, g, b);
+    }
+    
+    public static Discord.Color Random {
+        get {
+            Random rnd = new();
+            return ConvertColor(Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255)));
+        }
     }
     
     public static Discord.Color HexToColor(string hexColor) {
@@ -31,12 +33,11 @@ public class Colors {
         return new Discord.Color((float)num1, num2, num3);
     }
     
-    public static string ColorToHex(Color baseColor, bool hash = false) {
+    public static string ColorToHex(Color baseColor, bool addHash = false) {
         var str = Convert.ToInt32(baseColor.R * byte.MaxValue).ToString("X2") +
                   Convert.ToInt32(baseColor.G * byte.MaxValue).ToString("X2") +
                   Convert.ToInt32(baseColor.B * byte.MaxValue).ToString("X2");
-        if (hash) str = "#" + str;
-        return str;
+        return addHash ? "#" + str : str;
     }
 
     public static Discord.Color GetRandomCookieColor() {

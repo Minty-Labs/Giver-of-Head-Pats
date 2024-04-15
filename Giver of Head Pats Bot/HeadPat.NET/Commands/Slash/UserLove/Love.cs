@@ -88,6 +88,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             var numberOfPats = num == 3 ? 2 : 1;
 
             e.WithTitle(outputs[num]);
+            var newNumber = checkUser!.PatCount + numberOfPats;
 
             if (Vars.UseCookieApi) {
                 start:
@@ -101,7 +102,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.PatCount + numberOfPats} pats");
+                e.WithFooter($"Powered by CookieAPI | You have {newNumber:N0} pats");
             }
             else {
                 start2:
@@ -114,7 +115,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by Fluxpoint API | You have {checkUser!.PatCount + numberOfPats} pats");
+                e.WithFooter($"Powered by Fluxpoint API | You have {newNumber:N0} pats");
             }
 
             var doingTheCutieSpecial = false;
@@ -393,6 +394,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             var outputs = new[] { "C O O K I E S", "Cookies!", "nom nom" };
 
             e.WithTitle(outputs[num]);
+            var newNumber = checkUser!.CookieCount + 1;
 
             if (Vars.UseCookieApi) {
                 start:
@@ -405,10 +407,10 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempCookieGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {checkUser!.CookieCount} cookies");
+                e.WithFooter($"Powered by CookieAPI | You have {newNumber:N0} cookies");
             }
             else 
-                e.WithFooter($"You have {checkUser!.CookieCount} cookies");
+                e.WithFooter($"You have {newNumber:N0} cookies");
 
             e.WithColor(Colors.GetRandomCookieColor());
             e.WithDescription($"{Context.User.Mention} gave a cookie to {user.Mention}");
