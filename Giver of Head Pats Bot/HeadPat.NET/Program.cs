@@ -270,8 +270,8 @@ public class Program {
             },
             Timestamp = DateTime.Now
         }
-            .AddField("Build Time", $"<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:F>\n<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:R>")
-            .AddField("Start Time", $"<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:F>\n<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:R>")
+            .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
+            .AddField("Start Time", $"{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
             .AddField("Discord.NET Version", Vars.DNetVer)
             .AddField("System .NET Version", Environment.Version)
             .Build();
