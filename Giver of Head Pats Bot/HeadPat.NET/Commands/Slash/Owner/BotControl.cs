@@ -89,18 +89,18 @@ public class BotControl : InteractionModuleBase<SocketInteractionContext> {
             var output = await process.StandardOutput.ReadToEndAsync();
             await process.WaitForExitAsync();
             
-            var weh = StringUtils.SplitMessage(output, 1900);
-            foreach (var chuck in weh)
-                await RespondAsync($"```\n{chuck}```");
+            var weh = output.SplitMessage(1900);
+            foreach (var chunk in weh)
+                await RespondAsync(MarkdownUtils.ToBlockQuoteMultiline(chunk));
             if (command.Equals("pm2 stop 1"))
                 await Context.Client.StopAsync();
         }
         
-        [SlashCommand("setbotjoinleaveboolaction", "Sets the bool for bot join leave actions")]
+        /*[SlashCommand("setbotjoinleaveboolaction", "Sets the bool for bot join leave actions")]
         public async Task SetBotJoinLeaveBoolAction([Summary(description: "The bool to set")] bool value) {
             Events.OnBotJoinOrLeave.RunInGeneralControlledByCommand = value;
             await RespondAsync($"Set RunInGeneralControlledByCommand to: {value}", ephemeral: true);
-        }
+        }*/
         
     }
 }

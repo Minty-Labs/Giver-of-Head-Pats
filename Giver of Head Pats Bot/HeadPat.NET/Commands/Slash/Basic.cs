@@ -13,7 +13,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
         var bot = Program.Instance.GetUser(Vars.IsWindows || Vars.IsDebug ? 495714488897503232 : Vars.ClientId);
         var embed = new EmbedBuilder {
             Color = Colors.HexToColor("00ffaa"),
-            Description = "Hi, I am the **Giver of Head Pats**. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do. " +
+            Description = $"Hi, I am the {MarkdownUtils.ToBold("Giver of Head Pats")}. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do. " +
                           "At the moment you can see what I can do by starting to type a slash (`/`)\n" +
                           "I hope I will be the perfect caregiver for your guild.",
             Timestamp = DateTime.Now,
@@ -28,10 +28,10 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                                                   "Donate: https://ko-fi.com/MintLily \n" +
                                                   "Patreon: https://www.patreon.com/MintLily \n" +
                                                   "Open-Source: https://github.com/Minty-Labs/Giver-of-Head-Pats \n" +
-                                                  $"Add to Your Guild: [Invite Link]({Vars.InviteLink}) \n" +
-                                                  $"Need Support? [Join the Support Sever]({Vars.SupportServer}) \n" +
-                                                  "Privacy Policy: [Link (`mintylabs.dev`)](https://mintylabs.dev/gohp/privacy-policy) \n" +
-                                                  "Terms of Service: [Link (`mintylabs.dev`)](https://mintylabs.dev/gohp/terms) \n");
+                                                  $"Add to Your Guild: {MarkdownUtils.MakeLink("Invite Link", Vars.InviteLink)}\n" +
+                                                  $"Need Support? {MarkdownUtils.MakeLink("Join the Support Sever", Vars.SupportServer)}\n" +
+                                                  $"Privacy Policy: {MarkdownUtils.MakeLink($"Link {MarkdownUtils.ToCodeBlockSingleline("mintylabs.dev")}", "https://mintylabs.dev/gohp/privacy-policy")}\n" +
+                                                  $"Terms of Service: {MarkdownUtils.MakeLink($"Link {MarkdownUtils.ToCodeBlockSingleline("mintylabs.dev")}", "https://mintylabs.dev/gohp/terms")}\n");
         embed.AddField("Uptime", "```" + (DateTime.UtcNow - Vars.StartTime).ToString(@"dd\.hh\:mm\:ss") + "```");
         var embed2 = new EmbedBuilder {
             Title = "Contributors",
@@ -113,14 +113,14 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                     .AddField("Global Pat Count", $"{db.Overall.AsQueryable().ToList().First().PatCount:N0}")
                     .AddField("Guild Count", $"{Program.Instance.Client.Guilds.Count}")
                     .AddField("Patreon Pledge Count", $"{Patreon_Client.MemberCount}")
-                    .AddField("Build Time", $"<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:F>\n<t:{Vars.BuildTime.ToUniversalTime().GetSecondsFromUtcUnixTime()}:R>")
-                    .AddField("Start Time", $"<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:F>\n<t:{DateTime.UtcNow.GetSecondsFromUtcUnixTime()}:R>")
+                    .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
+                    .AddField("Start Time", $"{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)
                     .AddField("Discord.NET Version", Vars.DNetVer, true)
                     .AddField("System .NET Version", Environment.Version, true)
-                    .AddField("Links", $"[Invite Link]({Vars.InviteLink}) | [Support Server]({Vars.SupportServer}) | [GitHub](https://github.com/Minty-Labs/Giver-of-Head-Pats) | " +
-                                       $"[Privacy Policy](https://mintylabs.dev/gohp/privacy-policy) | [Terms of Service](https://mintylabs.dev/gohp/terms) | " +
-                                       $"[Donate](https://ko-fi.com/MintLily) | [Patreon](https://www.patreon.com/MintLily)");
+                    .AddField("Links", $"{MarkdownUtils.MakeLink("GitHub", "https://github.com/Minty-Labs/Giver-of-Head-Pats")} | " +
+                                       $"{MarkdownUtils.MakeLink("Privacy Policy", "https://mintylabs.dev/gohp/privacy-policy")} | {MarkdownUtils.MakeLink("Terms of Service", "https://mintylabs.dev/gohp/terms")} | " +
+                                       $"{MarkdownUtils.MakeLink("Donate", "https://ko-fi.com/MintLily")} | {MarkdownUtils.MakeLink("Patreon", "https://www.patreon.com/MintLily")} | {MarkdownUtils.MakeLink("Developer Server", Vars.SupportServer)}\n");
                 await RespondAsync(embed: embed.Build());
                 break;
             }

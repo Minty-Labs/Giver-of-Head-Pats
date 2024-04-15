@@ -1,10 +1,11 @@
-﻿using System.Text;
+using System.Text;
 using Discord;
 using Discord.Interactions;
 using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
 using HeadPats.Configuration.Classes;
 using HeadPats.Data;
+using HeadPats.Utils;
 
 namespace HeadPats.Commands.Slash.Owner;
 
@@ -82,37 +83,44 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         }
 
         [SlashCommand("namereplacement", "Adds, updates, removes, or lists name replacements")]
-        public async Task NameReplacement(NameReplacementAction action, [Summary(description: "User's ID")] string userId, [Summary(description: "Replacement Name")] string name) {
+        public async Task NameReplacement(NameReplacementAction action, [Summary(description: "User's ID")] string userId, [Summary("From Guild", "Get user from guild")] string guildId, [Summary("Replacement Name", "The new replacement name")] string name) {
             var replacements = Config.Base.NameReplacements;
-            var userIdLong = ulong.Parse(userId);
-            var user = Program.Instance.GetUser(userIdLong);
+            var guildIdUlong = ulong.Parse(guildId);
+            var userIdUlong = ulong.Parse(userId);
+            var guild = Context.Client.GetGuild(guildIdUlong);
+            await guild.DownloadUsersAsync();
+            var user = Program.Instance.GetGuildUser(guildIdUlong, userIdUlong);
+            if (user is null) {
+                await RespondAsync("User not found in guild.", ephemeral: true);
+                return;
+            }
             switch (action) {
                 case NameReplacementAction.Add:
                     var addedReplacement = new NameReplacement {
-                        UserId = userIdLong,
+                        UserId = userIdUlong,
                         BeforeName = user.Username,
                         Replacement = name
                     };
                     replacements!.Add(addedReplacement);
-                    await RespondAsync($"Added ({addedReplacement.UserId}) **{addedReplacement.BeforeName}** -> **{addedReplacement.Replacement}**");
+                    await RespondAsync($"Added ({addedReplacement.UserId}) {MarkdownUtils.ToBold(addedReplacement.BeforeName)} -> {MarkdownUtils.ToBold(addedReplacement.Replacement)}");
                     break;
                 case NameReplacementAction.Update:
-                    var item = replacements!.Single(r => r.UserId == userIdLong);
+                    var item = replacements!.Single(r => r.UserId == userIdUlong);
                     var tempName = item.Replacement;
                     item.Replacement = name;
-                    await RespondAsync($"Updated ({item.UserId}) **{tempName}** -> **{item.Replacement}**");
+                    await RespondAsync($"Updated ({item.UserId}) {MarkdownUtils.ToBold(tempName!)} -> {MarkdownUtils.ToBold(item.Replacement)}");
                     break;
                 case NameReplacementAction.Remove:
-                    var removedItem = replacements!.Single(r => r.UserId == userIdLong);
+                    var removedItem = replacements!.Single(r => r.UserId == userIdUlong);
                     replacements!.Remove(removedItem);
-                    await RespondAsync($"Removed ({removedItem.UserId}) **{removedItem.BeforeName}** -> **{removedItem.Replacement}**");
+                    await RespondAsync($"Removed ({removedItem.UserId}) {MarkdownUtils.ToBold(removedItem.BeforeName!)} -> {MarkdownUtils.ToBold(removedItem.Replacement!)}");
                     break;
                 case NameReplacementAction.List:
                     var sb = new StringBuilder();
                     if (replacements != null) {
                         sb.AppendLine($"Count: {replacements.Count}");
                         foreach (var replacement in replacements)
-                            sb.AppendLine($"({replacement.UserId}) **{replacement.BeforeName}** -> **{replacement.Replacement}**");
+                            sb.AppendLine($"({replacement.UserId}) {MarkdownUtils.ToBold(replacement.BeforeName!)} -> {MarkdownUtils.ToBold(replacement.Replacement!)}");
                     }
 
                     await RespondAsync(sb.ToString());
