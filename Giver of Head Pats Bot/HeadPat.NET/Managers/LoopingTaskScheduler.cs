@@ -1,4 +1,4 @@
-﻿using HeadPats.Managers.Loops.Jobs;
+using HeadPats.Managers.Loops.Jobs;
 using HeadPats.Modules;
 using Quartz;
 using Serilog;
@@ -49,15 +49,15 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(guildDataDeletion, guildDataDeletionTrigger);
         
-        // var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
-        // var dailyPatTrigger = TriggerBuilder.Create()
-        //     .WithIdentity("DailyPat", Vars.Name)
-        //     .StartNow()
-        //     .WithSimpleSchedule(x => x
-        //         .WithIntervalInMinutes(10)
-        //         .RepeatForever())
-        //     .Build();
-        // await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);
+        var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
+        var dailyPatTrigger = TriggerBuilder.Create()
+            .WithIdentity("DailyPat", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInMinutes(5)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);
         
         var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
         var patreonInfoTrigger = TriggerBuilder.Create()

@@ -21,18 +21,18 @@ public class OnBotJoinOrLeave : EventModule {
         client.JoinedGuild += OnJoinGuild;
         client.LeftGuild += OnLeaveGuild;
     }
-    
-    internal static bool DoNotRunOnStart = true, RunInGeneralControlledByCommand = true;
+
+    internal static bool DoNotRunOnStart = true;
     internal static List<ulong>? GuildIds;
 
     private static async Task OnLeaveGuild(SocketGuild e) {
-        if (DoNotRunOnStart || !RunInGeneralControlledByCommand) return;
+        if (DoNotRunOnStart) return;
         // if (GuildIds is not null && !GuildIds.Contains(e.Id)) return;
         var logger = Log.ForContext("SourceContext", "Event - GuildLeave");
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("FF2525"));
         em.WithDescription($"Left server: `{e.Name.Sanitize()}` ({e.Id})");
-        try { em.AddField("Created", $"<t:{e.CreatedAt.UtcDateTime.GetSecondsFromUtcUnixTime()}:F>", true); } catch { em.AddField("Joined", "unknown", true); }
+        try { em.AddField("Created", $"{e.CreatedAt.UtcDateTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}", true); } catch { em.AddField("Joined", "unknown", true); }
         // try { em.AddField("Joined", $"{e.:F}", true); } catch { em.AddField("Joined", "unknown", true); }
         em.AddField("Members", $"{e.MemberCount - 1}", true);
         em.AddField("Description", e.Description ?? "None");
@@ -59,13 +59,13 @@ public class OnBotJoinOrLeave : EventModule {
     }
 
     private static async Task OnJoinGuild(SocketGuild e) {
-        if (DoNotRunOnStart || !RunInGeneralControlledByCommand) return;
+        if (DoNotRunOnStart) return;
         // if (GuildIds is not null && GuildIds.Contains(e.Id)) return;
         var logger = Log.ForContext("SourceContext", "Event - GuildJoin");
         var em = new EmbedBuilder();
         em.WithColor(Colors.HexToColor("42E66C"));
         em.WithDescription($"Joined server: `{e.Name.Sanitize()}` ({e.Id})");
-        try { em.AddField("Created", $"<t:{e.CreatedAt.UtcDateTime.GetSecondsFromUtcUnixTime()}:F>", true); } catch { em.AddField("Joined", "unknown", true); }
+        try { em.AddField("Created", $"{e.CreatedAt.UtcDateTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}", true); } catch { em.AddField("Joined", "unknown", true); }
         // try { em.AddField("Joined", $"{e.JoinedAt:F}", true); } catch { em.AddField("Joined", "unknown", true); }
         em.AddField("Members", $"{e.MemberCount - 1}", true); // -1 to exclude the bot
         em.AddField("Description", e.Description ?? "None");
@@ -82,20 +82,12 @@ public class OnBotJoinOrLeave : EventModule {
 
         var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Id);
         if (guildSettings is null) {
-            // var irlQuotes = new IrlQuotes {
-            //     Enabled = false,
-            //     ChannelId = 0,
-            //     SetEpochTime = 0
-            // };
-            
             var guildParams = new GuildParams {
                 GuildName = e.Name,
                 GuildId = e.Id,
                 BlacklistedCommands = new List<string>(),
-                // Replies = new List<Reply>(),
                 DailyPatChannelId = 0,
                 DailyPats = new List<DailyPat>(),
-                // IrlQuotes = irlQuotes,
                 DataDeletionTime = 0
             };
 

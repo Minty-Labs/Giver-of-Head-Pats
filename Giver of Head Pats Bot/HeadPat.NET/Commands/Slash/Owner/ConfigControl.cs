@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Discord;
 using Discord.Interactions;
 using HeadPats.Commands.Preexecution;
@@ -211,10 +211,27 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
             var sb = new StringBuilder();
             sb.AppendLine("Guilds:");
         
-            foreach (var guild in configGuildSettings.Where(guild => guilds.All(g => g.Id != guild.GuildId))) {
+            foreach (var guild in configGuildSettings.Where(guild => guilds.All(g => g.Id != guild.GuildId)).ToList()) {
                 configGuildSettings.Remove(guild);
                 sb.AppendLine($"Removed {guild.GuildName} ({guild.GuildId}) from the config.");
             }
+
+            await RespondAsync(sb.ToString(), ephemeral: true);
+        }
+        
+        // remove all daily pats from the config
+        [SlashCommand("clearalldailypats", "Clears the daily pats from the config")]
+        public async Task CleanDailyPatsFromConfig() {
+            var configGuildSettings = Config.Base.GuildSettings!;
+            var sb = new StringBuilder();
+            sb.AppendLine("Guilds:");
+        
+            foreach (var guild in configGuildSettings) {
+                guild.DailyPats = new List<DailyPat>();
+                sb.AppendLine($"Removed all daily pats from {guild.GuildName} ({guild.GuildId}) in the config.");
+                guild.DailyPats.Clear();
+            }
+            Config.Save();
 
             await RespondAsync(sb.ToString(), ephemeral: true);
         }

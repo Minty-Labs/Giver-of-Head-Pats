@@ -9,11 +9,15 @@ namespace HeadPats.Commands.Slash;
 
 public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
 
-    [Group("dailypats", "Daily Pats commands"), EnabledInDm(false), RequireUserPermission(GuildPermission.Administrator)]
+    [Group("dailypats", "Daily Pats commands"), RequireUserPermission(GuildPermission.Administrator)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("setchannel", "Sets the channel where daily pats are sent")]
         public async Task SetDailyPatChannel([Summary("channel", "Channel to set as the daily pat channel")] ITextChannel channel) {
+            if (Context.Guild.Id is not 805663181170802719) {
+                await RespondAsync("This command is only available in the testing server for the time being.", ephemeral: true);
+                return;
+            }
             var guildSettings = Config.GuildSettings(Context.Guild.Id);
             guildSettings!.DailyPatChannelId = channel.Id;
             Config.Save();
@@ -24,19 +28,16 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("add", "Sets the daily pat to user")]
         public async Task AddDailyPat([Summary("user", "Sets the daily pat to user")] IUser user) {
+            if (Context.Guild.Id is not 805663181170802719) {
+                await RespondAsync("This command is only available in the testing server for the time being.", ephemeral: true);
+                return;
+            }
             // is user in guild
             if (user is not IGuildUser) {
                 await RespondAsync("User must be in the guild.", ephemeral: true);
                 return;
             }
             
-            // is not role
-            // if (user is IRole) {
-            //     await RespondAsync("You cannot set a daily pat to a role; it must be a DiscordMember");
-            //     return;
-            // }
-            
-            // does it exist
             if (_doesItExist(user, Context.Guild.Id)) {
                 await RespondAsync("User already has a daily pat set.", ephemeral: true);
                 return;
@@ -56,6 +57,10 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("remove", "Removes the daily pat from user")]
         public async Task RemoveDailyPat([Summary("user", "Removes the daily pat from user")] IUser user) {
+            if (Context.Guild.Id is not 805663181170802719) {
+                await RespondAsync("This command is only available in the testing server for the time being.", ephemeral: true);
+                return;
+            }
             if (!_doesItExist(user, Context.Guild.Id)) {
                 await RespondAsync("User does not have a daily pat set.", ephemeral: true);
                 return;
@@ -72,6 +77,7 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
         [SlashCommand("list", "Lists all users with daily pats set")]
         public async Task ListDailyPats() {
             var sb = new StringBuilder();
+            sb.AppendLine("Daily Pats are currently not working. Will be fixed soon.");
             sb.AppendLine("`UserName (ID) - Next Pat Time`");
             var guildSettings = Config.GuildSettings(Context.Guild.Id);
             foreach (var dailyPat in guildSettings!.DailyPats!) {

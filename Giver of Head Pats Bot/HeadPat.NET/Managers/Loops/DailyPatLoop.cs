@@ -11,13 +11,14 @@ namespace HeadPats.Managers.Loops;
 public static class DailyPatLoop {
 
     public static async Task DoDailyPat(Context db, long currentEpoch) {
-        return;
+        //return;
         if (Vars.IsDebug) return;
         var configGuildSettings = Config.Base.GuildSettings;
         if (configGuildSettings is null) return;
         var updated = false;
         
         foreach (var guild in configGuildSettings) {
+            if (guild.GuildId is not 805663181170802719) continue; // for testing purposes only
             try {
                 var guildVar = Program.Instance.GetGuild(guild.GuildId);
                 if (guildVar is null) {
@@ -43,16 +44,10 @@ public static class DailyPatLoop {
                 Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
                 var guildUser = Program.Instance.Client.GetGuild(guild.GuildId).GetUser(user.UserId);
                 if (guildUser is null) {
-                    //if (BotControl.TestBooleanBecauseShitKeepsBreakingAndMySanityIsDepletingVeryFast) {
-                        await DNetToConsole.SendMessageToLoggingChannelAsync($"Daily Pat Loop Report: GuildUser ({user.UserName} - {user.UserId}) is null, not removing from config.");
-                    //}
-                    //else {
-                        var configDailyPatUser = guildSettings.DailyPats.FirstOrDefault(u => u.UserId.Equals(user.UserId));
-                        guild.DailyPats.Remove(configDailyPatUser!);
-                        Config.Save();
-                        Log.Debug("User not found in guild, skipping and removing from config");
-                    //}
-                    
+                    var configDailyPatUser = guildSettings.DailyPats.FirstOrDefault(u => u.UserId.Equals(user.UserId));
+                    guild.DailyPats.Remove(configDailyPatUser!);
+                    Config.Save();
+                    Log.Debug("User not found in guild, skipping and removing from config");
                     continue;
                 }
                 
@@ -69,8 +64,8 @@ public static class DailyPatLoop {
                 
                 var embed = new EmbedBuilder {
                     Title = "Daily Pats!",
-                    Description = $"{user.UserName.ReplaceName(user.UserId)}, You have received your daily pats! You now have {userPatCount} pats!",
-                    Color = Colors.Yellow,
+                    Description = $"{user.UserName.ReplaceName(user.UserId)}, You have received your daily pats! You now have {userPatCount + 1} pats!",
+                    Color = Colors.Random,
                     ImageUrl = patUrl,
                     Footer = new EmbedFooterBuilder {
                         Text = $"Powered by {(Vars.UseCookieApi ? "CookieAPI" : "Fluxpoint API")}"
