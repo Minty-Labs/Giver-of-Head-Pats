@@ -97,8 +97,13 @@ public static class Config {
         Base = baseConfig ?? config;
     }
     
-    public static void Save() 
-        => File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
+    public static bool ShouldUpdateConfigFile { get; private set; }
+    public static void Save() => ShouldUpdateConfigFile = true;
+
+    public static void SaveFile() {
+        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "Configuration.json"), JsonSerializer.Serialize(Base, new JsonSerializerOptions {WriteIndented = true}));
+        ShouldUpdateConfigFile = false;
+    }
     
     public static GuildParams? GuildSettings(ulong guildId) => Base.GuildSettings?.FirstOrDefault(x => x.GuildId == guildId) ?? null;
 }

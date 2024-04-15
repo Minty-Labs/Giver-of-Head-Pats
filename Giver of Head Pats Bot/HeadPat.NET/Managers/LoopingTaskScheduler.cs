@@ -1,5 +1,6 @@
-using HeadPats.Managers.Loops.Jobs;
+﻿using HeadPats.Managers.Loops.Jobs;
 using HeadPats.Modules;
+using Michiru.Managers.Jobs;
 using Quartz;
 using Serilog;
 
@@ -15,7 +16,7 @@ public class LoopingTaskScheduler : BasicModule {
     private static async Task Scheduler() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
-            .UseDefaultThreadPool(x => x.MaxConcurrency = 4)
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 6)
             .BuildScheduler();
         await scheduler.Start();
         
@@ -68,6 +69,17 @@ public class LoopingTaskScheduler : BasicModule {
                 .RepeatForever())
             .Build();
         await scheduler.ScheduleJob(patreonInfo, patreonInfoTrigger);
+        
+        var configSaveLoopJob = JobBuilder.Create<ConfigSaveJob>().Build();
+        var configSaveLoopTrigger = TriggerBuilder.Create()
+            .WithIdentity("ConfigSaveLoop", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInMinutes(2)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(configSaveLoopJob, configSaveLoopTrigger);
+        
         Logger.Information("Initialized!");
     }
 }
