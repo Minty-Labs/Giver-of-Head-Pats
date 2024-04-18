@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
 using HeadPats.Configuration.Classes;
 using HeadPats.Managers;
@@ -10,7 +11,7 @@ namespace HeadPats.Commands.Slash;
 
 public class Contributors : InteractionModuleBase<SocketInteractionContext> {
     
-    [Group("contributors", "Contributors to this bot's development"), RequireOwner]
+    [Group("contributors", "Contributors to this bot's development"), RequireUser(167335587488071682)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("add", "Add a contributor to the list")]

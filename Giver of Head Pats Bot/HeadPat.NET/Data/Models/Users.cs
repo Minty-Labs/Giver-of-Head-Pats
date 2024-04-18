@@ -13,7 +13,8 @@ public class Users {
 }
 
 public static class UserControl {
-    public static void AddPatToUser(ulong userId, int numberOfPats, bool addToGuild = true, ulong guildToAddPatTo = 0) {
+    public static void AddPatToUser(ulong userId, int numberOfPats, bool addToGuild = false, ulong guildToAddPatTo = 0) {
+        var logger = Log.ForContext("SourceContext", "USERCONTROL:AddPatToUser");
         using var db = new Context();
         var checkUser = db.Users.AsQueryable()
             .Where(u => u.UserId.Equals(userId)).ToList().FirstOrDefault();
@@ -34,7 +35,7 @@ public static class UserControl {
                 CookieCount = 0,
                 IsUserBlacklisted = 0
             };
-            Log.Debug("Added user to database");
+            logger.Debug("Added user to database");
             db.Users.Add(newUser);
         }
         else {
@@ -49,7 +50,7 @@ public static class UserControl {
                     PatCount = numberOfPats,
                     HeadPatBlacklistedRoleId = 0
                 };
-                Log.Debug("Added guild to database");
+                logger.Debug("Added guild to database");
                 db.Guilds.Add(newGuild);
             }
             else {
@@ -76,6 +77,7 @@ public static class UserControl {
     }
 
     public static void AddCookieToUser(ulong userId, int cookiesToAdd) {
+        var logger = Log.ForContext("SourceContext", "USERCONTROL:AddCookieToUser");
         using var db = new Context();
         var checkUser = db.Users.AsQueryable()
             .Where(u => u.UserId.Equals(userId)).ToList().FirstOrDefault();
@@ -89,7 +91,7 @@ public static class UserControl {
                 PatCount = 0,
                 CookieCount = cookiesToAdd
             };
-            Log.Debug("Added user to database");
+            logger.Debug("Added user to database");
             db.Users.Add(newUser);
         }
         else {

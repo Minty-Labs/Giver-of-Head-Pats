@@ -10,8 +10,8 @@ using Serilog;
 
 namespace HeadPats.Commands.ContextMenu; 
 
-
-public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionContext<SocketUserCommand>> {
+[IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall), CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel)]
+public class ContextMenuLove : InteractionModuleBase {
     
     [UserCommand("Hug")]
     public async Task ContextMenuHug(IUser user) {
@@ -20,26 +20,31 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
         if (target!.Id == Vars.ClientId)
             await RespondAsync($"I got hugs from {author.Username.ReplaceName(author.Id)}?! Thankies~");
         else if (target.Id == Context.User.Id)
-            await RespondAsync("You cant give yourself hugs, but I'll gladly give you some!");
+            await RespondAsync("You cant give yourself hugs, but I'll gladly give you some!", ephemeral: true);
         else
             await RespondAsync($"{author.Username.ReplaceName(author.Id)} hugged {target.Username.ReplaceName(target.Id)}!");
     }
 
     [UserCommand("Pat")]
     public async Task ContextMenuPat(IUser user) {
-        var logger = Log.ForContext("SourceContext", "CONTEXTMENU:HUG");
-        await using var db = new Context();
-        var checkGuild = db.Guilds.AsQueryable()
-            .Where(u => u.GuildId.Equals(Context.Guild.Id)).ToList().FirstOrDefault();
+        var logger = Log.ForContext("SourceContext", "CONTEXTMENU:PAT");
         
-        if (checkGuild is null) {
-            var newGuild = new Guilds {
-                GuildId = Context.Guild.Id,
-                HeadPatBlacklistedRoleId = 0,
-                PatCount = 0
-            };
-            logger.Information("Added guild to database from Context menu Pat Command");
-            db.Guilds.Add(newGuild);
+        await using var db = new Context();
+        // check if action is ran in a guild or not
+        var ranInGuild = Context.Guild is not null;
+        if (ranInGuild) {
+            var checkGuild = db.Guilds.AsQueryable()
+                .Where(u => u.GuildId.Equals(Context.Guild!.Id)).ToList().FirstOrDefault();
+        
+            if (checkGuild is null) {
+                var newGuild = new Guilds {
+                    GuildId = Context.Guild!.Id,
+                    HeadPatBlacklistedRoleId = 0,
+                    PatCount = 0
+                };
+                logger.Information("Added guild to database from Context menu Pat Command");
+                db.Guilds.Add(newGuild);
+            }
         }
         
         var checkUser = db.Users.AsQueryable()
@@ -63,7 +68,10 @@ public class ContextMenuLove : InteractionModuleBase { //<SocketInteractionConte
             await RespondAsync("You cannot give yourself headpats.", ephemeral: true);
         else
             await RespondAsync(PatUtils.GetRandomPatMessageTemplate(Context.User.Mention, user.Username.ReplaceName(user.Id)));
-            //await RespondAsync($"{Context.User.Username.ReplaceName(Context.User.Id)} patted {user.Username.ReplaceName(user.Id)}!");
-        UserControl.AddPatToUser(user.Id, 1, true, Context.Guild.Id);
+        
+        if (ranInGuild)
+            UserControl.AddPatToUser(user.Id, 1, true, Context.Guild!.Id);
+        else
+            UserControl.AddPatToUser(user.Id, 1);
     }
 }

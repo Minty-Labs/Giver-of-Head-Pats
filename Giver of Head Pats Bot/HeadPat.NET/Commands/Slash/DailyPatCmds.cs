@@ -9,7 +9,7 @@ namespace HeadPats.Commands.Slash;
 
 public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
 
-    [Group("dailypats", "Daily Pats commands"), RequireUserPermission(GuildPermission.Administrator)]
+    [Group("dailypats", "Daily Pats commands"), RequireUserPermission(GuildPermission.Administrator), CommandContextType(InteractionContextType.Guild)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("setchannel", "Sets the channel where daily pats are sent")]

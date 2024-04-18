@@ -9,7 +9,7 @@ using Serilog;
 namespace HeadPats.Commands.Slash.UserLove;
 
 public class Love : InteractionModuleBase<SocketInteractionContext> {
-    [Group("user", "User Actions"), EnabledInDm(false)]
+    [Group("user", "User Actions"), CommandContextType(InteractionContextType.Guild)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
         private static string? _tempPatGifUrl, _tempHugGifUrl, _tempSlapGifUrl, _tempCookieGifUrl, _tempKissGifUrl;
 
@@ -82,8 +82,8 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             }
 
             var e = new EmbedBuilder();
-            var num = new Random().Next(0, 3);
             var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
+            var num = new Random().Next(0, outputs.Length);
 
             var numberOfPats = num == 3 ? 2 : 1;
 
@@ -156,15 +156,17 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             logger.Debug($"Total Pat amount Given: {numberOfPats}");
         }
 
-        [SlashCommand("hug", "Hug a user")]
-        public async Task Hug([Summary("User", "User to hug")] IGuildUser user) {
+        [SlashCommand("hug", "Hug a user"), IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall), CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel)]
+        public async Task Hug([Summary("User", "User to hug")] IUser user) {
             var logger = Log.ForContext("SourceContext", "Command - Hug");
-            var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
-            if (hasCommandBlacklist) {
-                var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("hug");
-                if (isThisCommandBlacklisted) {
-                    await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
-                    return;
+            if (Context.Guild is not null) {
+                var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
+                if (hasCommandBlacklist) {
+                    var isThisCommandBlacklisted = Config.GuildSettings(Context.Guild.Id)!.BlacklistedCommands!.Contains("hug");
+                    if (isThisCommandBlacklisted) {
+                        await RespondAsync("This guild is not allowed to use this command. This was set by a bot developer.", ephemeral: true);
+                        return;
+                    }
                 }
             }
 
@@ -179,8 +181,8 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             }
 
             var e = new EmbedBuilder();
-            var num = new Random().Next(0, 3);
             var outputs = new[] { "_huggies_", "_huggle_", "_hugs_", "_ultra hugs_" };
+            var num = new Random().Next(0, outputs.Length);
 
             e.WithTitle(outputs[num]);
 
@@ -239,8 +241,8 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             }
 
             var e = new EmbedBuilder();
-            var num = new Random().Next(0, 4);
             var outputs = new[] { "_kisses_", "_kissies_", "_kissies_", "_kisses_", "_ultra kisses_" };
+            var num = new Random().Next(0, outputs.Length);
 
             e.WithTitle(outputs[num]);
 
@@ -299,8 +301,8 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             }
 
             var e = new EmbedBuilder();
-            var num = new Random().Next(0, 4);
             var outputs = new[] { "_slaps_", "_slaps_", "_slaps_", "_slaps_", "_ultra slaps_" };
+            var num = new Random().Next(0, outputs.Length);
 
             e.WithTitle(outputs[num]);
 
@@ -390,8 +392,8 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             }
 
             var e = new EmbedBuilder();
-            var num = new Random().Next(0, 2);
             var outputs = new[] { "C O O K I E S", "Cookies!", "nom nom" };
+            var num = new Random().Next(0, outputs.Length);
 
             e.WithTitle(outputs[num]);
             var newNumber = checkUser!.CookieCount + 1;

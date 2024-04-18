@@ -6,6 +6,7 @@ using HeadPats.Utils;
 
 namespace HeadPats.Commands.Slash; 
 
+[IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall), CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
 public class ColorCmds : InteractionModuleBase<SocketInteractionContext> {
     public enum ColorType {
         [ChoiceDisplay("HEX")] Hex = 1,
@@ -18,7 +19,7 @@ public class ColorCmds : InteractionModuleBase<SocketInteractionContext> {
     private const string BaseUrl = "https://c.devminer.xyz/256/256";
 
     [SlashCommand("color", "Shows you the color from the given input"), RateLimit(30, 20)]
-    public async Task SolidColor(ColorType colorType, [Summary(description: "Color values, non-hex separate with spaces or commas")] string colorValue = "x") {
+    public async Task SolidColor(ColorType colorType, [Summary(description: "Color values, non-hex separate with spaces or commas")] string colorValue = "x", [Summary("Ephemeral", "Shows only for you")] bool ephemeral = false) {
         if (string.IsNullOrWhiteSpace(colorValue)) {
             await RespondAsync("You must in a color value\nExamples: `fd3ac1` or `148, 78, 36` or `48 128 71` etc.", ephemeral: true);
             return;
@@ -97,13 +98,14 @@ public class ColorCmds : InteractionModuleBase<SocketInteractionContext> {
         }
         
         embed.WithFooter("Powered by devminer.xyz + iamartyom");
-        await RespondAsync(embed: embed.Build());
+        await RespondAsync(embed: embed.Build(), ephemeral: ephemeral);
     }
 
     [SlashCommand("gradient", "Shows you the gradient from the given input"), RateLimit(30, 20)]
     public async Task GradientColor(ColorType colorType,
         [Summary("leftvalues", "Color values, non-hex separate with spaces or commas")] string valuesL,
-        [Summary("rightvalues", "must be same format as previous value")] string valuesR)
+        [Summary("rightvalues", "must be same format as previous value")] string valuesR,
+        [Summary("Ephemeral", "Shows only for you")] bool ephemeral = false)
     {
         if ((!string.IsNullOrWhiteSpace(valuesL) && string.IsNullOrWhiteSpace(valuesR)) || (string.IsNullOrWhiteSpace(valuesL) && !string.IsNullOrWhiteSpace(valuesR))) {
             await RespondAsync("You must in a color value\nExamples: `fd3ac1` or `148, 78, 36` or `48 128 71` etc.", ephemeral: true);
@@ -195,6 +197,6 @@ public class ColorCmds : InteractionModuleBase<SocketInteractionContext> {
         }
         
         embed.WithFooter("Powered by devminer.xyz + iamartyom");
-        await RespondAsync(embed: embed.Build());
+        await RespondAsync(embed: embed.Build(), ephemeral: ephemeral);
     }
 }

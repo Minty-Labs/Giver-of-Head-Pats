@@ -9,7 +9,7 @@ namespace HeadPats.Commands.Slash;
 
 public class Summon : InteractionModuleBase<SocketInteractionContext> {
 
-    [Group("summon", "Summon various images")]
+    [Group("summon", "Summon various images"), CommandContextType(InteractionContextType.Guild)]
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("bunny", "Bunnies are adorable"), RateLimit(30, 10)]

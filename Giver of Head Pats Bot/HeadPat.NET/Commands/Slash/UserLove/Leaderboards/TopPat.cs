@@ -9,8 +9,9 @@ using Serilog;
 
 namespace HeadPats.Commands.Slash.UserLove.Leaderboards; 
 
+[IntegrationType(ApplicationIntegrationType.GuildInstall)]
 public class TopPat : InteractionModuleBase<SocketInteractionContext> {
-    [SlashCommand("toppat", "Get the top head pat leaderboard")]
+    [SlashCommand("toppat", "Get the Guild's top head pat leaderboard")]
     public async Task HeadPatLeaderboard([Summary("keywords", "Key words")] string keyWords = "") {
         await using var db = new Context();
         var logger = Log.ForContext("SourceContext", "Command - TopPat");

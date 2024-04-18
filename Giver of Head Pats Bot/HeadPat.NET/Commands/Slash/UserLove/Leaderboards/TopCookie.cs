@@ -7,8 +7,9 @@ using HeadPats.Utils;
 
 namespace HeadPats.Commands.Slash.UserLove.Leaderboards; 
 
+[IntegrationType(ApplicationIntegrationType.GuildInstall)]
 public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
-    [SlashCommand("topcookie", "Get the top cookie leaderboard")]
+    [SlashCommand("topcookie", "Get the Guild's top cookie leaderboard")]
     public async Task CookieLeaderboard([Summary("keywords", "Key words")] string keyWords = "") {
         await using var db = new Context();
         var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.CookieCount);

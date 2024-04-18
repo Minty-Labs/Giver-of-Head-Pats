@@ -7,9 +7,10 @@ using HeadPats.Utils.ExternalApis;
 
 namespace HeadPats.Commands.Slash;
 
+[IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall), CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
 public class Basic : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("about", "Shows a message that describes the bot")]
-    public async Task About() {
+    public async Task About(bool ephemeral = false) {
         var bot = Program.Instance.GetUser(Vars.IsWindows || Vars.IsDebug ? 495714488897503232 : Vars.ClientId);
         var embed = new EmbedBuilder {
             Color = Colors.HexToColor("00ffaa"),
@@ -77,25 +78,20 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
             embeds = [embed.Build(), embed2.Build()];
         }
 
-        await RespondAsync(embeds: embeds);
+        await RespondAsync(embeds: embeds, ephemeral: ephemeral);
     }
 
     [SlashCommand("support", "Get the support server invite link")]
     public async Task Support() => await RespondAsync($"Need support? Join the Support Sever at {Vars.SupportServer}", ephemeral: true);
 
     [SlashCommand("invite", "Get the bot invite link")]
-    public async Task Invite() => await RespondAsync($"Want to invite me to your guild? Add me here:\n  {Vars.InviteLink}", ephemeral: true);
+    public async Task Invite() => await RespondAsync($"Want to invite me to your guild? Add me here:\n{Vars.InviteLink}", ephemeral: true);
 
     [SlashCommand("flipcoin", "Flip a coin")]
-    public async Task FlipCoin() => await RespondAsync($"The coin flip result is **{(new Random().Next(0, 1) == 0 ? "Heads" : "Tails")}**");
+    public async Task FlipCoin(bool ephemeral = false) => await RespondAsync($"The coin flip result is **{(new Random().Next(0, 1) == 0 ? "Heads" : "Tails")}**", ephemeral: ephemeral);
 
     [SlashCommand("opencmd", "Runs very specific commands set by the owner")]
     public async Task OpenCommand([Summary("Command", "The command to run")] string command) {
-        /*if (!Config.Base.OwnerIds.Contains(Context.User.Id)) {
-            await RespondAsync("You are not permitted to use this command", ephemeral: true);
-            return;
-        }*/
-
         switch (command) {
             case "stats":
             case "status": {
@@ -114,7 +110,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                     .AddField("Guild Count", $"{Program.Instance.Client.Guilds.Count}")
                     .AddField("Patreon Pledge Count", $"{Patreon_Client.MemberCount}")
                     .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
-                    .AddField("Start Time", $"{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
+                    .AddField("Start Time", $"{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)
                     .AddField("Discord.NET Version", Vars.DNetVer, true)
                     .AddField("System .NET Version", Environment.Version, true)
