@@ -204,7 +204,7 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
             Config.Save();
         }
         
-        [SlashCommand("cleanguildsfromconfig", "Cleans the guilds from the config that are not in the guilds list")]
+        /*[SlashCommand("cleanguildsfromconfig", "Cleans the guilds from the config that are not in the guilds list")]
         public async Task CleanGuildsFromConfig() {
             var guilds = Context.Client.Guilds;
             var configGuildSettings = Config.Base.GuildSettings!;
@@ -217,7 +217,7 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
             }
 
             await RespondAsync(sb.ToString(), ephemeral: true);
-        }
+        }*/
         
         // remove all daily pats from the config
         [SlashCommand("clearalldailypats", "Clears the daily pats from the config")]
