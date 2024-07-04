@@ -73,12 +73,12 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
                 RandomFoxJson.FoxData = null;
             }
             else {
-                var getFoxCount = ExtraFoxo.MoreFoxes.Count;
+                var getFoxCount = LocalImages.Foxes.Count;
                 var randomFox = new Random().Next(0, getFoxCount);
                 var embed = new EmbedBuilder {
                     Title = $"{randomFox} / {getFoxCount}",
                     Color = Colors.HexToColor("AC5F25"),
-                    ImageUrl = ExtraFoxo.MoreFoxes[randomFox],
+                    ImageUrl = LocalImages.Foxes[randomFox],
                     Footer = new EmbedFooterBuilder {
                         Text = "Powered by the community"
                     }
@@ -115,12 +115,12 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("redpanda", "Red Pandas are adorable")]
         public async Task RedPanda() {
-            var getRedPandaCount = ExtraRedPando.MoreRedPandas.Count;
+            var getRedPandaCount = LocalImages.RedPandas.Count;
             var randomRedPanda = new Random().Next(0, getRedPandaCount);
             var embed = new EmbedBuilder {
                 Title = $"{randomRedPanda} / {getRedPandaCount}",
                 Color = Colors.HexToColor("935824"),
-                ImageUrl = ExtraRedPando.MoreRedPandas[randomRedPanda],
+                ImageUrl = LocalImages.RedPandas[randomRedPanda],
                 Footer = new EmbedFooterBuilder {
                     Text = "Powered by the community"
                 }

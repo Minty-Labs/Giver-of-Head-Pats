@@ -2,12 +2,10 @@
 using Serilog.Events; 
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using fluxpoint_sharp;
 using HeadPats.Configuration;
-using HeadPats.Cookie;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
@@ -19,6 +17,7 @@ using HeadPats.Commands.Slash.UserLove.Leaderboards;
 using HeadPats.Events;
 using HeadPats.Managers;
 using HeadPats.Modules;
+using HeadPats.Utils.ExternalApis;
 using Serilog.Core;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
@@ -33,9 +32,8 @@ public class Program {
     public DiscordSocketClient Client { get; set; }
     private InteractionService GlobalInteractions { get; set; }
     private InteractionService MintyLabsInteractions { get; set; }
-    // private CommandService Commands { get; set; }
+    
     public FluxpointClient FluxpointClient { get; set; }
-    public CookieClient CookieClient { get; set; }
     
     public SocketTextChannel? GeneralLogChannel { get; set; }
     public SocketTextChannel? ErrorLogChannel { get; set; }
@@ -48,7 +46,7 @@ public class Program {
 
     public static async Task Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().Contains("windows", StringComparison.CurrentCultureIgnoreCase);
-        Console.Title = $"{Vars.Name} v{Vars.Version} | Starting...";
+        Console.Title = $"{Vars.Name} v{Vars.VersionStr} | Starting...";
         Logger.Information($"{Vars.Name} Bot is starting . . .");
         await new Program().MainAsync();
     }
@@ -102,13 +100,6 @@ public class Program {
             GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers
         });
         
-        // Commands = new CommandService(new CommandServiceConfig {
-        //     LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-        //     DefaultRunMode = Discord.Commands.RunMode.Async,
-        //     CaseSensitiveCommands = false,
-        //     ThrowOnError = true
-        // });
-        
         GlobalInteractions = new InteractionService(Client, new InteractionServiceConfig {
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
             DefaultRunMode = Discord.Interactions.RunMode.Async,
@@ -135,29 +126,6 @@ public class Program {
             dnLogger.Write(severity, msg.Exception, "[{source}] {message}", msg.Source, msg.Message);
             return Task.CompletedTask;
         };
-
-        // var argPos = 0;
-        // Client.MessageReceived += async arg => {
-            // Don't process the command if it was a system message
-            // if (arg is not SocketUserMessage message)
-            //     return;
-
-            // Create a number to track where the prefix ends and the command begins
-
-            // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            // if (!message.HasStringPrefix(Vars.IsDebug ? ".." : Config.Base.Prefix, ref argPos) || message.Author.IsBot)
-            //     return;
-
-            // Create a WebSocket-based command context based on the message
-            // var context = new SocketCommandContext(Client, message);
-
-            // Execute the command with the command context we just
-            // created, along with the service provider for precondition checks.
-            // await Commands.ExecuteAsync(
-            //     context: context,
-            //     argPos: argPos,
-            //     services: null);
-        // };
 
         Client.Ready += ClientOnReady;
         // Client.ModalSubmitted += async arg => await ModalProcessor.ProcessModal(arg);
@@ -200,9 +168,8 @@ public class Program {
         _eventModules.Add(new OnBotJoinOrLeave());
         _eventModules.Add(new UserLeft());
         _eventModules.ForEach(module => module.Initialize(Client));
-        
-        if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.CookieClientApiKey))
-            CookieClient = new CookieClient(Config.Base.Api.ApiKeys.CookieClientApiKey!);
+
+        Patreon_Client.Init();
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!))
             FluxpointClient = new FluxpointClient(Vars.Name, Config.Base.Api.ApiKeys.FluxpointApiKey!);
@@ -231,7 +198,7 @@ public class Program {
     private async Task ClientOnReady() {
         var crLogger = Log.ForContext("SourceContext", "ClientReady");
         Vars.StartTime = DateTime.UtcNow;
-        crLogger.Information("Bot Version        = " + Vars.Version);
+        crLogger.Information("Bot Version        = " + Vars.VersionStr);
         crLogger.Information("Process ID         = " + Environment.ProcessId);
         crLogger.Information("Build Date         = " + Vars.BuildDate);
         crLogger.Information("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
@@ -247,7 +214,7 @@ public class Program {
         
         if (Vars.IsWindows) {
             var temp1 = Config.Base.ActivityText!.Equals("(insert game here)") || string.IsNullOrWhiteSpace(Config.Base.ActivityText!);
-            Console.Title = $"{Vars.Name} v{Vars.Version} | Logged in as {Client.CurrentUser.Username} - " +
+            Console.Title = $"{Vars.Name} v{Vars.VersionStr} | Logged in as {Client.CurrentUser.Username} - " +
                             $"Currently in {Client.Guilds.Count} Guilds - " +
                             $"{Config.Base.ActivityType} {(temp1 ? "unset" : Config.Base.ActivityText)}";
         }
@@ -262,18 +229,20 @@ public class Program {
 
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),
-            Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n" +
-                          $"Currently in {Client.Guilds.Count} Guilds with {tempPatCount:N0} total head pats given",
+            Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n"/* +
+                          $"Currently in {Client.Guilds.Count} Guilds with {tempPatCount:N0} total head pats given"*/,
             Footer = new EmbedFooterBuilder {
-                Text = $"v{Vars.Version}",
+                Text = $"v{Vars.VersionStr}",
                 IconUrl = Client.CurrentUser.GetAvatarUrl()
             },
             Timestamp = DateTime.Now
         }
+            .AddField("Guilds", $"{Client.Guilds.Count:N0}", true)
+            .AddField("Head Pats", $"{tempPatCount:N0}", true)
             .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
             .AddField("Start Time", $"{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
-            .AddField("Discord.NET Version", Vars.DNetVer)
-            .AddField("System .NET Version", Environment.Version)
+            .AddField("Discord.NET Version", Vars.DNetVer, true)
+            .AddField("System .NET Version", Environment.Version, true)
             .Build();
         
         if (!Config.Base.ErrorLogsChannel.IsZero()) 
@@ -290,7 +259,7 @@ public class Program {
                 module.OnSessionCreated();
             }
         }
-        else await DNetToConsole.SendErrorToLoggingChannelAsync("No Event Modules were found or loaded!!");
+        else await DNetToConsole.SendErrorToLoggingChannelAsync("Event Module Load Fail", obj: "No Event Modules were found or loaded!!");
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
         crLogger.Information("Registered global slash commands.");
@@ -336,8 +305,10 @@ public class Program {
             UtilLogger.Error("Selected guild {guildId} does not exist! <GetGuildUser>", guildId);
             return null;
         }
-        if (guild.GetUser(userId) is { } user) return user;
-        UtilLogger.Error("Selected user {userId} does not exist! <GetGuildUser>", userId);
+        guild.DownloadUsersAsync().GetAwaiter().GetResult();
+        var user = guild.GetUser(userId);
+        if (user is not null) return user;
+        UtilLogger.Error("Selected user {userId} does not exist in guild {guildName} ({guildId})! <GetGuildUser>", userId, guild.Name, guild.Id);
         return null;
     }
     

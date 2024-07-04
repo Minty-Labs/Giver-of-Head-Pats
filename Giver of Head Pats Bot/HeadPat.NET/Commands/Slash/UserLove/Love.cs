@@ -4,6 +4,7 @@ using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
+using HeadPats.Utils.ExternalApis;
 using Serilog;
 
 namespace HeadPats.Commands.Slash.UserLove;
@@ -90,9 +91,9 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             e.WithTitle(outputs[num]);
             var newNumber = checkUser!.PatCount + numberOfPats;
 
-            if (Vars.UseCookieApi) {
+            if (Vars.UseLocalImages) {
                 start:
-                var image = Program.Instance.CookieClient!.GetPat();
+                var image = LocalImages.GetRandomPat();
                 // logger.Debug($"THE IMAGE IS: {image}");
                 if (image.Equals(_tempPatGifUrl)) {
                     logger.Debug("Image is same as previous image");
@@ -102,7 +103,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempPatGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {newNumber:N0} pats");
+                e.WithFooter($"Powered by the community | You have {newNumber:N0} pats");
             }
             else {
                 start2:
@@ -186,9 +187,9 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             e.WithTitle(outputs[num]);
 
-            if (Vars.UseCookieApi) {
+            if (Vars.UseLocalImages) {
                 start:
-                var image = Program.Instance.CookieClient!.GetHug();
+                var image = LocalImages.GetRandomHug();
                 if (image.Equals(_tempHugGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -197,7 +198,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempHugGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter("Powered by CookieAPI");
+                e.WithFooter("Powered by the community");
             }
             else {
                 start2:
@@ -246,9 +247,9 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             e.WithTitle(outputs[num]);
 
-            if (Vars.UseCookieApi) {
+            if (Vars.UseLocalImages) {
                 start:
-                var image = Program.Instance.CookieClient!.GetKiss();
+                var image = LocalImages.GetRandomKiss();
                 if (image.Equals(_tempKissGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -257,7 +258,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempKissGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter("Powered by CookieAPI");
+                e.WithFooter("Powered by the community");
             }
             else {
                 start2:
@@ -306,9 +307,9 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             e.WithTitle(outputs[num]);
 
-            if (Vars.UseCookieApi) {
+            if (Vars.UseLocalImages) {
                 start:
-                var image = Program.Instance.CookieClient!.GetSlap();
+                var image = LocalImages.GetRandomSlap();
                 if (image.Equals(_tempSlapGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -317,7 +318,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempSlapGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter("Powered by CookieAPI");
+                e.WithFooter("Powered by the community");
             }
             else {
                 start2:
@@ -398,9 +399,9 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             e.WithTitle(outputs[num]);
             var newNumber = checkUser!.CookieCount + 1;
 
-            if (Vars.UseCookieApi) {
+            if (Vars.UseLocalImages) {
                 start:
-                var image = Program.Instance.CookieClient!.GetCookie();
+                var image = LocalImages.GetRandomCookie();
                 if (image.Equals(_tempCookieGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -409,7 +410,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 _tempCookieGifUrl = image;
 
                 e.WithImageUrl(image);
-                e.WithFooter($"Powered by CookieAPI | You have {newNumber:N0} cookies");
+                e.WithFooter($"Powered by the community | You have {newNumber:N0} cookies");
             }
             else 
                 e.WithFooter($"You have {newNumber:N0} cookies");

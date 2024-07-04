@@ -47,8 +47,8 @@ public class BotControl : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("swapapis", "Swaps the API used for image commands")]
         public async Task SwapApis() {
-            Vars.UseCookieApi = !Vars.UseCookieApi;
-            await RespondAsync($"API changed to: {(Vars.UseCookieApi ? "Cookie" : "Fluxpoint")}");
+            Vars.UseLocalImages = !Vars.UseLocalImages;
+            await RespondAsync($"API changed to: {(Vars.UseLocalImages ? "LOCAL" : "Fluxpoint")}");
         }
 
         [SlashCommand("shutdown", "Shuts down the bot")]

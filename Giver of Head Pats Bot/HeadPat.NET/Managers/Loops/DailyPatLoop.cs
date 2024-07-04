@@ -4,6 +4,7 @@ using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
 using HeadPats.Utils;
+using HeadPats.Utils.ExternalApis;
 using Serilog;
 
 namespace HeadPats.Managers.Loops; 
@@ -55,8 +56,8 @@ public static class DailyPatLoop {
                 var userPatCount = dbUser.PatCount;
 
                 string patUrl;
-                if  (Vars.UseCookieApi)
-                    patUrl = Program.Instance.CookieClient!.GetPat();
+                if (Vars.UseLocalImages)
+                    patUrl = LocalImages.GetRandomPat();
                 else {
                     var flux = await Program.Instance.FluxpointClient!.Gifs.GetPatAsync();
                     patUrl = flux.file;
@@ -68,7 +69,7 @@ public static class DailyPatLoop {
                     Color = Colors.Random,
                     ImageUrl = patUrl,
                     Footer = new EmbedFooterBuilder {
-                        Text = $"Powered by {(Vars.UseCookieApi ? "CookieAPI" : "Fluxpoint API")}"
+                        Text = $"Powered by {(Vars.UseLocalImages ? "CookieAPI" : "Fluxpoint API")}"
                     }
                 }.Build();
             
