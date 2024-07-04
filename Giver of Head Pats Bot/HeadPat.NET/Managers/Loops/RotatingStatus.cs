@@ -2,6 +2,7 @@
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Utils;
+using HeadPats.Utils.ExternalApis;
 
 namespace HeadPats.Managers.Loops; 
 
@@ -27,6 +28,7 @@ public static class StatusUtils {
             .Replace("%guildCount%", $"{Program.Instance.Client.Guilds.Count}")
             .Replace("%users%", $"{Program.Instance.Client.Guilds.Sum(guild => guild.MemberCount):N0}")
             .Replace("%os%", Vars.IsWindows ? "Windows" : "Linux")
+            .Replace("%patreonCount%", $"{Patreon_Client.MemberCount:N0}")
             ;
     }
 }

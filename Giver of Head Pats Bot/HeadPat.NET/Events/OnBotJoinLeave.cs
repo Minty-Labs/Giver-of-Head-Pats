@@ -95,6 +95,7 @@ public class OnBotJoinOrLeave : EventModule {
         }
         else guildSettings.DataDeletionTime = 0;
         Config.Save();
+        await e.DownloadUsersAsync();
 
         try {
             await using var db = new Context();
@@ -129,7 +130,7 @@ public class OnBotJoinOrLeave : EventModule {
             
             await db.SaveChangesAsync();
         } catch (Exception ex) {
-            await DNetToConsole.SendErrorToLoggingChannelAsync(ex);
+            await DNetToConsole.SendErrorToLoggingChannelAsync("OnGuildJoin:", obj: ex);
         }
     }
 }

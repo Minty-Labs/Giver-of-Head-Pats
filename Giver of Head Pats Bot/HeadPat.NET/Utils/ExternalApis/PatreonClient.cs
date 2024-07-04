@@ -11,7 +11,7 @@ public class Patreon_Client {
     public static List<string>? CutieTier { get; set; }
     public static List<string>? MegaCutieTier { get; set; }
     public static List<string>? AdorableTier { get; set; }
-    public static int MemberCount { get; set; }
+    public static int MemberCount { get; private set; }
     private static readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
 
     public static async Task GetPatreonInfo(bool reRun = false) {
@@ -47,7 +47,7 @@ public class Patreon_Client {
         var memberId = string.Empty;
         if (string.IsNullOrWhiteSpace(memberId)) {
             if (reRun && MemberCount != members.Meta.Pagination.Total) {
-                await DNetToConsole.SendMessageToLoggingChannelAsync($"Patron count changed! New count: {members.Meta.Pagination.Total}");
+                await DNetToConsole.SendMessageToLoggingChannelAsync("Patron count changed!", line2: $"New count: {members.Meta.Pagination.Total}");
             }
             Logger.Information("Total number of {0} members found.", members.Meta.Pagination.Total);
             MemberCount = members.Meta.Pagination.Total;
@@ -83,5 +83,11 @@ public class Patreon_Client {
             Logger.Information("No members found.");
         }
         Logger.Information("Ran PatreonClient successfully.");
+    }
+
+    public static void Init() {
+        CutieTier = new List<string>();
+        MegaCutieTier = new List<string>();
+        AdorableTier = new List<string>();
     }
 }
