@@ -21,7 +21,7 @@ public class StatusLoopJob : IJob {
             // Log.Debug("Updated Status");
         }
         catch (Exception err) {
-            await DNetToConsole.SendErrorToLoggingChannelAsync($"Status:\n{err}");
+            await DNetToConsole.SendErrorToLoggingChannelAsync("Status:", obj: err);
         }
     }
 }

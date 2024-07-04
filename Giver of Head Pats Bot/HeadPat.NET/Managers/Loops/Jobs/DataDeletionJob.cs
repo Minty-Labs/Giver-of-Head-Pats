@@ -23,7 +23,7 @@ public class DataDeletionJob : IJob {
             }
         }
         catch (Exception err) {
-            await DNetToConsole.SendErrorToLoggingChannelAsync($"Data Deletion:\n{err}");
+            await DNetToConsole.SendErrorToLoggingChannelAsync("Data Deletion:", obj: err);
         }
     }
 }

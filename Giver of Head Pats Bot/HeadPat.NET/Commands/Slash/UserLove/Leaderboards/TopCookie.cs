@@ -45,7 +45,7 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
             Title = "Cookie Leaderboard",
             Color = Colors.GetRandomCookieColor(),
             Footer = new EmbedFooterBuilder {
-                Text = $"{Vars.Name} (v{Vars.Version})"
+                Text = $"{Vars.Name} (v{Vars.VersionStr})"
             }
         };
         embed.AddField("Current Server Stats",

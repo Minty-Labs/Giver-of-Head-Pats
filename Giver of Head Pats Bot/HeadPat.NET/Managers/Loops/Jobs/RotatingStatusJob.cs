@@ -10,7 +10,7 @@ public class RotatingStatusJob : IJob {
             await RotatingStatus.Update(db);
         }
         catch (Exception err) {
-            await DNetToConsole.SendErrorToLoggingChannelAsync($"Rotating Status:\n{err}");
+            await DNetToConsole.SendErrorToLoggingChannelAsync("Rotating Status:", obj: err);
         }
     }
 }

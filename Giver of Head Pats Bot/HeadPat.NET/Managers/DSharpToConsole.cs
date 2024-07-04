@@ -31,7 +31,7 @@ public class DNetToConsole : BasicModule {
         return Task.CompletedTask;
     }
 
-    private static Embed? ErrorEmbed(object message) {
+    private static EmbedBuilder? ErrorEmbed(object message, object? exception = null) {
         var messageToString = message.ToString();
         var finalMessage = (messageToString!.Length > 2000 ? messageToString[..1990] + "..." : messageToString) ?? "Error, no message could be displayed. This should not happen.";
         // var forceSendNormalMessage = false;
@@ -46,28 +46,36 @@ public class DNetToConsole : BasicModule {
         Logger.Error("{0}", message);
 
         return new EmbedBuilder {
-            Color = Colors.HexToColor("FF2525"),
-            Description = $"```{finalMessage}```",
+            Color = Color.Red,
+            Description = exception != null ? $"{MarkdownUtils.ToCodeBlockMultiline(finalMessage)}\n{MarkdownUtils.ToCodeBlockMultiline(exception.ToString() ?? "empty exception")}" : MarkdownUtils.ToCodeBlockMultiline(finalMessage),
             Footer = new EmbedFooterBuilder {
-                Text = Vars.Version
+                Text = Vars.VersionStr
             },
             Timestamp = DateTime.Now
-        }.Build();
+        };
     }
 
-    private static Embed? MessageEmbed(object message) 
-        => new EmbedBuilder {
-            Color = Colors.HexToColor("23A559"),
-            Description = message.ToString(),
+    private static EmbedBuilder? LoggingEmbed(object message, object? line2 = null, object? line3 = null) {
+        var messageToString = message.ToString();
+        var finalMessage = (messageToString!.Length > 2000 ? messageToString[..1990] + "..." : messageToString) ?? "Error, no message could be displayed. This should not happen.";
+        Logger.Information("{0}", message);
+        return new EmbedBuilder {
+            Color = Color.Green,
+            Description = messageToString + (line2 != null ? $"\n{line2}" : "") + (line3 != null ? $"\n{line3}" : ""),
             Footer = new EmbedFooterBuilder {
-                Text = Vars.Version
+                Text = Vars.VersionStr
             },
             Timestamp = DateTime.Now
-        }.Build();
+        };
+    }
 
-    public static async Task SendErrorToLoggingChannelAsync(object message) => await Program.Instance.GetChannel(Vars.SupportServerId, Config.Base.ErrorLogsChannel)!.SendMessageAsync(embed: ErrorEmbed(message));
+    public static async Task SendErrorToLoggingChannelAsync(object message, MessageReference? reference = null) => await Program.Instance.ErrorLogChannel!.SendMessageAsync(embed: ErrorEmbed(message)!.Build(), messageReference: reference);
 
-    public static void SendErrorToLoggingChannel(object message) => Program.Instance.GetChannel(Vars.SupportServerId, Config.Base.ErrorLogsChannel)!.SendMessageAsync(embed: ErrorEmbed(message)).GetAwaiter().GetResult();
+    public static void SendErrorToLoggingChannel(object message, MessageReference? reference = null) => SendErrorToLoggingChannelAsync(message, reference).GetAwaiter().GetResult();
     
-    public static async Task SendMessageToLoggingChannelAsync(object message) => await Program.Instance.GetChannel(Vars.SupportServerId, Config.Base.BotLogsChannel)!.SendMessageAsync(embed: MessageEmbed(message));
+    public static async Task SendErrorToLoggingChannelAsync(object message, MessageReference? reference = null, object? obj = null) => await Program.Instance.ErrorLogChannel!.SendMessageAsync(embed: ErrorEmbed(message, obj)!.Build(), messageReference: reference);
+    
+    public static void SendErrorToLoggingChannel(object message, MessageReference? reference = null, object? obj = null) => SendErrorToLoggingChannelAsync(message, reference, obj).GetAwaiter().GetResult();
+    
+    public static async Task SendMessageToLoggingChannelAsync(object line1, object? line2 = null, object? line3 = null) => await Program.Instance.ErrorLogChannel!.SendMessageAsync(embed: LoggingEmbed(line1, line2, line3)!.Build());
 }

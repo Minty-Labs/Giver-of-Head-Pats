@@ -43,7 +43,7 @@ public class Contributors : InteractionModuleBase<SocketInteractionContext> {
                 Config.Base.Contributors!.Remove(contributor);
             }
             catch (Exception e) {
-                await DNetToConsole.SendErrorToLoggingChannelAsync(e);
+                await DNetToConsole.SendErrorToLoggingChannelAsync("RemoveContributor", obj: e);
             }
             Config.Save();
 

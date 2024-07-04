@@ -61,7 +61,7 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
             Title = "Head Pat Leaderboard",
             Color = Colors.Random,
             Footer = new EmbedFooterBuilder {
-                Text = $"Synced across all servers • {Vars.Name} (v{Vars.Version})"
+                Text = $"Synced across all servers • {Vars.Name} (v{Vars.VersionStr})"
             }
         };
         embed.AddField("Statistics for " + Context.Guild.Name, $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\n" +

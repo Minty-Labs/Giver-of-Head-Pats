@@ -14,7 +14,7 @@ public class DailyPatJob : IJob {
         }
         catch (Exception err) {
             if (_numberOfPatErrored >= 5) return;
-            await DNetToConsole.SendErrorToLoggingChannelAsync($"Daily Pats:\n{err}");
+            await DNetToConsole.SendErrorToLoggingChannelAsync("Daily Pats:", obj: err);
             _numberOfPatErrored++;
         }
     }

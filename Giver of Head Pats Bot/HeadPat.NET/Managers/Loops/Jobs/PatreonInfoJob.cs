@@ -11,7 +11,7 @@ public class PatreonInfoJob : IJob {
         }
         catch (Exception err) {
             if (_numberOfPatreonErrored >= 5) return;
-            await DNetToConsole.SendErrorToLoggingChannelAsync($"Patreon:\n{err}");
+            await DNetToConsole.SendErrorToLoggingChannelAsync("Patreon:", obj: err);
             _numberOfPatreonErrored++;
         }
     }

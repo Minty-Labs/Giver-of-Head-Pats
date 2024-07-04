@@ -1,8 +1,7 @@
 ﻿using HeadPats.Configuration;
-using HeadPats.Managers;
 using Quartz;
 
-namespace Michiru.Managers.Jobs;
+namespace HeadPats.Managers.Loops.Jobs;
 
 public class ConfigSaveJob : IJob {
     public async Task Execute(IJobExecutionContext context) {
@@ -12,7 +11,7 @@ public class ConfigSaveJob : IJob {
             }
         }
         catch (Exception err) {
-            await DNetToConsole.SendErrorToLoggingChannelAsync(err);
+            await DNetToConsole.SendErrorToLoggingChannelAsync("ConfigSaveJob:", obj: err);
         }
     }
 }
