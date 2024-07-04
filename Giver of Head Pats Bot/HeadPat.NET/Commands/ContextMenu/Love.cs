@@ -66,8 +66,12 @@ public class ContextMenuLove : InteractionModuleBase {
             await RespondAsync("You cannot give bots headpats.", ephemeral: true);
         else if (Context.User.Id == user.Id)
             await RespondAsync("You cannot give yourself headpats.", ephemeral: true);
-        else
-            await RespondAsync(PatUtils.GetRandomPatMessageTemplate(Context.User.Mention, user.Username.ReplaceName(user.Id)));
+        else {
+            if (ranInGuild)
+                await RespondAsync(PatUtils.GetRandomPatMessageTemplate(Context.User.Mention, user.Username.ReplaceName(user.Id)));
+            else
+                await RespondAsync(PatUtils.GetRandomUserAppPatMessageTemplate(user.Username.ReplaceName(user.Id)));
+        }
         
         if (ranInGuild)
             UserControl.AddPatToUser(user.Id, 1, true, Context.Guild!.Id);
