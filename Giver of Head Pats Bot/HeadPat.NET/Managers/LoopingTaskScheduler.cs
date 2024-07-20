@@ -15,7 +15,7 @@ public class LoopingTaskScheduler : BasicModule {
     private static async Task Scheduler() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
-            .UseDefaultThreadPool(x => x.MaxConcurrency = 7)
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 6)
             .BuildScheduler();
         await scheduler.Start();
         
@@ -49,7 +49,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(guildDataDeletion, guildDataDeletionTrigger);
         
-        var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
+        /*var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
         var dailyPatTrigger = TriggerBuilder.Create()
             .WithIdentity("DailyPat", Vars.Name)
             .StartNow()
@@ -57,7 +57,7 @@ public class LoopingTaskScheduler : BasicModule {
                 .WithIntervalInMinutes(5)
                 .RepeatForever())
             .Build();
-        await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);
+        await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);*/
         
         var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
         var patreonInfoTrigger = TriggerBuilder.Create()
@@ -74,7 +74,7 @@ public class LoopingTaskScheduler : BasicModule {
             .WithIdentity("ConfigSaveLoop", Vars.Name)
             .StartNow()
             .WithSimpleSchedule(x => x
-                .WithIntervalInMinutes(2)
+                .WithIntervalInMinutes(5)
                 .RepeatForever())
             .Build();
         await scheduler.ScheduleJob(configSaveLoopJob, configSaveLoopTrigger);

@@ -1,4 +1,4 @@
-﻿using HeadPats.Data;
+﻿/*using HeadPats.Data;
 using Quartz;
 
 namespace HeadPats.Managers.Loops.Jobs;
@@ -18,4 +18,4 @@ public class DailyPatJob : IJob {
             _numberOfPatErrored++;
         }
     }
-}
+}*/

@@ -1,4 +1,4 @@
-﻿using Discord;
+﻿/*using Discord;
 using HeadPats.Commands.Slash.Owner;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -26,7 +26,9 @@ public static class DailyPatLoop {
                     continue;
                 }
             }
-            catch {/*ignore*/}
+            catch {
+                // ignore
+            }
             
             if (guild.DailyPats is null || guild.DailyPats.Count is 0) continue;
                 
@@ -92,4 +94,4 @@ public static class DailyPatLoop {
             Config.Save();
         }
     }
-}
+}*/

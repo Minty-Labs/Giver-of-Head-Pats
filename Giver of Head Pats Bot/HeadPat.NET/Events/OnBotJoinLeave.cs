@@ -22,7 +22,7 @@ public class OnBotJoinOrLeave : EventModule {
         client.LeftGuild += OnLeaveGuild;
     }
 
-    internal static bool DoNotRunOnStart = true;
+    internal static bool DoNotRunOnStart { get; set; } = true;
     internal static List<ulong>? GuildIds;
 
     private static async Task OnLeaveGuild(SocketGuild e) {

@@ -39,7 +39,7 @@ public class Program {
     public SocketTextChannel? ErrorLogChannel { get; set; }
     public SocketCategoryChannel? DmCategory { get; set; }
     
-    private static List<EventModule> _eventModules = [];
+    // private static List<EventModule> _eventModules = [];
     private static List<BasicModule> _basicModules = [];
     
     // private ModalProcessor _modalProcessor;
@@ -165,9 +165,9 @@ public class Program {
         }
         
         // _eventModules.Add(new MessageReceived());
-        _eventModules.Add(new OnBotJoinOrLeave());
-        _eventModules.Add(new UserLeft());
-        _eventModules.ForEach(module => module.Initialize(Client));
+        // _eventModules.Add(new OnBotJoinOrLeave());
+        // _eventModules.Add(new UserLeft());
+        // _eventModules.ForEach(module => module.Initialize(Client));
 
         Patreon_Client.Init();
         
@@ -229,8 +229,7 @@ public class Program {
 
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),
-            Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n"/* +
-                          $"Currently in {Client.Guilds.Count} Guilds with {tempPatCount:N0} total head pats given"*/,
+            Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n",
             Footer = new EmbedFooterBuilder {
                 Text = $"v{Vars.VersionStr}",
                 IconUrl = Client.CurrentUser.GetAvatarUrl()
@@ -253,12 +252,12 @@ public class Program {
             GeneralLogChannel = GetChannel(Vars.SupportServerId, Config.Base.BotLogsChannel);
             await GeneralLogChannel!.SendMessageAsync(embed: startEmbed);
         }
-        if (_eventModules.Count != 0) {
-            foreach (var module in _eventModules) {
-                await module.OnSessionCreatedTask();
-                module.OnSessionCreated();
-            }
-        }
+        // if (_eventModules.Count != 0) {
+        //     foreach (var module in _eventModules) {
+        //         await module.OnSessionCreatedTask();
+        //         module.OnSessionCreated();
+        //     }
+        // }
         else await DNetToConsole.SendErrorToLoggingChannelAsync("Event Module Load Fail", obj: "No Event Modules were found or loaded!!");
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
