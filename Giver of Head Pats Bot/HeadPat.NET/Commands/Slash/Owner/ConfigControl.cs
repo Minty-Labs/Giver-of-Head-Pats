@@ -52,7 +52,7 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         // }
 
         [SlashCommand("setapikey", "Sets an API key for the bot")]
-        public async Task SetApiKey(ApiSet apiSet, [Summary(description: "The API Key")] string key) {
+        public async Task SetApiKey([Summary(description: "API Destination")] ApiSet apiSet, [Summary(description: "The API Key")] string key) {
             switch (apiSet) {
                 case ApiSet.UnsplashAccessKey:
                     Config.Base.Api.ApiKeys.UnsplashAccessKey = key;
@@ -83,7 +83,11 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         }
 
         [SlashCommand("namereplacement", "Adds, updates, removes, or lists name replacements")]
-        public async Task NameReplacement(NameReplacementAction action, [Summary(description: "User's ID")] string userId, [Summary("From Guild", "Get user from guild")] string guildId, [Summary("Replacement Name", "The new replacement name")] string name) {
+        public async Task NameReplacement(
+            [Summary(description: "Replacement Action")] NameReplacementAction action,
+            [Summary(description: "User's ID")] string userId,
+            [Summary("FromGuild", "Get user from guild")] string guildId,
+            [Summary("NewName", "The new replacement name")] string name) {
             var replacements = Config.Base.NameReplacements;
             var guildIdUlong = ulong.Parse(guildId);
             var userIdUlong = ulong.Parse(userId);
@@ -132,7 +136,7 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         }
 
         [SlashCommand("rotatingstatus", "Enables, disables, lists, or goes to the next rotating status")]
-        public async Task RotatingStatus(RotatingStatusPreAction preAction) {
+        public async Task RotatingStatus([Summary(description: "Rotating Status Action Type")] RotatingStatusPreAction preAction) {
             switch (preAction) {
                 case RotatingStatusPreAction.Enable:
                     Config.Base.RotatingStatus.Enabled = true;
@@ -160,13 +164,11 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         }
 
         [SlashCommand("modifyrotatingstatus", "Adds, updates, or removes a rotating status")]
-        public async Task ModifyRotatingStatus(RotatingStatusAction action,
-            [Summary(description: "ex. Playing, Watching, Custom, ...")]
-            string activityType = "$XX",
-            [Summary(description: "ex. Online, Idle, ...")]
-            string userStatus = "$XX",
-            [Summary(description: "Actual Status Text")]
-            string activityText = "$XX",
+        public async Task ModifyRotatingStatus(
+            [Summary(description: "Rotating Status Action Type")] RotatingStatusAction action,
+            [Summary(description: "ex. Playing, Watching, Custom, Listening")] string activityType = "$XX",
+            [Summary(description: "ex. Online, Idle, DnD, Offline")] string userStatus = "$XX",
+            [Summary(description: "Actual Status Text")] string activityText = "$XX",
             [Summary(description: "Status ID")] string statusId = "$XX") {
             switch (action) {
                 case RotatingStatusAction.Add:
