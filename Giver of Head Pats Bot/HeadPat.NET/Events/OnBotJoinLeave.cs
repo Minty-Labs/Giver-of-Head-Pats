@@ -43,16 +43,15 @@ public class OnBotJoinOrLeave : EventModule {
         await Program.Instance.GeneralLogChannel!.SendMessageAsync(embed: em.Build());
         
         var guildSettings = Config.Base.GuildSettings!.FirstOrDefault(g => g.GuildId == e.Id);
-        if (guildSettings is null) {
+        var guildConfig = DailyPatConfig.Base!.Guilds!.FirstOrDefault(g => g.GuildId == e.Id);
+        if (guildConfig is null || guildSettings is null) {
             logger.Error("Guild Settings for guild {guildId} is null, cannot delete data.", e.Id);
             return;
         }
-        guildSettings.DailyPatChannelId = 0;
-        var dailyPats = guildSettings.DailyPats;
+        guildConfig.DailyPatChannelId = 0;
+        var dailyPats = guildConfig.Users;
         dailyPats?.Clear();
-        // var irlQuotes = guildSettings.IrlQuotes;
-        // irlQuotes!.Enabled = false;
-        // irlQuotes.ChannelId = 0;
+        
         guildSettings.DataDeletionTime = DateTimeOffset.UtcNow.AddDays(28).ToUnixTimeSeconds();
         logger.Information("Cleared Daily Pats and IRL Quote data for guild {guildId}", e.Id);
         Config.Save();
@@ -86,8 +85,6 @@ public class OnBotJoinOrLeave : EventModule {
                 GuildName = e.Name,
                 GuildId = e.Id,
                 BlacklistedCommands = new List<string>(),
-                DailyPatChannelId = 0,
-                DailyPats = new List<DailyPat>(),
                 DataDeletionTime = 0
             };
 

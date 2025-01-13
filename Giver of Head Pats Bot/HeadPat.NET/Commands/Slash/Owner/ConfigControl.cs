@@ -6,6 +6,7 @@ using HeadPats.Configuration;
 using HeadPats.Configuration.Classes;
 using HeadPats.Data;
 using HeadPats.Utils;
+using HeadPats.Utils.ExternalApis;
 
 namespace HeadPats.Commands.Slash.Owner;
 
@@ -84,20 +85,17 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("namereplacement", "Adds, updates, removes, or lists name replacements")]
         public async Task NameReplacement(
-            [Summary(description: "Replacement Action")] NameReplacementAction action,
-            [Summary(description: "User's ID")] string userId,
-            [Summary("FromGuild", "Get user from guild")] string guildId,
-            [Summary("NewName", "The new replacement name")] string name) {
+            [Summary("replacement-action", "Replacement Action")] NameReplacementAction action,
+            [Summary("user-id", "User's ID")] string userId,
+            [Summary("new-name", "The new replacement name")] string name) {
             var replacements = Config.Base.NameReplacements;
-            var guildIdUlong = ulong.Parse(guildId);
             var userIdUlong = ulong.Parse(userId);
-            var guild = Context.Client.GetGuild(guildIdUlong);
-            await guild.DownloadUsersAsync();
-            var user = Program.Instance.GetGuildUser(guildIdUlong, userIdUlong);
+            var user = await Context.Client.GetUserAsync(userIdUlong);
             if (user is null) {
-                await RespondAsync("User not found in guild.", ephemeral: true);
+                await RespondAsync("User not found.", ephemeral: true);
                 return;
             }
+            
             switch (action) {
                 case NameReplacementAction.Add:
                     var addedReplacement = new NameReplacement {
@@ -136,8 +134,8 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         }
 
         [SlashCommand("rotatingstatus", "Enables, disables, lists, or goes to the next rotating status")]
-        public async Task RotatingStatus([Summary(description: "Rotating Status Action Type")] RotatingStatusPreAction preAction) {
-            switch (preAction) {
+        public async Task RotatingStatus([Summary("action", "Rotating Status Action Type")] RotatingStatusPreAction action) {
+            switch (action) {
                 case RotatingStatusPreAction.Enable:
                     Config.Base.RotatingStatus.Enabled = true;
                     await RespondAsync("Enabled Rotating Status", ephemeral: true);
@@ -157,7 +155,7 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
                     await RespondAsync("Skipped to next status.");
                     return;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(preAction), preAction, null);
+                default: throw new ArgumentOutOfRangeException(nameof(action), action, null);
             }
 
             Config.Save();
@@ -165,11 +163,11 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
 
         [SlashCommand("modifyrotatingstatus", "Adds, updates, or removes a rotating status")]
         public async Task ModifyRotatingStatus(
-            [Summary(description: "Rotating Status Action Type")] RotatingStatusAction action,
-            [Summary(description: "ex. Playing, Watching, Custom, Listening")] string activityType = "$XX",
-            [Summary(description: "ex. Online, Idle, DnD, Offline")] string userStatus = "$XX",
-            [Summary(description: "Actual Status Text")] string activityText = "$XX",
-            [Summary(description: "Status ID")] string statusId = "$XX") {
+            [Summary("action", "Rotating Status Action Type")] RotatingStatusAction action,
+            [Summary("activity-type", "ex. Playing, Watching, Custom, Listening")] string activityType = "$XX",
+            [Summary("user-status", "ex. Online, Idle, DnD, Offline")] string userStatus = "$XX",
+            [Summary("activity-text", "Actual Status Text")] string activityText = "$XX",
+            [Summary("status-id", "Status ID")] string statusId = "$XX") {
             switch (action) {
                 case RotatingStatusAction.Add:
                     var status = new Status {
@@ -206,6 +204,14 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
             Config.Save();
         }
         
+        [SlashCommand("setlocalimagepath", "Sets the local image path for the bot")]
+        public async Task SetLocalImagePath([Summary("path", "The path to the local images")] string path) {
+            Config.Base.LocalImagePath = path;
+            Config.Save();
+            await RespondAsync($"Set Local Image Path to {path}", ephemeral: true);
+            LocalImages.ReadFromLocalStorage();
+        }
+        
         /*[SlashCommand("cleanguildsfromconfig", "Cleans the guilds from the config that are not in the guilds list")]
         public async Task CleanGuildsFromConfig() {
             var guilds = Context.Client.Guilds;
@@ -222,7 +228,7 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
         }*/
         
         // remove all daily pats from the config
-        [SlashCommand("clearalldailypats", "Clears the daily pats from the config")]
+        /*[SlashCommand("clearalldailypats", "Clears the daily pats from the config")]
         public async Task CleanDailyPatsFromConfig() {
             var configGuildSettings = Config.Base.GuildSettings!;
             var sb = new StringBuilder();
@@ -236,6 +242,6 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
             Config.Save();
 
             await RespondAsync(sb.ToString(), ephemeral: true);
-        }
+        }*/
     }
 }

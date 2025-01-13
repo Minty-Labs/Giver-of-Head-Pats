@@ -15,7 +15,7 @@ public class ContextMenuLove : InteractionModuleBase {
     
     [UserCommand("Hug")]
     public async Task ContextMenuHug(IUser user) {
-        var target = Program.Instance.GetUser(user.Id);
+        var target = await Context.Client.GetUserAsync(user.Id);
         var author = Context.User;
         if (target!.Id == Vars.ClientId)
             await RespondAsync($"I got hugs from {author.Username.ReplaceName(author.Id)}?! Thankies~");

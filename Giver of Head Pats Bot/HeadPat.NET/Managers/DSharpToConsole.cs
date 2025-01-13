@@ -3,6 +3,7 @@ using HeadPats.Modules;
 using HeadPats.Utils;
 using Discord;
 using HeadPats.Configuration;
+using HeadPats.Events;
 using Serilog;
 
 namespace HeadPats.Managers; 
@@ -72,8 +73,12 @@ public class DNetToConsole : BasicModule {
     public static async Task SendErrorToLoggingChannelAsync(object message, MessageReference? reference = null) => await Program.Instance.ErrorLogChannel!.SendMessageAsync(embed: ErrorEmbed(message)!.Build(), messageReference: reference);
 
     public static void SendErrorToLoggingChannel(object message, MessageReference? reference = null) => SendErrorToLoggingChannelAsync(message, reference).GetAwaiter().GetResult();
-    
-    public static async Task SendErrorToLoggingChannelAsync(object message, MessageReference? reference = null, object? obj = null) => await Program.Instance.ErrorLogChannel!.SendMessageAsync(embed: ErrorEmbed(message, obj)!.Build(), messageReference: reference);
+
+    public static async Task SendErrorToLoggingChannelAsync(object message, MessageReference? reference = null, object? obj = null) {
+        if (OnBotJoinOrLeave.DoNotRunOnStart)
+            return;
+        await Program.Instance.ErrorLogChannel!.SendMessageAsync(embed: ErrorEmbed(message, obj)!.Build(), messageReference: reference);
+    }
     
     public static void SendErrorToLoggingChannel(object message, MessageReference? reference = null, object? obj = null) => SendErrorToLoggingChannelAsync(message, reference, obj).GetAwaiter().GetResult();
     

@@ -93,7 +93,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomPat();
+                var image = LocalImages.GetRandomImage(Category.Pat);
                 // logger.Debug($"THE IMAGE IS: {image}");
                 if (image.Equals(_tempPatGifUrl)) {
                     logger.Debug("Image is same as previous image");
@@ -189,7 +189,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomHug();
+                var image = LocalImages.GetRandomImage(Category.Hug);
                 if (image.Equals(_tempHugGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -249,7 +249,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomKiss();
+                var image = LocalImages.GetRandomImage(Category.Kiss);
                 if (image.Equals(_tempKissGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -309,7 +309,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomSlap();
+                var image = LocalImages.GetRandomImage(Category.Slap);
                 if (image.Equals(_tempSlapGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;
@@ -401,7 +401,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomCookie();
+                var image = LocalImages.GetRandomImage(Category.Cookie);
                 if (image.Equals(_tempCookieGifUrl)) {
                     logger.Debug("Image is same as previous image");
                     goto start;

@@ -15,21 +15,12 @@ public class LoopingTaskScheduler : BasicModule {
     private static async Task Scheduler() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
-            .UseDefaultThreadPool(x => x.MaxConcurrency = 6)
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 5)
             .BuildScheduler();
         await scheduler.Start();
         
-        var statusLoop = JobBuilder.Create<StatusLoopJob>().Build();
-        var statusLoopTrigger = TriggerBuilder.Create()
-            .WithIdentity("StatusLoop", Vars.Name)
-            .StartNow()
-            .WithSimpleSchedule(x => x
-                .WithIntervalInMinutes(10)
-                .RepeatForever())
-            .Build();
-        await scheduler.ScheduleJob(statusLoop, statusLoopTrigger);
-    
-        var rotatingStatusLoop = JobBuilder.Create<RotatingStatusJob>().Build();
+        // 1
+        /*var rotatingStatusLoop = JobBuilder.Create<RotatingStatusJob>().Build();
         var rotatingStatusLoopTrigger = TriggerBuilder.Create()
             .WithIdentity("RotatingStatusLoop", Vars.Name)
             .StartNow()
@@ -37,8 +28,9 @@ public class LoopingTaskScheduler : BasicModule {
                 .WithIntervalInMinutes(10)
                 .RepeatForever())
             .Build();
-        await scheduler.ScheduleJob(rotatingStatusLoop, rotatingStatusLoopTrigger);
+        await scheduler.ScheduleJob(rotatingStatusLoop, rotatingStatusLoopTrigger);*/
         
+        // 2
         var guildDataDeletion = JobBuilder.Create<DataDeletionJob>().Build();
         var guildDataDeletionTrigger = TriggerBuilder.Create()
             .WithIdentity("GuildDataDeletion", Vars.Name)
@@ -49,6 +41,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(guildDataDeletion, guildDataDeletionTrigger);
         
+        // 3
         /*var dailyPat = JobBuilder.Create<DailyPatJob>().Build();
         var dailyPatTrigger = TriggerBuilder.Create()
             .WithIdentity("DailyPat", Vars.Name)
@@ -59,6 +52,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);*/
         
+        // 4
         var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
         var patreonInfoTrigger = TriggerBuilder.Create()
             .WithIdentity("PatreonInfo", Vars.Name)
@@ -69,6 +63,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(patreonInfo, patreonInfoTrigger);
         
+        // 5
         var configSaveLoopJob = JobBuilder.Create<ConfigSaveJob>().Build();
         var configSaveLoopTrigger = TriggerBuilder.Create()
             .WithIdentity("ConfigSaveLoop", Vars.Name)
@@ -79,6 +74,7 @@ public class LoopingTaskScheduler : BasicModule {
             .Build();
         await scheduler.ScheduleJob(configSaveLoopJob, configSaveLoopTrigger);
         
+        // 6
         var downloadUserLoopJob = JobBuilder.Create<DownloadUsersJob>().Build();
         var downloadUserTrigger = TriggerBuilder.Create()
             .WithIdentity("DownloadUsers", Vars.Name)
@@ -88,6 +84,17 @@ public class LoopingTaskScheduler : BasicModule {
                 .RepeatForever())
             .Build();
         await scheduler.ScheduleJob(downloadUserLoopJob, downloadUserTrigger);
+        
+        // 7
+        var processLocalImagesJob = JobBuilder.Create<ProcessLocalImages>().Build();
+        var processLocalImagesTrigger = TriggerBuilder.Create()
+            .WithIdentity("ProcessLocalImages", Vars.Name)
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithIntervalInHours(24)
+                .RepeatForever())
+            .Build();
+        await scheduler.ScheduleJob(processLocalImagesJob, processLocalImagesTrigger);
         
         Logger.Information("Initialized!");
     }

@@ -73,12 +73,12 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
                 RandomFoxJson.FoxData = null;
             }
             else {
-                var getFoxCount = LocalImages.Foxes.Count;
-                var randomFox = new Random().Next(0, getFoxCount);
+                var getFoxCount = LocalImages.GetCategoryCount(Category.Foxes);
+                var randomFox = LocalImages.GetRandomImage(Category.Foxes);
                 var embed = new EmbedBuilder {
-                    Title = $"{randomFox} / {getFoxCount}",
+                    Title = $"{LocalImages.CurrentFoxEntryNumber} / {getFoxCount}",
                     Color = Colors.HexToColor("AC5F25"),
-                    ImageUrl = LocalImages.Foxes[randomFox],
+                    ImageUrl = randomFox,
                     Footer = new EmbedFooterBuilder {
                         Text = "Powered by the community"
                     }
@@ -115,12 +115,12 @@ public class Summon : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("redpanda", "Red Pandas are adorable")]
         public async Task RedPanda() {
-            var getRedPandaCount = LocalImages.RedPandas.Count;
-            var randomRedPanda = new Random().Next(0, getRedPandaCount);
+            var getRedPandaCount = LocalImages.GetCategoryCount(Category.RedPanda);
+            var randomRedPanda = LocalImages.GetRandomImage(Category.RedPanda);
             var embed = new EmbedBuilder {
-                Title = $"{randomRedPanda} / {getRedPandaCount}",
+                Title = $"{LocalImages.CurrentRedPandaEntryNumber} / {getRedPandaCount}",
                 Color = Colors.HexToColor("935824"),
-                ImageUrl = LocalImages.RedPandas[randomRedPanda],
+                ImageUrl = randomRedPanda,
                 Footer = new EmbedFooterBuilder {
                     Text = "Powered by the community"
                 }

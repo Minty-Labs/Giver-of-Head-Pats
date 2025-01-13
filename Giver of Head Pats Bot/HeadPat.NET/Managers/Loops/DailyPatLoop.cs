@@ -1,5 +1,5 @@
-﻿/*using Discord;
-using HeadPats.Commands.Slash.Owner;
+﻿using Discord;
+using Discord.WebSocket;
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
@@ -7,59 +7,56 @@ using HeadPats.Utils;
 using HeadPats.Utils.ExternalApis;
 using Serilog;
 
-namespace HeadPats.Managers.Loops; 
+namespace HeadPats.Managers.Loops;
 
 public static class DailyPatLoop {
-
+    private static readonly ILogger Logger = Log.ForContext(typeof(DailyPatLoop));
+    
     public static async Task DoDailyPat(Context db, long currentEpoch) {
-        //return;
-        if (Vars.IsDebug) return;
-        var configGuildSettings = Config.Base.GuildSettings;
-        if (configGuildSettings is null) return;
+        var dp = DailyPatConfig.Base;
+        if (dp is null) return;
         var updated = false;
-        
-        foreach (var guild in configGuildSettings) {
-            if (guild.GuildId is not 805663181170802719) continue; // for testing purposes only
+
+        foreach (var guild in dp.Guilds!) {
+            SocketGuild? socketGuild;
             try {
-                var guildVar = Program.Instance.GetGuild(guild.GuildId);
-                if (guildVar is null) {
+                socketGuild = Program.Instance.Client.GetGuild(guild.GuildId);
+                if (socketGuild is null) {
                     continue;
                 }
             }
             catch {
                 // ignore
+                continue;
             }
             
-            if (guild.DailyPats is null || guild.DailyPats.Count is 0) continue;
-                
-            var guildSettings = Config.GuildSettings(guild.GuildId);
-                
-            if (guild.DailyPatChannelId is 0)
-                continue;
+            if (guild.Users is null || guild.Users.Count is 0) continue;
             
-            if (guildSettings!.DailyPats is null)
-                continue;
-                
-            foreach (var user in guildSettings.DailyPats) {
+            var guildConfig = dp.Guilds.FirstOrDefault(g => g.GuildId == guild.GuildId);
+            if (guildConfig is null || guild.DailyPatChannelId is 0 || guildConfig.Users is null) continue;
+
+            foreach (var user in guildConfig.Users.ToList()) {
                 if (user.SetEpochTime >= currentEpoch)
                     continue;
                 
-                Log.Debug("Trying to daily pat user: {user} ({userId})", user.UserName, user.UserId);
-                var guildUser = Program.Instance.Client.GetGuild(guild.GuildId).GetUser(user.UserId);
-                if (guildUser is null) {
-                    var configDailyPatUser = guildSettings.DailyPats.FirstOrDefault(u => u.UserId.Equals(user.UserId));
-                    guild.DailyPats.Remove(configDailyPatUser!);
-                    Config.Save();
-                    Log.Debug("User not found in guild, skipping and removing from config");
+                var guildUser = socketGuild.GetUser(user.UserId);
+                Logger.Information("Trying to daily pat user: {user} ({userId})", guildUser.Username, user.UserId);
+                var listOfUsersInGuild = socketGuild.Users;
+                var userInGuild = listOfUsersInGuild.FirstOrDefault(u => u.Id == user.UserId);
+                if (userInGuild is null) {
+                    var configDailyPatUser = guildConfig.Users.FirstOrDefault(u => u.UserId.Equals(user.UserId));
+                    guildConfig.Users.Remove(configDailyPatUser!);
+                    DailyPatConfig.Save();
+                    Logger.Information("User not found in guild, skipping and removing from config");
                     continue;
                 }
                 
                 var dbUser = db.Users.AsQueryable().ToList().FirstOrDefault(u => u.UserId.Equals(user.UserId))!;
                 var userPatCount = dbUser.PatCount;
-
+                
                 string patUrl;
                 if (Vars.UseLocalImages)
-                    patUrl = LocalImages.GetRandomPat();
+                    patUrl = LocalImages.GetRandomImage(Category.Pat);
                 else {
                     var flux = await Program.Instance.FluxpointClient!.Gifs.GetPatAsync();
                     patUrl = flux.file;
@@ -67,31 +64,36 @@ public static class DailyPatLoop {
                 
                 var embed = new EmbedBuilder {
                     Title = "Daily Pats!",
-                    Description = $"{user.UserName.ReplaceName(user.UserId)}, You have received your daily pats! You now have {userPatCount + 1} pats!",
+                    Description = $"{userInGuild.Username.ReplaceName(user.UserId)}, You have received your daily pats! You now have {userPatCount + 1} pats!",
                     Color = Colors.Random,
                     ImageUrl = patUrl,
                     Footer = new EmbedFooterBuilder {
-                        Text = $"Powered by {(Vars.UseLocalImages ? "CookieAPI" : "Fluxpoint API")}"
+                        Text = $"Powered by {(Vars.UseLocalImages ? "the community" : "Fluxpoint API")}"
                     }
                 }.Build();
-            
-                var channel = Program.Instance.GetChannel(guild.GuildId, guild.DailyPatChannelId);
                 
+                SocketTextChannel? channel = null;
+
                 try {
-                    await channel.SendMessageAsync(embed: embed);
+                    channel = await Program.Instance.Client.GetChannelAsync(guild.DailyPatChannelId) as SocketTextChannel;
                 }
                 catch {
-                    Log.Debug("Failed to send message to channel, skipping");
-                    continue;
+                    channel = (SocketTextChannel)socketGuild.GetChannel(guild.DailyPatChannelId);
                 }
-                
-                UserControl.AddPatToUser(user.UserId, 1, false);
+                finally {
+                    if (channel is not null)
+                        await channel.SendMessageAsync(embed: embed);
+                    else
+                        Logger.Information("[BAD] Channel not found :: g:{guildID} c:{channelID}", guild.GuildId, guild.DailyPatChannelId);
+                }
+
+                UserControl.AddPatToUser(user.UserId, 1);
                 user.SetEpochTime += 86400;
                 updated = true;
             }
-
-            if (!updated) continue;
-            Config.Save();
         }
+        
+        if (!updated) return;
+        DailyPatConfig.Save();
     }
-}*/
+}

@@ -26,6 +26,7 @@ public static class MarkdownUtils {
     public static string ToHeading1(string text) => $"# {text}";
     public static string ToHeading2(string text) => $"## {text}";
     public static string ToHeading3(string text) => $"### {text}";
+    public static string ToSubtext(string text) => $"-# {text}";
 
     #endregion
 

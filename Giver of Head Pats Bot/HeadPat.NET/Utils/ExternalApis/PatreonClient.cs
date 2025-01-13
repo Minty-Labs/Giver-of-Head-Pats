@@ -1,5 +1,4 @@
-﻿using HeadPats.Configuration;
-using HeadPats.Events;
+using HeadPats.Configuration;
 using HeadPats.Managers;
 using Patreon.Net;
 using Serilog;
@@ -7,14 +6,20 @@ using Serilog;
 namespace HeadPats.Utils.ExternalApis; 
 
 public class Patreon_Client {
-    private static PatreonClient PatreonClient { get; set; }
-    public static List<string>? CutieTier { get; set; }
-    public static List<string>? MegaCutieTier { get; set; }
-    public static List<string>? AdorableTier { get; set; }
-    public static int MemberCount { get; private set; }
-    private static readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
+    public static Patreon_Client Instance { get; set; }
+    private PatreonClient PatreonClient { get; set; }
+    public List<string>? CutieTier { get; private set; }
+    public List<string>? MegaCutieTier { get; private set; }
+    public List<string>? AdorableTier { get; private set; }
+    public int MemberCount { get; private set; }
+    private readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
+    
+    private Patreon_Client() {
+        Instance = this;
+        Init();
+    }
 
-    public static async Task GetPatreonInfo(bool reRun = false) {
+    public async Task GetPatreonInfo(bool reRun = false) {
         // if (reRun && OnBotJoinOrLeave.DoNotRunOnStart) return;
         PatreonClient = new PatreonClient(Config.Base.Api.PatreonClientData.PatreonAccessToken, Config.Base.Api.PatreonClientData.PatreonRefreshToken, Config.Base.Api.PatreonClientData.PatreonClientId);
         
@@ -85,9 +90,9 @@ public class Patreon_Client {
         Logger.Information("Ran PatreonClient successfully.");
     }
 
-    public static void Init() {
-        CutieTier = new List<string>();
-        MegaCutieTier = new List<string>();
-        AdorableTier = new List<string>();
+    private void Init() {
+        CutieTier = [];
+        MegaCutieTier = [];
+        AdorableTier = [];
     }
 }

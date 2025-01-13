@@ -33,9 +33,7 @@ public static class Config {
         var guildParams = new GuildParams {
             GuildName = "Your Guild Name",
             GuildId = 0,
-            BlacklistedCommands = new List<string>(),
-            DailyPatChannelId = 0,
-            DailyPats = new List<DailyPat>(),
+            BlacklistedCommands = [],
             DataDeletionTime = 0
         };
         
@@ -53,7 +51,7 @@ public static class Config {
         
         var api = new Api {
             ApiKeys = apiKeys,
-            ApiMediaUrlBlacklist = new List<string>()
+            ApiMediaUrlBlacklist = []
         };
 
         var config = new Base {
@@ -64,15 +62,16 @@ public static class Config {
             ActivityText = "with Headpats",
             UserStatus = "Online",
             RotatingStatus = rotatingStatus,
-            OwnerIds = new List<ulong>(),
+            OwnerIds = [],
             BotLogsChannel = 0,
             ErrorLogsChannel = 0,
             DmCategory = 0,
-            FullBlacklistOfGuilds = new List<ulong>(),
+            FullBlacklistOfGuilds = [],
             Api = api,
-            Contributors = new List<BotContributor> { contributor },
-            GuildSettings = new List<GuildParams> { guildParams },
-            NameReplacements = new List<NameReplacement> { nameReplacement }
+            Contributors = [ contributor ],
+            GuildSettings = [ guildParams ],
+            NameReplacements = [ nameReplacement ],
+            LocalImagePath = ""
         };
         
         bool update;

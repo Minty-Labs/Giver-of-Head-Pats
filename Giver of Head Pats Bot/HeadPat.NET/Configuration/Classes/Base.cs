@@ -5,18 +5,19 @@ namespace HeadPats.Configuration.Classes;
 public class Base {
     public int ConfigVersion { get; set; }
     [JsonPropertyName("Token")] public string? BotToken { get; set; }
-    [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; set; } = "hp!";
-    [JsonPropertyName("Activity Type")] public string ActivityType { get; set; } = "Playing";
-    [JsonPropertyName("Game")] public string? ActivityText { get; set; }
-    [JsonPropertyName("Online Status")] public string UserStatus { get; set; } = "Online";
-    [JsonPropertyName("Rotating Status")] public RotatingStatus RotatingStatus { get; set; }
-    [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; set; }
-    [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; set; }
-    [JsonPropertyName("Error Logs Channel")] public ulong ErrorLogsChannel { get; set; }
-    [JsonPropertyName("Direct Message Category ID")] public ulong DmCategory { get; set; }
-    [JsonPropertyName("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; set; }
-    [JsonPropertyName("APIs")] public Api Api { get; set; }
-    [JsonPropertyName("Contributors")] public List<BotContributor> Contributors { get; set; }
-    [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; set; }
-    [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; set; }
+    [JsonPropertyName("Non-Slash Prefix")] public string Prefix { get; init; } = "hp!";
+    [JsonPropertyName("Activity Type")] public string ActivityType { get; init; } = "Playing";
+    [JsonPropertyName("Game")] public string? ActivityText { get; init; }
+    [JsonPropertyName("Online Status")] public string UserStatus { get; init; } = "Online";
+    [JsonPropertyName("Rotating Status")] public RotatingStatus RotatingStatus { get; init; }
+    [JsonPropertyName("Owner IDs")] public List<ulong>? OwnerIds { get; init; }
+    [JsonPropertyName("Bot Logs Channel")] public ulong BotLogsChannel { get; init; }
+    [JsonPropertyName("Error Logs Channel")] public ulong ErrorLogsChannel { get; init; }
+    [JsonPropertyName("Direct Message Category ID")] public ulong DmCategory { get; init; }
+    [JsonPropertyName("Full Blacklist of Guilds")] public List<ulong>? FullBlacklistOfGuilds { get; init; }
+    [JsonPropertyName("APIs")] public Api Api { get; init; }
+    [JsonPropertyName("Contributors")] public List<BotContributor> Contributors { get; init; }
+    [JsonPropertyName("Guild Settings")] public List<GuildParams>? GuildSettings { get; init; }
+    [JsonPropertyName("Name Replacements")] public List<NameReplacement>? NameReplacements { get; init; }
+    public string? LocalImagePath { get; set; }
 }

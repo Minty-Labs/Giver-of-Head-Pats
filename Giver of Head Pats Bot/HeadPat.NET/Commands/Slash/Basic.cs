@@ -11,7 +11,7 @@ namespace HeadPats.Commands.Slash;
 public class Basic : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("about", "Shows a message that describes the bot")]
     public async Task About(bool ephemeral = false) {
-        var bot = Program.Instance.GetUser(Vars.IsWindows || Vars.IsDebug ? 495714488897503232 : Vars.ClientId);
+        var bot = await Context.Client.GetUserAsync(Vars.IsWindows || Vars.IsDebug ? 495714488897503232 : Vars.ClientId);
         var embed = new EmbedBuilder {
             Color = Colors.HexToColor("00ffaa"),
             Description = $"Hi, I am the {MarkdownUtils.ToBold("Giver of Head Pats")}. I am here to give others head pats, hug, cuddles, and more. I am always expanding in what I can do. " +
@@ -48,11 +48,11 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
 
         List<string>? cutie = [], megaCutie = [], adorable = [];
         try {
-            cutie = Patreon_Client.CutieTier;
-            megaCutie = Patreon_Client.MegaCutieTier;
-            adorable = Patreon_Client.AdorableTier;
+            cutie = Patreon_Client.Instance.CutieTier;
+            megaCutie = Patreon_Client.Instance.MegaCutieTier;
+            adorable = Patreon_Client.Instance.AdorableTier;
         }
-        catch (Exception ex) {
+        catch {
             // ignored
         }
 
@@ -108,8 +108,8 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 }
                     .AddField("Global Pat Count", $"{db.Overall.AsQueryable().ToList().First().PatCount:N0}")
                     .AddField("Guild Count", $"{Program.Instance.Client.Guilds.Count}")
-                    .AddField("Patreon Pledge Count", $"{Patreon_Client.MemberCount}")
-                    .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
+                    .AddField("Patreon Pledge Count", $"{Patreon_Client.Instance.MemberCount}")
+                    // .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("Start Time", $"{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)
                     .AddField("Discord.NET Version", Vars.DNetVer, true)
@@ -148,6 +148,9 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 }
                 break;
             }
+            case "force download":
+                await Context.Client.DownloadUsersAsync([Context.Guild]);
+                break;
             default:
                 await RespondAsync("Invalid or unknown command", ephemeral: true);
                 break;

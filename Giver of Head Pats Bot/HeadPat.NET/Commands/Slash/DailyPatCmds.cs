@@ -18,13 +18,13 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
                 await RespondAsync("This command is only available in the testing server for the time being.", ephemeral: true);
                 return;
             }
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
-            guildSettings!.DailyPatChannelId = channel.Id;
+            var guildConfig = DailyPatConfig.Base.Guilds!.FirstOrDefault(g => g.GuildId == Context.Guild.Id);
+            guildConfig!.DailyPatChannelId = channel.Id;
             Config.Save();
             await RespondAsync($"Set the daily pat channel to <#{channel.Id}>");
         }
 
-        private static bool _doesItExist(ISnowflakeEntity user, ulong guildId) => Config.GuildSettings(guildId)!.DailyPats!.Any(u => u.UserId == user.Id); 
+        private static bool _doesItExist(ISnowflakeEntity user, ulong guildId) => DailyPatConfig.Base.Guilds!.FirstOrDefault(g => g.GuildId == guildId)!.Users!.Any(u => u.UserId == user.Id);
         
         [SlashCommand("add", "Sets the daily pat to user")]
         public async Task AddDailyPat([Summary("user", "Sets the daily pat to user")] IUser user) {
@@ -43,14 +43,14 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
                 return;
             }
             
-            var dailyPat = new DailyPat {
+            var dailyPat = new DailyPatUser {
                 UserId = user.Id,
-                UserName = user.Username,
                 SetEpochTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() + 86400
             };
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
+            
+            var guildConfig = DailyPatConfig.Base.Guilds!.FirstOrDefault(g => g.GuildId == Context.Guild.Id);
         
-            guildSettings!.DailyPats!.Add(dailyPat);
+            guildConfig!.Users!.Add(dailyPat);
             Config.Save();
             await RespondAsync($"Set daily pat for {user.Username.ReplaceName(user.Id)}.");
         }
@@ -66,10 +66,10 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
                 return;
             }
 
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
+            var guildConfig = DailyPatConfig.Base.Guilds!.FirstOrDefault(g => g.GuildId == Context.Guild.Id);
 
-            var dailyPat = guildSettings!.DailyPats!.Single(u => u.UserId == user.Id);
-            guildSettings!.DailyPats!.Remove(dailyPat);
+            var dailyPat = guildConfig!.Users!.Single(u => u.UserId == user.Id);
+            guildConfig!.Users!.Remove(dailyPat);
             Config.Save();
             await RespondAsync($"Removed daily pat from {user.Username.ReplaceName(user.Id)}.");
         }
@@ -79,9 +79,12 @@ public class DailyPatCmds : InteractionModuleBase<SocketInteractionContext> {
             var sb = new StringBuilder();
             sb.AppendLine("Daily Pats are currently not working. Will be fixed soon.");
             sb.AppendLine("`UserName (ID) - Next Pat Time`");
-            var guildSettings = Config.GuildSettings(Context.Guild.Id);
-            foreach (var dailyPat in guildSettings!.DailyPats!) {
-                sb.AppendLine($"{dailyPat.UserName.ReplaceName(dailyPat.UserId)} ({dailyPat.UserId}) - <t:{dailyPat.SetEpochTime}:>");
+            
+            var guildConfig = DailyPatConfig.Base.Guilds!.FirstOrDefault(g => g.GuildId == Context.Guild.Id);
+            
+            foreach (var dailyPat in guildConfig!.Users!) {
+                var guildUser = Context.Guild.GetUser(dailyPat.UserId);
+                sb.AppendLine($"{guildUser.Username.ReplaceName(dailyPat.UserId)} ({dailyPat.UserId}) - <t:{dailyPat.SetEpochTime}:>");
             }
 
             await RespondAsync(sb.ToString());

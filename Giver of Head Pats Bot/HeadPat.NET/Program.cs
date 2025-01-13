@@ -17,7 +17,6 @@ using HeadPats.Commands.Slash.UserLove.Leaderboards;
 using HeadPats.Events;
 using HeadPats.Managers;
 using HeadPats.Modules;
-using HeadPats.Utils.ExternalApis;
 using Serilog.Core;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
@@ -27,22 +26,20 @@ namespace HeadPats;
 public class Program {
     public static Program Instance { get; private set; }
     private static readonly ILogger Logger = Log.ForContext("SourceContext", "GoHP");
-    private static readonly ILogger UtilLogger = Log.ForContext("SourceContext", "Util");
     
-    public DiscordSocketClient Client { get; set; }
+    public DiscordSocketClient Client { get; private set; }
     private InteractionService GlobalInteractions { get; set; }
     private InteractionService MintyLabsInteractions { get; set; }
     
-    public FluxpointClient FluxpointClient { get; set; }
+    public SocketTextChannel? GeneralLogChannel { get; private set; }
+    public SocketTextChannel? ErrorLogChannel { get; private set; }
+    // public SocketCategoryChannel? DmCategory { get; set; }
     
-    public SocketTextChannel? GeneralLogChannel { get; set; }
-    public SocketTextChannel? ErrorLogChannel { get; set; }
-    public SocketCategoryChannel? DmCategory { get; set; }
-    
-    // private static List<EventModule> _eventModules = [];
-    private static List<BasicModule> _basicModules = [];
+    private readonly List<EventModule> _eventModules = [];
+    private readonly List<BasicModule> _basicModules = [];
     
     // private ModalProcessor _modalProcessor;
+    public FluxpointClient FluxpointClient { get; private set; }
 
     public static async Task Main(string[] args) {
         Vars.IsWindows = Environment.OSVersion.ToString().Contains("windows", StringComparison.CurrentCultureIgnoreCase);
@@ -96,19 +93,22 @@ public class Program {
         Client = new DiscordSocketClient(new DiscordSocketConfig {
             AlwaysDownloadUsers = true,
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-            MessageCacheSize = 2000,
-            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers
+            MessageCacheSize = 1500,
+            GatewayIntents = (GatewayIntents.Guilds | GatewayIntents.GuildMembers | GatewayIntents.AllUnprivileged)
+                             & ~GatewayIntents.GuildPresences & ~GatewayIntents.GuildScheduledEvents & ~GatewayIntents.GuildInvites
         });
         
         GlobalInteractions = new InteractionService(Client, new InteractionServiceConfig {
+            UseCompiledLambda = true,
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-            DefaultRunMode = Discord.Interactions.RunMode.Async,
+            DefaultRunMode = RunMode.Async,
             ThrowOnError = true
         });
         
         MintyLabsInteractions = new InteractionService(Client, new InteractionServiceConfig {
+            UseCompiledLambda = true,
             LogLevel = Vars.IsWindows ? LogSeverity.Verbose : LogSeverity.Debug, //Info,
-            DefaultRunMode = Discord.Interactions.RunMode.Async,
+            DefaultRunMode = RunMode.Async,
             ThrowOnError = true
         });
         
@@ -152,8 +152,24 @@ public class Program {
 
         Client.InteractionCreated += async arg => {
             var iLogger = Log.ForContext("SourceContext", "Interaction");
-            await GlobalInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
-            await MintyLabsInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
+            try {
+                await GlobalInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
+            }
+            catch {
+                if (arg.Type == InteractionType.ApplicationCommand) {
+                    await arg.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+                }
+            }
+
+            try {
+                await MintyLabsInteractions.ExecuteCommandAsync(new SocketInteractionContext(Client, arg), null);
+            }
+            catch {
+                if (arg.Type == InteractionType.ApplicationCommand) {
+                    await arg.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
+                }
+            }
+            
             iLogger.Debug("{0} ran a command in guild {1}", arg.User.Username, arg.GuildId);
         };
         
@@ -165,11 +181,9 @@ public class Program {
         }
         
         // _eventModules.Add(new MessageReceived());
-        // _eventModules.Add(new OnBotJoinOrLeave());
+        _eventModules.Add(new OnBotJoinOrLeave());
         // _eventModules.Add(new UserLeft());
-        // _eventModules.ForEach(module => module.Initialize(Client));
-
-        Patreon_Client.Init();
+        _eventModules.ForEach(module => module.Initialize(Client));
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!))
             FluxpointClient = new FluxpointClient(Vars.Name, Config.Base.Api.ApiKeys.FluxpointApiKey!);
@@ -200,7 +214,7 @@ public class Program {
         Vars.StartTime = DateTime.UtcNow;
         crLogger.Information("Bot Version        = " + Vars.VersionStr);
         crLogger.Information("Process ID         = " + Environment.ProcessId);
-        crLogger.Information("Build Date         = " + Vars.BuildDate);
+        // crLogger.Information("Build Date         = " + Vars.BuildDate);
         crLogger.Information("Current OS         = " + (Vars.IsWindows ? "Windows" : "Linux"));
         crLogger.Information("Token              = " + Config.Base.BotToken!.Redact());
         crLogger.Information("ActivityType       = " + $"{Config.Base.ActivityType}");
@@ -229,35 +243,39 @@ public class Program {
 
         var startEmbed = new EmbedBuilder {
             Color = Vars.IsDebug || Vars.IsWindows ? Colors.Yellow : Colors.HexToColor("9fffe3"),
-            Description = $"Bot has started on {(Vars.IsWindows ? "Windows" : "Linux")}\n",
             Footer = new EmbedFooterBuilder {
                 Text = $"v{Vars.VersionStr}",
                 IconUrl = Client.CurrentUser.GetAvatarUrl()
             },
             Timestamp = DateTime.Now
         }
+            .AddField($"OS {(Vars.IsWindows ? "Windows" : "Linux")}", true)
             .AddField("Guilds", $"{Client.Guilds.Count:N0}", true)
             .AddField("Head Pats", $"{tempPatCount:N0}", true)
-            .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
+            // .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
             .AddField("Start Time", $"{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
-            .AddField("Discord.NET Version", Vars.DNetVer, true)
+            .AddField("Target .NET Version", Vars.TargetDotNetVersion, true)
             .AddField("System .NET Version", Environment.Version, true)
+            .AddField("Discord.NET Version", Vars.DNetVer, true)
             .Build();
         
         if (!Config.Base.ErrorLogsChannel.IsZero()) 
-            ErrorLogChannel = GetChannel(Vars.SupportServerId, Config.Base.ErrorLogsChannel);
-        if (!Config.Base.DmCategory.IsZero())
-            DmCategory = GetCategory(Vars.SupportServerId, Config.Base.DmCategory);
+            ErrorLogChannel = await Client.GetChannelAsync(Config.Base.ErrorLogsChannel) as SocketTextChannel;
+        
+        // if (!Config.Base.DmCategory.IsZero())
+        //     DmCategory = await Client.GetChannelAsync(Config.Base.DmCategory) as SocketCategoryChannel;
+        
         if (!Config.Base.BotLogsChannel.IsZero()) {
-            GeneralLogChannel = GetChannel(Vars.SupportServerId, Config.Base.BotLogsChannel);
+            GeneralLogChannel = await Client.GetChannelAsync(Config.Base.BotLogsChannel) as SocketTextChannel;
             await GeneralLogChannel!.SendMessageAsync(embed: startEmbed);
         }
-        // if (_eventModules.Count != 0) {
-        //     foreach (var module in _eventModules) {
-        //         await module.OnSessionCreatedTask();
-        //         module.OnSessionCreated();
-        //     }
-        // }
+        
+        if (_eventModules.Count is not 0) {
+            foreach (var module in _eventModules) {
+                await module.OnSessionCreatedTask();
+                module.OnSessionCreated();
+            }
+        }
         else await DNetToConsole.SendErrorToLoggingChannelAsync("Event Module Load Fail", obj: "No Event Modules were found or loaded!!");
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
@@ -271,54 +289,10 @@ public class Program {
             crLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
         }
         
+        await Client.SetStatusAsync(UserStatus.Online);
+        await Client.SetGameAsync("with love", type: ActivityType.Competing);
+        
         await Task.Delay(TimeSpan.FromSeconds(5));
         OnBotJoinOrLeave.DoNotRunOnStart = false;
-    }
-
-    public SocketTextChannel? GetChannel(ulong guildId, ulong id) {
-        var guild = Client.GetGuild(guildId);
-        if (guild is null) {
-            UtilLogger.Error("Selected guild {guildId} does not exist!", guildId);
-            return null;
-        }
-        if (guild.GetTextChannel(id) is { } channel) return channel;
-        UtilLogger.Error("Selected channel {id} does not exist!", id);
-        return null;
-    }
-    
-    public SocketUser? GetUser(ulong id) {
-        if (Client.GetUser(id) is { } user) return user;
-        UtilLogger.Error("Selected user {id} does not exist!", id);
-        return null;
-    }
-    
-    public SocketGuild? GetGuild(ulong id) {
-        if (Client.GetGuild(id) is { } guild) return guild;
-        UtilLogger.Error("Selected guild {id} does not exist!", id);
-        return null;
-    }
-    
-    public SocketUser? GetGuildUser(ulong guildId, ulong userId) {
-        var guild = Client.GetGuild(guildId);
-        if (guild is null) {
-            UtilLogger.Error("Selected guild {guildId} does not exist! <GetGuildUser>", guildId);
-            return null;
-        }
-        guild.DownloadUsersAsync().GetAwaiter().GetResult();
-        var user = guild.GetUser(userId);
-        if (user is not null) return user;
-        UtilLogger.Error("Selected user {userId} does not exist in guild {guildName} ({guildId})! <GetGuildUser>", userId, guild.Name, guild.Id);
-        return null;
-    }
-    
-    public SocketCategoryChannel? GetCategory(ulong guildId, ulong id) {
-        var guild = Client.GetGuild(guildId);
-        if (guild is null) {
-            UtilLogger.Error("Selected guild {guildId} does not exist!", guildId);
-            return null;
-        }
-        if (guild.GetCategoryChannel(id) is { } category) return category;
-        UtilLogger.Error("Selected category {id} does not exist!", id);
-        return null;
     }
 }

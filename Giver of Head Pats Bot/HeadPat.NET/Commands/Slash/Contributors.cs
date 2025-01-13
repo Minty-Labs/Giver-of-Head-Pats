@@ -52,7 +52,7 @@ public class Contributors : InteractionModuleBase<SocketInteractionContext> {
         
         [SlashCommand("list", "Lists the Contributors of the bot")]
         public async Task ListContributors() {
-            var bot = Program.Instance.GetUser(Vars.ClientId);
+            var bot = await Context.Client.GetUserAsync(Vars.ClientId);
             var embed = new EmbedBuilder {
                 Title = "Contributors",
                 Description = "These are the Contributors of this bot's project, as I must give credit where its due.",

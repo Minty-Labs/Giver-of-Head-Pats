@@ -2,7 +2,7 @@
 namespace HeadPats.Configuration.Classes;
 
 public class Api {
-    [JsonPropertyName("API Keys")] public ApiKeys ApiKeys { get; set; }
+    [JsonPropertyName("API Keys")] public ApiKeys ApiKeys { get; init; }
     [JsonPropertyName("Patreon API Data")] public PatreonClientData PatreonClientData { get; set; }
     [JsonPropertyName("API Media URL Blacklist")] public List<string>? ApiMediaUrlBlacklist { get; set; }
 }
