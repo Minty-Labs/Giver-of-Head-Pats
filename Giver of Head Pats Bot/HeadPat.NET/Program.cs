@@ -249,10 +249,10 @@ public class Program {
             },
             Timestamp = DateTime.Now
         }
-            .AddField($"OS {(Vars.IsWindows ? "Windows" : "Linux")}", true)
+            .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)
             .AddField("Guilds", $"{Client.Guilds.Count:N0}", true)
             .AddField("Head Pats", $"{tempPatCount:N0}", true)
-            // .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
+            // .AddField("Build Time", DateTime.TryParse(Vars.BuildTime, out var buildTime) ? $"{buildTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{buildTime.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}" : "Unknown")
             .AddField("Start Time", $"{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{DateTime.UtcNow.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
             .AddField("Target .NET Version", Vars.TargetDotNetVersion, true)
             .AddField("System .NET Version", Environment.Version, true)
@@ -288,9 +288,6 @@ public class Program {
         catch (Exception e) {
             crLogger.Error("Failed to register Owner slash commands for guild {0}\n{err}", Vars.SupportServerId, e);
         }
-        
-        await Client.SetStatusAsync(UserStatus.Online);
-        await Client.SetGameAsync("with love", type: ActivityType.Competing);
         
         await Task.Delay(TimeSpan.FromSeconds(5));
         OnBotJoinOrLeave.DoNotRunOnStart = false;

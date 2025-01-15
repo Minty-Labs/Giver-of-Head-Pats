@@ -150,8 +150,8 @@ public class ConfigControl : InteractionModuleBase<SocketInteractionContext> {
                     await RespondAsync(sb.ToString());
                     return;
                 case RotatingStatusPreAction.Next: {
-                    await using var db = new Context();
-                    await Managers.Loops.RotatingStatus.Update(db);
+                    // await using var db = new Context();
+                    await Managers.Loops.RotatingStatus.Update(/*db*/);
                     await RespondAsync("Skipped to next status.");
                     return;
                 }

@@ -6,11 +6,11 @@ namespace HeadPats;
 public static class Vars {
     public static string DNetVer { get; } = Assembly.GetAssembly(typeof(DiscordSocketClient))!.GetName().Version!.ToString(3);
     public const string Name = "Giver of Head Pats";
-    private static readonly Version VersionObj = new (5, 3, 4); // Major.Feature.Minor
+    private static readonly Version VersionObj = new (5, 3, 5); // Major.Feature.Minor
     public const ulong ClientId = 489144212911030304;
     public const int TargetConfigVersion = 2;
     public static readonly string VersionStr = VersionObj.ToString(3) + (IsDebug ? "-dev" : "");
-    // public static DateTime BuildTime => DateTime.Parse(Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyMetadataAttribute>()?.Value!);
+    // public static string? BuildTime => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyMetadataAttribute>()?.Value!;
     public const bool IsDebug = false;
     // public static string BuildDate { get; } = $"{BuildTime:F}";
     public static DateTime StartTime { get; set; }
@@ -20,5 +20,5 @@ public static class Vars {
     public const ulong SupportServerId = 1083619886980403272;
     public static bool UseLocalImages { get; set; } = true;
     public static readonly string BotUserAgent = $"Mozilla/5.0 {(IsWindows ? "(Windows NT 10.0; Win64; x64; rv:115.0)" : "(X11; Linux x86_64)")} (compatible; {Name}/{VersionObj.ToString(3)}; +https://discordapp.com)";
-    public static readonly string TargetDotNetVersion = "8.0.11";
+    public static readonly string TargetDotNetVersion = "9.0.1";
 }
