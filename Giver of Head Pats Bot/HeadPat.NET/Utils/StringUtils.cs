@@ -253,47 +253,6 @@ public static class StringUtils {
         return messages.Where(m => !string.IsNullOrEmpty(m)).ToList();
     }
 
-
-    /// <summary>
-    /// Get Discord ActivityType from string
-    /// </summary>
-    /// <param name="type">activity as string</param>
-    /// <returns>DSharpPlus.Entities.ActivityType</returns>
-    public static ActivityType GetActivityType(string type) {
-        return type.ToLower() switch {
-            "playing" => ActivityType.Playing,
-            "listening" => ActivityType.Listening,
-            "watching" => ActivityType.Watching,
-            "streaming" => ActivityType.Streaming,
-            "competing" => ActivityType.Competing,
-            "play" => ActivityType.Playing,
-            "listen" => ActivityType.Listening,
-            "watch" => ActivityType.Watching,
-            "stream" => ActivityType.Streaming,
-            "other" => ActivityType.CustomStatus,
-            "compete" => ActivityType.Competing,
-            "custom" => ActivityType.CustomStatus,
-            _ => ActivityType.CustomStatus
-        };
-    }
-
-    /// <summary>
-    /// Get Discord UserStatus from string
-    /// </summary>
-    /// <param name="status">status as string</param>
-    /// <returns>DSharpPlus.Entities.UserStatus</returns>
-    public static UserStatus GetUserStatus(string status) {
-        return status.ToLower() switch {
-            "online" => UserStatus.Online,
-            "idle" => UserStatus.Idle,
-            "dnd" => UserStatus.DoNotDisturb,
-            "do_not_disturb" => UserStatus.DoNotDisturb,
-            "invisible" => UserStatus.Invisible,
-            "offline" => UserStatus.Invisible,
-            _ => UserStatus.Online
-        };
-    }
-
     /// <summary>
     /// Get a specified number of characters from the left side of a string
     /// </summary>

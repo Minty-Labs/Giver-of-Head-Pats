@@ -15,12 +15,12 @@ public class LoopingTaskScheduler : BasicModule {
     private static async Task Scheduler() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
-            .UseDefaultThreadPool(x => x.MaxConcurrency = 5)
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 6)
             .BuildScheduler();
         await scheduler.Start();
         
         // 1
-        /*var rotatingStatusLoop = JobBuilder.Create<RotatingStatusJob>().Build();
+        var rotatingStatusLoop = JobBuilder.Create<RotatingStatusJob>().Build();
         var rotatingStatusLoopTrigger = TriggerBuilder.Create()
             .WithIdentity("RotatingStatusLoop", Vars.Name)
             .StartNow()
@@ -28,7 +28,7 @@ public class LoopingTaskScheduler : BasicModule {
                 .WithIntervalInMinutes(10)
                 .RepeatForever())
             .Build();
-        await scheduler.ScheduleJob(rotatingStatusLoop, rotatingStatusLoopTrigger);*/
+        await scheduler.ScheduleJob(rotatingStatusLoop, rotatingStatusLoopTrigger);
         
         // 2
         var guildDataDeletion = JobBuilder.Create<DataDeletionJob>().Build();

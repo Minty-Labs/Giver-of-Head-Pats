@@ -5,8 +5,8 @@ using Serilog;
 
 namespace HeadPats.Utils.ExternalApis; 
 
-public class Patreon_Client {
-    public static Patreon_Client Instance { get; set; }
+public class PatronLogic {
+    public static PatronLogic Instance { get; private set; }
     private PatreonClient PatreonClient { get; set; }
     public List<string>? CutieTier { get; private set; }
     public List<string>? MegaCutieTier { get; private set; }
@@ -14,12 +14,12 @@ public class Patreon_Client {
     public int MemberCount { get; private set; }
     private readonly ILogger Logger = Log.ForContext("SourceContext", "PatreonClient");
     
-    private Patreon_Client() {
+    private PatronLogic() {
         Instance = this;
         Init();
     }
 
-    public async Task GetPatreonInfo(bool reRun = false) {
+    public async Task GetPatronInfo(bool reRun = false) {
         // if (reRun && OnBotJoinOrLeave.DoNotRunOnStart) return;
         PatreonClient = new PatreonClient(Config.Base.Api.PatreonClientData.PatreonAccessToken, Config.Base.Api.PatreonClientData.PatreonRefreshToken, Config.Base.Api.PatreonClientData.PatreonClientId);
         
