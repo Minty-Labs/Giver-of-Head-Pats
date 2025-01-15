@@ -1,5 +1,6 @@
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Data.Models;
@@ -93,17 +94,32 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomImage(Category.Pat);
-                // logger.Debug($"THE IMAGE IS: {image}");
-                if (image.Equals(_tempPatGifUrl)) {
-                    logger.Debug("Image is same as previous image");
-                    goto start;
+                try {
+                    var image = LocalImages.GetRandomImage(Category.Pat);
+                    // logger.Debug($"THE IMAGE IS: {image}");
+                    if (image.Equals(_tempPatGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start;
+                    }
+
+                    _tempPatGifUrl = image;
+
+                    e.WithImageUrl(image);
+                    e.WithFooter($"Powered by the community | You have {newNumber:N0} pats");
                 }
+                catch {
+                    start2catch:
+                    var image = (await Program.Instance.FluxpointClient!.Gifs.GetPatAsync()).file;
+                    if (image.Equals(_tempPatGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start2catch;
+                    }
 
-                _tempPatGifUrl = image;
+                    _tempPatGifUrl = image;
 
-                e.WithImageUrl(image);
-                e.WithFooter($"Powered by the community | You have {newNumber:N0} pats");
+                    e.WithImageUrl(image);
+                    e.WithFooter($"Powered by Fluxpoint API | You have {newNumber:N0} pats");
+                }
             }
             else {
                 start2:
@@ -189,16 +205,31 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomImage(Category.Hug);
-                if (image.Equals(_tempHugGifUrl)) {
-                    logger.Debug("Image is same as previous image");
-                    goto start;
+                try {
+                    var image = LocalImages.GetRandomImage(Category.Hug);
+                    if (image.Equals(_tempHugGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start;
+                    }
+
+                    _tempHugGifUrl = image;
+
+                    e.WithImageUrl(image);
+                    e.WithFooter("Powered by the community");
                 }
+                catch {
+                    start2catch:
+                    var image = (await Program.Instance.FluxpointClient!.Gifs.GetHugAsync()).file;
+                    if (image.Equals(_tempPatGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start2catch;
+                    }
 
-                _tempHugGifUrl = image;
+                    _tempHugGifUrl = image;
 
-                e.WithImageUrl(image);
-                e.WithFooter("Powered by the community");
+                    e.WithImageUrl(image);
+                    e.WithFooter("Powered by Fluxpoint API");
+                }
             }
             else {
                 start2:
@@ -249,16 +280,31 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomImage(Category.Kiss);
-                if (image.Equals(_tempKissGifUrl)) {
-                    logger.Debug("Image is same as previous image");
-                    goto start;
+                try {
+                    var image = LocalImages.GetRandomImage(Category.Kiss);
+                    if (image.Equals(_tempKissGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start;
+                    }
+
+                    _tempKissGifUrl = image;
+
+                    e.WithImageUrl(image);
+                    e.WithFooter("Powered by the community");
                 }
+                catch {
+                    start2catch:
+                    var image = (await Program.Instance.FluxpointClient!.Gifs.GetKissAsync()).file;
+                    if (image.Equals(_tempPatGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start2catch;
+                    }
 
-                _tempKissGifUrl = image;
+                    _tempKissGifUrl = image;
 
-                e.WithImageUrl(image);
-                e.WithFooter("Powered by the community");
+                    e.WithImageUrl(image);
+                    e.WithFooter("Powered by Fluxpoint API");
+                }
             }
             else {
                 start2:
@@ -309,16 +355,31 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomImage(Category.Slap);
-                if (image.Equals(_tempSlapGifUrl)) {
-                    logger.Debug("Image is same as previous image");
-                    goto start;
+                try {
+                    var image = LocalImages.GetRandomImage(Category.Slap);
+                    if (image.Equals(_tempSlapGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start;
+                    }
+
+                    _tempSlapGifUrl = image;
+
+                    e.WithImageUrl(image);
+                    e.WithFooter("Powered by the community");
                 }
+                catch {
+                    start2catch:
+                    var image = (await Program.Instance.FluxpointClient!.Gifs.GetSlapAsync()).file;
+                    if (image.Equals(_tempPatGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start2catch;
+                    }
 
-                _tempSlapGifUrl = image;
+                    _tempSlapGifUrl = image;
 
-                e.WithImageUrl(image);
-                e.WithFooter("Powered by the community");
+                    e.WithImageUrl(image);
+                    e.WithFooter("Powered by Fluxpoint API");
+                }
             }
             else {
                 start2:
@@ -401,16 +462,21 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
             if (Vars.UseLocalImages) {
                 start:
-                var image = LocalImages.GetRandomImage(Category.Cookie);
-                if (image.Equals(_tempCookieGifUrl)) {
-                    logger.Debug("Image is same as previous image");
-                    goto start;
+                try {
+                    var image = LocalImages.GetRandomImage(Category.Cookie);
+                    if (image.Equals(_tempCookieGifUrl)) {
+                        logger.Debug("Image is same as previous image");
+                        goto start;
+                    }
+
+                    _tempCookieGifUrl = image;
+
+                    e.WithImageUrl(image);
+                    e.WithFooter($"Powered by the community | You have {newNumber:N0} cookies");
                 }
-
-                _tempCookieGifUrl = image;
-
-                e.WithImageUrl(image);
-                e.WithFooter($"Powered by the community | You have {newNumber:N0} cookies");
+                catch {
+                    e.WithFooter($"You have {newNumber:N0} cookies");
+                }
             }
             else 
                 e.WithFooter($"You have {newNumber:N0} cookies");
