@@ -1,5 +1,6 @@
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
+using HeadPats.Commands.Preexecution;
 using HeadPats.Configuration;
 using HeadPats.Data;
 using HeadPats.Utils;
@@ -48,9 +49,9 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
 
         List<string>? cutie = [], megaCutie = [], adorable = [];
         try {
-            cutie = Patreon_Client.Instance.CutieTier;
-            megaCutie = Patreon_Client.Instance.MegaCutieTier;
-            adorable = Patreon_Client.Instance.AdorableTier;
+            cutie = PatronLogic.Instance.CutieTier;
+            megaCutie = PatronLogic.Instance.MegaCutieTier;
+            adorable = PatronLogic.Instance.AdorableTier;
         }
         catch {
             // ignored
@@ -108,7 +109,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 }
                     .AddField("Global Pat Count", $"{db.Overall.AsQueryable().ToList().First().PatCount:N0}")
                     .AddField("Guild Count", $"{Program.Instance.Client.Guilds.Count}")
-                    .AddField("Patreon Pledge Count", $"{Patreon_Client.Instance.MemberCount}")
+                    .AddField("Patreon Pledge Count", $"{PatronLogic.Instance.MemberCount}")
                     // .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("Start Time", $"{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)

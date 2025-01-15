@@ -49,45 +49,35 @@ public class PatronLogic {
         }
         
         var members = await PatreonClient.GetCampaignMembersAsync(cId, Includes.All).ConfigureAwait(false);
-        var memberId = string.Empty;
-        if (string.IsNullOrWhiteSpace(memberId)) {
-            if (reRun && MemberCount != members.Meta.Pagination.Total) {
-                await DNetToConsole.SendMessageToLoggingChannelAsync("Patron count changed!", line2: $"New count: {members.Meta.Pagination.Total}");
-            }
-            Logger.Information("Total number of {0} members found.", members.Meta.Pagination.Total);
-            MemberCount = members.Meta.Pagination.Total;
+        
+        if (reRun && MemberCount != members.Meta.Pagination.Total) {
+            await DNetToConsole.SendMessageToLoggingChannelAsync("Patron count changed!", line2: $"New count: {members.Meta.Pagination.Total}");
+        }
+        
+        Logger.Information("Total number of {0} members found.", members.Meta.Pagination.Total);
+        MemberCount = members.Meta.Pagination.Total;
             
-            await foreach (var member in members) {
-                Logger.Information("Member {0}: {1} ({2}) has pledged {3} cents total with status {4}.", member.Id, member.FullName, member.Email, member.LifetimeSupportCents, member.PatronStatus);
-                memberId = member.Id;
-                var tier = member.Relationships.Tiers.FirstOrDefault(t => t.Id.Equals(member.Id));
-                switch (tier!.Title.ToLower()) {
-                    case "cutie":
-                        if (CutieTier is null)
-                            CutieTier.Add(member.Relationships.User.FirstName);
-                        else if (!CutieTier.Contains(member.Relationships.User.FirstName))
-                            CutieTier.Add(member.Relationships.User.FirstName);
-                        break;
-                    case "mega cutie":
-                        if (MegaCutieTier is null)
-                            MegaCutieTier.Add(member.Relationships.User.FirstName);
-                        else if (!MegaCutieTier.Contains(member.Relationships.User.FirstName))
-                            MegaCutieTier.Add(member.Relationships.User.FirstName);
-                        break;
-                    case "adorable":
-                        if (AdorableTier is null)
-                            AdorableTier.Add(member.Relationships.User.FirstName);
-                        else if (!AdorableTier.Contains(member.Relationships.User.FirstName))
-                            AdorableTier.Add(member.Relationships.User.FirstName);
-                        break;
-                    default: throw new Exception("Invalid tier.");
-                }
+        await foreach (var member in members) {
+            Logger.Information("Member {0}: {1} ({2}) has pledged {3} cents total with status {4}.", member.Id, member.FullName, member.Email, member.LifetimeSupportCents, member.PatronStatus);
+            var tier = member.Relationships.Tiers.FirstOrDefault(t => t.Id.Equals(member.Id));
+            switch (tier!.Title.ToLower()) {
+                case "cutie":
+                    if (CutieTier is not null && !CutieTier.Contains(member.Relationships.User.FirstName))
+                        CutieTier.Add(member.Relationships.User.FirstName);
+                    break;
+                case "mega cutie":
+                    if (MegaCutieTier is not null && !MegaCutieTier.Contains(member.Relationships.User.FirstName))
+                        MegaCutieTier.Add(member.Relationships.User.FirstName);
+                    break;
+                case "adorable":
+                    if (AdorableTier is not null && !AdorableTier.Contains(member.Relationships.User.FirstName))
+                        AdorableTier.Add(member.Relationships.User.FirstName);
+                    break;
+                default: throw new Exception("Invalid tier.");
             }
         }
-        else {
-            Logger.Information("No members found.");
-        }
-        Logger.Information("Ran PatreonClient successfully.");
+        
+        Logger.Information("Ran PatreonClient from PatronLogic successfully.");
     }
 
     private void Init() {

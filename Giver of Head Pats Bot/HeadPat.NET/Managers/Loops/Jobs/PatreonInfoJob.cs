@@ -7,7 +7,7 @@ public class PatreonInfoJob : IJob {
     private int _numberOfPatreonErrored;
     public async Task Execute(IJobExecutionContext context) {
         try {
-            await Patreon_Client.Instance.GetPatreonInfo(true);
+            await PatronLogic.Instance.GetPatronInfo(true);
         }
         catch (Exception err) {
             if (_numberOfPatreonErrored >= 5) return;
