@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Interactions;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -14,7 +14,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
     public class Commands : InteractionModuleBase<SocketInteractionContext> {
         private static string? _tempPatGifUrl, _tempHugGifUrl, _tempSlapGifUrl, _tempCookieGifUrl, _tempKissGifUrl;
 
-        [SlashCommand("pat", "Pat a user")]
+        [SlashCommand("pat", "Pat a user"), RateLimit(5, 10)]
         public async Task Pat([Summary("user", "User to pat")] IGuildUser user,
             [Summary("params", "Extra parameters (for the bot owner)")]
             string extraParams = "") {
@@ -157,7 +157,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             logger.Debug($"Total Pat amount Given: {numberOfPats}");
         }
 
-        [SlashCommand("hug", "Hug a user"), IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall), CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel)]
+        [SlashCommand("hug", "Hug a user"), RateLimit(5, 10)]
         public async Task Hug([Summary("User", "User to hug")] IUser user) {
             var logger = Log.ForContext("SourceContext", "Command - Hug");
             if (Context.Guild is not null) {
@@ -219,7 +219,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             await RespondAsync(embed: e.Build());
         }
 
-        [SlashCommand("kiss", "Kiss a user")]
+        [SlashCommand("kiss", "Kiss a user"), RateLimit(5, 10)]
         public async Task Kiss([Summary("kiss", "User to kiss")] IGuildUser user) {
             var logger = Log.ForContext("SourceContext", "Command - Kiss");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
@@ -279,7 +279,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             await RespondAsync(embed: e.Build());
         }
 
-        [SlashCommand("slap", "Slap a user")]
+        [SlashCommand("slap", "Slap a user"), RateLimit(5, 10)]
         public async Task Slap([Summary("slap", "User to slap")] IGuildUser user) {
             var logger = Log.ForContext("SourceContext", "Command - Slap");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);
@@ -339,7 +339,7 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
             await RespondAsync(embed: e.Build());
         }
 
-        [SlashCommand("cookie", "Give a user a cookie")]
+        [SlashCommand("cookie", "Give a user a cookie"), RateLimit(5, 10)]
         public async Task Cookie([Summary("Cookie", "User to give cookie")] IGuildUser user) {
             var logger = Log.ForContext("SourceContext", "Command - Cookie");
             var hasCommandBlacklist = Config.Base.FullBlacklistOfGuilds!.Contains(Context.Guild.Id);

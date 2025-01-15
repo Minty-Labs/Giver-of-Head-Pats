@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Interactions;
 using HeadPats.Configuration;
 using HeadPats.Data;
@@ -90,7 +90,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("flipcoin", "Flip a coin")]
     public async Task FlipCoin(bool ephemeral = false) => await RespondAsync($"The coin flip result is **{(new Random().Next(0, 1) == 0 ? "Heads" : "Tails")}**", ephemeral: ephemeral);
 
-    [SlashCommand("opencmd", "Runs very specific commands set by the owner")]
+    [SlashCommand("opencmd", "Runs very specific commands set by the owner"), RateLimit(30, 5)]
     public async Task OpenCommand([Summary("Command", "The command to run")] string command) {
         switch (command) {
             case "stats":
@@ -148,8 +148,9 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 }
                 break;
             }
-            case "force download":
-                await Context.Client.DownloadUsersAsync([Context.Guild]);
+            case "force download users":
+                if (Context.User.Id is 167335587488071682)
+                    await Context.Client.DownloadUsersAsync([Context.Guild]);
                 break;
             default:
                 await RespondAsync("Invalid or unknown command", ephemeral: true);
