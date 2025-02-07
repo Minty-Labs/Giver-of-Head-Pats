@@ -35,7 +35,7 @@ public class Program {
     public SocketTextChannel? ErrorLogChannel { get; private set; }
     // public SocketCategoryChannel? DmCategory { get; set; }
     
-    private readonly List<EventModule> _eventModules = [];
+    // private readonly List<EventModule> _eventModules = [];
     private readonly List<BasicModule> _basicModules = [];
     
     // private ModalProcessor _modalProcessor;
@@ -181,9 +181,9 @@ public class Program {
         }
         
         // _eventModules.Add(new MessageReceived());
-        _eventModules.Add(new OnBotJoinOrLeave());
+        // _eventModules.Add(new OnBotJoinOrLeave());
         // _eventModules.Add(new UserLeft());
-        _eventModules.ForEach(module => module.Initialize(Client));
+        // _eventModules.ForEach(module => module.Initialize(Client));
         
         if (!string.IsNullOrWhiteSpace(Config.Base.Api.ApiKeys.FluxpointApiKey!))
             FluxpointClient = new FluxpointClient(Vars.Name, Config.Base.Api.ApiKeys.FluxpointApiKey!);
@@ -270,13 +270,13 @@ public class Program {
             await GeneralLogChannel!.SendMessageAsync(embed: startEmbed);
         }
         
-        if (_eventModules.Count is not 0) {
-            foreach (var module in _eventModules) {
-                await module.OnSessionCreatedTask();
-                module.OnSessionCreated();
-            }
-        }
-        else await DNetToConsole.SendErrorToLoggingChannelAsync("Event Module Load Fail", obj: "No Event Modules were found or loaded!!");
+        // if (_eventModules.Count is not 0) {
+        //     foreach (var module in _eventModules) {
+        //         await module.OnSessionCreatedTask();
+        //         module.OnSessionCreated();
+        //     }
+        // }
+        // else await DNetToConsole.SendErrorToLoggingChannelAsync("Event Module Load Fail", obj: "No Event Modules were found or loaded!!");
         
         await GlobalInteractions.RegisterCommandsGloballyAsync();
         crLogger.Information("Registered global slash commands.");
