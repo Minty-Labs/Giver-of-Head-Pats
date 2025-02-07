@@ -15,7 +15,7 @@ public class LoopingTaskScheduler : BasicModule {
     private static async Task Scheduler() {
         Logger.Information("Creating and Building...");
         var scheduler = await SchedulerBuilder.Create()
-            .UseDefaultThreadPool(x => x.MaxConcurrency = 6)
+            .UseDefaultThreadPool(x => x.MaxConcurrency = 5)
             .BuildScheduler();
         await scheduler.Start();
         
@@ -53,7 +53,7 @@ public class LoopingTaskScheduler : BasicModule {
         await scheduler.ScheduleJob(dailyPat, dailyPatTrigger);*/
         
         // 4
-        var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
+        /*var patreonInfo = JobBuilder.Create<PatreonInfoJob>().Build();
         var patreonInfoTrigger = TriggerBuilder.Create()
             .WithIdentity("PatreonInfo", Vars.Name)
             .StartNow()
@@ -61,7 +61,7 @@ public class LoopingTaskScheduler : BasicModule {
                 .WithIntervalInHours(24)
                 .RepeatForever())
             .Build();
-        await scheduler.ScheduleJob(patreonInfo, patreonInfoTrigger);
+        await scheduler.ScheduleJob(patreonInfo, patreonInfoTrigger);*/
         
         // 5
         var configSaveLoopJob = JobBuilder.Create<ConfigSaveJob>().Build();

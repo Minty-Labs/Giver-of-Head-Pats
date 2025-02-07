@@ -43,9 +43,9 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
             Footer = new EmbedFooterBuilder { Text = "If you would like to be added to this list, please contact me." }
         };
 
-        Embed[] embeds;
+        Embed[] embeds =
 
-        Config.Base.Contributors!.ForEach(contributor => embed2.AddField(contributor.UserName, contributor.Info!.Replace("<br>", "\n")));
+        /*Config.Base.Contributors!.ForEach(contributor => embed2.AddField(contributor.UserName, contributor.Info!.Replace("<br>", "\n")));
 
         List<string>? cutie = [], megaCutie = [], adorable = [];
         try {
@@ -76,8 +76,8 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
             embeds = [embed.Build(), embed2.Build(), supporterEmbed.Build()];
         }
         else {
-            embeds = [embed.Build(), embed2.Build()];
-        }
+            embeds =*/ [embed.Build(), embed2.Build()];
+        //}
 
         await RespondAsync(embeds: embeds, ephemeral: ephemeral);
     }
@@ -89,7 +89,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
     public async Task Invite() => await RespondAsync($"Want to invite me to your guild? Add me here:\n{Vars.InviteLink}", ephemeral: true);
 
     [SlashCommand("flipcoin", "Flip a coin")]
-    public async Task FlipCoin(bool ephemeral = false) => await RespondAsync($"The coin flip result is **{(new Random().Next(0, 1) == 0 ? "Heads" : "Tails")}**", ephemeral: ephemeral);
+    public async Task FlipCoin(bool ephemeral = false) => await RespondAsync($"The coin flip result is **{(new Random().Next(0, 99) > 50 ? "Heads" : "Tails")}**", ephemeral: ephemeral);
 
     [SlashCommand("opencmd", "Runs very specific commands set by the owner"), RateLimit(30, 5)]
     public async Task OpenCommand([Summary("Command", "The command to run")] string command) {
@@ -109,7 +109,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 }
                     .AddField("Global Pat Count", $"{db.Overall.AsQueryable().ToList().First().PatCount:N0}")
                     .AddField("Guild Count", $"{Program.Instance.Client.Guilds.Count}")
-                    .AddField("Patreon Pledge Count", $"{PatronLogic.Instance.MemberCount}")
+                    // .AddField("Patreon Pledge Count", $"{PatronLogic.Instance.MemberCount}")
                     // .AddField("Build Time", $"{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.BuildTime.ToUniversalTime().ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("Start Time", $"{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.LongDateTime)}\n{Vars.StartTime.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)}")
                     .AddField("OS", Vars.IsWindows ? "Windows" : "Linux", true)
@@ -121,7 +121,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                 await RespondAsync(embed: embed.Build());
                 break;
             }
-            case "peppermint":
+            /*case "peppermint":
             case "mintcraft":
             case "pepper mint":
             case "mint craft":
@@ -148,7 +148,7 @@ public class Basic : InteractionModuleBase<SocketInteractionContext> {
                     await RespondAsync("Failed to get server status", ephemeral: true);
                 }
                 break;
-            }
+            }*/
             case "force download users":
                 if (Context.User.Id is 167335587488071682)
                     await Context.Client.DownloadUsersAsync([Context.Guild]);

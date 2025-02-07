@@ -1,4 +1,4 @@
-using HeadPats.Configuration;
+/*using HeadPats.Configuration;
 using HeadPats.Managers;
 using Patreon.Net;
 using Serilog;
@@ -85,4 +85,4 @@ public class PatronLogic {
         MegaCutieTier = [];
         AdorableTier = [];
     }
-}
+}*/

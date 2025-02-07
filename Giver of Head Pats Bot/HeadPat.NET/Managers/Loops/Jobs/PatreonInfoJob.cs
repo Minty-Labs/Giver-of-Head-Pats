@@ -1,4 +1,4 @@
-﻿using HeadPats.Utils.ExternalApis;
+﻿/*using HeadPats.Utils.ExternalApis;
 using Quartz;
 
 namespace HeadPats.Managers.Loops.Jobs;
@@ -15,4 +15,4 @@ public class PatreonInfoJob : IJob {
             _numberOfPatreonErrored++;
         }
     }
-}
+}*/

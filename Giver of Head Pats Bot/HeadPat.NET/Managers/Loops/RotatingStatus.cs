@@ -36,7 +36,7 @@ public static class StatusUtils {
             .Replace("%guildCount%", $"{Program.Instance.Client.Guilds.Count}")
             .Replace("%users%", $"{Program.Instance.Client.Guilds.Sum(guild => guild.MemberCount):N0}")
             .Replace("%os%", Vars.IsWindows ? "Windows" : "Linux")
-            .Replace("%patreonCount%", $"{PatronLogic.Instance.MemberCount:N0}")
+            //.Replace("%patreonCount%", $"{PatronLogic.Instance.MemberCount:N0}")
             ;
     }
     
