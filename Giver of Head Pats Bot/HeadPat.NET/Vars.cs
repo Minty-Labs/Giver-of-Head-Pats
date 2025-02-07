@@ -6,7 +6,7 @@ namespace HeadPats;
 public static class Vars {
     public static string DNetVer { get; } = Assembly.GetAssembly(typeof(DiscordSocketClient))!.GetName().Version!.ToString(3);
     public const string Name = "Giver of Head Pats";
-    private static readonly Version VersionObj = new (5, 3, 5); // Major.Feature.Minor
+    private static readonly Version VersionObj = new (5, 3, 7); // Major.Feature.Minor
     public const ulong ClientId = 489144212911030304;
     public const int TargetConfigVersion = 2;
     public static readonly string VersionStr = VersionObj.ToString(3) + (IsDebug ? "-dev" : "");
