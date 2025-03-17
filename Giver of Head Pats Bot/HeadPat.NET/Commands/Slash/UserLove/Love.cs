@@ -70,27 +70,61 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
                 await RespondAsync("You cannot give yourself headpats.", ephemeral: true);
                 return;
             }
+            
+            var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
+            var num = new Random().Next(0, outputs.Length);
+            var numberOfPats = num == 3 ? 2 : 1;
+            
+            bool doingTheCutieSpecial = false, ignoreBotCheck = false;
+
+            switch (canUseParams) {
+                case true: {
+                    if (!string.IsNullOrWhiteSpace(extraParams)) {
+                        if (extraParams.Equals("mega"))
+                            numberOfPats = 2;
+
+                        if (extraParams.Contains('%') && extraParams.NotEquals("%bot"))
+                            numberOfPats = int.Parse(extraParams.Split('%')[1]);
+                        
+                        if (extraParams.Equals("%bot"))
+                            ignoreBotCheck = true;
+
+                        if (extraParams.Contains("elly", StringComparison.CurrentCultureIgnoreCase)) {
+                            numberOfPats += 5;
+                            doingTheCutieSpecial = true;
+                        }
+                    }
+
+                    break;
+                }
+                case false when !string.IsNullOrWhiteSpace(extraParams):
+                    await RespondAsync("You do not have permission to use extra parameters.", ephemeral: true);
+                    return;
+            }
 
             if (user.IsBot) {
                 await RespondAsync("You cannot give bots headpats.", ephemeral: true);
                 return;
             }
+            
+            var newNumber = checkUser!.PatCount + numberOfPats;
 
             var gaveToBot = false;
-            if (user.Id == Vars.ClientId) {
+            if (user.Id == Vars.ClientId && !ignoreBotCheck) {
                 await RespondAsync("How dare you give me headpats! No, have some of your own~");
                 gaveToBot = true;
                 await Task.Delay(300);
             }
+            else if (ignoreBotCheck && Context.User.Id is 167335587488071682) {
+                UserControl.AddPatToUser(user.Id, numberOfPats, true, Context.Guild.Id);
+                await Task.Delay(300);
+                await RespondAsync($"Modifying the bot's headpat count. New count: {newNumber:N0}", ephemeral: true);
+                return;
+            }
 
             var e = new EmbedBuilder();
-            var outputs = new[] { "_pat pat_", "_Pats_", "_pet pet_", "_**mega pats**_" };
-            var num = new Random().Next(0, outputs.Length);
-
-            var numberOfPats = num == 3 ? 2 : 1;
 
             e.WithTitle(outputs[num]);
-            var newNumber = checkUser!.PatCount + numberOfPats;
 
             if (Vars.UseLocalImages) {
                 start:
@@ -133,30 +167,6 @@ public class Love : InteractionModuleBase<SocketInteractionContext> {
 
                 e.WithImageUrl(image);
                 e.WithFooter($"Powered by Fluxpoint API | You have {newNumber:N0} pats");
-            }
-
-            var doingTheCutieSpecial = false;
-
-            switch (canUseParams) {
-                case true: {
-                    if (!string.IsNullOrWhiteSpace(extraParams)) {
-                        if (extraParams.Equals("mega"))
-                            numberOfPats = 2;
-
-                        if (extraParams.Contains('%'))
-                            numberOfPats = int.Parse(extraParams.Split('%')[1]);
-
-                        if (extraParams.Contains("elly", StringComparison.CurrentCultureIgnoreCase)) {
-                            numberOfPats += 5;
-                            doingTheCutieSpecial = true;
-                        }
-                    }
-
-                    break;
-                }
-                case false when !string.IsNullOrWhiteSpace(extraParams):
-                    await RespondAsync("You do not have permission to use extra parameters.", ephemeral: true);
-                    return;
             }
 
             e.WithColor(Colors.Random);
