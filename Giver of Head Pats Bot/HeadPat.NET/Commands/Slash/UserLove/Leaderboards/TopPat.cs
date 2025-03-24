@@ -32,11 +32,16 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
             strings.AppendLine($"Top 50 that are in this server.\n" +
                                $"- Server Pats: {MarkdownUtils.ToBold(guildPats.ToString("N0"))} ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)\n" +
                                $"- Global Pats: {MarkdownUtils.ToBold(globalPats.ToString("N0"))}");
+            
             var counter = 1;
             foreach (var u in newUserList) {
                 if (counter >= 51) continue;
                 if (!guildUserList.ContainsKey(u.UserId)) continue;
-                strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: {MarkdownUtils.ToBold(u.PatCount.ToString("N0"))}");
+                strings.AppendLine($"`{counter}.` {
+                    (u.UsernameWithNumber.Contains('#') ? 
+                        u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : 
+                        u.UsernameWithNumber.ReplaceName(u.UserId))
+                } - Total Pats: {MarkdownUtils.ToBold(u.PatCount.ToString("N0"))}");
                 counter++;
             }
 
@@ -50,7 +55,11 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
         foreach (var u in newUserList) {
             if (max >= 11) continue;
             if (!guildUserList.ContainsKey(u.UserId)) continue;
-            sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Pats: {MarkdownUtils.ToBold(u.PatCount.ToString("N0"))}");
+            sb.AppendLine($"`{max}.` {
+                (u.UsernameWithNumber.Contains('#') ? 
+                    u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : 
+                    u.UsernameWithNumber.ReplaceName(u.UserId))
+            } - Total Pats: {MarkdownUtils.ToBold(u.PatCount.ToString("N0"))}");
             max++;
         }
 
@@ -63,10 +72,11 @@ public class TopPat : InteractionModuleBase<SocketInteractionContext> {
             Footer = new EmbedFooterBuilder {
                 Text = $"Synced across all servers • {Vars.Name} (v{Vars.VersionStr})"
             }
-        };
-        embed.AddField("Statistics for " + Context.Guild.Name, $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\n" +
-                                                               $"Total Server Pats {MarkdownUtils.ToBold(guildPats.ToString("N0"))} ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)");
-        embed.AddField("Global Stats", $"Total Pats: {MarkdownUtils.ToBold(globalPats.ToString("N0"))}");
+        }
+            .AddField("Statistics for " + Context.Guild.Name, $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}\n" +
+                                                               $"Total Server Pats {MarkdownUtils.ToBold(guildPats.ToString("N0"))} ({(globalPats == 0 ? "NaN" : $"{patPercentage:F}")}% of global)")
+            .AddField("Global Stats", $"Total Pats: {MarkdownUtils.ToBold(globalPats.ToString("N0"))}");
+        
         await RespondAsync(embed: embed.Build());
     }
 }
