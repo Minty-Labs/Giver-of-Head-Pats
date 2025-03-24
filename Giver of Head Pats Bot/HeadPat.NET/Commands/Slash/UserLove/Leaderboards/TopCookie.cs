@@ -13,16 +13,9 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
     [SlashCommand("topcookie", "Get the Guild's top cookie leaderboard")]
     public async Task CookieLeaderboard([Summary("keywords", "Key words")] string keyWords = "") {
         await using var db = new Context();
-        var logger = Log.ForContext("SourceContext", "Command - TopCookie");
-
-        var globalCookie = 0;
-        try { globalCookie = db.Overall.AsQueryable().ToList().First().PatCount; }
-        catch { logger.Error("DataSet is Empty"); }
-        
-        
-        var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.PatCount);
+        // var logger = Log.ForContext("SourceContext", "Command - TopCookie");
+        var newUserList = db.Users.AsQueryable().ToList().OrderBy(p => -p.CookieCount);
         var guildUserList = Context.Guild.Users.ToDictionary(user => user.Id);
-        
         
         if (keyWords!.ToLower().Equals("server")) {
             var strings = new StringBuilder();
@@ -31,7 +24,11 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
             foreach (var u in newUserList) {
                 if (counter >= 51) continue;
                 if (!guildUserList.ContainsKey(u.UserId)) continue;
-                strings.AppendLine($"`{counter}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: {MarkdownUtils.ToBold(u.CookieCount.ToString("N0"))}");
+                strings.AppendLine($"`{counter}.` {
+                    (u.UsernameWithNumber.Contains('#') ? 
+                        u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : 
+                        u.UsernameWithNumber.ReplaceName(u.UserId))
+                } - Total Cookies: {MarkdownUtils.ToBold(u.CookieCount.ToString("N0"))}");
                 counter++;
             }
 
@@ -45,7 +42,11 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
         foreach (var u in newUserList) {
             if (max >= 11) continue;
             if (!guildUserList.ContainsKey(u.UserId)) continue;
-            sb.AppendLine($"`{max}.` {(u.UsernameWithNumber.Contains('#') ? u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : u.UsernameWithNumber.ReplaceName(u.UserId))} - Total Cookies: {MarkdownUtils.ToBold(u.CookieCount.ToString("N0"))}");
+            sb.AppendLine($"`{max}.` {
+                (u.UsernameWithNumber.Contains('#') ? 
+                    u.UsernameWithNumber.Split('#')[0].ReplaceName(u.UserId) : 
+                    u.UsernameWithNumber.ReplaceName(u.UserId))
+            } - Total Cookies: {MarkdownUtils.ToBold(u.CookieCount.ToString("N0"))}");
             max++;
         }
 
@@ -58,9 +59,10 @@ public class TopCookie : InteractionModuleBase<SocketInteractionContext> {
             Footer = new EmbedFooterBuilder {
                 Text = $"{Vars.Name} (v{Vars.VersionStr})"
             }
-        };
-        embed.AddField("Current Server Stats",
-            $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}");
+        }
+            .AddField("Current Server Stats",
+                $"{(string.IsNullOrWhiteSpace(temp) ? "Data is Empty" : $"{temp}")}");
+        
         await RespondAsync(embed: embed.Build());
     }
 }
