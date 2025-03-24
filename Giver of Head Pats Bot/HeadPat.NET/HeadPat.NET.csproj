@@ -10,12 +10,12 @@
         <ApplicationIcon>..\..\Media\HeadPat.ico</ApplicationIcon>
         <Title>Giver of Head Pats</Title>
         <Authors>Lily</Authors>
-        <AssemblyVersion>5.3.4.174</AssemblyVersion>
-        <FileVersion>5.3.4.174</FileVersion>
+        <AssemblyVersion>5.3.10.187</AssemblyVersion>
+        <FileVersion>5.3.10.187</FileVersion>
         <Company>Minty Labs</Company>
         <Product>HeadPat.NET Discord Bot</Product>
         <PackageId>HeadPat.NET (Discord Bot)</PackageId>
-        <Version>5.3.4.174</Version>
+        <Version>5.3.10.187</Version>
         <Description>Discord.NET build of GoHP</Description>
         <Copyright>Minty Labs 2025</Copyright>
         <PackageProjectUrl>https://mintylabs.dev/gohp</PackageProjectUrl>
